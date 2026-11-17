@@ -1,4 +1,4 @@
-FROM python:3.14-slim
+FROM python:3.15-slim
 
 # what the image is, for registries and tools like Watchtower - a release
 # build adds its version, source and commit too (docker/metadata-action),
