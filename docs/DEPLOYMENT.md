@@ -1,5 +1,7 @@
 # Hosting and deploying
 
+*We earn commissions when you shop through the links below, marked (referral link). [About the links in this guide](#about-the-links-in-this-guide)*
+
 This page is about getting Soloblog onto the internet, so people can
 visit your site: on a hosting service (a company that runs it for you),
 on a server you rent, or on a computer at home. It also covers giving it
@@ -73,9 +75,10 @@ directly instead. Referral income helps pay for the project - see
 
 <!-- Marking a referral link: put " *(referral link)*" straight after it,
      every time, in this file and anywhere else it appears (README
-     buttons included). Keep the rest of this section as it is - it's
-     the disclosure consumer-protection rules ask for (clear, before the
-     links, and next to each one). -->
+     buttons included). Keep the rest of this section, and the line under
+     the page's title, as they are - it's the disclosure
+     consumer-protection rules and the programmes ask for (clear, before
+     the links, and next to each one). -->
 
 ## Start the quickest way
 

@@ -611,15 +611,18 @@ def test_the_admin_says_site_not_blog():
 def test_every_referral_link_is_marked():
     """A link that earns the project something says so, straight after it,
     wherever it appears (DECISIONS.md, 2026-09-26; DEPLOYMENT.md > About
-    the links in this guide)."""
+    the links in this guide), and a page with one says so under its title,
+    in the words the programmes ask for."""
     import re
     from pathlib import Path
     root = Path(__file__).resolve().parent.parent
     found = 0
     for path in [root / "README.md", *sorted((root / "docs").rglob("*.md"))]:
         text = path.read_text(encoding="utf-8")
-        for m in re.finditer(r"\]\((https?://[^)\s]*(?:referral|[?&]ref=|[?&]aff|affiliate)[^)\s]*)\)", text, re.I):
+        for m in re.finditer(r"\]\((https?://[^)\s]*(?:referral|[?&]ref=|[?&]aff|affiliate|awin)[^)\s]*)\)", text, re.I):
             found += 1
             after = re.sub(r"\s+", " ", text[m.end():m.end() + 30])
             assert after.startswith(" *(referral link)*"), (path.name, m.group(1))
+            top = re.sub(r"\s+", " ", text.split("\n## ", 1)[0])
+            assert "We earn commissions when you shop through the links below" in top, path.name
     assert found, "the Railway link, at least"
