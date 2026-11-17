@@ -1,0 +1,67 @@
+# Soloblog on Kubernetes: one replica (it's SQLite and local files),
+# a persistent volume for /data, a Service and an Ingress.
+#   kubectl create secret generic soloblog --from-literal=SESSION_SECRET=$(openssl rand -hex 32)
+#   kubectl apply -f kubernetes.yaml
+# Change blog.example.com, and the ingress class/TLS to your cluster's.
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: soloblog-data
+spec:
+  accessModes: [ReadWriteOnce]
+  resources:
+    requests:
+      storage: 2Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: soloblog
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate   # never two at once - they'd share one SQLite file
+  selector:
+    matchLabels: {app: soloblog}
+  template:
+    metadata:
+      labels: {app: soloblog}
+    spec:
+      containers:
+        - name: soloblog
+          image: ghcr.io/soloblog/soloblog:latest
+          ports: [{containerPort: 8080}]
+          env:
+            - {name: ENV, value: production}
+            - {name: BASE_URL, value: https://blog.example.com}
+            - name: SESSION_SECRET
+              valueFrom: {secretKeyRef: {name: soloblog, key: SESSION_SECRET}}
+          volumeMounts: [{name: data, mountPath: /data}]
+          readinessProbe: {httpGet: {path: /healthz, port: 8080}}
+          livenessProbe: {httpGet: {path: /healthz, port: 8080}, periodSeconds: 30}
+      volumes:
+        - name: data
+          persistentVolumeClaim: {claimName: soloblog-data}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: soloblog
+spec:
+  selector: {app: soloblog}
+  ports: [{port: 80, targetPort: 8080}]
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: soloblog
+  annotations:
+    nginx.ingress.kubernetes.io/proxy-body-size: 110m
+spec:
+  rules:
+    - host: blog.example.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend: {service: {name: soloblog, port: {number: 80}}}

@@ -1,0 +1,53 @@
+name: Security
+
+on:
+  # not every push, to save Actions minutes (docker.yml) - releases,
+  # pull requests, by hand, and the weekly check below
+  push:
+    tags: ["v*"]
+  pull_request:
+  workflow_dispatch:
+  # a dependency can turn vulnerable without anything here changing
+  schedule:
+    - cron: "0 6 * * 1"
+
+permissions:
+  contents: read
+
+jobs:
+  # known vulnerabilities in the pinned dependencies (the Python
+  # advisory database, the same one GitHub's Dependabot alerts use)
+  dependencies:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.14"   # what the Docker image runs
+
+      - run: pip install pip-audit
+
+      - run: pip-audit -r requirements.txt
+
+  # GitHub's code scanning: injection, unsafe redirects, path traversal
+  # and the like, in the Python and the JavaScript. Free on a public
+  # repository; a private one needs a paid plan, so it waits until then.
+  codeql:
+    if: ${{ !github.event.repository.private }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write
+    strategy:
+      matrix:
+        language: [python, javascript-typescript]
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: github/codeql-action/init@v4
+        with:
+          languages: ${{ matrix.language }}
+          queries: security-extended
+
+      - uses: github/codeql-action/analyze@v4

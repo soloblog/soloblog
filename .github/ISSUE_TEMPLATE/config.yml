@@ -1,0 +1,14 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Ask a question
+    url: https://github.com/soloblog/soloblog/discussions/categories/q-a
+    about: How do I...? Something unclear? Ask the community in Discussions.
+  - name: Share an idea
+    url: https://github.com/soloblog/soloblog/discussions/categories/ideas
+    about: Suggest something and see who else wants it - the best ideas become issues.
+  - name: Report a security problem
+    url: https://github.com/soloblog/soloblog/security/advisories/new
+    about: Privately, so it can be fixed before anyone else knows.
+  - name: Read the docs
+    url: https://github.com/soloblog/soloblog/blob/master/docs/FAQ.md
+    about: The FAQ and user guide answer most questions - they're also in the admin under Help.

@@ -1,0 +1,58 @@
+name: Bug report
+description: Something in Soloblog doesn't work the way it should
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time. A security problem? Please don't file it here -
+        use **Security > Report a vulnerability** instead, so it stays private until it's fixed.
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened
+      description: And what you expected to happen instead.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: How to make it happen
+      description: The steps, starting from a page in Soloblog.
+      placeholder: |
+        1. Open Settings > Appearance
+        2. Pick the Timeline style
+        3. ...
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Soloblog version
+      description: At the bottom of any admin page.
+      placeholder: 1.0.0-beta
+    validations:
+      required: true
+  - type: dropdown
+    id: hosting
+    attributes:
+      label: How you run it
+      options:
+        - Docker Compose / Docker
+        - Render, Railway, Fly.io or another one-click host
+        - Coolify, CapRover, Dokku or another self-hosted platform
+        - A NAS or home server
+        - From source (Python)
+        - Something else
+    validations:
+      required: true
+  - type: input
+    id: browser
+    attributes:
+      label: Browser and device
+      placeholder: Firefox 131 on Windows, Safari on iPhone...
+  - type: textarea
+    id: logs
+    attributes:
+      label: Anything else
+      description: Screenshots, or what the server's log said around the time (leave out passwords and keys).

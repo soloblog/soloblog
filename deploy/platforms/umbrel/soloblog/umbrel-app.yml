@@ -1,0 +1,36 @@
+manifestVersion: 1
+id: soloblog
+storage:
+  dataRoot: data
+category: social
+name: Soloblog
+version: "1.0.0-beta"
+tagline: A blog and personal website for one person
+description: >-
+  First-time setup asks for a setup token. Right-click Soloblog on the home screen and choose Show default credentials - the password shown is your setup token. Then choose your own password.
+
+
+  Soloblog is a free, open source blog and personal website for one person. Write in a calm editor, choose from 35 colour palettes, and build pages out of sections - a homepage, a portfolio, a book's landing page. Readers can comment, subscribe by email or follow from Mastodon, and members-only posts can be free or paid.
+
+
+  Posts are plain markdown files, everything is kept in one folder, and backups to a zip or an S3-compatible bucket are built in.
+
+
+  ⚠️ Your site opens at "http://umbrel.local:8484" on your home network. To put it on the internet with your own domain, use the Cloudflare Tunnel app from the Umbrel App Store.
+releaseNotes: ""
+
+developer: ZRPlus Studio
+website: https://soloblog.zrplus.net
+dependencies: []
+repo: https://github.com/soloblog/soloblog
+support: https://github.com/soloblog/soloblog/discussions
+
+port: 8484
+gallery: []
+path: ""
+
+defaultUsername: ""
+deterministicPassword: true
+
+submitter: ZRPlus Studio
+submission: ""

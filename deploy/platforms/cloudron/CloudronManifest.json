@@ -1,0 +1,24 @@
+{
+  "id": "net.zrplus.soloblog.cloudronapp",
+  "title": "Soloblog",
+  "author": "ZRPlus Studio",
+  "tagline": "A blog and personal website for one person",
+  "description": "file://DESCRIPTION.md",
+  "postInstallMessage": "file://POSTINSTALL.md",
+  "changelog": "file://CHANGELOG",
+  "website": "https://soloblog.zrplus.net",
+  "contactEmail": "hello.soloblog@zrplus.net",
+  "icon": "file://logo.png",
+  "tags": ["blog", "cms", "website", "newsletter"],
+  "version": "1.0.0-beta",
+  "upstreamVersion": "1.0.0-beta",
+  "manifestVersion": 2,
+  "healthCheckPath": "/healthz",
+  "httpPort": 8080,
+  "memoryLimit": 536870912,
+  "addons": {
+    "localstorage": {}
+  },
+  "minBoxVersion": "7.6.0",
+  "mediaLinks": []
+}

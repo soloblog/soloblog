@@ -1,0 +1,35 @@
+# Lint settings (python -m ruff check .) - also run in CI. Formatting is
+# left as it is; this catches mistakes and risks, not layout.
+target-version = "py312"
+line-length = 120
+extend-exclude = [".tools", ".daisyft", "demo-cache", "demo-data", "demo-live", "data"]
+
+[lint]
+# the defaults (syntax errors, undefined and unused names), bugbear's
+# likely bugs, security smells (S), current Python spellings (UP) and
+# needless complexity (SIM)
+select = ["E4", "E7", "E9", "F", "B", "S", "UP", "SIM"]
+ignore = [
+    # `from fasthtml.common import *` is FastHTML's own way to use it
+    "F403", "F405",
+    # zip() of lists built side by side - their lengths match by construction
+    "B905",
+    # database rows are sqlite3.Row, where `key in row` looks at the values,
+    # not the names - `key in row.keys()` is the only way to ask
+    "SIM118",
+    # in a test the value being checked comes first, the expected one after
+    "SIM300",
+]
+
+[lint.per-file-ignores]
+# its storage settings go into the environment before the app is imported
+"tests/test_storage.py" = ["E402"]
+# pytest fixtures arrive as parameters named like the imported fixture
+"tests/test_stripe.py" = ["F811"]
+# assert is how tests (and the dev tools that check themselves) say what must
+# hold. Test passwords and keys are made up, a test may run a program by name
+# or write under /tmp, and the feeds it reads are the ones it just made. The
+# tools and journeys only start Soloblog and the browser.
+"tests/**" = ["S101", "S105", "S106", "S108", "S314", "S603", "S607"]
+"journeys/**" = ["S101", "S105", "S603"]
+"tools/**" = ["S101", "S105", "S603"]

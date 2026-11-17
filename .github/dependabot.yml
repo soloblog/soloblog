@@ -1,0 +1,29 @@
+# Pull requests for dependency updates, once a month, grouped so there are
+# only a few to review - CI tests each one. See docs/MAINTAINING.md.
+version: 2
+updates:
+  - package-ecosystem: pip
+    directory: /
+    schedule:
+      interval: monthly
+    labels: [dependencies]
+    groups:
+      python:
+        patterns: ["*"]
+        # FastHTML on its own: it's pre-1.0 and the most likely to need care
+        exclude-patterns: ["python-fasthtml"]
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly
+    labels: [dependencies]
+    groups:
+      actions:
+        patterns: ["*"]
+
+  - package-ecosystem: docker
+    directory: /
+    schedule:
+      interval: monthly
+    labels: [dependencies]

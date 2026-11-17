@@ -1,0 +1,266 @@
+import hashlib
+from datetime import datetime, UTC
+
+from soloblog import storage
+
+EMPTY = hashlib.sha256(b"").hexdigest()
+AK, SK = "AKIAIOSFODNN7EXAMPLE", "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"
+WHEN = datetime(2013, 5, 24, tzinfo=UTC)
+
+
+def _signature(headers):
+    return headers["Authorization"].rsplit("Signature=", 1)[1]
+
+
+def test_sigv4_get_object_example():
+    # AWS's own worked example: "Signature Calculations for the
+    # Authorization Header", GET Object
+    h = storage.sign("GET", "https://examplebucket.s3.amazonaws.com/test.txt", {"Range": "bytes=0-9"},
+                     EMPTY, AK, SK, "us-east-1", now=WHEN)
+    assert _signature(h) == "f0e8bdb87c964420e857bd35b5d6ed310bd44f0170aba48dd91039c6036bdb41"
+    assert "SignedHeaders=host;range;x-amz-content-sha256;x-amz-date" in h["Authorization"]
+
+
+def test_sigv4_list_objects_example():
+    h = storage.sign("GET", "https://examplebucket.s3.amazonaws.com/?max-keys=2&prefix=J", {},
+                     EMPTY, AK, SK, "us-east-1", now=WHEN)
+    assert _signature(h) == "34b48302e7b5fa45bde8084f4b7868a86f0a534bc59db6670ed5711ef69dc6f7"
+
+
+# ---- against a real S3 API (moto's local server), not a mock of our own
+
+import os
+import socket
+import tempfile
+import time
+
+import pytest
+
+from soloblog import config
+
+
+@pytest.fixture
+def bucket(monkeypatch):
+    moto_server = pytest.importorskip("moto.server")
+    with socket.socket() as sk:
+        sk.bind(("127.0.0.1", 0))
+        port = sk.getsockname()[1]
+    server = moto_server.ThreadedMotoServer(ip_address="127.0.0.1", port=port, verbose=False)
+    server.start()
+    for name, value in {"S3_BUCKET": "soloblog-test", "S3_ENDPOINT": f"http://127.0.0.1:{port}",
+                        "S3_REGION": "us-east-1", "S3_ACCESS_KEY_ID": "test", "S3_SECRET_ACCESS_KEY": "test",
+                        "S3_PREFIX": "blog", "S3_AUTO_BACKUP": False}.items():
+        monkeypatch.setattr(config, name, value)
+    status, _ = storage._request("PUT")  # create the bucket
+    assert status == 200
+    yield
+    server.stop()
+
+
+def test_round_trip(bucket):
+    storage.put("uploads/a b.webp", b"hello")
+    assert storage.get("uploads/a b.webp") == b"hello"
+    assert storage.get("uploads/missing.webp") is None
+    assert [k["key"] for k in storage.list_keys("uploads/")] == ["uploads/a b.webp"]
+    storage.delete("uploads/a b.webp")
+    assert storage.list_keys("uploads/") == []
+    assert storage.check() == ""
+
+
+def test_bad_credentials_are_reported(bucket, monkeypatch):
+    monkeypatch.setattr(config, "S3_ENDPOINT", "http://127.0.0.1:9")  # nothing listening
+    assert "can't reach" in storage.check()
+
+
+def _png():
+    from PIL import Image
+    import io
+    buf = io.BytesIO()
+    Image.new("RGB", (4, 4), "red").save(buf, "PNG")
+    return buf.getvalue()
+
+
+def test_images_are_mirrored(bucket, client):
+    from soloblog import images
+    url = images.save_upload(_png())
+    name = url.rsplit("/", 1)[1]
+    storage.wait_for_mirroring()  # mirroring runs in the background
+    assert storage.get(f"uploads/{name}") is not None
+    images.move_to_trash(name)
+    storage.wait_for_mirroring()
+    assert storage.get(f"uploads/{name}") is None and storage.get(f"uploads/_trash/{name}") is not None
+    images.restore_from_trash(name)
+    storage.wait_for_mirroring()
+    assert storage.get(f"uploads/{name}") is not None
+
+    # a disk that lost the file gets it back from the bucket on request
+    os.remove(os.path.join(config.UPLOADS_DIR, name))
+    r = client.get(url)
+    assert r.status_code == 200 and os.path.exists(os.path.join(config.UPLOADS_DIR, name))
+
+
+def test_backups_are_pruned(bucket, monkeypatch):
+    from soloblog import settings
+    settings.set_many({"backup_keep": "2"})
+    for _ in range(3):
+        storage.backup_now()
+        time.sleep(1.05)  # backup names are per second
+    assert len(storage.list_backups()) == 2
+    settings.set_many({"backup_keep": "30"})
+
+
+def test_change_triggers_debounced_backup(bucket, monkeypatch, admin):
+    monkeypatch.setattr(config, "S3_AUTO_BACKUP", True)
+    monkeypatch.setattr(config, "S3_BACKUP_DELAY", 0.3)
+    before = len(storage.list_backups())
+    admin.post("/admin/settings/name", headers={"hx-request": "true"},
+               data={"site_title": "My Blog", "comments_enabled": "1", "timezone": "UTC"})
+    admin.post("/admin/settings/name", headers={"hx-request": "true"},
+               data={"site_title": "My Blog", "comments_enabled": "1", "timezone": "UTC"})
+    time.sleep(1.5)
+    assert len(storage.list_backups()) == before + 1  # two changes, one backup
+
+
+def test_backups_once_a_day(bucket, monkeypatch, admin):
+    from datetime import timedelta
+    from soloblog import settings
+    from soloblog.tz import utcnow
+    monkeypatch.setattr(config, "S3_AUTO_BACKUP", True)
+    monkeypatch.setattr(config, "S3_BACKUP_DELAY", 0.3)
+    assert "How often" in admin.get("/admin/settings?tab=backup").text
+    assert "Saved" in admin.post("/admin/backup/every", data={"backup_every": "day"}).text
+    assert "Choose one" in admin.post("/admin/backup/every", data={"backup_every": "hourly"}).text
+    assert settings.get("backup_every") == "day"
+
+    def nothing_waiting():
+        with storage._lock:
+            if storage._state["timer"]:
+                storage._state["timer"].cancel()
+            storage._state["timer"] = storage._state["first_change"] = None
+    try:
+        nothing_waiting()  # saving the setting was a change too
+        # the last one an hour ago: a change waits for the rest of the day
+        settings.set_many({"backup_last_at": (utcnow() - timedelta(hours=1)).isoformat()})
+        before = len(storage.list_backups())
+        storage.note_change()
+        timer = storage._state["timer"]
+        assert timer and 22 * 3600 < timer.interval < 23 * 3600
+        storage.note_change()  # more changes: still the one backup, not moved on
+        assert storage._state["timer"] is timer
+        # shutting down makes it now, so nothing's lost
+        storage.flush()
+        assert len(storage.list_backups()) == before + 1 and storage._state["timer"] is None
+        # nothing changed since: nothing waiting
+        assert storage._state["timer"] is None
+        # a day since the last one: the next change backs up straight away
+        settings.set_many({"backup_last_at": (utcnow() - timedelta(days=2)).isoformat()})
+        storage.note_change()
+        assert storage._state["timer"].interval == 0.3
+        # changed to once a week: what's waiting is timed again
+        settings.set_many({"backup_last_at": utcnow().isoformat(), "backup_every": "week"})
+        storage.reschedule()
+        assert storage._state["timer"].interval > 6 * 24 * 3600
+    finally:
+        nothing_waiting()
+        settings.set_many({"backup_every": "changes"})
+
+
+def test_restore_on_an_empty_disk(bucket, monkeypatch, admin):
+    from conftest import save_post
+    from soloblog import images
+    save_post(admin, title="Survives a restart")
+    name = images.save_upload(_png()).rsplit("/", 1)[1]
+    storage.backup_now()
+
+    fresh = tempfile.mkdtemp()
+    monkeypatch.setattr(config, "DB_PATH", os.path.join(fresh, "blog.db"))
+    monkeypatch.setattr(config, "POSTS_DIR", os.path.join(fresh, "posts"))
+    monkeypatch.setattr(config, "UPLOADS_DIR", os.path.join(fresh, "uploads"))
+    assert storage.restore_on_boot()
+    assert os.path.exists(os.path.join(fresh, "blog.db"))
+    assert os.path.exists(os.path.join(fresh, "posts", "survives-a-restart.md"))
+    assert os.path.exists(os.path.join(fresh, "uploads", name))
+    # and never over a disk that already has a database
+    assert not storage.restore_on_boot()
+
+
+def test_seal_round_trip_and_wrong_passphrase():
+    sealed = storage.seal(b"zip bytes", "correct horse")
+    assert sealed.startswith(storage.MAGIC) and b"zip bytes" not in sealed
+    assert storage.unseal(sealed, "correct horse") == b"zip bytes"
+    for wrong in ("battery staple", ""):
+        with pytest.raises(storage.StorageError):
+            storage.unseal(sealed, wrong)
+    tampered = sealed[:-1] + bytes([sealed[-1] ^ 1])
+    with pytest.raises(storage.StorageError):
+        storage.unseal(tampered, "correct horse")
+
+
+def test_encrypted_backup_restores_on_an_empty_disk(bucket, monkeypatch, admin):
+    from conftest import save_post
+    monkeypatch.setattr(config, "BACKUP_PASSPHRASE", "correct horse")
+    save_post(admin, title="Encrypted and back")
+    key = storage.backup_now()
+    assert key.endswith(".zip.enc") and storage.list_backups()[0]["key"] == key
+    assert storage.get(key).startswith(storage.MAGIC)
+
+    fresh = tempfile.mkdtemp()
+    monkeypatch.setattr(config, "DB_PATH", os.path.join(fresh, "blog.db"))
+    monkeypatch.setattr(config, "POSTS_DIR", os.path.join(fresh, "posts"))
+    monkeypatch.setattr(config, "UPLOADS_DIR", os.path.join(fresh, "uploads"))
+    assert storage.restore_on_boot()
+    assert os.path.exists(os.path.join(fresh, "posts", "encrypted-and-back.md"))
+
+
+def test_images_in_the_bucket_are_encrypted_with_the_passphrase(bucket, monkeypatch, client):
+    from soloblog import images, settings
+    plain_url = images.save_upload(_png())
+    plain = plain_url.rsplit("/", 1)[1]
+    storage.wait_for_mirroring()
+    original = storage.get(f"uploads/{plain}")
+    assert not original.startswith(storage.MAGIC)
+    settings.set_many({"bucket_images_sealed": ""})
+
+    monkeypatch.setattr(config, "BACKUP_PASSPHRASE", "correct horse")
+    try:
+        # a new image goes in sealed: the storage company sees nothing of it
+        url = images.save_upload(_png())
+        name = url.rsplit("/", 1)[1]
+        storage.wait_for_mirroring()
+        sealed = storage.get(f"uploads/{name}")
+        assert sealed.startswith(storage.MAGIC) and b"PNG" not in sealed and b"WEBP" not in sealed
+        with open(os.path.join(config.UPLOADS_DIR, name), "rb") as f:
+            assert storage.unseal(sealed, "correct horse") == f.read()
+        # trashing it keeps it sealed
+        images.move_to_trash(name)
+        storage.wait_for_mirroring()
+        assert storage.get(f"uploads/_trash/{name}").startswith(storage.MAGIC)
+        images.restore_from_trash(name)
+        storage.wait_for_mirroring()
+        # a disk that lost it gets it back, opened
+        os.remove(os.path.join(config.UPLOADS_DIR, name))
+        assert client.get(url).status_code == 200
+        with open(os.path.join(config.UPLOADS_DIR, name), "rb") as f:
+            assert storage.unseal(sealed, "correct horse") == f.read()
+        # one copied before the passphrase was set still opens...
+        os.remove(os.path.join(config.UPLOADS_DIR, plain))
+        assert client.get(plain_url).status_code == 200
+        # ...and is sealed too, once: on the next start, or Sync images
+        assert storage.reseal_images() >= 2
+        assert storage.get(f"uploads/{plain}").startswith(storage.MAGIC)
+        assert storage.reseal_images() == 0
+        # Sync images brings sealed ones down opened
+        os.remove(os.path.join(config.UPLOADS_DIR, plain))
+        assert storage.sync_uploads()["downloaded"] >= 1
+        with open(os.path.join(config.UPLOADS_DIR, plain), "rb") as f:
+            assert f.read() == original
+        # the wrong passphrase: the image isn't fetched, and nothing breaks
+        os.remove(os.path.join(config.UPLOADS_DIR, plain))
+        monkeypatch.setattr(config, "BACKUP_PASSPHRASE", "battery staple")
+        assert not storage.fetch_upload(plain)
+        # the passphrase removed: copied again, plain
+        monkeypatch.setattr(config, "BACKUP_PASSPHRASE", "")
+        assert storage.reseal_images() >= 1
+        assert not storage.get(f"uploads/{name}").startswith(storage.MAGIC)
+    finally:
+        settings.set_many({"bucket_images_sealed": ""})

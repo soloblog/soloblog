@@ -1,0 +1,13 @@
+# The secrets scan (gitleaks, docs/MAINTAINING.md): its own rules, less two
+# things that only look like keys.
+[extend]
+useDefault = true
+
+[allowlist]
+description = "Placeholders and alphabets, not secrets"
+regexes = [
+    # the API docs' example key
+    '''sb_your_key_here''',
+    # the letters a recovery key is made from (auth.py)
+    '''0123456789ABCDEFGHJKMNPQRSTVWXYZ''',
+]

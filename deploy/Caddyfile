@@ -1,0 +1,10 @@
+# Caddy gets and renews the HTTPS certificate by itself.
+# Replace blog.example.com; use soloblog:8080 if Caddy runs in the same
+# Docker network as the container.
+blog.example.com {
+    encode zstd gzip
+    request_body {
+        max_size 110MB   # audio and video uploads go up to 100 MB
+    }
+    reverse_proxy localhost:8080
+}

@@ -1,0 +1,52 @@
+# The public demo on Fly.io (docs/MAINTAINING.md > The demo), at
+# https://demo.soloblog.zrplus.net (and soloblog-demo.fly.dev). CI deploys
+# each release here, built from its source (.github/workflows/docker.yml,
+# the demo job). By hand, from the repository's folder:
+#   fly deploy . --config deploy/fly-demo.toml --remote-only --ha=false
+#
+# Once, by hand:
+#   fly apps create soloblog-demo
+#   fly volumes create demo_data --app soloblog-demo --region iad --size 1
+#   fly secrets set --app soloblog-demo SESSION_SECRET="$(openssl rand -hex 32)"
+#   fly tokens create deploy --app soloblog-demo   # -> the FLY_API_TOKEN secret on GitHub
+app = "soloblog-demo"
+primary_region = "iad"
+
+[env]
+  PORT = "8080"
+  # its own domain (a Fly certificate, a CNAME at Cloudflare) - feeds,
+  # the sitemap and share links use it
+  BASE_URL = "https://demo.soloblog.zrplus.net"
+  DEMO_MODE = "1"
+  DEMO_RESET_HOURS = "3"
+  # the sample photos, kept on the volume between resets so each fresh
+  # copy doesn't download them again
+  DEMO_CACHE = "/data/demo-cache"
+
+[http_service]
+  internal_port = 8080
+  force_https = true
+  # asleep when nobody's looking, woken by the next visit - a fresh
+  # copy of the demo either way, and a few dollars a month at most
+  auto_stop_machines = "stop"
+  auto_start_machines = true
+  min_machines_running = 0
+
+  [[http_service.checks]]
+    grace_period = "60s"
+    interval = "30s"
+    method = "GET"
+    path = "/healthz"
+    timeout = "5s"
+
+# the demo exits every DEMO_RESET_HOURS to start afresh - bring it back
+[[restart]]
+  policy = "always"
+
+[[mounts]]
+  source = "demo_data"
+  destination = "/data"
+
+[[vm]]
+  size = "shared-cpu-1x"
+  memory = "512mb"

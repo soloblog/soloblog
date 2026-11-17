@@ -1,0 +1,28 @@
+name: Feature request
+description: Something Soloblog could do - for a well-formed idea you'd like tracked
+labels: [enhancement]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Not sure yet, or want to see if others want it too? Start in
+        **Discussions > Ideas** - people can upvote it there, and good ideas become issues.
+
+        Soloblog is for **one person's own site**: ideas for teams, several authors or paid
+        memberships are outside what it's for ([why](https://github.com/soloblog/soloblog/blob/master/docs/DECISIONS.md)).
+  - type: textarea
+    id: problem
+    attributes:
+      label: What you're trying to do
+      description: The situation, not the solution - what's hard or missing today?
+    validations:
+      required: true
+  - type: textarea
+    id: idea
+    attributes:
+      label: What would help
+      description: How you imagine it working. Other apps that do it well are useful to mention.
+  - type: textarea
+    id: instead
+    attributes:
+      label: What you do instead today

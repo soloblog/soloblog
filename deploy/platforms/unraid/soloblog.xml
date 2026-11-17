@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<Container version="2">
+  <Name>Soloblog</Name>
+  <Repository>ghcr.io/soloblog/soloblog:latest</Repository>
+  <Registry>https://github.com/soloblog/soloblog/pkgs/container/soloblog</Registry>
+  <Network>bridge</Network>
+  <Privileged>false</Privileged>
+  <Support>https://github.com/soloblog/soloblog/discussions</Support>
+  <Project>https://soloblog.zrplus.net</Project>
+  <ReadMe>https://github.com/soloblog/soloblog#readme</ReadMe>
+  <Overview>A free, open source blog and personal website for one person. Write in a calm editor, choose from 35 colour palettes, and build pages out of sections. Readers can comment, subscribe by email or follow from Mastodon, and members-only posts can be free or paid. Posts are markdown files in one folder, with backups built in.[br][br]First-time setup asks for a setup token: select Soloblog's icon in the Docker tab, then Logs, and copy it from the lines marked [setup].</Overview>
+  <Category>Productivity: Social: Network:Web</Category>
+  <WebUI>http://[IP]:[PORT:8080]/</WebUI>
+  <TemplateURL>https://raw.githubusercontent.com/soloblog/soloblog/master/deploy/platforms/unraid/soloblog.xml</TemplateURL>
+  <Icon>https://raw.githubusercontent.com/soloblog/soloblog/master/docs/brand/soloblog-icon-512.png</Icon>
+  <Config Name="Web port" Target="8080" Default="8080" Mode="tcp" Description="The port the site opens on" Type="Port" Display="always" Required="true" Mask="false">8080</Config>
+  <Config Name="Data" Target="/data" Default="/mnt/user/appdata/soloblog" Mode="rw" Description="Posts, pictures, the database and settings - everything the site keeps" Type="Path" Display="always" Required="true" Mask="false">/mnt/user/appdata/soloblog</Config>
+  <Config Name="Site address" Target="BASE_URL" Default="" Mode="" Description="Optional. Your site's public address, such as https://blog.example.com. Left empty, it's the address you open setup at, and Settings can change it." Type="Variable" Display="always" Required="false" Mask="false"></Config>
+  <Config Name="Platform" Target="HOSTED_ON" Default="Unraid" Mode="" Description="Lets first-time setup say where Unraid shows the setup token" Type="Variable" Display="advanced-hide" Required="false" Mask="false">Unraid</Config>
+</Container>

@@ -1,0 +1,27 @@
+# systemd unit for running Soloblog without Docker.
+#   sudo cp soloblog.service /etc/systemd/system/
+#   sudo systemctl daemon-reload && sudo systemctl enable --now soloblog
+# Assumes the code is in /opt/soloblog with a virtualenv in .venv, run by
+# a "soloblog" user, and data in /var/lib/soloblog.
+[Unit]
+Description=Soloblog
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+User=soloblog
+WorkingDirectory=/opt/soloblog
+Environment=ENV=production
+Environment=PORT=8080
+Environment=DATA_DIR=/var/lib/soloblog
+EnvironmentFile=-/etc/soloblog.env
+ExecStart=/opt/soloblog/.venv/bin/python app.py
+Restart=on-failure
+# a clean stop lets a pending cloud backup finish
+TimeoutStopSec=30
+NoNewPrivileges=true
+ProtectSystem=strict
+ReadWritePaths=/var/lib/soloblog
+
+[Install]
+WantedBy=multi-user.target

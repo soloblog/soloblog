@@ -1,0 +1,28 @@
+# Render Blueprint - powers the "Deploy to Render" button in README.md.
+# Builds the Dockerfile, generates SESSION_SECRET and SETUP_TOKEN for you
+# (setup tells the owner to copy the token from Environment), and attaches
+# a 1 GB persistent disk at /data for posts, the database and uploads.
+#
+# Persistent disks need a paid instance type (Starter or above) - on
+# Render's free plan the filesystem is wiped on every deploy/restart,
+# which would lose every post.
+
+services:
+  - type: web
+    name: soloblog
+    runtime: docker
+    plan: starter
+    healthCheckPath: /healthz
+    envVars:
+      - key: SESSION_SECRET
+        generateValue: true
+      - key: SETUP_TOKEN
+        generateValue: true
+      - key: ENV
+        value: production
+      - key: DATA_DIR
+        value: /data
+    disk:
+      name: soloblog-data
+      mountPath: /data
+      sizeGB: 1
