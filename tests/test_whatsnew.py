@@ -19,7 +19,8 @@ CHANGELOG = """# Changelog
 
 ### Added
 
-- **Site health**: one page that says whether anything needs you.
+- **Site health**: one page that says whether anything needs you,
+  as [the guide](docs/guide/run.md) says.
 - **What's new** after an update.
 - A `small` thing - with a dash in it.
 
@@ -96,6 +97,7 @@ def test_release_notes_tool(tmp_path):
     """In a copy with a changelog of its own - the real one's [Unreleased]
     is the next release's summary, with no section for VERSION yet."""
     import os
+    import re
     import shutil
     root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     for rel in ("tools/release_notes.py", "soloblog/config.py", "soloblog/whatsnew.py"):
@@ -106,7 +108,14 @@ def test_release_notes_tool(tmp_path):
     tool = [sys.executable, "tools/release_notes.py"]
     ok = subprocess.run(tool + [f"v{config.VERSION}"], capture_output=True, text=True, cwd=tmp_path)
     assert ok.returncode == 0, ok.stderr
-    assert ok.stdout.strip() == whatsnew.section(CHANGELOG.replace("0.5.0-beta", config.VERSION), config.VERSION)
+    section = whatsnew.section(CHANGELOG.replace("0.5.0-beta", config.VERSION), config.VERSION)
+    # the same words, each paragraph and list item on one line - a GitHub
+    # Release keeps every line break
+    assert [w for w in ok.stdout.split() if "](" not in w] == [w for w in section.split() if "](" not in w]
+    # a link into the repository goes to it from the Release page
+    assert not re.search(r"\]\((?!https?:|#|mailto:)", ok.stdout), ok.stdout
+    assert not any(line.startswith(" ") and not line.lstrip().startswith(("-", "*")) for line in
+                   ok.stdout.splitlines()), ok.stdout
     # a tag VERSION wasn't bumped to: no release
     bad = subprocess.run(tool + ["v9.9.9"], capture_output=True, text=True, cwd=tmp_path)
     assert bad.returncode != 0 and "VERSION" in bad.stderr
