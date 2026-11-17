@@ -7,6 +7,8 @@
 static/css/output.css
 
 data/
+# the Umbrel package ships an empty data folder of its own
+!/deploy/platforms/umbrel/soloblog/data/
 # a stray, unused 0-byte file at the repo root from early development -
 # config.py's real DB_PATH has always been data/blog.db (already
 # ignored above); this one was never read by the app
