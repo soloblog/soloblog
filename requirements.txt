@@ -1,6 +1,6 @@
 # pinned to the versions Soloblog is developed and tested against -
 # bump deliberately, not by accident on the next docker build
-python-fasthtml==0.14.13
+python-fasthtml==0.14.23
 pyyaml==6.0.3
 markdown==3.11
 nh3==0.3.7
