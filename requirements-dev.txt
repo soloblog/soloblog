@@ -1,18 +1,18 @@
 # what the test suite needs on top of the app itself - see tests/
 -r requirements.txt
-pytest==9.1.1
+pytest==9.2.0
 httpx==0.28.1
 # a local S3 API for tests/test_storage.py
-moto[s3,server]==5.2.3
+moto[s3,server]==5.2.5
 # drives a browser for tools/phone_check.py and tools/screenshots.py - its
 # browsers come from `python -m playwright install chromium firefox`
-playwright==1.63.0
+playwright==1.65.2
 # the launch checks: which code no test runs, and known holes in the
 # packages above (`python -m pip_audit -r requirements.txt`)
-coverage==7.16.2
+coverage==7.17.3
 pip-audit==2.10.1
 # catches mistakes - likely bugs, security smells, needless complexity (ruff.toml)
-ruff==0.17.0
+ruff==0.17.5
 
 # what those depend on, pinned too: the image, CI and a developer's
 # machine all run the same versions. Dependabot's monthly pull request
@@ -20,34 +20,34 @@ ruff==0.17.0
 annotated-types==0.8.0
 antlr4-python3-runtime==4.13.2
 attrs==26.1.0
-aws-xray-sdk==2.15.0
+aws-xray-sdk==2.16.0
 blinker==1.9.0
 boolean.py==5.0
-boto3==1.43.119
-botocore==1.43.119
+boto3==1.44.3
+botocore==1.44.3
 CacheControl==0.14.4
-cfn-lint==1.58.0
+cfn-lint==1.60.1
 cyclonedx-python-lib==11.12.0
 defusedxml==0.7.1
 docker==7.2.0
-filelock==4.2.4
+filelock==4.2.10
 Flask==3.1.3
 flask-cors==6.0.5
-graphql-core==3.3.1
+graphql-core==3.3.2
 greenlet==3.5.6
 httpcore==1.0.9
 iniconfig==2.3.1
 jmespath==1.1.0
-joserfc==1.7.7
-jsonpatch==1.38
-jsonpath-ng==1.14.0
-jsonpointer==3.6
+joserfc==1.8.0
+jsonpatch==1.47
+jsonpath-ng==1.16.0
+jsonpointer==3.12
 jsonschema==4.26.0
 jsonschema-path==0.5.0
 jsonschema-specifications==2025.9.1
 lazy-object-proxy==1.13.0
 license-expression==30.4.4
-mpmath==1.3.0
+mpmath==1.4.1
 msgpack==1.2.4
 networkx==3.7
 openapi-schema-validator==0.9.0
@@ -57,17 +57,17 @@ packaging==26.3
 pathable==0.6.0
 pip_api==0.0.35
 pip-requirements-parser==32.0.1
-platformdirs==4.13.5
+platformdirs==4.14.5
 pluggy==1.7.0
 py-partiql-parser==0.6.3
-py-serializable==2.1.0
-pydantic==2.14.1
-pydantic_core==2.50.1
-pydantic-settings==2.16.1
-pyee==13.0.1
+py-serializable==2.2.0
+pydantic==2.14.3
+pydantic_core==2.50.4
+pydantic-settings==2.16.3
+pyee==16.0.2
 pyparsing==3.3.3
 referencing==0.37.0
-regex==2026.9.29
+regex==2026.11.9
 responses==0.26.3
 rfc3339-validator==0.1.4
 rpds-py==2026.9.1
@@ -75,7 +75,7 @@ s3transfer==0.19.3
 setuptools==84.2.1
 sortedcontainers==2.4.0
 sympy==1.14.0
-typing-inspection==0.4.4
+typing-inspection==0.4.5
 Werkzeug==3.1.9
-wrapt==2.5.1
+wrapt==2.5.2
 xmltodict==1.0.4
