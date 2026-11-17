@@ -28,7 +28,7 @@ Security comes before features ([CLAUDE.md](../CLAUDE.md)).
 |---|---|---|
 | [OWASP Top 10](https://owasp.org/Top10/) | Injection, broken access, weak sessions and the rest, kept out | Tests for each abuse case |
 | Robustness | Nothing a bot or attacker sends - an empty or folder-like name, a number too big for the database, odd characters - gets a server error | `tools/fuzz_routes.py`, run by the tests: every route, as a visitor and as the admin |
-| [OWASP ASVS](https://owasp.org/www-project-application-security-verification-standard/) level 1 | The checklist to grow into - *aimed for*: a full pass before the first public release | To do |
+| [OWASP ASVS](https://owasp.org/www-project-application-security-verification-standard/) level 1 | The checklist to grow into - *aimed for*: a full pass in the first release after 1.0.0-beta | To do |
 | [OWASP Cheat Sheets](https://cheatsheetseries.owasp.org) | Passwords (Argon2), sessions, file uploads, outbound requests (`netguard`, public addresses only), HTML sanitising (nh3) | Tests |
 | [Content-Security-Policy](https://developer.mozilla.org/docs/Web/HTTP/CSP) | No inline handlers; a nonce on every script | `csp.py`; tests |
 | Supply chain | Pinned dependencies; an advisory jumps the queue | `pip-audit` in CI, Dependabot monthly |
@@ -81,7 +81,7 @@ NN/g) and follow it within daisyUI's own components.
 
 ## Still to do
 
-1. A full ASVS level 1 pass, before 1.0.0-beta.
+1. A full ASVS level 1 pass, for the first release after 1.0.0-beta.
 2. `tools/phone_check.py --axe` required for every change that's seen, not only run now and then.
 3. A Lighthouse run on the demo before each release, against Core Web Vitals.
-4. OpenSSF Scorecard once the repository is public.
+4. OpenSSF Scorecard, now the repository is public.
