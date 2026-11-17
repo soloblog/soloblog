@@ -37,9 +37,9 @@ Jinja2==3.1.6
 markdown-it-py==4.2.0
 MarkupSafe==3.0.4
 mdurl==0.1.2
-oauthlib==4.0.0
+oauthlib==4.0.1
 prompt_toolkit==3.0.53
-pyasn1==0.6.4
+pyasn1==0.6.5
 pyasn1_modules==0.4.2
 pycparser==3.12
 Pygments==2.21.0
@@ -52,7 +52,7 @@ requests==2.34.2
 rich==15.0.0
 shellingham==1.5.4
 six==1.17.0
-soupsieve==3.0.4
+soupsieve==4.0.0
 starlette==1.10.0
 tomli==2.5.0
 tomli_w==1.2.0
