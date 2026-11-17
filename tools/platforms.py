@@ -75,9 +75,17 @@ def set_version(version: str) -> list:
 
 def digest(version: str) -> str:
     docker = shutil.which("docker") or sys.exit("docker isn't installed - it reads the image's digest")
-    out = subprocess.run([docker, "buildx", "imagetools", "inspect", f"{IMAGE}:{version}",
-                          "--format", "{{json .Manifest}}"], capture_output=True, text=True, check=True).stdout
-    manifest = json.loads(out)
+    ref = f"{IMAGE}:{version}"
+    run = lambda *args: subprocess.run([docker, *args], capture_output=True, text=True, check=True).stdout  # noqa: E731
+    try:
+        manifest = json.loads(run("buildx", "imagetools", "inspect", ref, "--format", "{{json .Manifest}}"))
+    except subprocess.CalledProcessError:
+        # no buildx plugin: the index from the registry, and its digest
+        # from a pull (an image's RepoDigests name the index, not one arch)
+        manifest = json.loads(run("manifest", "inspect", ref))
+        run("pull", "-q", ref)
+        digests = run("image", "inspect", ref, "--format", "{{json .RepoDigests}}")
+        manifest["digest"] = next(d.split("@")[1] for d in json.loads(digests) if d.startswith(IMAGE + "@"))
     platforms = {f"{m['platform']['os']}/{m['platform']['architecture']}" for m in manifest.get("manifests", [])
                  if m.get("platform")}
     if not {"linux/amd64", "linux/arm64"} <= platforms:
