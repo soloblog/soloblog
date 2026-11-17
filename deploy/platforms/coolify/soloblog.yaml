@@ -1,0 +1,20 @@
+# documentation: https://github.com/soloblog/soloblog/blob/master/docs/DEPLOYMENT.md
+# slogan: A blog and personal website for one person, that you run yourself.
+# category: cms
+# tags: blog, cms, website, markdown, newsletter, fediverse, activitypub
+# logo: svgs/soloblog.svg
+# port: 8080
+
+services:
+  soloblog:
+    image: ghcr.io/soloblog/soloblog:1.0.0-beta
+    environment:
+      - SERVICE_URL_SOLOBLOG_8080
+      - HOSTED_ON=Coolify
+    volumes:
+      - soloblog-data:/data
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8080/healthz', timeout=4)"]
+      interval: 10s
+      timeout: 5s
+      retries: 10

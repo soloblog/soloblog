@@ -1,0 +1,225 @@
+name: Docker
+
+on:
+  # a release, a pull request, or by hand (Actions > Run workflow) - not
+  # every push, while the repository is private and its Actions minutes
+  # are counted: the same tests run locally before each commit
+  # (docs/MAINTAINING.md > Releases)
+  push:
+    tags: ["v*"]
+  pull_request:
+  workflow_dispatch:
+
+env:
+  IMAGE: ghcr.io/${{ github.repository }}
+
+jobs:
+  # the test suite - features, not just "it boots" (that's smoke-test)
+  # on the image's Python and on the oldest one a from-source install
+  # may use (docs/DEPLOYMENT.md > Without Docker)
+  tests:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ["3.12", "3.14"]
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-python@v7
+        with:
+          python-version: ${{ matrix.python }}
+          cache: pip
+          cache-dependency-path: requirements-dev.txt
+
+      - run: pip install -r requirements-dev.txt
+
+      # the stylesheet, as the Dockerfile builds it - so the contrast
+      # test checks all 35 themes here instead of skipping
+      - name: Build CSS
+        run: PYTHONUTF8=1 daisyft init --defaults --binaries --force && PYTHONUTF8=1 daisyft build
+
+      - name: Lint
+        run: python -m ruff check .
+
+      # the share of the app the tests run: a number to watch, never a gate
+      - name: Tests
+        run: |
+          python -m coverage run -m pytest -q
+          python -m coverage report --format=total | sed 's/^/Test coverage: /; s/$/%/'
+
+      # what people do, in a real browser against a real server (journeys/)
+      - name: Journeys
+        run: |
+          python -m playwright install --with-deps chromium firefox
+          python -m pytest -q journeys
+
+  # build the image and actually boot it - catches a broken Dockerfile,
+  # a failed CSS build, or an app that crashes on startup, not just a
+  # build that "succeeds"
+  smoke-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: docker/setup-buildx-action@v4
+
+      - name: Build image
+        uses: docker/build-push-action@v7
+        with:
+          context: .
+          load: true
+          tags: soloblog:test
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Boot and check
+        run: |
+          docker run -d --name blog -p 8080:8080 \
+            -e SESSION_SECRET=ci-only-not-a-real-secret soloblog:test
+          for i in $(seq 1 30); do
+            curl -fsS http://localhost:8080/healthz && break
+            sleep 2
+          done
+          echo
+          curl -fsS http://localhost:8080/healthz | grep '"status":"ok"'
+          curl -fsS http://localhost:8080/ > /dev/null
+          # the compiled stylesheet must exist and be non-trivial
+          test "$(curl -fsS http://localhost:8080/static/css/output.css | wc -c)" -gt 10000
+          docker logs blog | grep "\[setup\]"
+
+      - name: Container logs
+        if: failure()
+        run: docker logs blog || true
+
+  publish:
+    needs: [tests, smoke-test]
+    # the weekly check only tests; images come from pushes and tags
+    if: github.event_name != 'pull_request' && github.event_name != 'schedule'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v7
+
+      # a tag whose VERSION wasn't bumped, or with nothing in the
+      # changelog, stops here - before :latest moves to it
+      - name: Check the tag matches VERSION and the changelog
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: python3 tools/release_notes.py "$GITHUB_REF_NAME" > /dev/null
+
+      - uses: docker/setup-qemu-action@v4
+
+      - uses: docker/setup-buildx-action@v4
+
+      - uses: docker/login-action@v4
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      # :latest is the newest release, and only that - it's what people's
+      # servers pull, so unreleased work must never reach it. A v1.2.3 tag
+      # -> :latest, :1.2.3 and :1.2; a pre-release (v0.4.0-beta) -> :latest
+      # and :0.4.0-beta. The next version's branch -> :edge, to try it.
+      # Every build also gets an immutable :sha-<commit> tag.
+      # The action adds source, url, version, revision and created by
+      # itself, but it would take the title, description and licence from
+      # the repository's settings and replace the Dockerfile's - so they're
+      # named here, the same as the Dockerfile's (a test checks). The same
+      # again as annotations on the index, which is where GitHub's package
+      # page reads a multi-platform image's description from.
+      - id: meta
+        uses: docker/metadata-action@v6
+        env:
+          DOCKER_METADATA_ANNOTATIONS_LEVELS: manifest,index
+        with:
+          images: ${{ env.IMAGE }}
+          flavor: latest=false
+          labels: |
+            org.opencontainers.image.title=Soloblog
+            org.opencontainers.image.description=A blog and personal website for one person, that you run yourself
+            org.opencontainers.image.licenses=MIT
+            org.opencontainers.image.vendor=ZRPlus Studio
+            org.opencontainers.image.documentation=https://github.com/soloblog/soloblog/blob/master/docs/DEPLOYMENT.md
+          annotations: |
+            org.opencontainers.image.title=Soloblog
+            org.opencontainers.image.description=A blog and personal website for one person, that you run yourself
+            org.opencontainers.image.licenses=MIT
+            org.opencontainers.image.vendor=ZRPlus Studio
+            org.opencontainers.image.documentation=https://github.com/soloblog/soloblog/blob/master/docs/DEPLOYMENT.md
+          tags: |
+            type=raw,value=latest,enable=${{ startsWith(github.ref, 'refs/tags/v') }}
+            type=raw,value=edge,enable=${{ startsWith(github.ref, 'refs/heads/') && github.ref != 'refs/heads/master' && github.ref != 'refs/heads/main' }}
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=sha,format=short
+
+      - uses: docker/build-push-action@v7
+        with:
+          context: .
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          annotations: ${{ steps.meta.outputs.annotations }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+  # a v* tag's GitHub Release, its text that version's changelog section
+  # (tools/release_notes.py, which also stops it if VERSION wasn't
+  # bumped). After publish, so the admin's update check - it reads the
+  # latest release - never offers a version whose image isn't out yet.
+  # Not marked pre-release even for a -beta: GitHub's "latest release",
+  # which that check asks for, leaves pre-releases out.
+  release:
+    needs: publish
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Release notes from the changelog
+        run: python3 tools/release_notes.py "$GITHUB_REF_NAME" > notes.md
+
+      - name: Create or update the release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          title="Soloblog ${GITHUB_REF_NAME#v}"
+          if gh release view "$GITHUB_REF_NAME" > /dev/null 2>&1; then
+            gh release edit "$GITHUB_REF_NAME" --title "$title" --notes-file notes.md
+          else
+            gh release create "$GITHUB_REF_NAME" --verify-tag --title "$title" --notes-file notes.md
+          fi
+
+  # a release (a v* tag) goes straight to the public demo on Fly.io
+  # (deploy/fly-demo.toml), built from the tag's own source by Fly's
+  # builder - so it doesn't need the published image to be public.
+  # Skipped until the FLY_API_TOKEN secret is set (docs/MAINTAINING.md).
+  demo:
+    needs: publish
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    concurrency: demo
+    # listed under the repository's Deployments, linking to the demo
+    environment:
+      name: demo
+      url: https://demo.soloblog.zrplus.net
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: superfly/flyctl-actions/setup-flyctl@v1
+
+      - name: Deploy the release to the demo
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+        run: |
+          if [ -z "$FLY_API_TOKEN" ]; then
+            echo "No FLY_API_TOKEN secret - the demo isn't set up, so nothing to deploy"
+            exit 0
+          fi
+          flyctl deploy . --config deploy/fly-demo.toml --remote-only --ha=false

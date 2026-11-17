@@ -1,0 +1,31 @@
+# Soloblog on a home server or NAS, reachable at your domain through a
+# Cloudflare Tunnel: no open ports, no router setup, HTTPS by Cloudflare.
+#
+# 1. Cloudflare dashboard > Zero Trust > Networks > Tunnels > Create a
+#    tunnel (cloudflared). Copy its token into .env as TUNNEL_TOKEN.
+# 2. In the tunnel's Public Hostname tab, add blog.example.com pointing
+#    to http://soloblog:8080
+# 3. docker compose -f cloudflare-tunnel-compose.yml up -d
+services:
+  soloblog:
+    image: ghcr.io/soloblog/soloblog:latest
+    env_file: .env
+    environment:
+      ENV: production
+      DATA_DIR: /data
+      BASE_URL: https://blog.example.com
+      # Cloudflare says who the visitor is - rate limits use it
+      CLIENT_IP_HEADER: CF-Connecting-IP
+    volumes: [soloblog-data:/data]
+    restart: unless-stopped
+
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    command: tunnel --no-autoupdate run
+    environment:
+      TUNNEL_TOKEN: ${TUNNEL_TOKEN}
+    restart: unless-stopped
+    depends_on: [soloblog]
+
+volumes:
+  soloblog-data:

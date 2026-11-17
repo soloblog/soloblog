@@ -1,0 +1,40 @@
+# Soloblog behind Traefik, with a Let's Encrypt certificate.
+#   docker compose -f traefik-compose.yml up -d
+# Set your domain and email below.
+services:
+  traefik:
+    image: traefik:v3.1
+    command:
+      - --providers.docker=true
+      - --providers.docker.exposedbydefault=false
+      - --entrypoints.web.address=:80
+      - --entrypoints.web.http.redirections.entrypoint.to=websecure
+      - --entrypoints.websecure.address=:443
+      - --certificatesresolvers.le.acme.tlschallenge=true
+      - --certificatesresolvers.le.acme.email=you@example.com
+      - --certificatesresolvers.le.acme.storage=/letsencrypt/acme.json
+    ports: ["80:80", "443:443"]
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - letsencrypt:/letsencrypt
+    restart: unless-stopped
+
+  soloblog:
+    image: ghcr.io/soloblog/soloblog:latest
+    env_file: .env
+    environment:
+      ENV: production
+      DATA_DIR: /data
+      BASE_URL: https://blog.example.com
+    volumes: [soloblog-data:/data]
+    restart: unless-stopped
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.soloblog.rule=Host(`blog.example.com`)
+      - traefik.http.routers.soloblog.entrypoints=websecure
+      - traefik.http.routers.soloblog.tls.certresolver=le
+      - traefik.http.services.soloblog.loadbalancer.server.port=8080
+
+volumes:
+  letsencrypt:
+  soloblog-data:

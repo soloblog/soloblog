@@ -1,0 +1,18 @@
+[project]
+style = "daisy"
+theme = "dark"
+app_path = "app.py"
+
+[server]
+host = "localhost"
+port = 5001
+live = true
+
+[paths]
+static = "static"
+css = "static/css"
+js = "static/js"
+
+[binary]
+version = "v2.10.17"
+downloaded_at = "2026-09-01T22:39:41.780170"

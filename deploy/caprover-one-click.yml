@@ -1,0 +1,32 @@
+# CapRover: Apps > One-Click Apps/Databases > (scroll down) >
+# ">> TEMPLATE <<", then paste this whole file. The same file goes to
+# CapRover's one-click app list (deploy/platforms/README.md).
+captainVersion: 4
+services:
+  $$cap_appname:
+    image: ghcr.io/soloblog/soloblog:$$cap_version
+    restart: always
+    volumes:
+      - $$cap_appname-data:/data
+    environment:
+      ENV: production
+      DATA_DIR: /data
+      HOSTED_ON: CapRover
+    caproverExtra:
+      containerHttpPort: "8080"
+caproverOneClickApp:
+  variables:
+    - id: $$cap_version
+      label: Version
+      defaultValue: 1.0.0-beta
+      description: The version to install - see https://github.com/soloblog/soloblog/releases
+  instructions:
+    start: Soloblog - a blog and personal website for one person, that you run yourself.
+    end: >-
+      Done. Turn on HTTPS for the app, then open https://$$cap_appname.$$cap_root_domain/setup.
+      It asks for a setup token: open the app's Deployment tab, then its logs, and copy it from
+      the lines marked [setup].
+  displayName: Soloblog
+  isOfficial: true
+  description: A blog and personal website for one person - markdown posts, 35 colour palettes, comments, a newsletter and the fediverse
+  documentation: https://github.com/soloblog/soloblog/blob/master/docs/DEPLOYMENT.md

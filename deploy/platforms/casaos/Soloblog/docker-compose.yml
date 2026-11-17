@@ -1,0 +1,53 @@
+name: soloblog
+services:
+  soloblog:
+    # starts as root to hand /data to its own user, then runs as that user
+    image: ghcr.io/soloblog/soloblog:1.0.0-beta
+    restart: unless-stopped
+    environment:
+      HOSTED_ON: CasaOS
+    ports:
+      - target: 8080
+        published: "8484"
+        protocol: tcp
+    volumes:
+      - type: bind
+        source: /DATA/AppData/soloblog/data
+        target: /data
+    container_name: soloblog
+x-casaos:
+  id: net.zrplus.soloblog
+  architectures:
+    - amd64
+    - arm64
+  main: soloblog
+  index: /
+  port_map: "8484"
+  scheme: http
+  icon: https://cdn.jsdelivr.net/gh/IceWhaleTech/CasaOS-AppStore@main/Apps/Soloblog/icon.png
+  thumbnail: https://cdn.jsdelivr.net/gh/IceWhaleTech/CasaOS-AppStore@main/Apps/Soloblog/thumbnail.png
+  screenshot_link:
+    - https://cdn.jsdelivr.net/gh/IceWhaleTech/CasaOS-AppStore@main/Apps/Soloblog/screenshot-1.png
+  title:
+    en_US: Soloblog
+  tagline:
+    en_US: A blog and personal website for one person
+  description:
+    en_US: |
+      Soloblog is a free, open source blog and personal website for one person. Write in a calm editor, choose from 35 colour palettes, and build pages out of sections - a homepage, a portfolio, a book's landing page. Readers can comment, subscribe by email or follow from Mastodon, and members-only posts can be free or paid.
+
+      Posts are plain markdown files, everything is kept in one folder, and backups to a zip or an S3-compatible bucket are built in.
+  tips:
+    before_install:
+      en_US: |
+        First-time setup asks for a setup token. It's in Soloblog's logs (the app's settings, then Terminal and Logs) on the lines marked [setup], and in setup-token.txt in /DATA/AppData/soloblog/data.
+  author: ZRPlus Studio
+  developer: ZRPlus Studio
+  category: Social
+  version: "1.0.0-beta"
+  release_notes:
+    en_US: First release
+  website: https://soloblog.zrplus.net
+  repo: https://github.com/soloblog/soloblog
+  support: https://github.com/soloblog/soloblog/discussions
+  docs: https://github.com/soloblog/soloblog/blob/master/docs/guide/README.md

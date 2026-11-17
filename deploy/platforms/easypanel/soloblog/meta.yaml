@@ -1,0 +1,71 @@
+name: Soloblog
+description:
+  Soloblog is a free, open source blog and personal website for one person.
+  Write in a calm editor, choose from 35 colour palettes, and build pages out of
+  sections - a homepage, a portfolio, a book's landing page. Readers can
+  comment, subscribe by email or follow from Mastodon, and members-only posts
+  can be free or paid. Posts are plain markdown files, everything is kept in
+  one folder, and backups are built in.
+instructions:
+  Open the app's domain and follow first-time setup. It asks for a setup
+  token, which is in this service's logs on the lines marked [setup].
+changeLog:
+  - date: 2026-11-17
+    description: First release
+links:
+  - label: Website
+    url: https://soloblog.zrplus.net
+  - label: Documentation
+    url: https://github.com/soloblog/soloblog/blob/master/docs/guide/README.md
+  - label: Github
+    url: https://github.com/soloblog/soloblog
+contributors:
+  - name: ZRPlus Studio
+    url: https://github.com/soloblog
+schema:
+  type: object
+  required:
+    - appServiceName
+    - appServiceImage
+  properties:
+    appServiceName:
+      type: string
+      title: App Service Name
+      default: soloblog
+    appServiceImage:
+      type: string
+      title: App Service Image
+      default: ghcr.io/soloblog/soloblog:1.0.0-beta
+benefits:
+  - title: Yours to keep
+    description:
+      Posts are markdown files in one folder, with backups to a zip or an
+      S3-compatible bucket built in. No database server to look after.
+  - title: Ready from the first minute
+    description:
+      35 colour palettes, templates for common pages and a sample of every kind of
+      section, so a new site looks finished before you change anything.
+  - title: Readers stay in touch
+    description:
+      Comments, an email newsletter, RSS, and ActivityPub so people can
+      follow the blog from Mastodon.
+features:
+  - title: A calm editor
+    description:
+      Write in markdown or with a toolbar, with a live preview, focus mode,
+      scheduled posts and earlier versions to go back to.
+  - title: Pages made of sections
+    description:
+      Heroes, galleries, pricing tables, stories and more - on any page,
+      looking the same everywhere.
+  - title: Members
+    description:
+      Members-only posts, free or paid through Stripe, with sign-in by email.
+  - title: Moving in
+    description:
+      Import from WordPress, Ghost, Medium and Substack, and subscribers
+      from Buttondown, Kit and Mailchimp.
+tags:
+  - Blog
+  - CMS
+  - Website

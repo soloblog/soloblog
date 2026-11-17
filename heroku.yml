@@ -1,0 +1,4 @@
+# Heroku builds the Dockerfile (app.json sets stack: container)
+build:
+  docker:
+    web: Dockerfile

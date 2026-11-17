@@ -1,0 +1,11 @@
+services:
+  soloblog:
+    image: ghcr.io/soloblog/soloblog:1.0.0-beta
+    restart: unless-stopped
+    environment:
+      HOSTED_ON: Dokploy
+    volumes:
+      - soloblog-data:/data
+
+volumes:
+  soloblog-data: {}

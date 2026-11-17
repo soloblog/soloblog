@@ -1,0 +1,23 @@
+version: "3.7"
+
+services:
+  app_proxy:
+    environment:
+      APP_HOST: soloblog_web_1
+      APP_PORT: 8080
+      # a blog is read by the public, and Soloblog has its own login for
+      # its admin; feeds, the fediverse and webmentions can't sign in
+      PROXY_AUTH_ADD: "false"
+
+  web:
+    # starts as root to hand /data to its own user, then runs as that user
+    image: ghcr.io/soloblog/soloblog:1.0.0-beta
+    restart: on-failure
+    stop_grace_period: 1m
+    volumes:
+      - ${APP_DATA_DIR}/data/soloblog:/data
+    environment:
+      HOSTED_ON: umbrelOS
+      # Umbrel shows this as the app's password (deterministicPassword),
+      # so the owner can read the setup token without logs
+      SETUP_TOKEN: ${APP_PASSWORD}

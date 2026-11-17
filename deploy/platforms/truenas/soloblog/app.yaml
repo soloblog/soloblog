@@ -1,0 +1,35 @@
+app_version: 1.0.0-beta
+capabilities: []
+categories:
+- productivity
+changelog_url: https://github.com/soloblog/soloblog/releases
+date_added: '2026-11-17'
+description: A free, open source blog and personal website for one person, that
+  you run yourself. Markdown posts, 35 colour palettes, pages made of sections, comments,
+  a newsletter, members and the fediverse.
+home: https://soloblog.zrplus.net
+host_mounts: []
+icon: https://media.sys.truenas.net/apps/soloblog/icons/icon.png
+keywords:
+- blog
+- cms
+- website
+lib_version: 2.3.19
+lib_version_hash: ''
+maintainers:
+- email: hello.soloblog@zrplus.net
+  name: ZRPlus Studio
+  url: https://soloblog.zrplus.net
+name: soloblog
+run_as_context:
+- description: Container [soloblog] can run as any non-root user and group.
+  gid: 568
+  group_name: Host group is [apps]
+  uid: 568
+  user_name: Host user is [apps]
+screenshots: []
+sources:
+- https://github.com/soloblog/soloblog
+title: Soloblog
+train: community
+version: 1.0.0

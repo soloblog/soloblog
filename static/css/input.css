@@ -1,0 +1,1319 @@
+@import "tailwindcss";
+/* readable text colours per theme - written by tools/theme_contrast.py */
+@import "./contrast.css";
+@plugin "daisyui" {
+  themes: all;
+}
+@plugin "@tailwindcss/typography";
+@source "../../**/*.py";
+/* the scripts (soloblog/js) name classes too */
+@source "../../soloblog/js/*.js";
+/* third-party files - their class names aren't ours to generate */
+@source not "../vendor";
+
+/* The header's icon-menu dropdowns (mobile/theme/admin/pinned-page
+   submenu) use [popover] instead of daisyUI's plain :focus-within
+   dropdown-content - see POPOVER_DROPDOWN_JS (app.py) for why. Three
+   things this overrides, all needed for a JS-positioned popover:
+
+   position: fixed - daisyUI's own base .dropdown-content rule sets
+   position: absolute (real, unconditional, confirmed in the compiled
+   CSS - it's what the old :focus-within mechanism needed, anchored to
+   the .dropdown parent). A [popover] attribute selector is MORE
+   specific than daisyUI's plain class one, so this rule does win the
+   cascade - but only for properties it actually sets, and `position`
+   was missing from the first version of this rule entirely, leaving
+   daisyUI's absolute positioning in effect uncontested. That's a real
+   bug that shipped and was only caught after the maintainer reported dropdowns
+   silently failing to (re)open post-scroll - `absolute` interprets
+   POPOVER_DROPDOWN_JS's viewport-relative top/left as DOCUMENT-relative
+   instead, which happens to look identical to `fixed` at scroll
+   position 0 (the only place this had been tested) and breaks
+   completely at any other scroll position. Lesson: a JS-positioned
+   fixed element needs testing after scrolling, not just at the top of
+   a fresh page load.
+
+   inset: auto / margin: 0 - the popover UA stylesheet's own defaults
+   (`inset: 0; margin: auto;`, so an unpositioned popover centers
+   itself) would otherwise fight or silently no-op the top/left/right
+   POPOVER_DROPDOWN_JS sets on open.
+
+   display: none/flex here is NOT inherited from daisyUI's own
+   .dropdown-content closed-state rule - that rule turned out to be
+   scoped to a .dropdown ancestor (confirmed live: the trigger markup
+   here no longer wraps these in a .dropdown div, since popover needs
+   none of what that class provided), so relying on it left two of the
+   three menus permanently visible, :popover-open or not. Owning both
+   states explicitly here means this no longer depends on what daisyUI
+   happens to require elsewhere. */
+[popover].dropdown-content {
+  position: fixed;
+  inset: auto;
+  margin: 0;
+  display: none;
+}
+[popover].dropdown-content:popover-open {
+  display: flex;
+}
+/* Every popover trigger here (mobile/theme/admin, PinnedNavItem) also
+   carries daisyUI's own .tooltip/data-tip - so the trigger you just
+   clicked is still :hover, still trying to show its own tooltip bubble
+   right as its popover opens on TOP of it (popovers render in the
+   browser's real top layer, unconditionally above regular content - no
+   z-index on a tooltip could ever win that). Confirmed live (the maintainer's
+   own screenshot) - the tooltip bubble rendering half-buried under the
+   now-open panel, not a hunch.
+
+   Scoped to "any popover open anywhere," not just a trigger's own -
+   the maintainer's own follow-up call: two icons sit close enough together
+   (Search/Theme/Admin) that opening one and then moving the mouse
+   toward it can still cross a NEIGHBORING trigger's hover area, and
+   that one's tooltip has the exact same top-layer problem despite
+   being a different element than the one that opened. data-popover-open
+   on <html> (POPOVER_DROPDOWN_JS) is the "is anything open at all" check -
+   not a :has() on the body, which made every change on a page restyle
+   all of it (docs/DEVELOPMENT.md > Removed daisyUI rules); every .tooltip everywhere
+   goes quiet for as long as that's true, not just the one that
+   opened it. !important because daisyUI's own opacity rule (the one
+   this overrides) is itself already a long, specific selector, not a
+   layer-ordering problem. */
+html[data-popover-open] .tooltip:before,
+html[data-popover-open] .tooltip:after {
+  opacity: 0% !important;
+}
+
+/* Plain, hand-written blur - not Tailwind's own `backdrop-blur-md`
+   utility. That utility composes backdrop-filter out of EIGHT chained
+   var() references (blur/brightness/contrast/grayscale/hue-rotate/
+   invert/opacity/saturate/sepia - Tailwind v4's "composable filters"
+   mechanism, each one registered via its own @property so an unused
+   one falls back to empty instead of breaking the whole chain), and
+   this app only ever sets one of the eight. Confirmed via Firefox's
+   own DevTools (a real warning icon directly on the composed
+   backdrop-filter declaration, not on the individual --tw-backdrop-
+   blur variable) that this chain doesn't reliably resolve there -
+   Chromium renders it fine, Firefox doesn't, and the header/footer/
+   every glass dropdown (Nav, SiteFooter, glass_fill() in ui) all
+   depend on this actually working. A flat, single-value
+   backdrop-filter with no var() composition at all sidesteps the
+   whole mechanism - just a plain CSS property every browser that
+   supports backdrop-filter can apply with nothing to resolve. 12px
+   matches daisyUI's own --blur-md token, which is what the old
+   backdrop-blur-md class was resolving to anyway.
+
+   Order matters: the -webkit- line must come first. The minifier (the
+   Docker build runs `daisyft build --minify`) treats the two as one
+   property and keeps only the last - with -webkit- last, Chrome and
+   Firefox lost the blur entirely. With the standard one last it keeps
+   that, and adds the -webkit- copy back for Safari itself.
+
+   saturate() is what makes it read as modern frosted glass rather than
+   grey fog: colours behind the glass stay vivid through the blur. */
+.glass-blur {
+  -webkit-backdrop-filter: blur(var(--glass-blur, 20px)) saturate(180%);
+  backdrop-filter: blur(var(--glass-blur, 20px)) saturate(180%);
+}
+
+/* Frosted glass: one look, the one Apple's and Microsoft's systems made
+   familiar - a 20px blur with the colours behind kept vivid (saturate,
+   above), over the theme's own base colour (base-100, or base-200 for
+   drawers - glass_fill in ui) at 72%. The colour and the borders
+   always come from the theme. */
+:root { --glass-blur: 20px; --glass-opacity: 72%; }
+.glass-fill {
+  background-color: color-mix(in oklab, var(--glass-base, var(--color-base-100)) var(--glass-opacity, 70%), transparent);
+}
+/* Behind a dialog, a drawer or the image viewer, the page blurs too when
+   it's on - the dimming stays daisyUI's own. The blur sits on the layer
+   that fades in (the dialog, the whole drawer), never inside it: a
+   browser can't blur inside something still fading, so it snapped on
+   at the end. */
+html[data-glass] .drawer-side,
+html[data-glass] .drawer-backdrop,
+html[data-glass] :is(.modal[open], .modal-open, .modal-toggle:checked + .modal) {
+  /* a light blur - the page stays recognisable behind, just quieter */
+  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(4px);
+}
+/* A dialog's blur grows and fades with its dimming - the same 0.3s,
+   daisyUI's own curve. Left alone it snapped on at the start and stayed
+   at full strength until the dialog went, then dropped off in one frame.
+   A drawer fades as a whole (its opacity) - over the same 0.3s as its
+   panel slides, not starting 0.1s late. */
+html[data-glass] .modal { -webkit-backdrop-filter: blur(0); backdrop-filter: blur(0); }
+@media (prefers-reduced-motion: no-preference) {
+  html[data-glass][data-animate] .modal {
+    transition: overlay 0.3s allow-discrete, visibility 0.3s allow-discrete, background-color 0.3s ease-out,
+                opacity 0.1s ease-out, backdrop-filter 0.3s ease-out, -webkit-backdrop-filter 0.3s ease-out;
+  }
+  html[data-glass][data-animate] :is(.modal[open], .modal-open, .modal-toggle:checked + .modal) {
+    transition: visibility 0s allow-discrete, background-color 0.3s ease-out, opacity 0.1s ease-out,
+                backdrop-filter 0.3s ease-out, -webkit-backdrop-filter 0.3s ease-out;
+  }
+  @starting-style {
+    html[data-glass][data-animate] .modal[open] { -webkit-backdrop-filter: blur(0); backdrop-filter: blur(0); }
+  }
+  html[data-animate] .drawer-side {
+    transition: opacity 0.3s ease-out allow-discrete, visibility 0.3s ease-out allow-discrete;
+  }
+}
+/* the editor's and Media's drawers (DRAWER_BACKDROP, ui) fade their
+   backdrop in and out with the panel's slide, like the admin sidebar's */
+@media (prefers-reduced-motion: no-preference) {
+  html[data-animate] .drawer-backdrop {
+    transition: opacity 0.3s ease-out, display 0.3s allow-discrete;
+  }
+  html[data-animate] .drawer-backdrop.hidden { opacity: 0; }
+  @starting-style {
+    html[data-animate] .drawer-backdrop:not(.hidden) { opacity: 0; }
+  }
+}
+
+/* Menus and drawers are for reading: frosted, but 85% solid - over a
+   photo, less turned them a muddy grey. A dialog is solid (below). */
+.glass-fill:is([popover], .modal-box, .menu, .dropdown-content, .card, aside, [data-row-menu]) {
+  background-color: color-mix(in oklab, var(--glass-base, var(--color-base-100)) max(var(--glass-opacity, 70%), 85%),
+                              transparent);
+}
+/* the page behind a dialog is already blurred and dimmed - frosting on
+   top of that only greyed the dialog */
+.glass-fill.modal-box { background-color: var(--glass-base, var(--color-base-100)); }
+
+/* ui.Tabs: a tab keeps its whole name; what doesn't fit goes under More */
+[data-fit-tabs] > .tab { flex-shrink: 0; white-space: nowrap; }
+
+/* A row's ⋯ menu is only a menu on a phone; from sm up it's the row's
+   own buttons, with nothing behind them - and no will-change either,
+   which made each row its own layer and put a Move menu under the rows
+   below it */
+[data-row-menu]:not(:popover-open) { background-color: transparent; backdrop-filter: none; will-change: auto; }
+/* Menus drawn by the browser or a library, which glass_fill's classes
+   can't reach - frosted the same way when it's on (html[data-glass]):
+   a select's list (daisyUI's customisable select, Chrome and Edge; other
+   browsers draw their own), the editor's Heading and More menus, and its
+   toolbar, which the text scrolls under like a fixed header */
+html[data-glass] .EasyMDEContainer .easymde-dropdown-content,
+html[data-glass] .EasyMDEContainer .editor-toolbar {
+  background-color: color-mix(in oklab, var(--color-base-100) max(var(--glass-opacity, 70%), 85%), transparent);
+  -webkit-backdrop-filter: blur(var(--glass-blur, 20px)) saturate(180%);
+  backdrop-filter: blur(var(--glass-blur, 20px)) saturate(180%);
+}
+/* a rule of its own: a browser that doesn't know ::picker (Firefox)
+   throws away the whole rule it's in - it took the two above with it */
+html[data-glass] :is(.select, .select select)::picker(select) {
+  background-color: color-mix(in oklab, var(--color-base-100) max(var(--glass-opacity, 70%), 85%), transparent);
+  -webkit-backdrop-filter: blur(var(--glass-blur, 20px)) saturate(180%);
+  backdrop-filter: blur(var(--glass-blur, 20px)) saturate(180%);
+}
+
+/* Tailwind Typography's prose classes ship with their own fixed gray
+   palette by default - on a dark daisyUI theme that reads as barely-
+   readable dark-gray-on-dark-gray. Point its CSS variables at daisyUI's
+   own theme colors instead, so post content matches whatever theme is
+   active without needing prose-invert or a light/dark lookup table. */
+.prose {
+  --tw-prose-body: var(--color-base-content);
+  --tw-prose-headings: var(--color-base-content);
+  --tw-prose-lead: var(--color-base-content);
+  --tw-prose-links: var(--tx-primary);
+  --tw-prose-bold: var(--color-base-content);
+  --tw-prose-counters: color-mix(in oklch, var(--color-base-content) 60%, transparent);
+  --tw-prose-bullets: color-mix(in oklch, var(--color-base-content) 40%, transparent);
+  --tw-prose-hr: color-mix(in oklch, var(--color-base-content) 20%, transparent);
+  --tw-prose-quotes: var(--color-base-content);
+  --tw-prose-quote-borders: color-mix(in oklch, var(--color-base-content) 20%, transparent);
+  --tw-prose-captions: color-mix(in oklch, var(--color-base-content) 60%, transparent);
+  --tw-prose-code: var(--color-base-content);
+  --tw-prose-pre-code: var(--color-base-content);
+  --tw-prose-pre-bg: var(--color-base-200);
+  --tw-prose-th-borders: color-mix(in oklch, var(--color-base-content) 30%, transparent);
+  --tw-prose-td-borders: color-mix(in oklch, var(--color-base-content) 20%, transparent);
+}
+.prose pre { border: 1px solid var(--color-base-300); position: relative; }
+/* [custom-css: tooltip-delay] a tooltip waits a moment under the mouse
+   before it shows, so passing over a row of icons doesn't flash every
+   name (the usual 300-500ms); it still shows at once for the keyboard,
+   and goes at once. Listed in docs/DEVELOPMENT.md > Custom CSS. */
+@media (hover: hover) {
+  .tooltip:hover:not(:focus-visible) > .tooltip-content,
+  .tooltip[data-tip]:hover:not(:focus-visible)::before,
+  .tooltip:hover:not(:focus-visible)::after { transition-delay: 400ms; }
+}
+/* [custom-css: tooltip-on-top] daisyUI's tooltip bubble sits one layer up
+   (z-index 1), so a sticky bar, a card, a join's focused button or the
+   editor beside it covered it. The control being pointed at, and its
+   bubble, go above the page - an open menu (999) and dialogs still win.
+   Listed in docs/DEVELOPMENT.md > Custom CSS. */
+.tooltip:is(:hover, :focus-visible, :has(:focus-visible)) { z-index: 100; }
+.tooltip > .tooltip-content, .tooltip[data-tip]::before, .tooltip::after { z-index: 100; }
+/* a bar that keeps its own layer (the editor's toolbar, a sticky bar) holds its
+   bubbles under the sidebar beside it - lifted while one shows */
+.editor-toolbar:has(.tooltip:is(:hover, :focus-visible)),
+.sticky:has(.tooltip:is(:hover, :focus-visible)) { z-index: 100; }
+.copy-btn { position: absolute; top: 0.5rem; right: 0.5rem; }
+
+/* Tailwind's base reset strips the default appearance off every
+   <button> and zeroes out margins - EasyMDE's toolbar buttons rely on
+   both, so without this the toolbar renders as a cramped row of
+   unstyled icons that wrap unpredictably. Rather than hope the two
+   stylesheets cooperate, the toolbar gets its own complete, explicit
+   styling so it can't be knocked over by either side changing later. */
+.EasyMDEContainer .editor-toolbar {
+  display: flex; flex-wrap: nowrap; align-items: center; gap: 2px;
+  padding: 0.5rem; border: 1px solid var(--color-base-300);
+  border-radius: 0.5rem 0.5rem 0 0; opacity: 1 !important;
+}
+/* the line under the toolbar is its own, so it's still there once the
+   toolbar sticks and the text scrolls under it. With no toolbar over it
+   (a phone, Minimal) the box keeps its own top line. */
+.EasyMDEContainer .CodeMirror { border-top: none !important; }
+@media (width < 40rem) {
+  .EasyMDEContainer .CodeMirror:not(.CodeMirror-fullscreen) { border-top: 1px solid var(--color-base-300) !important; }
+}
+#post-form[data-editor-toolbar="none"] .editor-toolbar { display: none !important; }
+#post-form[data-editor-toolbar="none"] .CodeMirror:not(.CodeMirror-fullscreen) {
+  border-top: 1px solid var(--color-base-300) !important;
+}
+/* The bar over the text (PostForm): Write / Preview / Focus mode, the save
+   dot and the post's actions. It sticks right under the header
+   (--editor-sticky, the header's measured height), the toolbar right
+   under it, and once stuck takes the page's own background, so the text
+   scrolls out of sight beneath (markStuck, routes/editor.py). */
+.editor-bar { position: sticky; top: var(--editor-sticky, 0px); z-index: 11; min-height: 2.75rem; }
+.editor-bar[data-stuck] { background: var(--color-base-200); }
+.editor-bar[data-stuck][data-lone] { box-shadow: 0 1px 0 var(--color-base-300); }
+.EasyMDEContainer .editor-toolbar {
+  position: sticky; top: calc(var(--editor-sticky, 0px) + var(--editor-bar-h, 0px)); z-index: 10;
+  background: var(--color-base-100);
+}
+.EasyMDEContainer .editor-toolbar[data-stuck] { border-top-left-radius: 0; border-top-right-radius: 0; }
+/* the save state as a dot (daisyUI's status); its words are the dot's
+   tooltip, and show beside it only when something went wrong or there's
+   an Undo to press - Tailwind's sr-only can't be made conditional on the
+   message the server swaps in */
+.editor-status #save-status:not(.text-error):not(:has(button)) {
+  position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap;
+}
+/* Write / Preview / Focus; Side by side only in Focus, where
+   there's room for it */
+.editor-bar .tab[data-mode="side"], .editor-focusbar .tab[data-mode="side"] { display: none; }
+@media (width >= 64rem) {
+  html[data-focus-mode] :is(.editor-bar, .editor-focusbar) .tab[data-mode="side"] { display: inline-flex; }
+}
+/* a phone: the tabs closer together, to leave room beside the dot, ⋯ and Save */
+@media (width < 40rem) {
+  .editor-bar .tab { padding-inline: 0.5rem; }
+}
+/* ⋯ at the toolbar's end opens leftwards */
+.EasyMDEContainer .editor-toolbar .more .easymde-dropdown-content { left: auto; right: 0; }
+
+/* Focus mode (routes/editor.py): its bar across the top, the bar over
+   the text under it (or joined to it - the data-focus-one-bar class), the toolbar under
+   that - all three lying over the top of the text, which runs the full
+   height of the screen, so they can slide away while you type
+   (focus-quiet) and the text never moves */
+.EasyMDEContainer .editor-focusbar { display: none; }
+html[data-focus-mode] .EasyMDEContainer > .editor-focusbar {
+  display: flex; align-items: center; gap: 0.5rem; position: fixed; top: 0; left: 0; right: 0; z-index: 38;
+  height: 2.75rem; padding: 0 0.5rem; background: var(--color-base-100); border-bottom: 1px solid var(--color-base-300);
+}
+.EasyMDEContainer .editor-focus-title { flex: 1; min-width: 0; font-weight: 600; }
+.EasyMDEContainer .editor-focus-words { font-size: 0.75rem; color: var(--tx-muted-60); white-space: nowrap; }
+/* under it, the bar over the text, then the text - the toolbar over its
+   top, the text starting as far down as the toolbar is tall (0 when it's
+   hidden: a phone, Minimal), so its first line is never under it */
+html[data-focus-mode] .editor-bar {
+  position: fixed; top: 2.75rem; left: 0; right: 0; z-index: 37; padding: 0 0.5rem; margin: 0;
+  background: var(--color-base-100); border-bottom: 1px solid var(--color-base-300); box-shadow: none;
+}
+.EasyMDEContainer .editor-toolbar.fullscreen { top: calc(2.75rem + var(--editor-bar-h, 2.75rem)) !important; }
+.EasyMDEContainer .CodeMirror-fullscreen,
+html[data-focus-mode] .EasyMDEContainer .editor-preview-side { top: 0 !important; }
+/* [custom-css: focus-toolbar-slide] the room the bars and the toolbar lie
+   over, at the top of the text (and of side by side's preview) */
+.EasyMDEContainer .CodeMirror-fullscreen .CodeMirror-lines {
+  padding-top: calc(2.75rem + var(--editor-bar-h, 2.75rem) + var(--editor-toolbar-h, 50px) + 0.5rem);
+}
+html[data-focus-mode] .EasyMDEContainer :is(.editor-preview-side, .CodeMirror-fullscreen .editor-preview) {
+  padding-top: calc(2.75rem + var(--editor-bar-h, 2.75rem) + var(--editor-toolbar-h, 50px) + 1rem) !important;
+}
+/* On a phone (routes/editor.py): a bar above the keyboard instead of
+   the swiping toolbar, its menus as sheets just above it, and Write /
+   Preview tabs over the text. In focus mode, its bar and the page's
+   buttons are all that's above the text. */
+.editor-phonebar { display: none; }
+/* while writing on a phone the bar is where back to top was */
+html[data-writing] #scroll-top-btn { display: none; }
+@media (width < 40rem) {
+  .EasyMDEContainer .editor-toolbar { display: none !important; }
+  .editor-phonebar:not([hidden]) {
+    display: flex; position: fixed; left: 0; right: 0; bottom: 0; z-index: 45; padding: 0 0.25rem;
+    background: var(--color-base-100); border-top: 1px solid var(--color-base-300);
+    /* a bar of sections and the Go to button is more than 320px holds at a
+       finger's width: it swipes along */
+    overflow-x: auto; overscroll-behavior-x: contain; scrollbar-width: none;
+  }
+  .editor-phonebar button {
+    flex: 1; min-width: 2.75rem; height: 2.75rem; display: inline-flex; align-items: center; justify-content: center;
+    border-radius: var(--radius-field); color: color-mix(in oklch, var(--color-base-content) 80%, transparent);
+  }
+  .editor-phonebar button:active, .editor-phonebar button[aria-expanded="true"] {
+    background: var(--color-base-200); color: var(--color-base-content);
+  }
+  /* what the cursor is in, as the toolbar shows it on a wider screen */
+  .editor-phonebar button.active { background: var(--color-base-300); color: var(--tx-primary); }
+  /* room to write the last lines above the bar */
+  .EasyMDEContainer .CodeMirror-fullscreen .CodeMirror-lines { padding-bottom: 3.5rem; }
+}
+.editor-sheet { position: fixed; left: 0.5rem; right: 0.5rem; z-index: 46; overflow-y: auto; }
+/* [custom-css: focus-quiet] While you type, in Focus mode: the toolbar
+   slides up out of sight - and with Only your words, the bars over it
+   too - fading out whole, so nothing covers the writing; the mouse
+   moving or text selected brings them back. (The toolbar is held at full
+   opacity above, hence !important.) What's left meanwhile: a writing
+   session's line along the very top, and the save dot in the corner. */
+.EasyMDEContainer[data-typing] .editor-toolbar.fullscreen {
+  transform: translateY(calc(-100% - 2.75rem - var(--editor-bar-h, 2.75rem))); opacity: 0 !important; pointer-events: none;
+}
+#post-form[data-focus-quiet][data-typing] .editor-focusbar {
+  transform: translateY(-100%); opacity: 0; pointer-events: none;
+}
+html[data-focus-mode] #post-form[data-focus-quiet][data-typing] .editor-bar {
+  transform: translateY(calc(-100% - 2.75rem)); opacity: 0; pointer-events: none;
+}
+html[data-animate][data-focus-mode] :is(.editor-focusbar, .editor-bar, .editor-toolbar.fullscreen) {
+  transition: transform 0.35s cubic-bezier(0.2, 0, 0, 1), opacity 0.3s ease !important;
+}
+.editor-focus-dot { opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
+#post-form[data-focus-quiet][data-typing] .editor-focus-dot { opacity: 0.6; }
+/* asked for less motion: they fade where they are instead - see-through
+   once faded, so the writing under them still shows */
+@media (prefers-reduced-motion: reduce) {
+  html[data-focus-mode] :is(.editor-focusbar, .editor-bar, .editor-toolbar.fullscreen) { transform: none !important; }
+}
+/* a toolbar menu as a list: each button's icon, its name and its shortcut */
+.EasyMDEContainer .easymde-dropdown-content.levels { display: flex; flex-direction: column; min-width: 13rem; }
+.EasyMDEContainer .easymde-dropdown-content.levels button {
+  width: 100%; justify-content: flex-start; gap: 0.75rem; padding: 0 0.5rem; height: 2.25rem; white-space: nowrap;
+}
+.EasyMDEContainer .levels button > span:first-of-type { color: var(--color-base-content); }
+/* a menu item's shortcut, at its right edge - a key, as in Help */
+.EasyMDEContainer .menu-key { margin-left: auto; }
+@media (width < 40rem) { .EasyMDEContainer .menu-key { display: none; } }
+/* side by side needs the width of a laptop - on a phone it was two
+   columns of a few words each */
+@media (width < 64rem) { .EasyMDEContainer .editor-toolbar button.side-by-side { display: none; } }
+/* an empty post's hint (editor_config.prefs_script) */
+.EasyMDEContainer .CodeMirror-placeholder { color: var(--tx-muted-50) !important; }
+
+/* side by side and fullscreen: EasyMDE puts the toolbar and the preview
+   on the same layer, so the preview (later in the page) covered the
+   toolbar's tooltips - and paints the toolbar white, whatever the theme */
+.EasyMDEContainer .editor-toolbar.fullscreen { z-index: 10; background: var(--color-base-100); }
+
+/* on a phone, one row you swipe along - wrapped, it was three rows of
+   icons above the first line of text */
+@media (width < 40rem) {
+  /* sideways only: the closed Heading and More menus still take room
+     inside it, so it could be dragged down into that too */
+  .EasyMDEContainer .editor-toolbar {
+    flex-wrap: nowrap; overflow-x: auto; overflow-y: hidden; overscroll-behavior-x: contain; scrollbar-width: none;
+  }
+  /* no frost here: a backdrop-filter makes the toolbar the box a fixed
+     menu is placed in, so the More menu opened inside the scrolling row
+     and was cut off */
+  html[data-glass] .EasyMDEContainer .editor-toolbar {
+    -webkit-backdrop-filter: none; backdrop-filter: none; background-color: var(--color-base-100);
+  }
+  /* a tap leaves a tooltip showing, and the row cuts it off; the More
+     menu has every button's name */
+  .EasyMDEContainer .editor-toolbar > .tooltip::before,
+  .EasyMDEContainer .editor-toolbar > .tooltip::after { content: none; }
+}
+/* A touch screen has no hover: a tap leaves the button "hovered" until
+   the next tap somewhere else, so its tooltip stayed up (Back to top).
+   Icons there are named in their ⋯ menus, and for screen readers by
+   aria-label */
+@media (hover: none) {
+  .tooltip::before, .tooltip::after { content: none; }
+}
+/* The toolbar's menus hang out of the toolbar, which frosts
+   itself - and a blur inside another only blurs what's inside that one,
+   so the post's text showed sharp behind an open menu. While one's open
+   the toolbar lets go of its own blur (solid, so the text doesn't show
+   through it instead) and the menu blurs the page. The button's tooltip
+   stays hidden too - it sat over the open menu. */
+html[data-glass] .EasyMDEContainer .editor-toolbar:has(.easymde-dropdown:is(:focus, :focus-within, :active)) {
+  -webkit-backdrop-filter: none; backdrop-filter: none; background-color: var(--color-base-100);
+}
+.EasyMDEContainer .easymde-dropdown.tooltip:is(:focus, :focus-within, :active)::before,
+.EasyMDEContainer .easymde-dropdown.tooltip:is(:focus, :focus-within, :active)::after { opacity: 0 !important; }
+/* the toolbar's dropdown panels - EasyMDE ships them a fixed light
+   gray, unreadable against the theme-colored icons on dark themes */
+.EasyMDEContainer .easymde-dropdown-content {
+  background: var(--color-base-100); border: 1px solid var(--color-base-300);
+  border-radius: var(--radius-box); padding: 0.25rem; box-shadow: 0 4px 12px rgb(0 0 0 / 0.12);
+}
+.EasyMDEContainer .editor-toolbar button:where(:not(.btn)),
+.EasyMDEContainer .editor-toolbar a:where(:not(.btn)) {
+  /* all: unset takes border-box away too - a menu's full-width buttons
+     stuck out past its edge by their padding */
+  all: unset; box-sizing: border-box; display: inline-flex; align-items: center; justify-content: center;
+  width: 1.8rem; height: 1.8rem; flex-shrink: 0; border-radius: 0.375rem; cursor: pointer;
+  position: relative; /* for its daisyUI tooltip */
+  color: var(--tx-muted-70); font-size: 0.85rem;
+}
+.EasyMDEContainer .editor-toolbar button:where(:not(.btn)):hover,
+.EasyMDEContainer .editor-toolbar a:where(:not(.btn)):hover {
+  background: var(--color-base-200); color: var(--color-base-content);
+}
+.EasyMDEContainer .editor-toolbar button:where(:not(.btn)).active,
+.EasyMDEContainer .editor-toolbar a:where(:not(.btn)).active {
+  background: var(--color-base-300); color: var(--tx-primary);
+}
+.EasyMDEContainer .editor-toolbar i.separator {
+  display: inline-block; width: 1px; height: 1.3rem;
+  background: color-mix(in oklch, var(--color-base-content) 15%, transparent); margin: 0 0.35rem; border: none;
+}
+/* EasyMDE styles every toolbar button's ::after as a heading's little
+   "1"/"2" badge - which is also daisyUI's tooltip arrow. Hand it back to
+   daisyUI (revert-layer: back to the layered styles) where there's one */
+.EasyMDEContainer .editor-toolbar button.tooltip::after {
+  position: revert-layer; top: revert-layer; font-size: revert-layer;
+  font-family: revert-layer; vertical-align: revert-layer;
+}
+/* the editor's icons (editor_icons.py): Lucide's, drawn in the text colour */
+.editor-icon { width: 1.125rem; height: 1.125rem; flex-shrink: 0; }
+/* the row's own colour, softer - it follows the highlighted row too */
+.slash-icon { display: inline-flex; opacity: 0.75; }
+/* the insert list's descriptions and hints: quieter, readable in every
+   palette - and the highlighted row's own colour when it's picked */
+.slash-about { color: var(--tx-muted-70); }
+.slash-hint { color: var(--tx-muted-60); }
+.menu-active .slash-about, .menu-active .slash-hint { color: inherit; opacity: 0.85; }
+/* a phone has no keyboard shortcuts to show; the markdown hints stay */
+@media (width < 40rem) { .slash-hint[data-keys] { display: none; } }
+/* the toolbar buttons with words on them: Insert and Go to, and Classic
+   menus' Text ▾ Blocks ▾ ... */
+.EasyMDEContainer .editor-toolbar :is(button.insert, button.goto) { width: auto; gap: 0.25rem; padding: 0 0.5rem; }
+.EasyMDEContainer .editor-toolbar button.goto { padding-right: 0.375rem; }
+.EasyMDEContainer .editor-toolbar button.goto > .editor-icon:last-child { width: 0.875rem; height: 0.875rem; opacity: 0.7; }
+/* [custom-css: classic-menu-buttons] a menu's name and its arrow, as wide
+   as the name - the toolbar's buttons are square icons otherwise */
+.EasyMDEContainer .editor-toolbar button[data-section] { width: auto; gap: 0.25rem; padding: 0 0.375rem 0 0.5rem; }
+.EasyMDEContainer .editor-toolbar button[data-section] > .editor-icon { width: 0.875rem; height: 0.875rem; opacity: 0.7; }
+/* [custom-css: classic-menu-edges] a menu opens from its button's left
+   edge. The button centres what's in it, so the menu was centred on it
+   and ran off the screen's left edge on a narrow one (Text, just wider
+   than a phone); placeMenus (routes/editor.py) moves one back in if it
+   would run past either edge. */
+.EasyMDEContainer .editor-toolbar button:is([data-section], [data-rest]) > .easymde-dropdown-content {
+  left: 0; right: auto;
+}
+/* [custom-css: section-rest-buttons] the ▾ at the end of a section in
+   the Icons toolbar - the rest of that section - narrower than a button */
+.EasyMDEContainer .editor-toolbar button[data-rest] { width: 1.125rem; }
+.EasyMDEContainer .editor-toolbar button[data-rest] > .editor-icon { width: 0.875rem; height: 0.875rem; opacity: 0.7; }
+.EasyMDEContainer .editor-toolbar .toolbar-word { font-size: 0.8125rem; font-weight: 500; }
+.EasyMDEContainer .CodeMirror {
+  border: 1px solid var(--color-base-300); border-radius: 0;
+  background: var(--color-base-100); color: var(--color-base-content);
+}
+/* The writing itself: the site's own font at the post's own size and
+   line spacing (pages._prose: 16px, 18px from 48rem), so what you
+   write looks as long as it will read, in a column about 70 characters
+   wide - lines of 90 and more are hard to follow back. The box keeps its
+   width; the text sits in its middle. rem, so it follows Settings >
+   Appearance > Text size. */
+.EasyMDEContainer { --editor-fs: 1rem; }
+@media (width >= 48rem) { .EasyMDEContainer { --editor-fs: 1.125rem; } }
+.EasyMDEContainer .CodeMirror { font-size: var(--editor-fs) !important; line-height: 1.75 !important; }
+.EasyMDEContainer .CodeMirror-lines { max-width: 36em; margin-inline: auto; }
+/* [custom-css: selection-column] a selection stays in that column:
+   CodeMirror draws each whole selected line out to the box's edge, past
+   the column the text sits in */
+.EasyMDEContainer .CodeMirror-lines > div { overflow-x: clip; overflow-clip-margin: 0.25rem; }
+/* Settings > Editor: Writing width - Wide lets the text fill the box;
+   Markdown marks - Full shows them in the text's own colour */
+#post-form[data-editor-width="wide"] .CodeMirror-lines { max-width: none; }
+#post-form[data-editor-marks="full"] .cm-formatting:not(.cm-formatting-list) { color: inherit !important; }
+/* headings in the post's own proportions (prose-sm), not EasyMDE's
+   poster sizes (a ## was 34px) */
+.EasyMDEContainer .cm-s-easymde .cm-header-1 { font-size: 2.1428571em !important; }
+.EasyMDEContainer .cm-s-easymde .cm-header-2 { font-size: 1.4285714em !important; }
+.EasyMDEContainer .cm-s-easymde .cm-header-3 { font-size: 1.2857143em !important; }
+.EasyMDEContainer .cm-s-easymde :is(.cm-header-4, .cm-header-5, .cm-header-6) { font-size: 1em !important; }
+/* the line/word/cursor counter along the bottom - ships with its own
+   light-gray-on-white styling same as everything else here, plus it's
+   now the last element in the box, not .CodeMirror, so it gets the
+   rounded bottom corners instead. !important for the same reason as
+   the resize rules above: this file compiles into a Tailwind
+   @layer, which always loses to EasyMDE's own unlayered stylesheet. */
+.EasyMDEContainer .editor-statusbar {
+  border: 1px solid var(--color-base-300); border-top: none !important;
+  border-radius: 0 0 0.5rem 0.5rem; background: var(--color-base-100) !important;
+  color: var(--tx-muted-50) !important;
+}
+/* words · reading time · saved (routes/editor.py, updateStatus) */
+.EasyMDEContainer .editor-statusbar span + span::before { content: "·"; margin-right: 1em; }
+.EasyMDEContainer .editor-statusbar .text-warning { color: var(--tx-warning); }
+
+/* a real drag handle to make the editor taller for a longer writing
+   session - min-height keeps today's default size exactly as it was,
+   this only adds the option to go bigger. The resize handle has to go
+   on .CodeMirror itself, not the inner .CodeMirror-scroll: CodeMirror
+   hides its native scrollbar with a negative-margin trick on the
+   scroll element (margin-right/bottom: -50px, clipped by this
+   element's own overflow:hidden), which also clips away any resize
+   handle placed on that inner element - confirmed live, dragging did
+   nothing because the handle rendered 50px into the clipped area.
+   !important because CodeMirror's stylesheet sets resize: none by
+   default, same reasoning as the theme-color overrides above. */
+.EasyMDEContainer .CodeMirror:not(.CodeMirror-fullscreen) {
+  resize: vertical !important; min-height: 300px;
+}
+/* fills whatever height the drag handle above just set. Before any
+   resize, .CodeMirror's own height is auto (sized by its children),
+   so this percentage resolves back to auto too and the box keeps
+   today's normal content-driven size - it only takes over once a
+   real drag gives the parent an explicit height. */
+.EasyMDEContainer .CodeMirror-scroll {
+  height: 100% !important;
+}
+
+/* the caret, selection highlight, and gutter are CodeMirror's own
+   defaults (a plain black caret, a fixed gray selection) - same class
+   of gap as the toolbar above, just inside the text area itself */
+.EasyMDEContainer .CodeMirror-cursor { border-left: 1px solid var(--color-base-content); }
+/* Selected text: the palette's primary blended into the page until it
+   stands out, with the text colour kept - worked out per palette
+   (--selection, tools/theme_contrast.py). EasyMDE's fixed pale lavender
+   left light text on a dark palette almost unreadable. With spell check
+   on the browser draws the selection itself (::selection). !important:
+   EasyMDE's stylesheet comes after this one. */
+.EasyMDEContainer .CodeMirror-selected,
+.EasyMDEContainer .CodeMirror-focused .CodeMirror-selected,
+.EasyMDEContainer .CodeMirror-line::selection,
+.EasyMDEContainer .CodeMirror-line > span::selection,
+.EasyMDEContainer .CodeMirror-line > span > span::selection {
+  background: var(--selection, color-mix(in oklch, var(--color-primary) 15%, var(--color-base-100))) !important;
+  color: var(--color-base-content);
+}
+.EasyMDEContainer .CodeMirror-gutters {
+  background: var(--color-base-200); border-color: var(--color-base-300);
+}
+.EasyMDEContainer .CodeMirror-linenumber { color: color-mix(in oklch, var(--color-base-content) 40%, transparent); }
+
+/* The text as you write it, in the palette's colours - measured in a
+   dozen palettes (link text and quotes were a fixed grey at 3:1 in light
+   ones, inline code's background invisible in dark ones). Headings are
+   the text colour, as in the post, and the markdown marks (## ** [ ])
+   step back. !important: EasyMDE's stylesheet is loaded after this one
+   and sets these same selectors to fixed colours. The --tx-* colours are
+   made readable per palette (tools/theme_contrast.py). */
+.EasyMDEContainer .cm-header { color: var(--color-base-content) !important; }
+.EasyMDEContainer .cm-strong { color: var(--color-base-content) !important; font-weight: 700; }
+.EasyMDEContainer .cm-em { color: var(--color-base-content) !important; font-style: italic; }
+.EasyMDEContainer .cm-link { color: var(--tx-primary) !important; }
+.EasyMDEContainer .cm-quote { color: var(--tx-muted-70) !important; font-style: italic; }
+.EasyMDEContainer .cm-comment {
+  color: var(--color-base-content) !important;
+  background: color-mix(in oklch, var(--color-base-content) 8%, transparent) !important;
+}
+.EasyMDEContainer .cm-formatting:not(.cm-formatting-list) { color: var(--tx-muted-50) !important; }
+.EasyMDEContainer .cm-tag { color: var(--tx-accent) !important; }
+.EasyMDEContainer .cm-attribute { color: var(--tx-secondary) !important; }
+.EasyMDEContainer .cm-string { color: var(--tx-info) !important; }
+/* after .cm-string: CodeMirror marks a link's address as both */
+.EasyMDEContainer .cm-url { color: var(--tx-muted-60) !important; }
+.EasyMDEContainer .CodeMirror { border-color: var(--color-base-300) !important; }
+/* [custom-css: editor-blocks] What isn't plain writing stands out as you
+   write: a Section: line as a band in the main colour, its setting lines
+   (Width:, Style:...) a fainter one, and the blocks written as a line
+   (Buttons:, Pull quote:, a fold, a gallery) a grey one. The editor only
+   colours words, so a section looked like any other line. The classes
+   come from the editor's mode (editor_init.js, lineKind). */
+.EasyMDEContainer .CodeMirror-line.sb-section {
+  background: color-mix(in oklch, var(--color-primary) 14%, transparent);
+  box-shadow: inset 3px 0 0 var(--color-primary);
+  font-weight: 600;
+}
+.EasyMDEContainer .CodeMirror-line.sb-setting {
+  background: color-mix(in oklch, var(--color-primary) 6%, transparent);
+  box-shadow: inset 3px 0 0 color-mix(in oklch, var(--color-primary) 45%, transparent);
+}
+/* a setting left at Default: its words fade, not the band - the ones a
+   page has changed stay at full strength */
+.EasyMDEContainer .CodeMirror-line.sb-default > span {
+  opacity: 0.6;
+}
+.EasyMDEContainer .CodeMirror-line.sb-block {
+  background: color-mix(in oklch, var(--color-base-content) 6%, transparent);
+  box-shadow: inset 3px 0 0 color-mix(in oklch, var(--color-base-content) 35%, transparent);
+}
+.EasyMDEContainer :is(.editor-preview, .editor-preview-side) :is(td, th) {
+  border-color: color-mix(in oklch, var(--color-base-content) 20%, transparent) !important;
+}
+
+/* EasyMDE's fullscreen and side-by-side preview modes ship with their
+   own white background, which doesn't follow whatever daisyUI theme
+   is active - the editor would suddenly flash to a plain white screen
+   on a dark theme. These match it to the same theme colors used above. */
+.EasyMDEContainer .CodeMirror-fullscreen {
+  background: var(--color-base-100) !important;
+}
+/* [custom-css: focus-typewriter] typewriter scrolling (routes/editor.py,
+   centre) keeps the line you're on in the middle: room below the last
+   line, so the end of the post can come up to the middle too */
+@media (width >= 40rem) {
+  #post-form[data-typewriter] .CodeMirror-fullscreen .CodeMirror-lines { padding-bottom: 50vh; }
+}
+/* [custom-css: focus-text-size] Focus mode's A- and A+: the writing a
+   step smaller or larger (--focus-scale, routes/editor.py setSize) - and
+   the preview beside it or in its place, so the two stay the same size */
+html[data-focus-mode] .EasyMDEContainer :is(.CodeMirror-fullscreen, .editor-preview-side) {
+  font-size: calc(var(--editor-fs, 1rem) * var(--focus-scale, 1)) !important;
+}
+/* [custom-css: focus-caret] Focus mode's caret, in the palette's own
+   colour: the browser's own while spell check is on (contenteditable -
+   its width isn't ours to set), CodeMirror's a little thicker when it's
+   off (and blinking slower - routes/editor.py) */
+#post-form[data-caret] .CodeMirror-fullscreen .CodeMirror-code { caret-color: var(--color-primary); }
+#post-form[data-caret] .CodeMirror-fullscreen .CodeMirror-cursor {
+  border-left: 2px solid var(--color-primary) !important; border-radius: 1px;
+}
+/* [custom-css: focus-fade] the paragraph you're in at full strength, the
+   rest stepped back (lightParagraph) - only in Focus mode */
+#post-form[data-fade="paragraph"] .CodeMirror-fullscreen .CodeMirror-code > * { transition: opacity 0.2s ease; }
+#post-form[data-fade="paragraph"] .CodeMirror-fullscreen .CodeMirror-code > :not(.cm-para-now) { opacity: 0.35; }
+/* Fade > Around the sentence: everything but the sentence you're in is
+   marked (lightParagraph), the same strength as a faded paragraph */
+#post-form[data-fade="sentence"] .CodeMirror-fullscreen .cm-dim { opacity: 0.35; }
+@media (prefers-reduced-motion: reduce) {
+  #post-form[data-fade="paragraph"] .CodeMirror-fullscreen .CodeMirror-code > * { transition: none; }
+}
+.EasyMDEContainer .editor-toolbar.fullscreen {
+  background: var(--color-base-100) !important;
+  border-color: var(--color-base-300) !important;
+  /* EasyMDE takes its border away; the line under it is the text's edge */
+  border-bottom: 1px solid var(--color-base-300) !important;
+}
+.EasyMDEContainer .editor-preview,
+.EasyMDEContainer .editor-preview-side {
+  background: var(--color-base-100) !important;
+  color: var(--color-base-content) !important;
+  border-color: var(--color-base-300) !important;
+}
+.EasyMDEContainer .editor-preview-side pre,
+.EasyMDEContainer .editor-preview pre {
+  background: var(--color-base-200) !important;
+}
+/* EasyMDE's own bundled stylesheet sets its own color directly on
+   h1-h6 (not just inherited from the preview container above), so the
+   container's own color override doesn't reach them - a # Heading in
+   the live preview was rendering in EasyMDE's fixed default color
+   regardless of theme, standing out as an accent when the maintainer's call was
+   "neutral, like standard text" - real post rendering (.prose above)
+   already treats headings as plain base-content, this just matches
+   the editor's own live preview to that same rule. */
+.EasyMDEContainer .editor-preview h1,
+.EasyMDEContainer .editor-preview h2,
+.EasyMDEContainer .editor-preview h3,
+.EasyMDEContainer .editor-preview h4,
+.EasyMDEContainer .editor-preview h5,
+.EasyMDEContainer .editor-preview h6,
+.EasyMDEContainer .editor-preview-side h1,
+.EasyMDEContainer .editor-preview-side h2,
+.EasyMDEContainer .editor-preview-side h3,
+.EasyMDEContainer .editor-preview-side h4,
+.EasyMDEContainer .editor-preview-side h5,
+.EasyMDEContainer .editor-preview-side h6 {
+  color: var(--color-base-content) !important;
+  border-color: var(--color-base-300) !important;
+}
+
+@keyframes like-pop { 0% { transform: scale(1); } 45% { transform: scale(1.35); } 100% { transform: scale(1); } }
+.like-pop svg { animation: like-pop 0.3s ease; }
+
+/* Pygments' own themes (github.css, monokai, etc) are static, single-
+   mode stylesheets with hardcoded hex colors - same problem the prose/
+   toolbar CSS above solves. A dark daisyUI theme would otherwise show
+   code blocks in a fixed light-mode palette that doesn't match
+   anything else on the page. This maps Pygments' token classes onto
+   daisyUI's own semantic colors instead, so code follows whatever
+   theme is active the same way everything else does. Not exhaustive -
+   the common token types, not every Pygments class that exists - but
+   should keep almost anything readable. */
+.codehilite .c, .codehilite .c1, .codehilite .cm, .codehilite .cs {
+  color: var(--tx-muted-50); font-style: italic;
+}
+.codehilite .k, .codehilite .kc, .codehilite .kd, .codehilite .kn,
+.codehilite .kp, .codehilite .kr, .codehilite .kt, .codehilite .ow {
+  color: var(--tx-primary); font-weight: 600;
+}
+.codehilite .s, .codehilite .s1, .codehilite .s2, .codehilite .sb,
+.codehilite .sc, .codehilite .sd, .codehilite .se, .codehilite .sh,
+.codehilite .si, .codehilite .sx, .codehilite .sr, .codehilite .ss {
+  color: var(--tx-success);
+}
+.codehilite .m, .codehilite .mf, .codehilite .mi, .codehilite .mo, .codehilite .il {
+  color: var(--tx-secondary);
+}
+.codehilite .nf, .codehilite .nc, .codehilite .nn {
+  color: var(--tx-info);
+}
+.codehilite .nd, .codehilite .ni {
+  color: var(--tx-accent);
+}
+.codehilite .nb, .codehilite .bp {
+  color: var(--tx-primary);
+}
+.codehilite .o, .codehilite .p {
+  color: color-mix(in oklch, var(--color-base-content) 70%, transparent);
+}
+.codehilite .err {
+  color: var(--tx-error); text-decoration: underline wavy;
+}
+.codehilite .gh, .codehilite .gu {
+  color: var(--color-base-content); font-weight: 600;
+}
+.codehilite .gd { color: var(--tx-error); }
+.codehilite .gi { color: var(--tx-success); }
+
+/* fullscreen/side-by-side editing has to sit above the post editor's
+   sticky action bar (z-10) and the fixed header (z-30) - EasyMDE's own
+   z-index 8/9 would leave both drawn on top of it */
+.EasyMDEContainer .CodeMirror-fullscreen { z-index: 35 !important; }
+/* the toolbar over the text, under the bars it slides behind (37, 38) */
+.EasyMDEContainer .editor-toolbar.fullscreen { z-index: 36 !important; }
+.EasyMDEContainer .editor-preview-side { z-index: 1 !important; }
+html[data-focus-mode] .EasyMDEContainer .editor-preview-side { z-index: 35 !important; }
+
+/* ---- post extras (render.py): callouts, task lists, footnotes,
+   diagrams, math - all on daisyUI's own tokens, like everything above */
+
+/* !!! note / tip / warning / danger - an alert-shaped block: a tinted
+   background and a colored edge, the color picked by the callout's type */
+.prose .admonition {
+  --callout: var(--color-info);
+  margin: 1.25em 0; padding: 0.75rem 1rem;
+  border-left: 4px solid var(--callout); border-radius: var(--radius-box);
+  background: color-mix(in oklab, var(--callout) 10%, var(--color-base-100));
+}
+.prose .admonition.tip, .prose .admonition.hint, .prose .admonition.success { --callout: var(--color-success); }
+.prose .admonition.warning, .prose .admonition.caution, .prose .admonition.attention { --callout: var(--color-warning); }
+.prose .admonition.danger, .prose .admonition.error { --callout: var(--color-error); }
+.prose .admonition > :last-child { margin-bottom: 0; }
+.prose .admonition-title { margin: 0 0 0.25em; font-weight: 600; }
+
+/* - [ ] task lists: no bullet, the checkbox stands in for it */
+.prose li.task-item { list-style: none; margin-left: -1.25em; }
+.prose li.task-item input { margin: 0 0.4em 0 0; accent-color: var(--color-primary); }
+
+.prose .footnote { font-size: 0.85em; color: color-mix(in oklch, var(--color-base-content) 75%, transparent); }
+.prose .footnote-ref { text-decoration: none; }
+
+/* a diagram isn't code - mermaid.js swaps the source for an svg */
+.prose pre.mermaid { background: transparent; border: none; text-align: center; }
+.prose .math-display { overflow-x: auto; margin: 1em 0; }
+
+/* Settings > Appearance > Text size. Every size here is in rem, so
+   changing the root scales all of it together; percentages of the
+   reader's own browser size (16px unless they changed it), so a reader
+   who asked for bigger text still gets bigger text. */
+html[data-font-size="small"] { font-size: 87.5%; }
+html[data-font-size="large"] { font-size: 112.5%; }
+
+/* a jump to a heading stops below a fixed header and above a fixed
+   footer - CHROME_OFFSETS_JS (app.py) measures both */
+html {
+  scroll-padding-top: calc(var(--header-h, 0px) + 1rem);
+  scroll-padding-bottom: var(--footer-h, 0px);
+}
+
+/* Settings > Appearance > Animations: each page fades in as it opens.
+   Opacity only, and nothing left behind once it's done (backwards, not
+   both): a transform - even a finished one held by fill-mode - makes the
+   page the frame for everything position:fixed inside it, and pinned the
+   post editor's drawer and backdrop to the column instead of the screen.
+   The menus, drawers and dialogs are below. */
+@keyframes page-in {
+  from { opacity: 0; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  html[data-animate] #page-content { animation: page-in 0.3s ease-out backwards; }
+}
+
+/* [custom-css: section-reveal] Sections appear (Settings > Style > Motion, a
+   page's own, or a section's Appear: line): how each section comes into
+   view - played once as it scrolls in (MOTION_JS marks it data-revealed).
+   Hidden until then only while the script runs (html.js-reveal), so
+   without it everything shows. Keyframes have no "to": each ends as the
+   section is, so nothing is left transformed once it's in place. */
+@media (prefers-reduced-motion: no-preference) {
+  html[data-animate].js-reveal .reveal-item:not([data-revealed]) { opacity: 0; }
+  html[data-animate] .reveal-item[data-revealed] {
+    animation: var(--reveal, page-in) 1.2s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+}
+/* printed, every section shows - one not yet scrolled to stayed blank */
+@media print { .reveal-item { opacity: 1 !important; animation: none !important; } }
+@keyframes reveal-rise { from { opacity: 0; translate: 0 6rem; } }
+@keyframes reveal-zoom { from { opacity: 0; scale: 0.85; } }
+@keyframes reveal-slide { from { opacity: 0; translate: -10rem 0; } }
+@keyframes reveal-slide-right { from { opacity: 0; translate: 10rem 0; } }
+@keyframes reveal-blur { from { opacity: 0; filter: blur(20px); translate: 0 2rem; } }
+@keyframes reveal-tilt { from { opacity: 0; transform: perspective(1200px) rotateX(20deg) translateY(4rem); } }
+/* The page's way is on <html> and a section's own on its wrapper: the
+   nearest one is the one in force, as --reveal is inherited */
+[data-reveal="fade"] { --reveal: page-in; }
+[data-reveal="rise"] { --reveal: reveal-rise; }
+[data-reveal="zoom"] { --reveal: reveal-zoom; }
+[data-reveal="slide"] { --reveal: reveal-slide; }
+[data-reveal="slide-right"] { --reveal: reveal-slide-right; }
+/* in turn, among a Photos section's tiles: from the left, then the right
+   (other sections alternate by place - pages.place_sections) */
+[data-section][data-reveal="alternate"] .reveal-item { --reveal: reveal-slide; }
+[data-section][data-reveal="alternate"] .reveal-item:nth-of-type(even) { --reveal: reveal-slide-right; }
+[data-reveal="blur"] { --reveal: reveal-blur; }
+[data-reveal="tilt"] { --reveal: reveal-tilt; }
+[data-reveal="none"] { --reveal: none; }
+
+/* [custom-css: story-scroll] A Story (pages._render_story), once MOTION_JS
+   has marked it live. Each step's words fade in as they rise to where they
+   rest, stay clear while that step is the one being read, and fade out
+   (drifting a little) as they scroll up past it - tied to the scroll by
+   the browser itself (a view timeline per step), so they move in step
+   with it. The stops assume the step's height as pages._SCROLL_STEP makes
+   it: the window's on a phone (the words rest at its foot), 70% of it from
+   a laptop's width ("wide" is the story's own width, 64rem, as its other
+   classes read it). Where the browser can't, the step being read (the
+   one MOTION_JS marks data-active) shows its words and the others' fade
+   away. The picture going shrinks a little as it fades (pages._SCROLL_FRAME).
+   Near a step, the page comes to rest with it in place - proximity, never
+   forced, only under a finger, and only while a live story fills the window
+   (MOTION_JS marks <html>, not a :has() rule, which would restyle the whole
+   page on every change). */
+@supports (animation-timeline: view()) {
+  [data-story][data-live] [data-story-step] { view-timeline: --story-step block; }
+  [data-story][data-live] [data-story-words] {
+    animation: story-words-phone linear both;
+    animation-timeline: --story-step;
+    animation-range: cover 0% cover 100%;
+  }
+  @container (min-width: 64rem) {
+    [data-story][data-live] [data-story-words] { animation-name: story-words; }
+  }
+}
+@supports not (animation-timeline: view()) {
+  [data-story][data-live] [data-story-words] {
+    opacity: 0; translate: 0 24px; transition: opacity 0.5s, translate 0.5s;
+  }
+  [data-story][data-live] [data-story-step][data-active] [data-story-words] { opacity: 1; translate: 0 0; }
+}
+@keyframes story-words-phone {
+  0%, 34% { opacity: 0; translate: 0 32px; }
+  48%, 60% { opacity: 1; translate: 0 0; }
+  76%, 100% { opacity: 0; translate: 0 -32px; }
+}
+@keyframes story-words {
+  0%, 26% { opacity: 0; translate: 0 32px; }
+  40%, 60% { opacity: 1; translate: 0 0; }
+  74%, 100% { opacity: 0; translate: 0 -32px; }
+}
+/* only where a finger scrolls: a flick carries on to the next step. A mouse
+   wheel moves a little at a time, and each turn that stopped short of
+   halfway was pulled back to the step it left - two turns to move one */
+@media (pointer: coarse) {
+  html[data-story-snap] { scroll-snap-type: y proximity; }
+}
+[data-story][data-live] [data-story-step] { scroll-snap-align: center; }
+
+/* [custom-css: animations-off] Animations off (Settings > Style), or the
+   device asking for less motion: every transition and animation ends at
+   once - drawers, menus, the + sheet's slide, fades, the timer's glide -
+   not only the ones written to check. Not the loading spinner: it says
+   something is happening. 0.01ms, not 0: a script waiting for a
+   transition's end still gets it. */
+html:not([data-animate]) :is(*, *::before, *::after):not(.loading) {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  animation-delay: 0s !important;
+  transition-duration: 0.01ms !important;
+  transition-delay: 0s !important;
+}
+@media (prefers-reduced-motion: reduce) {
+  html :is(*, *::before, *::after):not(.loading) {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    animation-delay: 0s !important;
+    transition-duration: 0.01ms !important;
+    transition-delay: 0s !important;
+  }
+}
+
+/* Animations, continued: the header's menus and a row's ⋯ menu fade and
+   drop in, and fade out again. Closing is animated too: display and
+   overlay (the top layer) wait for the fade with allow-discrete. A row
+   menu is only a menu on a phone - from sm up it's the row's buttons,
+   which mustn't be faded out. */
+@media (prefers-reduced-motion: no-preference) {
+  html[data-animate] [popover].dropdown-content {
+    transition: opacity 0.15s ease-out, translate 0.15s ease-out,
+                display 0.15s allow-discrete, overlay 0.15s allow-discrete;
+  }
+  html[data-animate] [popover].dropdown-content:not(:popover-open) { opacity: 0; translate: 0 -0.25rem; }
+  @starting-style {
+    html[data-animate] [popover].dropdown-content:popover-open { opacity: 0; translate: 0 -0.25rem; }
+  }
+}
+@media (prefers-reduced-motion: no-preference) and (width < 40rem) {
+  html[data-animate] [popover][data-row-menu] {
+    transition: opacity 0.15s ease-out, translate 0.15s ease-out,
+                display 0.15s allow-discrete, overlay 0.15s allow-discrete;
+  }
+  html[data-animate] [popover][data-row-menu]:not(:popover-open) { opacity: 0; translate: 0 -0.25rem; }
+  @starting-style {
+    html[data-animate] [popover][data-row-menu]:popover-open { opacity: 0; translate: 0 -0.25rem; }
+  }
+}
+
+/* A list row's ⋯ menu on a phone (RowActions, ui). Its items are the
+   row's own buttons, drawn here as a menu's rows - no border or fill of
+   their own, like daisyUI's .menu - not a stack of separate buttons. */
+@media (width < 40rem) {
+  [data-row-menu] form:not(.contents), [data-row-menu] details { width: 100%; }
+  [data-row-menu] .btn:not(.dropdown-content .btn) {
+    /* 44px on a touch screen, as every button is there (touch-size) */
+    width: 100%; justify-content: flex-start; height: max(2.25rem, var(--size)); padding-inline: 0.75rem;
+    font-size: 0.875rem; font-weight: 400;
+    background: transparent; border-color: transparent; box-shadow: none; border-radius: var(--radius-field);
+  }
+  [data-row-menu] .btn:not(.dropdown-content .btn):hover { background: var(--color-base-200); }
+  /* the words are in the menu - no tooltip on top of them */
+  [data-row-menu] .tooltip::before, [data-row-menu] .tooltip::after { display: none; }
+  /* a menu inside it (Pinned's Move) opens in place, under its item -
+     floating, it was clipped by the little menu around it */
+  [data-row-menu] .dropdown { display: block; width: 100%; }
+  [data-row-menu] .dropdown-content {
+    position: static !important; width: 100% !important; margin: 0.25rem 0 0 !important; box-shadow: none !important;
+  }
+  [data-row-menu] .dropdown:not(:focus-within) .dropdown-content { display: none; }
+}
+
+/* A folding section on its way closed (app.py, _foldMotion) is still
+   [open] until it has shrunk, so its arrow turns back as it starts, not
+   when it's done. !important: daisyUI's open arrow is set more
+   specifically than any plain rule here could be. */
+.collapse-arrow[data-closing] > .collapse-title:after { transform: translateY(-100%) rotate(45deg) !important; }
+/* ...and while the script moves it, daisyUI's own transitions stand aside -
+   its content's kept it showing for 0.2s after closing. ::details-content
+   has a rule of its own: in one list, a browser that doesn't know it
+   (Firefox) drops the whole rule, and the content flickered there. */
+.collapse[data-folding], .collapse[data-folding] > * { transition: none !important; }
+.collapse[data-folding]::details-content { transition: none !important; }
+
+/* Animations off: nothing moves - the drawers, folding sections and
+   dialogs daisyUI animates too. !important because daisyUI's own open
+   and closed states set their transitions more specifically. */
+html:not([data-animate]) :is(.drawer-side, .drawer-side > *, .collapse, .collapse > *, .modal, .modal-box) {
+  transition: none !important;
+  animation: none !important;
+}
+html:not([data-animate]) .collapse::details-content { transition: none !important; }
+
+/* Markdown extras (render.EXTRAS), in the theme's colours: ==highlight==,
+   ++keyboard keys++ drawn like daisyUI's kbd, and === "Tab" content tabs
+   drawn like its bordered tabs - radio buttons underneath, so they work
+   without scripts. Up to ten tabs in a set. */
+.prose mark {
+  /* lighter, or darker text, where a theme needs it (contrast.css) */
+  background-color: var(--mark-bg, color-mix(in oklab, var(--color-warning) 40%, transparent));
+  color: var(--mark-text, inherit); padding: 0 0.15em; border-radius: 0.2em;
+}
+.prose .keys { white-space: nowrap; }
+.prose .keys kbd {
+  display: inline-flex; align-items: center; justify-content: center; min-width: 1.75em; padding: 0 0.4em;
+  font: inherit; font-size: 0.85em; line-height: 1.6;
+  background-color: var(--color-base-200); color: var(--color-base-content);
+  border: var(--border) solid color-mix(in oklab, var(--color-base-content) 20%, transparent);
+  border-bottom-width: calc(var(--border) + 2px); border-radius: var(--radius-field);
+}
+.prose .keys > span { padding: 0 0.15em; opacity: 0.6; }
+.tabbed-set { position: relative; display: flex; flex-direction: column; margin: 1.25em 0; }
+.tabbed-set > input { position: absolute; opacity: 0; pointer-events: none; }
+.tabbed-labels {
+  display: flex; overflow-x: auto; scrollbar-width: none;
+  border-bottom: var(--border) solid var(--color-base-300);
+}
+.tabbed-labels > label {
+  padding: 0.5rem 1rem; cursor: pointer; white-space: nowrap; font-size: 0.875rem;
+  color: var(--tx-muted-70); border-bottom: 2px solid transparent; margin-bottom: calc(var(--border) * -1);
+}
+.tabbed-labels > label:hover { color: var(--color-base-content); }
+.tabbed-block { display: none; padding-top: 0.5rem; }
+.tabbed-set > input:nth-child(1):checked ~ .tabbed-content > .tabbed-block:nth-child(1) { display: block; }
+.tabbed-set > input:nth-child(1):checked ~ .tabbed-labels > label:nth-child(1) {
+  color: var(--color-base-content); border-color: currentColor; font-weight: 600;
+}
+.tabbed-set > input:nth-child(1):focus-visible ~ .tabbed-labels > label:nth-child(1) {
+  outline: 2px solid var(--color-primary); outline-offset: 2px;
+}
+.tabbed-set > input:nth-child(2):checked ~ .tabbed-content > .tabbed-block:nth-child(2) { display: block; }
+.tabbed-set > input:nth-child(2):checked ~ .tabbed-labels > label:nth-child(2) {
+  color: var(--color-base-content); border-color: currentColor; font-weight: 600;
+}
+.tabbed-set > input:nth-child(2):focus-visible ~ .tabbed-labels > label:nth-child(2) {
+  outline: 2px solid var(--color-primary); outline-offset: 2px;
+}
+.tabbed-set > input:nth-child(3):checked ~ .tabbed-content > .tabbed-block:nth-child(3) { display: block; }
+.tabbed-set > input:nth-child(3):checked ~ .tabbed-labels > label:nth-child(3) {
+  color: var(--color-base-content); border-color: currentColor; font-weight: 600;
+}
+.tabbed-set > input:nth-child(3):focus-visible ~ .tabbed-labels > label:nth-child(3) {
+  outline: 2px solid var(--color-primary); outline-offset: 2px;
+}
+.tabbed-set > input:nth-child(4):checked ~ .tabbed-content > .tabbed-block:nth-child(4) { display: block; }
+.tabbed-set > input:nth-child(4):checked ~ .tabbed-labels > label:nth-child(4) {
+  color: var(--color-base-content); border-color: currentColor; font-weight: 600;
+}
+.tabbed-set > input:nth-child(4):focus-visible ~ .tabbed-labels > label:nth-child(4) {
+  outline: 2px solid var(--color-primary); outline-offset: 2px;
+}
+.tabbed-set > input:nth-child(5):checked ~ .tabbed-content > .tabbed-block:nth-child(5) { display: block; }
+.tabbed-set > input:nth-child(5):checked ~ .tabbed-labels > label:nth-child(5) {
+  color: var(--color-base-content); border-color: currentColor; font-weight: 600;
+}
+.tabbed-set > input:nth-child(5):focus-visible ~ .tabbed-labels > label:nth-child(5) {
+  outline: 2px solid var(--color-primary); outline-offset: 2px;
+}
+.tabbed-set > input:nth-child(6):checked ~ .tabbed-content > .tabbed-block:nth-child(6) { display: block; }
+.tabbed-set > input:nth-child(6):checked ~ .tabbed-labels > label:nth-child(6) {
+  color: var(--color-base-content); border-color: currentColor; font-weight: 600;
+}
+.tabbed-set > input:nth-child(6):focus-visible ~ .tabbed-labels > label:nth-child(6) {
+  outline: 2px solid var(--color-primary); outline-offset: 2px;
+}
+.tabbed-set > input:nth-child(7):checked ~ .tabbed-content > .tabbed-block:nth-child(7) { display: block; }
+.tabbed-set > input:nth-child(7):checked ~ .tabbed-labels > label:nth-child(7) {
+  color: var(--color-base-content); border-color: currentColor; font-weight: 600;
+}
+.tabbed-set > input:nth-child(7):focus-visible ~ .tabbed-labels > label:nth-child(7) {
+  outline: 2px solid var(--color-primary); outline-offset: 2px;
+}
+.tabbed-set > input:nth-child(8):checked ~ .tabbed-content > .tabbed-block:nth-child(8) { display: block; }
+.tabbed-set > input:nth-child(8):checked ~ .tabbed-labels > label:nth-child(8) {
+  color: var(--color-base-content); border-color: currentColor; font-weight: 600;
+}
+.tabbed-set > input:nth-child(8):focus-visible ~ .tabbed-labels > label:nth-child(8) {
+  outline: 2px solid var(--color-primary); outline-offset: 2px;
+}
+.tabbed-set > input:nth-child(9):checked ~ .tabbed-content > .tabbed-block:nth-child(9) { display: block; }
+.tabbed-set > input:nth-child(9):checked ~ .tabbed-labels > label:nth-child(9) {
+  color: var(--color-base-content); border-color: currentColor; font-weight: 600;
+}
+.tabbed-set > input:nth-child(9):focus-visible ~ .tabbed-labels > label:nth-child(9) {
+  outline: 2px solid var(--color-primary); outline-offset: 2px;
+}
+.tabbed-set > input:nth-child(10):checked ~ .tabbed-content > .tabbed-block:nth-child(10) { display: block; }
+.tabbed-set > input:nth-child(10):checked ~ .tabbed-labels > label:nth-child(10) {
+  color: var(--color-base-content); border-color: currentColor; font-weight: 600;
+}
+.tabbed-set > input:nth-child(10):focus-visible ~ .tabbed-labels > label:nth-child(10) {
+  outline: 2px solid var(--color-primary); outline-offset: 2px;
+}
+
+/* Settings > Appearance > Smooth scrolling - never against a reader's
+   own "reduce motion" */
+@media (prefers-reduced-motion: no-preference) {
+  html[data-smooth-scroll] { scroll-behavior: smooth; }
+}
+
+/* Text in theme colours, readable in every theme. The defaults are the
+   theme's own colours; contrast.css (tools/theme_contrast.py) moves each
+   one, per theme, just far enough to read at 4.5:1 on the page and on
+   cards. Fills - buttons, badges, backgrounds - keep the theme's own. */
+:root {
+  --tx-primary: var(--color-primary);
+  --tx-secondary: var(--color-secondary);
+  --tx-accent: var(--color-accent);
+  --tx-info: var(--color-info);
+  --tx-success: var(--color-success);
+  --tx-warning: var(--color-warning);
+  --tx-error: var(--color-error);
+  --tx-muted-40: color-mix(in oklab, var(--color-base-content) 40%, transparent);
+  --tx-muted-50: color-mix(in oklab, var(--color-base-content) 50%, transparent);
+  --tx-muted-60: color-mix(in oklab, var(--color-base-content) 60%, transparent);
+  --tx-muted-70: color-mix(in oklab, var(--color-base-content) 70%, transparent);
+}
+.text-primary, .link-primary, .hover\:text-primary:hover { color: var(--tx-primary); }
+.text-secondary { color: var(--tx-secondary); }
+.text-accent { color: var(--tx-accent); }
+.text-info { color: var(--tx-info); }
+.text-success { color: var(--tx-success); }
+.text-warning { color: var(--tx-warning); }
+.text-error, .hover\:text-error:hover { color: var(--tx-error); }
+.text-base-content\/40 { color: var(--tx-muted-40); }
+.text-base-content\/50 { color: var(--tx-muted-50); }
+.text-base-content\/60 { color: var(--tx-muted-60); }
+.text-base-content\/70 { color: var(--tx-muted-70); }
+/* [custom-css: component-contrast] daisyUI's own quieter text - form
+   captions and help, menu headings, inactive tabs, stats, table headers,
+   soft badges - mixes its colours itself, past the readable ones above:
+   a soft Published badge was 1.9:1 and the dim theme's help lines 3.9:1
+   (axe-core, phone_check.py --axe). Same colours, moved only as far as
+   each theme needs for 4.5:1. Placeholders (daisyUI: 50% of the text
+   colour, 2.3:1 in retro) and disabled buttons and fields (20-40%,
+   1.3:1 to 1.9:1) are moved the same way: placeholders to the help-text
+   step, disabled controls to the faintest step, still readable and
+   still plainly switched off. */
+.label:not(:is(.input, .select) > *), .fieldset-label, .stat-title, .stat-desc,
+.table :where(thead, tfoot) { color: var(--tx-muted-60); }
+.menu-title { color: var(--tx-muted-40); }
+.tabs > .tab:not(.tab-active, [aria-selected="true"], [aria-current="true"], [aria-current="page"], [disabled]):not(:hover) {
+  color: var(--tx-muted-60);
+}
+.badge-soft.badge-primary { color: var(--tx-primary); }
+.badge-soft.badge-secondary { color: var(--tx-secondary); }
+.badge-soft.badge-accent { color: var(--tx-accent); }
+.badge-soft.badge-info { color: var(--tx-info); }
+.badge-soft.badge-success { color: var(--tx-success); }
+.badge-soft.badge-warning { color: var(--tx-warning); }
+.badge-soft.badge-error { color: var(--tx-error); }
+
+.input input::placeholder, .select select::placeholder, .textarea textarea::placeholder,
+.input::placeholder, .select::placeholder, .textarea::placeholder {
+  color: var(--tx-muted-60); opacity: 1;
+}
+.btn:is(:disabled, [disabled], [aria-disabled="true"]), .btn-disabled,
+:is(.input, .select, .textarea):is(:disabled, [disabled]),
+:is(.input, .select, .textarea):has(> :is(input, select, textarea)[disabled]),
+:is(.input, .select, .textarea):has(> :is(input, select, textarea)[disabled]) :is(input, select, textarea),
+fieldset:disabled :is(.input, .select, .textarea) {
+  color: var(--tx-muted-40);
+}
+:is(.input, .select, .textarea):is(:disabled, [disabled])::placeholder,
+:is(.input, .select, .textarea):has(> :is(input, select, textarea)[disabled]) ::placeholder,
+fieldset:disabled :is(.input, .select, .textarea)::placeholder {
+  color: var(--tx-muted-40); opacity: 1;
+}
+.toggle:disabled, .checkbox:disabled, .radio:disabled { opacity: 0.6; }
+
+/* [custom-css: menu-focus] With the keyboard, daisyUI shows focus on a
+   menu item or a ghost button only as a faint tint (about 1.1:1), which
+   fails WCAG 2.4.7. A 2px ring in the text colour, for the keyboard only
+   (:focus-visible, never a mouse click). A menu row's ring sits inside
+   it (negative offset), so a scroll box or a rounded panel doesn't clip
+   it. Listed in docs/DEVELOPMENT.md > Custom CSS. */
+.menu :is(li > a, li > button, li > summary, li > details > summary):focus-visible {
+  outline: 2px solid currentColor; outline-offset: -2px;
+}
+.btn-ghost:focus-visible { outline: 2px solid currentColor; outline-offset: 2px; }
+
+/* Settings > Appearance > Reading experience > Number the contents:
+   1, 2, 2.1 before each entry */
+[data-toc-numbers] > ul { counter-reset: toc-h2; }
+[data-toc-numbers] > ul > li { counter-increment: toc-h2; }
+[data-toc-numbers] > ul > li > a::before,
+[data-toc-numbers] > ul > li > details > summary > a::before { content: counter(toc-h2) ". "; }
+[data-toc-numbers] > ul > li ul { counter-reset: toc-h3; }
+[data-toc-numbers] > ul > li ul > li { counter-increment: toc-h3; }
+[data-toc-numbers] > ul > li ul > li > a::before { content: counter(toc-h2) "." counter(toc-h3) " "; }
+/* the number in a column of its own, so a long entry wraps under its
+   text and 9 and 10 start their text in line */
+[data-toc-numbers] summary > a { display: flex; gap: 0.5rem; }
+[data-toc-numbers] > ul > li > a::before,
+[data-toc-numbers] > ul > li > details > summary > a::before { min-width: 1.1rem; }
+[data-toc-numbers] > ul > li ul > li > a::before { min-width: 1.6rem; }
+
+/* the table of contents' current section (READING_JS scrollspy) */
+[data-toc] a.toc-active { color: var(--tx-primary); font-weight: 600; }
+
+/* reading progress: only the filled part shows, no track. It follows
+   the scroll frame by frame - daisyUI eases a progress bar over 0.3s,
+   which restarted on every scroll and juddered. Separate rules: a
+   browser throws away a whole rule with a pseudo-element it doesn't know */
+#reading-progress::-webkit-progress-bar { background: transparent; }
+#reading-progress::-webkit-progress-value { transition: none; }
+#reading-progress::-moz-progress-bar { transition: none; }
+
+
+/* Isso comments (extcomments.py) draw into the page itself, so they
+   take the theme's colors here instead of their own greys */
+#isso-thread { color: var(--color-base-content); }
+#isso-thread a { color: var(--tx-primary); }
+#isso-thread .isso-comment-header .isso-author { color: var(--color-base-content); }
+#isso-thread .isso-comment-header, #isso-thread .isso-comment-footer,
+#isso-thread .isso-comment-header a, #isso-thread .isso-comment-footer a {
+  color: color-mix(in oklch, var(--color-base-content) 60%, transparent);
+}
+#isso-thread .isso-textarea, #isso-thread .isso-postbox input[type=text],
+#isso-thread .isso-postbox input[type=email], #isso-thread .isso-postbox input[type=url] {
+  background: var(--color-base-100);
+  color: var(--color-base-content);
+  border: var(--border) solid var(--color-base-300);
+  border-radius: var(--radius-field);
+}
+#isso-thread .isso-post-action input {
+  background: var(--color-primary);
+  color: var(--color-primary-content);
+  border: 0;
+  border-radius: var(--radius-field);
+  padding: 0.35em 1em;
+}
+#isso-thread .isso-comment { border-top-color: var(--color-base-300); }
+
+/* Printing a post (a resume, a recipe): just the page itself - no
+   header, footer, comments or buttons, and no page-coloured background. */
+@media print {
+  #comments, #scroll-to-top, #toast-container, #reading-progress { display: none !important; }
+  main { background: transparent !important; padding-top: 0 !important; padding-bottom: 0 !important; }
+  body { background: #fff !important; }
+  pre.mermaid[data-drawn-dark] svg { filter: invert(1) hue-rotate(180deg); }
+}
+
+/* [custom-css: touch-size] On a touch screen, every control a finger can
+   hit (Apple: 44px; WCAG 2.5.5): daisyUI's buttons, fields, pickers and
+   tabs 44px, menu rows 44px at 16px, checkboxes, radios and switches 24px,
+   tag pills 32px with a 44px tap area, what opens a fold and a link alone in a list 44px - set once on daisyUI's own size variables, so every
+   page, panel, dialog and menu follows. Fields' text 16px: under it, an
+   iPhone zooms the page in when a field is tapped. Large buttons (the
+   site's header, 48px) keep their own. A mouse keeps the denser sizes. */
+@media (pointer: coarse) {
+  :root .btn:not(.btn-lg, .btn-xl, .sr-only) { --size: 2.75rem; min-width: 2.75rem; }
+  /* a setting's Reset (ui.ResetButton): its 44px reach past the 24px it
+     takes in the row - in a narrow one (the footer's list) the words
+     beside it were squeezed */
+  :root [data-custom-reset] { margin: -0.625rem; }
+  :root :is(.btn-xs, .btn-sm) { --fontsize: 0.875rem; }
+  :root :is(.input, .select) { --in-size-mul: 11; --sl-size-mul: 11; }
+  :root :is(.input, .select, .textarea) { --font-size-min: 1rem; }
+  :root :is(.tabs, .tabs-xs, .tabs-sm) { --tab-height: 2.75rem; }
+  :root .tab { min-width: 2.75rem; }
+  /* what opens a fold: a folded section's heading, a "Details" link */
+  :root summary:is(.collapse-title, .link) { min-height: 2.75rem; align-content: center; }
+  :root .menu :where(li:not(.menu-title) > :not(ul, menu, details, .menu-title, .btn)),
+  :root .menu :where(li:not(.menu-title) > details > summary:not(.menu-title)) {
+    min-height: 2.75rem; align-content: center; font-size: 1rem;
+  }
+  :root :is(.checkbox, .radio, .toggle):not(.checkbox-lg, .radio-lg, .toggle-lg) { --size: 1.5rem; }
+  /* a pill you can tap: 32px to look at, 44px to hit - its tap area reaches
+     6px above and below, and its own margin keeps the next row's clear */
+  :root :is(a, button).badge:not([data-tap-area]) { --size: 2rem; font-size: 0.875rem; min-width: 2.75rem; margin-block: 6px; }
+  :root :is(a, button).badge, :root .badge[data-tap-area] { position: relative; }
+  :root :is(a, button).badge:not([data-tap-area])::after { content: ""; position: absolute; inset: -6px 0; }
+  /* one among pills you only read (the editor's Layout): their size, its
+     44px reached past its edges */
+  :root .badge[data-tap-area]::after { content: ""; position: absolute; inset: -12px 0; }
+  /* a link on its own - in a list (breadcrumbs, the archive's months), a
+     table's cell or a line of its own - and one inside a menu's fold
+     heading, its whole row. Not one that's already its whole row (.block,
+     a search result): as a flex row, its lines sat side by side */
+  :root :is(li, td, p) > a:only-child:not(.menu *, .btn, .block) {
+    display: inline-flex; align-items: center; min-height: 2.75rem; min-width: 2.75rem;
+    column-gap: 0.25em; /* a part inside it (a count) loses its leading space as a flex item */
+  }
+  :root .menu summary:has(> a) { padding-block: 0; }
+  :root .menu summary > a { display: inline-flex; align-items: center; min-height: 2.75rem; }
+  :root [data-row-menu] .btn:not(.dropdown-content .btn) { font-size: 1rem; }
+}

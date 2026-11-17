@@ -1,0 +1,61 @@
+# the local tailwindcss binary is built for your dev machine's OS -
+# the Dockerfile downloads a fresh one for Linux during the image build
+.daisyft/bin/
+
+# compiled by the Dockerfile itself
+static/css/output.css
+
+# local data (posts, sqlite db, uploads) - never bake into the image,
+# mount real storage at /data instead
+data/
+# tools/demo.py's output, and a checkout's own tools (gh, fly) - a
+# deploy from a working folder was copying them in
+demo-data/
+.tools/
+
+# secrets must never end up inside an image
+.env
+.env.*
+
+# not needed at runtime
+.git/
+.github/
+.claude/
+docs/
+*.md
+docker-compose.yml
+render.yaml
+railway.json
+fly.toml
+
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# the test suite runs in CI, not in the image
+tests/
+pytest.ini
+requirements-dev.txt
+
+# ...except the pages the admin's Help shows (HELP_PAGES)
+!CHANGELOG.md
+!docs/guide/getting-started.md
+!docs/guide/writing.md
+!docs/guide/pages.md
+!docs/guide/design.md
+!docs/guide/grow.md
+!docs/guide/run.md
+!docs/guide/how-it-works.md
+!docs/guide/put-together.md
+!docs/guide/sections-templates.md
+!docs/guide/reference.md
+!docs/guide/troubleshooting.md
+!docs/FAQ.md
+!docs/DEPLOYMENT.md
+!docs/SPONSORS.md
+!docs/API.md
+
+# the sample blog's photo cache (tools/demo.py) - downloaded again
+# by a demo when it starts, never part of an image
+demo-cache/

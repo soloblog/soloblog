@@ -1,0 +1,54 @@
+# platform-specific tailwindcss binary - daisyft downloads the right
+# one for whatever machine runs `daisyft init`/`build`, so it doesn't
+# belong in source control
+.daisyft/bin/
+
+# compiled from static/css/input.css - run `daisyft build` to regenerate
+static/css/output.css
+
+data/
+# a stray, unused 0-byte file at the repo root from early development -
+# config.py's real DB_PATH has always been data/blog.db (already
+# ignored above); this one was never read by the app
+/soloblog.db
+
+__pycache__/
+*.pyc
+*.pyo
+.Python
+*.egg-info/
+
+# secrets - the app itself never writes one (SESSION_SECRET etc. are
+# read from real environment variables, see config.py), but this is
+# where a local override would go if anyone adds one later
+.env
+.env.*
+!.env.example
+
+# editors/OS
+.vscode/
+.idea/
+*.swp
+.DS_Store
+Thumbs.db
+
+# the project's virtualenv (docs/DEVELOPMENT.md > Local setup), and
+# the caches its tools leave behind
+.venv/
+venv/
+.pytest_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# command-line tools kept beside the project (gh, flyctl, gitleaks)
+.tools/
+
+# local Claude Code config and worktrees - not part of the project
+.claude/
+
+# tools/demo.py output
+/demo-data/
+/demo-live/
+/demo-cache/
+dist/
