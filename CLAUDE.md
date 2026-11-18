@@ -17,9 +17,10 @@ words a user sees, > Writing and settings.
 
 ## What Soloblog is (and isn't)
 
-A self-hosted blog and personal website for **one person**. FastHTML +
-htmx, daisyUI 5 / Tailwind 4 (built with daisyft, no Node), SQLite, and
-markdown files on disk as the source of truth for posts.
+A free, open source blog and website for **one person**, run on your own
+server or hosting account. FastHTML + htmx, daisyUI 5 / Tailwind 4
+(built with daisyft, no Node), SQLite, and markdown files on disk as the
+source of truth for posts.
 
 It is not for teams or organisations: no multi-author or roles. Readers
 can become **members** (free or paid) who sign in by email to read
@@ -45,7 +46,7 @@ something that changes direction.
 | `CHANGELOG.md` | Every user-visible change, under `[Unreleased]` until a release. |
 | `tools/demo.py` | Builds the sample blog used for screenshots and the live demo. |
 | `deploy/platforms/` | The app-store packages (Umbrel, Unraid, Coolify...), sent to each store by `tools/platforms.py`. |
-| `docs/brand/` | The logo (the S and dot, #605DFF), made by `tools/brand.py`. |
+| `docs/brand/` | The brand: the official words that describe Soloblog, and the logo (the S and dot, #605DFF), made by `tools/brand.py`. |
 | `tools/phone_check.py` | Every page on a phone, checked for layout problems, script errors and confirm buttons that don't send. |
 | `tools/fuzz_routes.py` | Every route sent what a bot or attacker might - none may crash. Part of the tests. |
 | `tests/` | pytest, about two minutes. |
@@ -219,6 +220,9 @@ desktop - in the same change, not just where it was first asked for.
   already has for the same action; no full stop on a status message or a
   tooltip. Long choices are pickers, set-once groups are summaries that
   open, a page fits in about three screens.
+- **Soloblog is described in its official words** - the tagline, the one
+  line or the paragraph in docs/brand/README.md > The words, never a new
+  wording. A test checks the places that use them.
 - **The user guide** is written by task, one group per file in
   `docs/guide/`, every page in the shape docs/DEVELOPMENT.md > The user
   guide sets out (`docs/guide/writing.md` is the model) - read it before

@@ -1,4 +1,22 @@
-# Soloblog's logo
+# Soloblog's brand
+
+## The words
+
+Soloblog is described in these words, everywhere - GitHub, the README,
+the image, the app stores, the website, the guide. Use the length that
+fits; don't reword them.
+
+| Length | Words | Where |
+|---|---|---|
+| **Tagline** | Your own blog and website. Yours to keep. | The README's heading, the website's tagline, share images and covers |
+| **One line** | A free, open source blog and website for one person, run on your own server or hosting account. | The repository and organisation on GitHub, the Docker image, app-store taglines and short descriptions, the FAQ, the website's description |
+| **Paragraph** | Soloblog is a free, open source blog and website for one person, run on your own server or hosting account. Write in a calm editor, pick from 35 colour palettes, and build pages from sections. Your posts are plain text files you own. | Under the README's heading, app-store long descriptions, the website's homepage and announcements |
+
+A longer text starts with the paragraph and goes on from there. A store
+with a short limit takes the tagline. `tests/test_brand.py` checks the
+places above still say them.
+
+## The logo
 
 The mark is an **S with a dot** - one person, their own site. The name is
 written **s●loblog**, the first o a filled dot.
