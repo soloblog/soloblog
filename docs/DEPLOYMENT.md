@@ -365,7 +365,8 @@ which Soloblog isn't.
 App Platform has no disk, so Soloblog keeps everything in a bucket and
 restores itself from it on each deploy.
 
-1. In DigitalOcean, create a **Spaces** bucket (online storage) and an
+1. In [DigitalOcean](https://www.awin1.com/cread.php?awinmid=123996&awinaffid=3158224)
+   *(referral link)*, create a **Spaces** bucket (online storage) and an
    access key for it.
 2. Select the button above.
 3. Fill in the `S3_*` values it asks for - the bucket's details, see
@@ -407,7 +408,7 @@ Debian, then follow [With Docker Compose](#with-docker-compose).
 | Provider | Worth knowing |
 |---|---|
 | [Hetzner](https://www.hetzner.com/cloud) | Very good value; data centres in Germany, Finland, the US and Singapore. |
-| [DigitalOcean](https://www.digitalocean.com/products/droplets) | Simple dashboard and excellent tutorials; Droplets in many regions. Blocks SMTP by default - [use Resend for email](#send-email-from-your-host). |
+| [DigitalOcean](https://www.awin1.com/cread.php?awinmid=123996&awinaffid=3158224) *(referral link)* | Simple dashboard and excellent tutorials; Droplets in many regions. Blocks SMTP by default - [use Resend for email](#send-email-from-your-host). |
 | [Vultr](https://www.vultr.com/?ref=9936472-9J) *(referral link)* | Many locations worldwide, hourly billing. |
 | [Linode (Akamai)](https://www.linode.com) | Long-running, straightforward pricing, good support. |
 | [Hostinger VPS](https://www.hostinger.com/vps-hosting) | Budget plans with a friendly panel; also sells domains. |
