@@ -41,6 +41,7 @@ Security comes before features ([CLAUDE.md](../CLAUDE.md)).
 | [WCAG 2.2](https://www.w3.org/TR/WCAG22/) level AA | Text at 4.5:1 in every theme, your own too; keyboard use; labels; targets at least 24px | `tools/theme_contrast.py`; tests; `tools/phone_check.py --axe` |
 | [WCAG 2.5.5](https://www.w3.org/WAI/WCAG22/Understanding/target-size-enhanced) (AAA), [Apple's HIG](https://developer.apple.com/design/human-interface-guidelines/accessibility), [Material](https://m3.material.io/foundations/designing/structure) | On a touch screen, 44px targets and 16px field text (the `touch-size` rule) | `tools/phone_check.py` |
 | Motion | Animations off with Settings' switch or the reader's "reduce motion"; nothing ticks or moves on its own (WCAG 2.2.2) | Review |
+| Reporting | Where the project stands, what isn't tested yet, and how to report a barrier | [ACCESSIBILITY.md](../ACCESSIBILITY.md) |
 
 ## Interface
 

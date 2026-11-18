@@ -637,7 +637,7 @@ def test_docs_read_as_the_project_not_a_log():
     import re
     from pathlib import Path
     root = Path(__file__).resolve().parent.parent
-    files = [root / name for name in ("README.md", "CLAUDE.md", "CONTRIBUTING.md", "SECURITY.md", "SUPPORT.md")]
+    files = [root / name for name in ("README.md", "CLAUDE.md", "CONTRIBUTING.md", "SECURITY.md", "SUPPORT.md", "ACCESSIBILITY.md")]
     files += sorted((root / "docs").rglob("*.md")) + sorted((root / ".github").rglob("*.md"))
     found = []
     for path in files:

@@ -308,6 +308,7 @@ pull request.
   pull request to `soloblog/locales/`
 - **Security:** how sites are kept safe is in [the user guide](docs/guide/how-it-works.md#how-your-site-is-kept-safe); report a problem privately - see [SECURITY.md](SECURITY.md)
 - **Help with your own site:** [SUPPORT.md](SUPPORT.md)
+- **Accessibility:** what Soloblog aims for, and how to report a barrier - see [ACCESSIBILITY.md](ACCESSIBILITY.md)
 
 Soloblog stays small on purpose: no multiple authors, no multi-site
 hosting. What's planned is in the [roadmap](docs/ROADMAP.md); what
