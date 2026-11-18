@@ -30,6 +30,11 @@ out, are in [DECISIONS.md](DECISIONS.md). An idea of your own starts in
 - **A note for sample words left in.** Applying a template adds its
   sample words ("The first step."), which can reach a live page.
   Publishing a page that still has them says so, gently.
+- **Referral and paid links marked for search engines.** A link can be
+  marked as a referral or paid link, and gets `rel="sponsored"`, which
+  search engines ask for on links that earn money. The simplest way:
+  in the link box, and for a link written with *(referral link)* after
+  it, as the hosting guide does.
 - **Screenshots in Help, if people get lost.** The guide is written to
   work without pictures (every step names the button and where it is);
   pictures would add to every install and need retaking when the look
