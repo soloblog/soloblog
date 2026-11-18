@@ -999,6 +999,28 @@ def test_a_call_to_action_can_have_a_heading_of_its_own(admin, client):
     assert "<h3" not in cards[1].split("</a>")[0] and ">Just a line.</p>" in cards[1]
 
 
+def test_a_buttons_line_in_a_call_to_action_or_hero_gives_its_buttons_once(admin, client):
+    """A Buttons line in a Call to action or a Hero is the card's buttons -
+    the first the main one, the rest beside it - not a row in the text
+    with its last link repeated as the card's button."""
+    buttons = "Buttons: [Get started](/get-started) [Try the demo](https://demo.example.org)"
+    body = (f"Intro.\n\n## Try it\n\nSection: Call to action\n\nA line.\n\n{buttons}\n\n"
+            f"## Big\n\nSection: Hero\n\nA line.\n\n{buttons}")
+    page = client.get(f"/post/{save_post(admin, title='Two buttons', body=body)}").text
+    cta = page.split('data-section="cta"')[1].split('data-section=')[0]
+    hero = page.split('data-section="hero"')[1].split("</section>")[0]
+    from soloblog.pages import BTN_ON_PRIMARY
+    for card, main, quiet in ((cta, "btn", BTN_ON_PRIMARY), (hero, "btn btn-primary", "btn btn-outline")):
+        assert card.count(">Try the demo</a>") == 1 and card.count(">Get started</a>") == 1
+        assert f'<a href="/get-started" class="{main}">' in card
+        assert f'<a href="https://demo.example.org" class="{quiet}">' in card
+        assert "not-prose flex flex-wrap" not in card
+    # one link is still the one button, as before
+    page = client.get(f"/post/{save_post(admin, title='One button', body='Intro.\n\n## Go\n\n'
+                                         'Section: Call to action\n\nA line.\n\n[Come along](/contact)')}").text
+    assert page.split('data-section="cta"')[1].count('class="btn"') == 1
+
+
 def test_a_portfolio_piece_on_another_site_says_so_with_an_arrow(admin, client):
     # its title ends in ↗ and it opens in a new tab - no extra Visit line;
     # a piece on this site is as it was

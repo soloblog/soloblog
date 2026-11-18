@@ -123,9 +123,12 @@ any [gallery style](reference.md#galleries).
 ### Section: Call to action
 
 One line and a button, on a card in your main colour. Under the heading:
-a line, and a link for the button. To give the card a big heading of its
-own, start it with one: `### Bring a friend`. Also written
-`Section: CTA`.
+a line, and a link for the button. For two buttons, write a
+[Buttons](reference.md#callouts-tabs-and-other-blocks) line instead, like
+`Buttons: [Get started](/start) [Try the demo](/demo)` - the first is
+the main button, the second a quieter one beside it. To give the card a
+big heading of its own, start it with one: `### Bring a friend`. Also
+written `Section: CTA`.
 
 `Style: Cover` makes it a [Hero](#section-hero): a big heading and a button
 over a picture, across the page.
@@ -349,8 +352,8 @@ keeps it narrower.
 ### Section: Hero
 
 A big heading, a line and a button over a picture, across the whole
-screen. Under the heading: a picture, a line and a link for the button -
-the `##` heading is the big heading. A Call to action or a Picture and
+screen. Under the heading: a picture, a line and a link for the button,
+or a Buttons line for two - the `##` heading is the big heading. A Call to action or a Picture and
 text with `Style: Cover` is shown the same way.
 
 `Style: Window` is the opening of a launch or product page: the picture

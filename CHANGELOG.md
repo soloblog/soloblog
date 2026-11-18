@@ -7,6 +7,11 @@ versions may include breaking changes; they'll always be listed here.
 
 ## [Unreleased]
 
+### Fixed
+
+- A Buttons line in a Call to action or a Hero shows its buttons on the
+  card, instead of repeating the last one
+
 ## [1.0.0-beta] - 2026-11-17
 
 The first public release: a blog and personal website for one person,

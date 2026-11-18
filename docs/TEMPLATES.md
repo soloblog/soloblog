@@ -94,7 +94,7 @@ Review (Reviews).
 | Team (also People) | Each `###` a person; picture, `Role:`, words | Cards with a photo, role and line. |
 | FAQ (also Questions) | Each `###` a question, the words under it its answer | Questions that open to their answers. |
 | Photo gallery | A `gallery` block | The site's gallery styles. |
-| Call to action (also CTA) | The words and the last link | One line and a button on a card in the main colour. |
+| Call to action (also CTA) | The words, and the last link or a Buttons line | One line and a button (or a main and a quieter one) on a card in the main colour. |
 | Features | Each `###` a point; `Icon:`, words | Short points with an icon, side by side. |
 | Columns | Each `###` a column | Text in columns, side by side. |
 | Sign-up (also Signup, Newsletter) | The words | The newsletter sign-up box under the words. |
@@ -117,7 +117,7 @@ Review (Reviews).
 | Project facts | Each `Key: value` line (Client, Year, Role...) | A strip of facts, two across on a phone. |
 | Photo story | `First paragraph:` (Big or Normal), `Pictures together:` (Side by side or One under another), `A line after a picture:` (Beside it or Under it) | A magazine arrangement: a lone picture wide, pictures in a row side by side, a short line beside its picture (sides taking turns), quotes as pull quotes, a big first paragraph, each `###` beside its words. |
 | Story (also Scroll story) | Each `###` a step: its first picture, its words and its last link; words before the first step | Steps whose words scroll while the step's picture is held: beside the words on a wide screen, filling the screen behind them on a phone, fading from one to the next. A step with no picture keeps the one before it. A plain stack of pictures and words where scripts or motion are off. |
-| Hero | A `Label:` line (Window only), the first picture, a paragraph of links (buttons), a short list (points), the `##` | A big heading, a line and a button over its picture on a dark layer. Style Window: the label, a very big heading, the line, buttons, points and the picture framed as a window. |
+| Hero | A `Label:` line (Window only), the first picture, a paragraph of links or a Buttons line (buttons), a short list (points), the `##` | A big heading, a line and a button over its picture on a dark layer. Style Window: the label, a very big heading, the line, buttons, points and the picture framed as a window. |
 | Bento grid (also Bento) | Each `###` a tile, the first big | Tiles of different sizes. |
 | Recipe facts | Each `Key: value` line (Serves, Servings, Yield or Makes; Prep; Cook or Bake; Total) | A strip of facts, side by side in a wide column and one under another in a narrow one. |
 | Ingredients | The first list | Items to tick off that cross out. |

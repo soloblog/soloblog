@@ -1330,6 +1330,13 @@ GROUP_SPACE = "mb-8 sm:mb-12"      # an intro or heading, before its items
 CTA_CARD = (f"card bg-primary text-primary-content {SHADOW_RAISED} px-6 py-14 sm:py-20 text-center items-center "
             "overflow-hidden")
 ON_PRIMARY = "text-primary-content/85 [&_a]:text-primary-content [&_strong]:text-primary-content"
+# a quieter second button on the main colour, or over a photo's dark layer:
+# daisyUI's outline button takes the page's text colour, which can vanish
+# there, so its own colour variables are set to the card's text colour (white
+# on a photo) - filled with it on hover
+BTN_ON_PRIMARY = ("btn btn-outline [--btn-color:var(--color-primary-content)] "
+                  "[--btn-border:var(--color-primary-content)] [--btn-fg:var(--color-primary)]")
+BTN_ON_PHOTO = "btn btn-outline [--btn-color:var(--color-white)] [--btn-border:var(--color-white)] [--btn-fg:var(--color-black)]"
 # a card you act on (it has a button) rises a little under the pointer - not
 # one you only read, which would look clickable when it isn't
 LIFT = ("transition duration-200 hover:-translate-y-1 hover:shadow-lg motion-reduce:transition-none "
@@ -1607,14 +1614,20 @@ def _render_picture_and_text(out, row, s, html, toc, logged_in, series):
 
 def _render_cta(out, row, s, html, toc, logged_in, series):
     """One line and a button on a card in the main colour, as a landing
-    page closes. A ### first is the card's own headline."""
-    href, label, rest = _take_button(html)
+    page closes. A ### first is the card's own headline. A Buttons line,
+    or a paragraph of only links, gives the card a main button and quieter
+    ones beside it."""
+    buttons, rest = _take_buttons(html)
     head = re.match(r"\s*<h2[^>]*>(.*?)</h2>", rest, re.S)
     rest = rest[head.end():] if head else rest
     out["body"] = Div(H3(NotStr(head.group(1)), cls="text-3xl sm:text-4xl font-extrabold tracking-tighter text-balance")
                       if head else None,
                       _prose(rest, ON_PRIMARY),
-                      A(NotStr(label), href=href, cls="btn mt-4") if href else None,
+                      # on the main colour: the first in the page's base colour,
+                      # the rest outlined in the card's text colour
+                      Div(*[A(NotStr(label), href=href, cls="btn" if i == 0 else BTN_ON_PRIMARY)
+                            for i, (href, label) in enumerate(buttons)],
+                          cls="mt-4 flex flex-wrap justify-center gap-2") if buttons else None,
                       cls=f"{CTA_CARD} gap-2")
 
 
@@ -1724,13 +1737,16 @@ def _hero(h, text, s, full):
     so white words read on any photo (WCAG 1.4.3), as a full-screen cover's
     do. Without a picture, the same on the page's quieter tone."""
     img, credit, rest = _take_image(text)
-    href, label, rest = _take_button(rest)
+    buttons, rest = _take_buttons(rest)
     heading = re.sub(r"^<h2", '<h2 class="text-3xl sm:text-5xl font-bold leading-tight text-balance m-0"', h.strip(), count=1)
     # over a photo, the words white whatever the theme (daisyUI sets prose's colours)
     line = Div(NotStr(rest), cls=f"text-lg sm:text-xl [&_p]:m-0 [&_p+p]:mt-2 "
                                  f"{'text-white/90 [&_a]:text-white [&_a]:underline' if img else 'text-base-content/80'}")
     words = Div(NotStr(heading), line if text_of(rest) else None,
-                A(NotStr(label), href=href, cls="btn btn-primary self-start mt-1") if href else None,
+                Div(*[A(NotStr(label), href=href,
+                        cls="btn btn-primary" if i == 0 else BTN_ON_PHOTO if img else "btn btn-outline")
+                      for i, (href, label) in enumerate(buttons)],
+                    cls="mt-1 flex flex-wrap gap-2") if buttons else None,
                 cls=f"relative z-10 flex flex-col gap-3 py-10 sm:py-14 px-6 sm:px-10 {_col(s) if full else ''} "
                     f"{'text-white' if img else ''}")
     if not img:
@@ -1924,9 +1940,14 @@ def place_sections(row, s, html, toc, logged_in, series, out):
 
 
 def _take_buttons(body):
-    """[(href, label html)] and the body without them, for a paragraph of
-    only links - an opening's "Try the demo · Get started" - in the order
-    written; otherwise the last link alone, as _take_button."""
+    """[(href, label html)] and the body without them: a Buttons line's,
+    or a paragraph of only links - an opening's "Try the demo · Get
+    started" - in the order written; otherwise the last link alone, as
+    _take_button."""
+    row = re.search(r'<div class="not-prose flex flex-wrap gap-2 my-6">(.*?)</div>', body, re.S)
+    if row:
+        return (re.findall(r'<a href="([^"]+)"[^>]*>(.*?)</a>', row.group(1), re.S),
+                body[:row.start()] + body[row.end():])
     for m in re.finditer(r"<p>(.*?)</p>", body, re.S):
         links = re.findall(r'<a href="([^"]+)"[^>]*>(.*?)</a>', m.group(1), re.S)
         left = re.sub(r'<a href="[^"]+"[^>]*>.*?</a>|<strong>|</strong>|[\s·|]', "", m.group(1), flags=re.S)
