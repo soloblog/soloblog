@@ -1,6 +1,6 @@
 {
   "name": "Soloblog",
-  "description": "A self-hosted blog for one writer: markdown posts, 35 colour palettes, comments, the fediverse.",
+  "description": "A free, open source blog and website for one person, run on your own server or hosting account.",
   "repository": "https://github.com/soloblog/soloblog",
   "keywords": ["blog", "markdown", "self-hosted", "fasthtml", "activitypub"],
   "stack": "container",

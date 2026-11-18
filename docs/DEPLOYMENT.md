@@ -118,8 +118,8 @@ it includes this guide's referral links, marked as such - see
 [About the links in this guide](#about-the-links-in-this-guide).
 
 ```text
-Set up my own Soloblog blog for me. Soloblog is a self-hosted
-personal blog: one Docker image, ghcr.io/soloblog/soloblog:latest,
+Set up my own Soloblog blog for me. Soloblog is a free, open source
+blog and website for one person: one Docker image, ghcr.io/soloblog/soloblog:latest,
 and one folder of data - it runs anywhere a Docker image can. Read
 its deployment guide, and the part of it for where it will run,
 before you start:

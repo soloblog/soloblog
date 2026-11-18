@@ -2,7 +2,7 @@
   "id": "soloblog",
   "name": "Soloblog",
   "version": "1.0.0-beta",
-  "description": "A blog and personal website for one person, that you run yourself. Markdown posts, 35 colour palettes, pages made of sections, comments, a newsletter, members and the fediverse - in one container with one folder of data.",
+  "description": "A free, open source blog and website for one person, run on your own server or hosting account.",
   "logo": "soloblog.svg",
   "links": {
     "github": "https://github.com/soloblog/soloblog",

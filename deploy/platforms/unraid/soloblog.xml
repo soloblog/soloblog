@@ -8,7 +8,7 @@
   <Support>https://github.com/soloblog/soloblog/discussions</Support>
   <Project>https://soloblog.zrplus.net</Project>
   <ReadMe>https://github.com/soloblog/soloblog#readme</ReadMe>
-  <Overview>A free, open source blog and personal website for one person. Write in a calm editor, choose from 35 colour palettes, and build pages out of sections. Readers can comment, subscribe by email or follow from Mastodon, and members-only posts can be free or paid. Posts are markdown files in one folder, with backups built in.[br][br]First-time setup asks for a setup token: select Soloblog's icon in the Docker tab, then Logs, and copy it from the lines marked [setup].</Overview>
+  <Overview>Soloblog is a free, open source blog and website for one person, run on your own server or hosting account. Write in a calm editor, pick from 35 colour palettes, and build pages from sections. Your posts are plain text files you own. Readers can comment, subscribe by email or follow from Mastodon, and members-only posts can be free or paid. Everything is kept in one folder, with backups built in.[br][br]First-time setup asks for a setup token: select Soloblog's icon in the Docker tab, then Logs, and copy it from the lines marked [setup].</Overview>
   <Category>Productivity: Social: Network:Web</Category>
   <WebUI>http://[IP]:[PORT:8080]/</WebUI>
   <TemplateURL>https://raw.githubusercontent.com/soloblog/soloblog/master/deploy/platforms/unraid/soloblog.xml</TemplateURL>

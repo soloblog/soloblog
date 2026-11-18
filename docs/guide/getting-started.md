@@ -1,8 +1,8 @@
 # Getting started
 
 This page takes you from a fresh install to a site that's yours, with
-your first post on it. Soloblog is a personal website and blog in one,
-made for one person, so there's one account to log in with: yours.
+your first post on it. Soloblog is a free, open source blog and website
+for one person, so there's one account to log in with: yours.
 
 **Contents:** [Set up the site](#set-up-the-site) ·
 [Write and publish the first post](#write-and-publish-the-first-post) ·

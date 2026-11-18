@@ -6,8 +6,7 @@ is everything to put in it, signed in to the project's Railway account.
 ## The template
 
 - **Name:** Soloblog
-- **Description:** A blog and personal website for one person, that you run
-  yourself
+- **Description:** A free, open source blog and website for one person, run on your own server or hosting account
 - **Category:** Blogs
 - **Icon:** `docs/brand/soloblog-icon-512.png`
 
@@ -39,11 +38,11 @@ so nobody has to search the logs.
 ```markdown
 # Deploy and Host Soloblog on Railway
 
-Soloblog is a free, open source blog and personal website for one person.
-Write in a calm editor, choose from 35 colour palettes, and build pages out of
-sections - a homepage, a portfolio, a book's landing page. Readers can
-comment, subscribe by email or follow from Mastodon, and members-only posts
-can be free or paid.
+Soloblog is a free, open source blog and website for one person, run on your
+own server or hosting account. Write in a calm editor, pick from 35 colour
+palettes, and build pages from sections. Your posts are plain text files you
+own. Readers can comment, subscribe by email or follow from Mastodon, and
+members-only posts can be free or paid.
 
 ## About Hosting Soloblog
 

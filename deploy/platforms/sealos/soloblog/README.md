@@ -1,6 +1,6 @@
 # Deploy and Host Soloblog on Sealos
 
-Soloblog is a free, open source blog and personal website for one person. This template runs one Soloblog container on Sealos with a persistent volume for everything it keeps, and an HTTPS address.
+Soloblog is a free, open source blog and website for one person, run on your own server or hosting account. Write in a calm editor, pick from 35 colour palettes, and build pages from sections. Your posts are plain text files you own. This template runs one Soloblog container on Sealos with a persistent volume for everything it keeps, and an HTTPS address.
 
 ![Soloblog Screenshot](https://raw.githubusercontent.com/labring-actions/templates/kb-0.9/template/soloblog/website-screenshot.webp)
 

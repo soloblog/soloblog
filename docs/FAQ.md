@@ -11,10 +11,11 @@ Short answers to what people ask most, each with a link to more in the
 
 ### What is Soloblog?
 
-A blog and personal website for one person, that you run yourself. You
-write in your web browser, and your posts are saved as files you own. It comes with
-what a personal site needs - pages, a menu, comments, a newsletter,
-members, feeds, search, stats - without plugins.
+A free, open source blog and website for one person, run on your own
+server or hosting account. You write in your web browser, and your posts
+are saved as files you own. It comes with what a personal site needs -
+pages, a menu, comments, a newsletter, members, feeds, search, stats -
+without plugins.
 
 ### Is it free?
 

@@ -5,10 +5,12 @@
   <img src="docs/brand/soloblog-wordmark.svg" alt="Soloblog" height="64">
 </picture>
 
-### A free, open source blog and website that's yours forever
+### Your own blog and website. Yours to keep.
 
-Beautiful from the first minute, a joy to write in, and running on your own
-server or hosting account.
+Soloblog is a free, open source blog and website for one person, run on your
+own server or hosting account. Write in a calm editor, pick from 35 colour
+palettes, and build pages from sections. Your posts are plain text files you
+own.
 
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Release](https://img.shields.io/github/v/release/soloblog/soloblog?include_prereleases&sort=semver)](https://github.com/soloblog/soloblog/releases)

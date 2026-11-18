@@ -4,7 +4,7 @@ FROM python:3.14-slim
 # build adds its version, source and commit too (docker/metadata-action),
 # and repeats these, which must stay the same (.github/workflows/docker.yml)
 LABEL org.opencontainers.image.title="Soloblog" \
-      org.opencontainers.image.description="A blog and personal website for one person, that you run yourself" \
+      org.opencontainers.image.description="A free, open source blog and website for one person, run on your own server or hosting account." \
       org.opencontainers.image.licenses="MIT" \
       org.opencontainers.image.vendor="ZRPlus Studio" \
       org.opencontainers.image.url="https://github.com/soloblog/soloblog" \

@@ -2,7 +2,7 @@
   "id": "net.zrplus.soloblog.cloudronapp",
   "title": "Soloblog",
   "author": "ZRPlus Studio",
-  "tagline": "A blog and personal website for one person",
+  "tagline": "Your own blog and website. Yours to keep.",
   "description": "file://DESCRIPTION.md",
   "postInstallMessage": "file://POSTINSTALL.md",
   "changelog": "file://CHANGELOG",

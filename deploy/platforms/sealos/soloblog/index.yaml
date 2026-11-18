@@ -7,7 +7,7 @@ spec:
   url: https://soloblog.zrplus.net
   gitRepo: https://github.com/soloblog/soloblog
   author: ZRPlus Studio
-  description: A blog and personal website for one person, that you run yourself.
+  description: A free, open source blog and website for one person, run on your own server or hosting account.
   readme: https://raw.githubusercontent.com/labring-actions/templates/kb-0.9/template/soloblog/README.md
   icon: https://raw.githubusercontent.com/labring-actions/templates/kb-0.9/template/soloblog/logo.png
   screenshots:
