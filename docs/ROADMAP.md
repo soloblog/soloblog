@@ -39,10 +39,11 @@ out, are in [DECISIONS.md](DECISIONS.md). An idea of your own starts in
   sending services - Postmark, Brevo, Mailgun, Amazon SES - as choices
   beside Resend in **Settings > Email** and as host settings, so no host
   ties a site to one company.
-- **Snappier motion.** Sections that come into view with a little spring,
-  and scrolling that clicks into place where it helps (the Story, a
-  slider). Our own CSS - spring curves with `linear()` easing and
-  scroll-snap - in every palette, "reduce motion" respected, no new
+- **Better animations and spacing for sections.** Sections that come
+  into view with a little spring, and scrolling that settles into place
+  where it helps (the Story, a slider). Even spacing between and inside
+  sections, so a page keeps the same rhythm on a phone and a wide screen.
+  Our own CSS, in every palette; "reduce motion" respected; no new
   dependency.
 - **Automations with n8n, Zapier and Make.** They work today through the
   webhooks and the API ([API.md](API.md)); this makes them easy. In order
@@ -92,11 +93,7 @@ Ideas, with no date.
 - **An editor that shows the page as it looks**, beside today's markdown
   one - for writers who've never used markdown. The post stays a markdown
   file underneath.
-- **A second look beside daisyUI** (2.0): a whole different theme system
-  to choose - dark, square-cornered, thin lines dividing the page into a
-  grid, big tight headings, one bright accent. Our own design and free
-  fonts. Before then, a palette and starting style in that spirit could
-  give a taste of it within daisyUI.
+- **Neubrutalism** (2.0): a second look to choose beside daisyUI's.
 - **Plugins for other apps** (an Obsidian or VS Code "publish" button)
   are for anyone to build on the API - Soloblog itself doesn't sync.
 
