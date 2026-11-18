@@ -1083,3 +1083,10 @@ def test_only_a_storys_heading_is_held(admin, client):
     slug = save_post(admin, title="Heading of a pricing section", body=PRICING)
     page = client.get(f"/post/{slug}").text
     assert "data-story-head" not in page and "data-story-wrap" not in page
+
+
+def test_a_note_under_a_menu_course_shows(admin, client):
+    slug = save_post(admin, title="Lunch", body="## Menu\n\nSection: Menu\n\n### Breakfast\n\n"
+                                              "- Toast - sourdough · $5\n\nServed until noon.\n")
+    html = client.get(f"/post/{slug}").text
+    assert "Toast" in html and "Served until noon." in html

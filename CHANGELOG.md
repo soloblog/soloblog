@@ -11,6 +11,7 @@ versions may include breaking changes; they'll always be listed here.
 
 - A Buttons line in a Call to action or a Hero shows its buttons on the
   card, instead of repeating the last one
+- Words under a Menu section's dishes show, instead of being left out
 
 ## [1.0.0-beta] - 2026-11-17
 

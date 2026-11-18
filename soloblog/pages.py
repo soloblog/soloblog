@@ -2537,6 +2537,8 @@ def _render_menu(out, row, s, html, toc, logged_in, series):
     blocks = []
     for h, inner, body in secs:
         raw = re.findall(r"<li>(.*?)</li>", body, re.S)
+        # with the dishes in a list, what isn't - a note under the course - shows under them
+        rest = re.sub(r"<(ul|ol)\b.*?</\1>", "", body, flags=re.S) if raw else ""
         if not raw:
             for p in re.findall(r"<p>(.*?)</p>", body, re.S):
                 raw += [ln for ln in re.split(r"\n|<br\s*/?>", p) if ln.strip()]
@@ -2554,7 +2556,8 @@ def _render_menu(out, row, s, html, toc, logged_in, series):
                 Div(NotStr(m.group("about")), cls="text-sm text-base-content/70") if m.group("about") else None,
                 cls="break-inside-avoid mb-3"))
         blocks.append(Section(H3(NotStr(inner), cls=f"{ITEM_TITLE} mb-3"),
-                              Div(*items, cls="sm:columns-2 gap-8") if items else _prose(body),
+                              Div(*items, cls="sm:columns-2 gap-8") if items else None,
+                              _prose(rest, "mt-3") if items else _prose(body),
                               id=_id_of(h) or None, cls="mb-8"))
     out["body"] = Div(_intro(intro), *blocks)
 
