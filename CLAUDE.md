@@ -41,7 +41,7 @@ something that changes direction.
 | `docs/MAINTAINING.md` | Releases, triage, dependencies and their risks. |
 | `docs/DECISIONS.md` | Product and technical decisions, with the reasons. |
 | `docs/STANDARDS.md` | The outside standards we conform to (OWASP, WCAG, PEP 8...) and how each is checked. |
-| `docs/ROADMAP.md` | What's agreed and not built yet, nearest first. |
+| `docs/ROADMAP.md` | What's planned and not built yet, nearest first. |
 | `CHANGELOG.md` | Every user-visible change, under `[Unreleased]` until a release. |
 | `tools/demo.py` | Builds the sample blog used for screenshots and the live demo. |
 | `deploy/platforms/` | The app-store packages (Umbrel, Unraid, Coolify...), sent to each store by `tools/platforms.py`. |
@@ -88,8 +88,7 @@ docs/DEVELOPMENT.md > Local setup.
 5. **Commits:** one change per commit, written as
    [Commit messages](#commit-messages) says, as
    `ZRPlus Studio <hello.soloblog@zrplus.net>` - never a personal
-   address. Until the repository is public, commit to `master`. From then
-   on `master` is the latest release: features go on a branch into the
+   address. `master` is the latest release: features go on a branch into the
    next version's branch (`1.1`), fixes to the release into `master`,
    each by pull request (docs/MAINTAINING.md > Branches and pull
    requests). Version numbers and branches are the maintainer's call.
@@ -137,8 +136,6 @@ sites safe and their updates painless matters more than anything new.
 - **Versions** (semver; `1.0.0-beta`, then `-beta.2`... until `1.0.0`)
   are the maintainer's call: a patch for fixes, a minor for features, a
   major only for a change that needs the user to do something.
-- **No new features until 1.0.0-beta is out** - fixes, tests, defaults
-  and docs only (docs/ROADMAP.md > Before 1.0.0-beta).
 
 ## No personal details
 
@@ -155,6 +152,27 @@ privately, in the private `soloblog-website` repository (checked out
 beside this one), which also holds the project website's settings
 (docs/MAINTAINING.md > The website). Read it for context if asked; never
 copy from it into this repository.
+
+## Written as the project, not a log
+
+Everything in this repository - docs, code comments, commit messages -
+reads as the project describing itself, for a stranger, in the present
+tense: what is true and why. It isn't a record of how it got that way.
+
+- **No dates on rules, decisions or notes**, and no "agreed", "decided",
+  "done", "for now", "back on the table" or "this replaced". The
+  changelog and release notes are the only dated records.
+- **No one-time checklists or status** (set-up steps already done, launch
+  plans, what's left to do this week) - those, the full decisions log,
+  and deploy details for the project's own sites stay in the private
+  repository.
+- **Nothing about the people or tools behind a change** - who asked,
+  what was discussed, which assistant wrote it.
+- **When the direction changes,** edit the page it's on (DECISIONS.md,
+  ROADMAP.md...) so it reads as if it had always been so. History and
+  the changelog keep the trail.
+
+`tests/test_help_and_misc.py` fails on a date in the docs outside code.
 
 ## The demo and screenshots
 
@@ -223,10 +241,9 @@ desktop - in the same change, not just where it was first asked for.
   Templates, sections and Post settings).
 
 - **Migrations:** `001_schema.sql` is the whole schema as of 1.0.0-beta
-  (002-008 were folded into it on 2026-10-12, 009-012 on 2026-10-20,
-  013-016 on 2026-11-08, 017-018 on 2026-11-11). Each change after that goes in a new
-  numbered file, starting at `019_...sql` - sites from before the folds
-  have 002-018 recorded, so those names must never come back - and one
+  (002-018 were folded into it before the release). Each change after
+  that goes in a new numbered file, starting at `019_...sql` - older
+  sites have 002-018 recorded, so those names must never come back - and one
   that has shipped is never edited: a site that already ran it would
   never get the change.
 - **CSS:** Tailwind only builds classes it can see in the source, spelled
@@ -242,9 +259,9 @@ desktop - in the same change, not just where it was first asked for.
   (`tools/theme_contrast.py`) and tested.
 - **Feedback beside the action:** no pop-up toasts. A save's result shows
   in the status slot left of the buttons; lists update in place with
-  Undo. Trash and delete ask first (above). One agreed exception
-  (2026-11-08): on a phone, where there's no room beside Save, Apply a
-  template's "applied · Undo" floats as a bar at the bottom of the screen.
+  Undo. Trash and delete ask first (above). One exception: on a phone,
+  where there's no room beside Save, Apply a template's "applied · Undo"
+  floats as a bar at the bottom of the screen.
 - **Scripts** live in `soloblog/js/`, one file each, read by a `FOO_JS`
   constant. The Content-Security-Policy blocks inline handlers - use
   `actions.on()` and `data-*` attributes, and a nonce on every Script.

@@ -610,7 +610,7 @@ def test_the_admin_says_site_not_blog():
 
 def test_every_referral_link_is_marked():
     """A link that earns the project something says so, straight after it,
-    wherever it appears (DECISIONS.md, 2026-09-26; DEPLOYMENT.md > About
+    wherever it appears (DECISIONS.md > Community; DEPLOYMENT.md > About
     the links in this guide), and a page with one says so under its title,
     in the words the programmes ask for."""
     import re
@@ -626,3 +626,21 @@ def test_every_referral_link_is_marked():
             top = re.sub(r"\s+", " ", text.split("\n## ", 1)[0])
             assert "We earn commissions when you shop through the links below" in top, path.name
     assert found, "the Railway link, at least"
+
+
+def test_docs_read_as_the_project_not_a_log():
+    """No dated notes in the public docs (CLAUDE.md > Written as the
+    project, not a log) - a date only in the changelog, or inside code as
+    an example."""
+    import re
+    from pathlib import Path
+    root = Path(__file__).resolve().parent.parent
+    files = [root / name for name in ("README.md", "CLAUDE.md", "CONTRIBUTING.md", "SECURITY.md", "SUPPORT.md")]
+    files += sorted((root / "docs").rglob("*.md")) + sorted((root / ".github").rglob("*.md"))
+    found = []
+    for path in files:
+        text = re.sub(r"```.*?```", "", path.read_text(encoding="utf-8"), flags=re.S)
+        text = re.sub(r"`[^`\n]*`", "", text)
+        for m in re.finditer(r"\b20\d\d-[01]\d(?:-[0-3]\d)?\b|\bdone \(", text):
+            found.append(f"{path.relative_to(root)}: {text[max(0, m.start() - 40):m.end() + 20]!r}")
+    assert not found, found

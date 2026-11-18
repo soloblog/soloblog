@@ -276,8 +276,8 @@ start with, which keeps every assistant to drafts whatever its key:
 assistant only sees the tools its key allows.
 
 The details: Streamable HTTP, each request a JSON-RPC POST answered with
-JSON (no event stream, no sessions); protocol versions 2025-06-18,
-2025-03-26 and 2024-11-05. A request from a page on another site
+JSON (no event stream, no sessions); protocol versions `2025-06-18`,
+`2025-03-26` and `2024-11-05`. A request from a page on another site
 (`Origin`) is refused.
 
 ## Apps that publish to Ghost
