@@ -1,6 +1,6 @@
 # Roadmap
 
-What's agreed for Soloblog and not built yet, nearest first. Once the
+What's planned for Soloblog and not built yet, nearest first. Once the
 public Roadmap board on GitHub exists
 ([MAINTAINING.md](MAINTAINING.md) > Where feedback goes), the items move
 there and this page goes.
@@ -10,35 +10,9 @@ their own site? The reasons behind what's here, and behind what was left
 out, are in [DECISIONS.md](DECISIONS.md). An idea of your own starts in
 [Discussions > Ideas](https://github.com/soloblog/soloblog/discussions/categories/ideas).
 
-- [Before 1.0.0-beta](#before-100-beta)
 - [For 1.1](#for-11)
 - [Later](#later)
 - [Soloblog on the desktop](#soloblog-on-the-desktop)
-
-## Before 1.0.0-beta
-
-No new features until the release - the time goes on trust and on what's
-already here.
-
-- **Every section and `Key:` name, reviewed.** Once the release is public,
-  every name written into someone's post (`Width:`, `Style:`, `Count:`,
-  `Default`, each section's name) has to work for good. So the list in
-  [TEMPLATES.md](TEMPLATES.md) is gone through name by name first; a bad
-  name is only cheap to change until then.
-- **A clean start.** A new site starts on 1.0.0-beta's own code: the
-  migrations folded into `001_schema.sql` (done up to 018; the next file
-  is `019_...sql`), and anything kept only for sites from before the
-  release removed.
-- **Tried with real accounts.** Email, payments, the fediverse, backups
-  and restore, the importers, and the writing apps (Ulysses and iA Writer
-  through the Ghost-compatible API, Micropub) - by hand, not with the
-  tests' stand-ins.
-- **Say what it is, plainly:** a short, fair comparison with WordPress,
-  Ghost and a static site generator like Hugo, in the README and on the
-  website - including when one of those is the better choice.
-- **Fewer settings that matter, calmer defaults:** Settings gone through
-  again for anything few people would change, to hide or remove it
-  (removing follows "an update must never break a working site").
 
 ## For 1.1
 
@@ -109,7 +83,7 @@ already here.
 
 ## Later
 
-Agreed as ideas, with no date.
+Ideas, with no date.
 
 - **The admin in other languages**, at least the editor and the posts
   list - visitors already get 23 languages, so a writer shouldn't have to
@@ -124,8 +98,7 @@ Agreed as ideas, with no date.
   fonts. Before then, a palette and starting style in that spirit could
   give a taste of it within daisyUI.
 - **Plugins for other apps** (an Obsidian or VS Code "publish" button)
-  are for anyone to build on the API - Soloblog itself doesn't sync
-  ([DECISIONS.md](DECISIONS.md)).
+  are for anyone to build on the API - Soloblog itself doesn't sync.
 
 ## Soloblog on the desktop
 
