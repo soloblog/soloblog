@@ -608,24 +608,26 @@ def test_the_admin_says_site_not_blog():
     assert not found, found
 
 
-def test_every_referral_link_is_marked():
-    """A link that earns the project something says so, straight after it,
-    wherever it appears (DECISIONS.md > Community; DEPLOYMENT.md > About
-    the links in this guide), and a page with one says so under its title,
-    in the words the programmes ask for."""
+def test_every_page_with_a_referral_link_says_so_under_its_title():
+    """A page with a link that earns the project something says so under
+    its title, in the words the programmes ask for - one notice that
+    covers every link on the page, so none needs its own label
+    (DECISIONS.md > Community; DEPLOYMENT.md > About the links in this
+    guide)."""
     import re
     from pathlib import Path
     root = Path(__file__).resolve().parent.parent
     found = 0
     for path in [root / "README.md", *sorted((root / "docs").rglob("*.md"))]:
         text = path.read_text(encoding="utf-8")
-        for m in re.finditer(r"\]\((https?://[^)\s]*(?:referral|[?&]ref=|[?&]aff|affiliate|awin)[^)\s]*)\)", text, re.I):
-            found += 1
-            after = re.sub(r"\s+", " ", text[m.end():m.end() + 30])
-            assert after.startswith(" *(referral link)*"), (path.name, m.group(1))
-            top = re.sub(r"\s+", " ", text.split("\n## ", 1)[0])
-            assert "We earn commissions when you shop through the links below" in top, path.name
-    assert found, "the Railway link, at least"
+        if not re.search(r"\]\((https?://[^)\s]*(?:referral|[?&]ref=|[?&]aff|affiliate|awin)[^)\s]*)\)", text, re.I):
+            continue
+        found += 1
+        top = re.sub(r"\s+", " ", text.split("\n## ", 1)[0])
+        assert "We earn commissions when you shop through the links below." in top, path.name
+        # a label on some links would suggest the others earn nothing
+        assert "(referral link)" not in text, path.name
+    assert found, "the hosting guide, at least"
 
 
 def test_docs_read_as_the_project_not_a_log():

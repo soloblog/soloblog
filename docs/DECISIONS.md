@@ -98,6 +98,8 @@ the same commit. How each one is carried out is in
   searchable where chat scrolls away.
 - **A live demo with a working admin,** reset every few hours. *Why:*
   trying the editor is the best way to see the app.
-- **Referral links in the hosting guide are allowed, and always marked.**
-  *Why:* they help fund the project; whether a company has one never
-  decides what's listed.
+- **Referral links in the hosting guide are allowed, and always
+  disclosed** - one notice under the page's title covers every link on
+  it. *Why:* they help fund the project; whether a company has one never
+  decides what's listed, and one notice can't be forgotten the way a
+  label on each link can.

@@ -1,6 +1,6 @@
 # Hosting and deploying
 
-*We earn commissions when you shop through the links below, marked (referral link). [About the links in this guide](#about-the-links-in-this-guide)*
+*We earn commissions when you shop through the links below. [About the links in this guide](#about-the-links-in-this-guide)*
 
 This page is about getting Soloblog onto the internet, so people can
 visit your site: on a hosting service (a company that runs it for you),
@@ -64,7 +64,7 @@ A domain of your own is a yearly fee wherever you run it - see
 ## About the links in this guide
 
 Some links to hosts and domain registrars in this guide are **referral
-links**, marked *(referral link)*. If you sign up through one, the
+links**. If you sign up through one, the
 Soloblog project may receive a credit or a commission from that company.
 It costs you nothing extra, and sometimes gets you a discount or credit
 too. Soloblog works the same on every host listed, referral or not, and
@@ -73,12 +73,11 @@ listed or recommended here. You can always go to the company's site
 directly instead. Referral income helps pay for the project - see
 [Support Soloblog](SPONSORS.md) for other ways to support it.
 
-<!-- Marking a referral link: put " *(referral link)*" straight after it,
-     every time, in this file and anywhere else it appears (README
-     buttons included). Keep the rest of this section, and the line under
-     the page's title, as they are - it's the disclosure
-     consumer-protection rules and the programmes ask for (clear, before
-     the links, and next to each one). -->
+<!-- The line under the page's title covers every link on the page, so
+     a referral link needs no label of its own. Keep that line, and this
+     section, as they are - it's the disclosure consumer-protection rules
+     and the programmes ask for (clear, and before the links). Any other
+     page with a referral link gets the same line under its title. -->
 
 ## Start the quickest way
 
@@ -114,7 +113,7 @@ sign in on each company's own page. A chat-only assistant can't run
 commands, but it can walk you through the same steps.
 
 When it shows you hosts, servers or domain registrars to choose from,
-it includes this guide's referral links, marked as such - see
+it includes this guide's referral links - see
 [About the links in this guide](#about-the-links-in-this-guide).
 
 ```text
@@ -155,12 +154,12 @@ First ask me, one question at a time:
    the guide's "Use a custom domain" table - or would rather start
    with the host's free address and add a domain later.
 
-About the links: some links in the guide are marked "(referral
-link)". Whenever you show me hosts, servers or registrars to choose
-from, include their links exactly as the guide has them, and say
-once: "Links marked as referral links support the Soloblog project
-at no extra cost to you. Any choice works just as well." Then let
-me choose, and don't press me.
+About the links: some links in the guide are referral links.
+Whenever you show me hosts, servers or registrars to choose from,
+include their links exactly as the guide has them, and say once:
+"Some of these links support the Soloblog project at no extra cost
+to you. Any choice works just as well." Then let me choose, and
+don't press me.
 
 Every setup needs: a persistent disk at /data, port 8080, and
 exactly one running copy. Suggest only hosts with a disk. If I already
@@ -234,8 +233,7 @@ can. See [Send email from your host](#send-email-from-your-host).
 what your service uses, with the volume charged by its size. A small
 blog stays near the plan's minimum.
 
-1. Make an account at [Railway](https://railway.com?referralCode=Soloblog)
-   *(referral link)*.
+1. Make an account at [Railway](https://railway.com?referralCode=Soloblog).
 2. On GitHub, make your own copy of Soloblog: open the project's page and
    select **Fork**. Then in Railway, select **New Project > Deploy from
    GitHub repo** and pick your copy. It builds and checks itself.
@@ -365,8 +363,8 @@ which Soloblog isn't.
 App Platform has no disk, so Soloblog keeps everything in a bucket and
 restores itself from it on each deploy.
 
-1. In [DigitalOcean](https://www.awin1.com/cread.php?awinmid=123996&awinaffid=3158224)
-   *(referral link)*, create a **Spaces** bucket (online storage) and an
+1. In [DigitalOcean](https://www.awin1.com/cread.php?awinmid=123996&awinaffid=3158224),
+   create a **Spaces** bucket (online storage) and an
    access key for it.
 2. Select the button above.
 3. Fill in the `S3_*` values it asks for - the bucket's details, see
@@ -408,8 +406,8 @@ Debian, then follow [With Docker Compose](#with-docker-compose).
 | Provider | Worth knowing |
 |---|---|
 | [Hetzner](https://www.hetzner.com/cloud) | Very good value; data centres in Germany, Finland, the US and Singapore. |
-| [DigitalOcean](https://www.awin1.com/cread.php?awinmid=123996&awinaffid=3158224) *(referral link)* | Simple dashboard and excellent tutorials; Droplets in many regions. Blocks SMTP by default - [use Resend for email](#send-email-from-your-host). |
-| [Vultr](https://www.vultr.com/?ref=9936472-9J) *(referral link)* | Many locations worldwide, hourly billing. |
+| [DigitalOcean](https://www.awin1.com/cread.php?awinmid=123996&awinaffid=3158224) | Simple dashboard and excellent tutorials; Droplets in many regions. Blocks SMTP by default - [use Resend for email](#send-email-from-your-host). |
+| [Vultr](https://www.vultr.com/?ref=9936472-9J) | Many locations worldwide, hourly billing. |
 | [Linode (Akamai)](https://www.linode.com) | Long-running, straightforward pricing, good support. |
 | [Hostinger VPS](https://www.hostinger.com/vps-hosting) | Budget plans with a friendly panel; also sells domains. |
 | [OVHcloud](https://www.ovhcloud.com/en/vps/) | Low-cost VPS, strong in Europe and Canada. |
