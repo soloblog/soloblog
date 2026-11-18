@@ -78,9 +78,9 @@ docs/DEVELOPMENT.md > Local setup.
    that don't fit under More (`ui.Tabs`), a toolbar you swipe along, a
    box that opens where you tapped.
 3. **Changelog:** a line under `[Unreleased]` for anything a user would
-   notice, in plain words. Until 1.0.0-beta (the first public release)
-   is out, `[Unreleased]` is that release's short summary: add to it
-   only what belongs in the summary.
+   notice, in plain words, in the group it belongs to - `### Added`,
+   `### Changed`, `### Fixed`, `### Removed` or `### Security`. One short
+   line per change, no detail - the user guide has that.
 4. **Docs:** a feature isn't done until the user guide (`docs/guide/`)
    describes it (and the FAQ, if people will ask). Hosting changes go in
    `docs/DEPLOYMENT.md`. A doc says each thing in one place and links to
