@@ -43,7 +43,7 @@ decision.
 - **No stale bot.** Only `needs info` issues close on their own, after
   30 days without a reply (Triage).
 - **Saved replies** (GitHub > Settings > Saved replies) for the answers
-  given most - a click each (the first ones are under Setting it up).
+  given most - a click each (listed under Repository settings).
 - **If it ever gets too busy** - a flood after a launch, or spam - the
   repository's Settings > Moderation options > **Interaction limits**
   limits issues, comments and pull requests to past contributors (or
@@ -55,57 +55,45 @@ decision.
   followers and Bluesky and Mastodon with no extra work. In the admin,
   **What's new** after an update does the same for people who never
   visit GitHub.
-- **Measure without telemetry:** stars, Docker image pulls and partner
+- **Measure without telemetry:** stars, Docker image pulls and app-store
   listings. Nothing about anyone's site is ever reported to us - the
   update check asks GitHub, and sends nothing about the site.
-- **Uptime:** a free monitor (UptimeRobot) on the website's and the
-  demo's `/healthz` alerts the maintainer. No public status page.
 
-### Setting it up (once, when the repository goes public)
+### Repository settings
 
-1. The repository's Settings > General > Features: turn on **Discussions**; categories Q&A,
-   Ideas (with voting), Show and tell, Announcements (maintainers post).
-2. **Projects** > New project > Board, named "Roadmap", visibility public,
-   columns Ideas · Planned · In progress · Done; link it to the
-   repository. Put its address in the table above. In the board's
-   Workflows, turn on **Auto-add to project** (issues labelled
-   `enhancement`) and **Item closed → Done**, so it keeps itself current.
-3. **Saved replies** for the common answers, and the free **uptime
-   monitor** on the website and the demo (above). Start with these:
-   - **Low-effort pull request** (often written by an AI tool without
-     reading the project): "Thanks for this. It doesn't follow how the
-     project works - CLAUDE.md and CONTRIBUTING.md - so I'm closing it. A
-     smaller change that does is welcome."
-   - **A feature during the beta:** "Thanks - while Soloblog is in beta,
-     new features start as a Discussion under Ideas, so others can weigh
-     in. Could you post it there?"
-   - **Needs info:** "Thanks for the report. Could you add your version
-     (bottom of any admin page), how you host Soloblog, and the steps
-     that show the problem?"
-   - **Duplicate:** "Thanks - this is the same as #N, so I'm closing this
-     one. Follow that issue for updates."
-4. The repository's Settings > Security: **Private vulnerability reporting** on;
-   **Dependabot alerts** and **security updates** on.
-5. Labels - done (2026-09-26): `bug`, `enhancement`, `question`, `docs`,
-   `good first issue`, `needs info`, `wontfix`, `security`,
-   `dependencies`, alongside GitHub's own defaults.
-6. The repository's Settings > Rules > Rulesets > New branch ruleset, for
-   `master` and the version branches (the pattern `[0-9]*.[0-9]*`):
-   **Restrict deletions**, **Block force pushes**, **Require
-   status checks to pass** (`tests (3.12)`, `tests (3.14)`, `smoke-test`,
-   `dependencies`). Free on
-   a public repository; a private one needs GitHub Pro.
-7. The repository's Settings > Actions > General > **Approval for running
-   fork pull request workflows from contributors**: require approval for
-   first-time contributors (or, stricter, all outside contributors). A
-   stranger's pull request then runs nothing in CI until someone has
-   looked at it. The workflows use `pull_request`, never
-   `pull_request_target`, so a fork's run never sees the repository's
-   secrets - keep it that way.
-8. **Launch week:** open an issue "Known issues in 1.0.0-beta", pin it
-   (the issue's ⋯ menu > Pin issue), and add each confirmed bug to it as
-   it comes in, so the same problem isn't reported many times. Unpin it
-   when the first fix release is out.
+- **Discussions** categories: Q&A, Ideas (with voting), Show and tell,
+  Announcements (maintainers post).
+- **Projects > Roadmap**, a public board with columns Ideas · Planned ·
+  In progress · Done. Issues labelled `enhancement` are added to it, and
+  closed ones move to Done.
+- **Labels:** `bug`, `enhancement`, `question`, `docs`,
+  `good first issue`, `needs info`, `wontfix`, `security`,
+  `dependencies`, alongside GitHub's own.
+- **Security:** private vulnerability reporting, Dependabot alerts and
+  security updates are on.
+- **A branch ruleset** for `master` and the version branches (the
+  pattern `[0-9]*.[0-9]*`): no deletions, no force pushes, and the checks
+  `tests (3.12)`, `tests (3.14)`, `smoke-test` and `dependencies` must
+  pass.
+- **Pull requests from first-time contributors** wait for approval before
+  CI runs. The workflows use `pull_request`, never
+  `pull_request_target`, so a fork's run never sees the repository's
+  secrets - keep it that way.
+- **Saved replies** for the common answers:
+  - **Low-effort pull request:** "Thanks for this. It doesn't follow how
+    the project works - CLAUDE.md and CONTRIBUTING.md - so I'm closing
+    it. A smaller change that does is welcome."
+  - **A feature during the beta:** "Thanks - while Soloblog is in beta,
+    new features start as a Discussion under Ideas, so others can weigh
+    in. Could you post it there?"
+  - **Needs info:** "Thanks for the report. Could you add your version
+    (bottom of any admin page), how you host Soloblog, and the steps
+    that show the problem?"
+  - **Duplicate:** "Thanks - this is the same as #N, so I'm closing this
+    one. Follow that issue for updates."
+- **After a release with known bugs:** a pinned issue "Known issues in
+  X.Y.Z", with each confirmed bug added as it comes in, unpinned when the
+  fix release is out.
 
 ## Triage
 
@@ -145,12 +133,8 @@ new feature.
 
 ## Branches and pull requests
 
-**Until the repository is public**, changes go straight to `master`.
-Database changes are numbered files after `soloblog/migrations/001_schema.sql`
-(the next is `019`), as they will be after.
-
-**From going public** - `master` is the latest release, and the next
-version is built on its own branch, named after it:
+`master` is the latest release, and the next version is built on its
+own branch, named after it:
 
 ```
 master  ──●─────────────●──────●────   v1.0.0   v1.0.1   v1.1.0
@@ -164,7 +148,7 @@ the Render, DigitalOcean, Heroku and Railway buttons build its source,
 and `:latest` is the image their servers pull. So `master` only ever
 holds released code.
 
-- **`master` = the latest release.** Protected (see Setting it up): no
+- **`master` = the latest release.** Protected (see Repository settings): no
   direct pushes, no force pushes, CI must pass. It only changes when a
   version is released or a patch is made.
 - **The next version's branch** - `1.1`, then `1.2` - is where features
@@ -262,8 +246,9 @@ one click (or one command) and nothing else, every time.
 Every Python package is pinned in `requirements.txt` - the ones
 Soloblog uses, and below them every package those depend on - and the
 front-end libraries are copies in `static/vendor/`, so nothing changes
-until we change it. (Until 27 Oct 2026 only the first were pinned: a new
-Starlette came in through FastHTML, unasked, and broke a test.) When a
+until we change it. (Pinning only the direct ones isn't enough: a new
+version of a package's own dependency can arrive unasked and break the
+app.) When a
 pin changes by hand, check the whole set still installs: a fresh
 `pip install -r requirements-dev.txt` in a clean environment - the
 app's pins have to suit the test tools too. **Dependabot** (`.github/dependabot.yml`) opens pull requests
@@ -300,7 +285,7 @@ them there when the look changes, and copy the new ones in.
 
 **It runs on Fly.io, at https://demo.soloblog.zrplus.net, and updates itself
 with every release.** CI's `demo` job builds each release from its source
-on Fly (`deploy/fly-demo.toml`). Set up on 2026-09-26: the app, its
+on Fly (`deploy/fly-demo.toml`). It needs the app, its
 `demo_data` volume, its `SESSION_SECRET`, and the repository's
 `FLY_API_TOKEN` Actions secret (a deploy token for `soloblog-demo` only)
 that the job uses. Every release tag redeploys it, and each one shows
@@ -318,23 +303,11 @@ feature that shows gets sample content in
 
 ## The website
 
-The project's own site, **https://soloblog.zrplus.net** - where people
-first meet Soloblog - runs on Soloblog itself, on Fly.io (the app
-`soloblog-website`). It's the repository's homepage link on GitHub.
-
-- **Its content lives in its own admin**, like any Soloblog blog: pages,
-  the menu and settings are edited there, and the live site is the
-  master copy. Settings > Backup and import > Download takes a copy.
-- **Its Fly settings and first pages** are kept outside this repository,
-  with the maintainer's private notes (the private repository
-  `soloblog-website`, folder `website/`).
-- **Updating it to a new release** is by hand - CI doesn't touch it. From
-  this repository's folder, with that one checked out beside it:
-  `fly deploy . --config ../soloblog-website/website/fly.toml --remote-only --ha=false`.
-  The content on its volume stays.
-
-Unlike the demo it isn't reset: it's a real site, so back it up before
-updating it while Soloblog is in beta.
+The project's own site, **https://soloblog.zrplus.net**, runs on
+Soloblog itself and is the repository's homepage link on GitHub. Its
+content is edited in its own admin like any Soloblog site, and it's
+updated to each release by hand. Its hosting settings are kept outside
+this repository.
 
 ## Keeping the project going
 
