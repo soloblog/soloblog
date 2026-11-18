@@ -99,7 +99,8 @@ function toggleListen() {
   var synth = window.speechSynthesis;
   if (_listen.state === 'playing') { synth.pause(); setListenState('paused'); return; }
   if (_listen.state === 'paused') { synth.resume(); setListenState('playing'); return; }
-  var prose = document.querySelector('article .prose');
+  // the whole post: its writing and the sections beside it (pages.prose_around_sections)
+  var prose = document.querySelector('article [data-post-body]');
   if (!prose) return;
   synth.cancel();
   var title = document.querySelector('article h1');

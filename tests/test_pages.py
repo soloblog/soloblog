@@ -953,14 +953,16 @@ def test_the_room_between_sections_is_one_variable_per_spacing(admin, client):
     for key, (phone, wide) in GAP_VALUES.items():
         assert pages.SECTION_GAPS[key] == f"[--section-gap:{phone}] sm:[--section-gap:{wide}]"
         assert pages.SECTION_GAPS[key] in pages.SPACE_SCALE[key] and pages.SECTION_GAPS[key] in pages.SECTION_ROOM[key]
-    body = "Words.\n\n## Plans\n\nSection: Numbers\n\n### 3\nthings\n\n## Cost\n\nSection: Numbers\nSpace: Large\n\n### 4\nmore\n"
+    body = ("Words.\n\n## Plans\n\nSection: Numbers\n\n### 3\nthings\n\n## Cost\n\nSection: Numbers\nSpace: Large\n\n### 4\nmore\n"
+            "\n## Again\n\nSection: Numbers\n\n### 5\nyet more\n")
     slug = save_post(admin, title="Roomy", body=body)
     before = settings.get_all()
     try:
         for key in GAP_VALUES:
             settings.set_many({"section_space": key})
             page = _body(client.get(f"/post/{slug}").text)
-            # the site's, on the page; each section's heading carries the gap above it
+            # the site's, on the page; the heading of each section after a
+            # section carries the gap above it (one after words, a heading's)
             assert pages.SECTION_GAPS[key] in client.get(f"/post/{slug}").text
             assert page.count("mt-(--section-gap)") >= 2
         settings.set_many({"section_space": "small"})

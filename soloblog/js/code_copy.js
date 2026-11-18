@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', function () {
-  document.querySelectorAll('.prose pre').forEach(function (pre) {
+  document.querySelectorAll('.prose pre, [data-post-body] pre').forEach(function (pre) {
     var btn = document.createElement('button');
     btn.textContent = _t('Copy');
     btn.className = 'btn btn-xs copy-btn';

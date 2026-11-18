@@ -69,7 +69,7 @@
   function pieces() {
     var bodies = [];
     [].forEach.call(document.querySelectorAll('[data-section]'), function (sec) {
-      var body = sec.closest('.prose');
+      var body = sec.closest('[data-post-body]');
       if (body && bodies.indexOf(body) < 0) bodies.push(body);
       var first = sec.firstElementChild;
       if (!sec.classList.contains('reveal-item') || !first || first.classList.contains('card')) return;
@@ -89,7 +89,8 @@
       [].forEach.call(el.children, function (c) {
         // not what floats over the page (a heading's Copy link button)
         if (c.matches('.reveal-item, [data-section], script, style') || getComputedStyle(c).position === 'absolute') return;
-        if (c.querySelector('.reveal-item, [data-section]')) writing(c);
+        // a part of the writing between sections (pages.prose_around_sections), block by block
+        if (c.querySelector('.reveal-item, [data-section]') || c.classList.contains('prose')) writing(c);
         else c.classList.add('reveal-item');
       });
     }

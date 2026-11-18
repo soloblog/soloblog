@@ -5,13 +5,23 @@
 // folded away, or for print, they stay at the foot as they were.
 (function () {
   var ROOM = 14.5;  // rem: a 12rem note and the gap before it, as a side panel
+  // a post as a whole - its writing and the sections beside it
+  // (pages.prose_around_sections), its notes at the foot of the last part -
+  // and any other writing on the page
+  function writings() {
+    var found = [].slice.call(document.querySelectorAll('[data-post-body]'));
+    document.querySelectorAll('.prose').forEach(function (prose) {
+      if (!prose.closest('[data-post-body]')) found.push(prose);
+    });
+    return found;
+  }
   function place() {
     if (!document.documentElement.hasAttribute('data-sidenotes')) return;
     var rem = parseFloat(getComputedStyle(document.documentElement).fontSize);
     var width = document.documentElement.clientWidth;
     var taken = function (side) { return !!document.querySelector('[data-side-panel="' + side + '"][data-beside]'); };
-    document.querySelectorAll('.prose').forEach(function (prose) {
-      var foot = [].filter.call(prose.children, function (el) { return el.classList.contains('footnote'); })[0];
+    writings().forEach(function (prose) {
+      var foot = prose.querySelector(':scope > .footnote, :scope > .prose > .footnote');
       if (!foot) return;
       prose.querySelectorAll('.sidenote').forEach(function (note) { note.remove(); });
       foot.hidden = false;
@@ -64,7 +74,7 @@
   document.addEventListener('DOMContentLoaded', function () {
     place();
     // images and fonts change where each line is; a section folds
-    document.querySelectorAll('.prose').forEach(function (prose) {
+    writings().forEach(function (prose) {
       if (window.ResizeObserver) new ResizeObserver(later).observe(prose);
     });
   });

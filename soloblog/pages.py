@@ -415,11 +415,57 @@ INLINE_CODE = "[&_:not(pre)>code]:bg-base-content/10! [&_:not(pre)>code]:wrap-an
 LIST_GAP = "prose-li:my-1"
 
 
-def _prose(html, cls="", small=False):
+def _prose(html, cls="", small=False, **attrs):
     """Writing, at the reading size - 16 px on a phone, 18 px from a tablet
     up - or small, inside a card (a plan, a quote). A size in cls wins."""
     size = "" if re.search(r"\bprose-(sm|base|lg|xl)\b", cls) else ("prose-sm" if small else "md:prose-lg")
-    return Div(NotStr(html), cls=f"prose {size} max-w-none {INLINE_CODE} {LIST_GAP} {cls}".strip()) if html.strip() else None
+    return Div(NotStr(html), cls=f"prose {size} max-w-none {INLINE_CODE} {LIST_GAP} {cls}".strip(),
+               **attrs) if html.strip() else None
+
+
+def _section_spans(html):
+    """[(start, end)] of each section at the page's top level - a
+    data-fold-break <div>, as place_sections draws every one."""
+    depth, spans, start = 0, [], None
+    for m in _TAG_ANY.finditer(html):
+        closing, name = m.group(1), m.group(2).lower()
+        if closing:
+            depth -= 1
+            if depth == 0 and start is not None:
+                spans.append((start, m.end()))
+                start = None
+        elif name not in _VOID and not m.group(3):
+            if depth == 0 and name == "div" and "data-fold-break" in m.group(0):
+                start = m.start()
+            depth += 1
+    return spans
+
+
+# the writing's size and line height (prose, md:prose-lg), on the whole
+# post: a section's words, beside the writing now, read at the same size
+READING_TEXT = "text-base leading-[1.75] md:text-lg md:leading-[1.7777778]"
+
+
+def prose_around_sections(html, prose_cls="", outer_cls="", post_body=True, text=READING_TEXT):
+    """The writing in its text styling, and each section beside it rather
+    than inside it: the text styling can't be switched back on under a
+    not-prose, so a section inside the writing lost its own words'
+    links, lists and paragraph spacing. Writing after a section starts
+    as far below it as a section after writing does. The whole is
+    [data-post-body], for the scripts that read the post."""
+    mark = {"data_post_body": True} if post_body else {}
+    spans = _section_spans(html)
+    if not spans:
+        return _prose(html, f"{prose_cls} {outer_cls}".strip(), **mark) or Div(**mark, cls=outer_cls)
+    parts, at, after_section = [], 0, False
+    for start, end in [*spans, (len(html), len(html))]:
+        words = html[at:start]
+        if words.strip():
+            parts.append(_prose(words, f"{prose_cls} {WORDS_AFTER_SECTION if after_section else ''}".strip()))
+        if start < end:
+            parts.append(NotStr(html[start:end]))
+        after_section, at = start < end or (after_section and not words.strip()), end
+    return Div(*parts, **mark, cls=f"{text} {outer_cls}".strip())
 
 
 def _icon(d):
@@ -524,13 +570,15 @@ def _with_heading_class(h, cls):
     return re.sub(r"<h2\b", f'<h2 class="{cls}"', h, count=1)
 
 
-def _section_heading(h, centred, room, lead=False):
+def _section_heading(h, centred, room, lead=False, after_words=False):
     """A section's ## as it sits in the page: centred, and with the gap
     above it (the section's own Space: if it has one) - none for the
-    first thing on a page."""
+    first thing on a page, a heading's after plain writing."""
     h = _centred(h) if centred else h
     if lead:
         return h
+    if after_words and not room:
+        return _with_heading_class(h, SECTION_AFTER_WORDS)
     return _with_heading_class(h, f"{SECTION_GAPS.get(room, '')} {HEADING_GAP}".strip())
 
 
@@ -603,7 +651,7 @@ def render(row, s, html, toc_html, logged_in, series=None, deck=True):
     if fold_style(row, s) != "off":
         html = fold_sections(html, fold_style(row, s) == "open")
     # on a wide page the writing stays in the site's column; only sections go wider
-    out["body"] = _prose(html, WRITING_IN_COLUMN[content_width(s)] if wide else "")
+    out["body"] = prose_around_sections(html, outer_cls=WRITING_IN_COLUMN[content_width(s)] if wide else "")
     if row["in_wiki"]:
         _wiki_note(out, row, s, html, logged_in)
     if row["remind_update"]:
@@ -939,7 +987,8 @@ def _render_pricing(out, row, s, html, toc, logged_in, series):
                 Span(f" {per}", cls="text-base-content/60") if per else None, cls="mb-1"),
             *[Div(Span(k, cls="text-base-content/60"), " ", Span(NotStr(v)), cls="text-sm")
               for k, v in pairs if k.lower() not in ("price", "badge")],
-            _prose(rest, small=True),
+            # what a plan includes, one line each - no bullets in a card
+            _prose(rest, "prose-ul:list-none prose-ul:ps-0 prose-ul:my-0 prose-li:ps-0", small=True),
             Div(A(NotStr(link.group(2)), href=link.group(1), cls=f"btn btn-block {'btn-primary' if star else ''}"),
                 cls="card-actions mt-auto pt-4") if link else None,
             cls=f"card-body {CARD_PAD} gap-2"),
@@ -1245,7 +1294,9 @@ def _slide_deck(out, html):
         # the way back to the site - the deck has no header (Esc goes there too, slides.js)
         A(_icon(LEFT_ICON), Span(i18n.t("Back to the site"), cls="ml-1"), href="/", data_slides_exit=True,
           cls="btn btn-ghost btn-sm absolute top-2 left-2 z-10"),
-        Div(*[Div(_prose(p, "prose-lg lg:prose-2xl text-center [&_img]:mx-auto [&_img]:max-h-[60dvh]"),
+        Div(*[Div(prose_around_sections(p, "prose-lg lg:prose-2xl text-center [&_img]:mx-auto [&_img]:max-h-[60dvh]",
+                                        post_body=False,
+                                        text="text-center text-lg leading-[1.7777778] lg:text-2xl lg:leading-[1.6666667]"),
                   # box-border: daisyUI's carousel-item is content-box, so the
                   # padding made each slide 64px bigger than the frame - it
                   # could be dragged about, and each swipe landed further off
@@ -1301,6 +1352,20 @@ HEADING_GAP = "mt-(--section-gap)!"
 # by another ##, where the next room starts): the words under a heading,
 # or the gap where the section starts itself
 SECTION_GAP = "mt-[calc(1.5rem*var(--space,1))] sm:mt-[calc(2rem*var(--space,1))]"
+# ...and where a section meets plain writing, the room a heading has
+# there: the whole gap is for one section to the next - in a post it
+# opened a hole in the middle of the reading. On a section's ##
+# (important, as the page's rule on .prose>h2 is more specific), as a
+# folded heading's (_fold) - the writing above keeps its last margin -
+# and on the writing after a section, whose own first margin goes: a
+# paragraph's margin and a heading's, as between two parts of the writing
+SECTION_AFTER_WORDS = "mt-[calc(2rem*var(--space,1))]!"
+WORDS_AFTER_SECTION = "mt-[calc(3.5rem*var(--space,1))] [&>:first-child]:mt-0!"
+# A section ends where its last thing does: a margin under its last
+# block (a grid, a list) is for words after it, and only pushed the next
+# part of the page further away, by a different amount in each section
+SECTION_ENDS = ("[&>:last-child]:mb-0! [&>:last-child>:last-child]:mb-0! "
+                "[&>:last-child>:last-child>:last-child]:mb-0!")
 SECTION_APART = "mt-(--section-gap)"
 # ...and the last one on the page half that room under it, before what
 # follows the post and the footer - the footer is a break of its own, and
@@ -1597,8 +1662,9 @@ def _render_compare(out, row, s, html, toc, logged_in, series):
     html = html.replace("<table>", '<table class="table [&_th:first-child]:sticky [&_th:first-child]:left-0 '
                                    '[&_td:first-child]:sticky [&_td:first-child]:left-0 [&_:is(th,td):first-child]:bg-base-100 '
                                    '[&_td:first-child]:font-medium">')
+    # daisyUI's table, not the writing's: it sets its own sizes and padding
     html = html.replace('<div class="overflow-x-auto [&_:is(td,th)]:min-w-28"><table',
-                        '<div class="overflow-x-auto rounded-box border-[length:var(--border)] border-base-300"><table')
+                        '<div class="not-prose overflow-x-auto rounded-box border-[length:var(--border)] border-base-300"><table')
     out["body"] = _prose(html, "prose-table:my-0")
 
 
@@ -1840,6 +1906,8 @@ def place_sections(row, s, html, toc, logged_in, series, out):
         kind, text = kind_text
         # the first thing on the page has no gap above it
         lead = not "".join(kept).strip()
+        # plain writing above it: it follows on as a heading does
+        after_words = not lead and last is None
         width, text = section_registry.section_width(text)
         # Style: Cover is a hero (on the kinds that take it), Style: Card sets it apart
         style, text = section_registry.take_line(text, "style")
@@ -1861,6 +1929,8 @@ def place_sections(row, s, html, toc, logged_in, series, out):
         # Space: and Appear: its own, else the page's, else the site's (the
         # page's --space and data-reveal carry the site's)
         room = section_registry.pick("Space", space_line)
+        # the gap that starts a section drawing its own heading
+        apart = SECTION_GAP if lead or (after_words and not room) else SECTION_APART
         motion = section_registry.pick("Appear", appear_line) or page_motion
         if motion == "alternate" and kind != "portfolio":
             # Photos' tiles alternate among themselves (input.css, section-reveal)
@@ -1876,7 +1946,7 @@ def place_sections(row, s, html, toc, logged_in, series, out):
             # its heading is inside its picture, or its words
             hero = to_xml(_section_content(kind, text, row, s, toc, logged_in, series, out, h, style=style,
                                            full=width == "full", lead=lead))
-            hero = f'<div class="not-prose {SECTION_GAP if lead else SECTION_APART} {look}" data-section="hero" {appear}>{hero}</div>'
+            hero = f'<div class="{apart} {look}" data-section="hero" {appear}>{hero}</div>'
             if width:
                 hero = _wider(hero, width, s)
             kept.append(hero.replace("<div", "<div data-fold-break", 1))
@@ -1901,14 +1971,14 @@ def place_sections(row, s, html, toc, logged_in, series, out):
         own_cls = f"{INTRO_CENTRED} " if centred and not own else ""
         # a section that draws its own heading starts itself; otherwise the
         # ## above it does
-        space_cls = SECTION_APART if own and not lead else SECTION_GAP
-        inside = (f'<div class="not-prose @container {own_cls}{_STORY_BODY if kind == "story" else ""}{space_cls} {look} '
+        space_cls = apart if own else SECTION_GAP
+        inside = (f'<div class="@container {SECTION_ENDS} {own_cls}{_STORY_BODY if kind == "story" else ""}{space_cls} {look} '
                   f'[&_.grid>:only-child]:max-w-sm" data-section="{kind}" {appear}>{block}</div>')
         if width and not own:
             # wider than the column, its heading goes with it - left in the
             # column, it sat apart from the words and pictures under it
             holds = kind == "story"
-            head = to_xml(_prose(_appearing(_section_heading(h, centred, room, lead), motion),
+            head = to_xml(_prose(_appearing(_section_heading(h, centred, room, lead, after_words), motion),
                                  ("px-4 sm:px-8 " if width == "full" else "") + (_STORY_HEAD if holds else "")))
             if holds:
                 head = head.replace("<div", "<div data-story-head", 1)
@@ -1926,10 +1996,14 @@ def place_sections(row, s, html, toc, logged_in, series, out):
             # its heading stays the post's own: in the contents, with its
             # link - and, as every section, it never folds: only plain
             # writing under a ## does
-            heading = _appearing(_section_heading(h, centred, room, lead), motion)
+            heading = _appearing(_section_heading(h, centred, room, lead, after_words), motion)
             opener = _UNFOLDED
+            # the page's writing is beside the section, not around it: its
+            # heading has a text styling of its own - held as a wide
+            # story's is, by the box around it
+            heading = to_xml(_prose(heading, _STORY_HEAD if kind == "story" else ""))
             if kind == "story":
-                heading = _with_heading_class(heading, _STORY_HEAD).replace("<h2", "<h2 data-story-head", 1)
+                heading = heading.replace("<div", "<div data-story-head", 1)
                 opener = f'<div data-fold-break class="{_STORY_WRAP}" data-story-wrap>'
             kept.append(f"{opener}{heading}{inside}</div>")
             last = (len(kept) - 1, len(opener) + len(heading))

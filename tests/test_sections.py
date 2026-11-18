@@ -1085,6 +1085,82 @@ def test_only_a_storys_heading_is_held(admin, client):
     assert "data-story-head" not in page and "data-story-wrap" not in page
 
 
+def _ancestors_of(html, attr):
+    """[[class of each ancestor <div>/<section>]] of each element carrying attr."""
+    from html.parser import HTMLParser
+
+    class Walk(HTMLParser):
+        def __init__(self):
+            super().__init__()
+            self.stack, self.found = [], []
+
+        def handle_starttag(self, tag, attrs):
+            attrs = dict(attrs)
+            if attr in attrs:
+                self.found.append([c for c in self.stack])
+            if tag not in ("br", "img", "input", "hr", "meta", "link", "source", "wbr"):
+                self.stack.append(attrs.get("class") or "")
+
+        def handle_endtag(self, tag):
+            if self.stack and tag not in ("br", "img", "input", "hr", "meta", "link", "source", "wbr"):
+                self.stack.pop()
+
+    w = Walk()
+    w.feed(html)
+    return w.found
+
+
+def test_a_sections_words_have_the_writings_own_styling(admin, client):
+    # a section sits beside the writing, not inside it: under a not-prose
+    # the text styling can't come back, and a section's links, lists and
+    # paragraphs lost theirs
+    body = ("Words with [a link](/about).\n\n## Side by side\n\nSection: Picture and text\n\n"
+            "One with [a link](/about).\n\nTwo.\n\n- a list\n\n## After\n\nMore words.\n")
+    slug = save_post(admin, title="Styled words", body=body)
+    html = client.get(f"/post/{slug}").text
+    assert html.count("data-post-body") == 1
+    for classes in _ancestors_of(html, "data-section"):
+        assert not any("prose" in c.split() or "not-prose" in c.split() for c in classes), classes
+    # the words after it start as far below it as a heading after words does
+    from html import unescape
+    from soloblog import pages
+    assert pages.WORDS_AFTER_SECTION in unescape(html)
+
+
+def test_a_section_after_words_follows_on_as_a_heading_does(admin, client):
+    from soloblog import pages
+    body = ("Words.\n\n## Numbers\n\nSection: Numbers\n\n### 3\nthings\n\n"
+            "## Next\n\nSection: Numbers\n\n### 4\nmore\n\n## Words\n\nPlain.\n\n"
+            "## Own room\n\nSection: Numbers\nSpace: Large\n\n### 5\nmost\n\n## More words\n\nPlain.\n\n"
+            "## Hello\n\nSection: Hero\n\nA line.\n")
+    slug = save_post(admin, title="Gaps", body=body)
+    html = client.get(f"/post/{slug}").text
+    heads = {m.group(2): m.group(1) for m in re.finditer(r'<h2 class="([^"]*)"[^>]*id="([a-z-]+)"', html)}
+    # after words: a heading's room; after a section: the page's gap between sections
+    assert pages.SECTION_AFTER_WORDS in heads["numbers"] and pages.HEADING_GAP not in heads["numbers"]
+    assert pages.HEADING_GAP in heads["next"]
+    # its own Space: line asks for room, and gets it
+    assert pages.HEADING_GAP in heads["own-room"]
+    # a section drawing its own heading starts with a heading's room after words too
+    hero = re.search(r'<div\b[^>]*data-section="hero"[^>]*>', html).group(0)
+    assert pages.SECTION_APART not in re.search(r'class="([^"]*)"', hero).group(1).split()
+
+
+def test_a_section_ends_where_its_last_thing_does(admin, client):
+    from soloblog import pages
+    slug = save_post(admin, title="Ends", body="Words.\n\n## Menu\n\nSection: Menu\n\n### Breakfast\n\n"
+                                             "- Toast - sourdough · $5\n\nServed until noon.\n\n## After\n\nMore.\n")
+    assert pages.SECTION_ENDS in client.get(f"/post/{slug}").text
+
+
+def test_a_compare_table_keeps_its_own_look(admin, client):
+    slug = save_post(admin, title="Which", body="Words.\n\n## Which\n\nSection: Compare\n\n| | A | B |\n|---|---|---|\n"
+                                              "| Free | ✓ | ✗ |\n\nA line under it.\n")
+    html = client.get(f"/post/{slug}").text
+    assert 'class="not-prose overflow-x-auto rounded-box' in html
+    assert "A line under it." in html
+
+
 def test_a_note_under_a_menu_course_shows(admin, client):
     slug = save_post(admin, title="Lunch", body="## Menu\n\nSection: Menu\n\n### Breakfast\n\n"
                                               "- Toast - sourdough · $5\n\nServed until noon.\n")

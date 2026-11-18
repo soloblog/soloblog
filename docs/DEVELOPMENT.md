@@ -457,6 +457,14 @@ signing in, writing, publishing, the outbox - are in
   `Heading:`, `Space:` and `Appear:` lines, the site's
   section headings setting and the page's section spacing (`--section-gap`, from `pages.SECTION_GAPS`) and
   way of appearing (`data-reveal`) change it - not the page it's on.
+- **A section sits beside the post's writing, not inside it.** The
+  writing between sections is a `.prose` of its own and the whole post is
+  `[data-post-body]` (`pages.prose_around_sections`) - so scripts that
+  read the post look for `[data-post-body]`, not `.prose`. Under a
+  `not-prose` the text styling can't be switched back on, so a section
+  inside the writing lost its own words' links, lists and spacing. The
+  page's section gap is for a section after a section; after writing, a
+  section has a heading's room.
 - **There are no page layouts, and a new kind of page is never one.** The
   pattern is: a Post setting, the places that check it, a template that
   switches it on and - if the pages need gathering - a built-in page. In the

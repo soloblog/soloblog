@@ -275,7 +275,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // the writing's pictures, and a section's or a landing page's own
     // (a band's, a tile's) - not one behind a hero's words, a link's or a
     // gallery's, which opens its own set
-    document.querySelectorAll('article .prose img, article figure img').forEach(function (img) {
+    document.querySelectorAll('article [data-post-body] img, article figure img').forEach(function (img) {
       if (img.closest('a, .gallery') || img.classList.contains('absolute')) return;
       // a hand, as any link has: the zoom cursor is the lightbox's own
       img.classList.add('lightbox-single', 'cursor-pointer');

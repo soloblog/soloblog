@@ -427,7 +427,7 @@ window.addEventListener('afterprint', function () {
   root.removeAttribute('data-print-from');
 });
 function renderPostMath() {
-  renderMathInElement(document.querySelector('.prose'), {delimiters: [
+  renderMathInElement(document.querySelector('[data-post-body]') || document.querySelector('.prose'), {delimiters: [
     {left: '\\[', right: '\\]', display: true},
     {left: '\\(', right: '\\)', display: false}], throwOnError: false});
 }
