@@ -193,15 +193,21 @@ def _own(row, key) -> str:
 TOC_WHERE = {"posts": "Posts", "pages": "Pages"}
 
 
+def counts_as_page(row, s) -> bool:
+    """A page in the menu or the footer, or the post that's the homepage:
+    what the Shows on of the contents and side panels call a page."""
+    from soloblog import posts
+    return posts.is_page(row) or bool(row["slug"] and row["slug"] == s.get("home_page"))
+
+
 def toc_style(row, s) -> str:
     """Where this post's contents go: "top", "side" (left), "right" or "off".
     Beside a wide page (Slides) there's only room on a very wide screen -
     placeSidePanels (app.py) measures. The site's choice is only for posts
     or pages it's ticked to show on; a post's own choice always counts."""
-    from soloblog import posts
     if _own(row, "toc_style"):
         return _own(row, "toc_style")
-    kind = "pages" if posts.is_page(row) else "posts"
+    kind = "pages" if counts_as_page(row, s) else "posts"
     shows = set((s.get("toc_style_where") or "posts,pages").split(","))
     return (s.get("toc_style") or "top") if kind in shows else "off"
 

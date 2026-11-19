@@ -417,3 +417,21 @@ def test_each_link_to_a_setting_is_still_there(admin):
     hrefs = {e["href"] for e in settings_index()}
     for name, panel in editor.SETTING_LINKS:
         assert editor._setting_href(name, panel) in hrefs, (name, panel)
+
+
+def test_the_homepage_is_a_page_to_the_contents_shows_on(admin, client):
+    # a post chosen as the homepage counts as a page for the contents and
+    # the side panels, on the site and in its own settings
+    keys = ("toc_style", "toc_style_where", "home_page")
+    before = {k: settings.get(k) for k in keys}
+    body = "## One\n\nWords.\n\n## Two\n\nWords.\n\n## Three\n\nWords.\n"
+    slug = save_post(admin, title="Home", body=body)
+    try:
+        settings.set_many({"toc_style": "right", "toc_style_where": "posts", "home_page": slug})
+        assert 'href="#three"' not in client.get("/").text
+        toc = _block(admin.get(f"/admin/edit/{slug}").text, "toc_style")
+        assert '<option value="">Off (default)</option>' in toc and "Contents are off for pages." in toc
+        settings.set_many({"toc_style_where": "posts,pages"})
+        assert 'href="#three"' in client.get("/").text
+    finally:
+        settings.set_many(before)

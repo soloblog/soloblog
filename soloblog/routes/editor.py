@@ -816,6 +816,8 @@ def PagePanel(row, start=None, page=False):
     page - it's in the menu or the footer, where the site shows less."""
     start = start or {}
     page = posts.is_page(row) if row else page
+    # the homepage is a page to the contents' and side panels' Shows on
+    as_page = page or bool(row and pages.counts_as_page(row, settings.get_all()))
     # a new post's settings are its template's
     chosen = {} if row else post_templates.settings_of(start)
     shown = pages.shown_extras(row) if row else pages.shown_from(chosen.get("extras", ""), page)
@@ -832,9 +834,9 @@ def PagePanel(row, start=None, page=False):
     # changed when it's set and isn't that (choosing what the site has isn't
     # changed, though it won't follow the site any more); the page's width
     # follows the site's column, so any width of its own is
-    sites = {"toc_style": _site_toc(page), "heading_fold": _site_value("heading_fold"),
+    sites = {"toc_style": _site_toc(as_page), "heading_fold": _site_value("heading_fold"),
              "cover_width": _site_value("cover_width"), "section_space": _site_value("section_space"),
-             "section_motion": _site_value("section_motion"), "page_width": "", **{f"sides_{n}": _site_side_place(n, page) for n in ("tags", "archive", "author")}}
+             "section_motion": _site_value("section_motion"), "page_width": "", **{f"sides_{n}": _site_side_place(n, as_page) for n in ("tags", "archive", "author")}}
     values = {**{n: own(n) for n in sites if not n.startswith("sides_")},
               **{f"sides_{n}": own_sides.get(n, "") for n in ("tags", "archive", "author")}}
     custom = {n: bool(values[n]) and values[n] != site for n, site in sites.items()}
@@ -856,7 +858,7 @@ def PagePanel(row, start=None, page=False):
                   for key, label in pages.TOC_STYLES.items()],
                 name="toc_style", data_site_value=sites["toc_style"], cls="select select-sm w-full"),
                 # off only because Shows on leaves this kind out: say so, and where
-                SiteTurnsOff(f"Contents are off for {'pages' if page else 'posts'}.", "Shows on",
+                SiteTurnsOff(f"Contents are off for {'pages' if as_page else 'posts'}.", "Shows on",
                              "Contents and sections")
                 if sites["toc_style"] == "off" and _site_value("toc_style") != "off" else None,
                 custom=bool(custom["toc_style"])),
@@ -887,10 +889,10 @@ def PagePanel(row, start=None, page=False):
             # this post's own places for the side panels - greyed out while
             # Show leaves them out altogether (data-off-unless, ACTIONS_JS)
             Div(*[FormField(label, Select(
-                    Option(f"{_site_side(name, page)} (default)", value=""),
+                    Option(f"{_site_side(name, as_page)} (default)", value=""),
                     *[Option(text, value=key, selected=own_sides.get(name) == key) for key, text in OWN_SIDE_PLACES],
                     name=f"sides_{name}", data_site_value=sites[f"sides_{name}"], cls="select select-sm w-full"),
-                    SiteTurnsOff(f"Off for {'pages' if page else 'posts'}.", label, "Side panels")
+                    SiteTurnsOff(f"Off for {'pages' if as_page else 'posts'}.", label, "Side panels")
                     if sites[f"sides_{name}"] == "off" and (settings.get(f"side_{name}") or "off") != "off" else None,
                     custom=bool(custom[f"sides_{name}"]))
                   for name, label in (("tags", "Tag cloud"), ("archive", "Archive links"),

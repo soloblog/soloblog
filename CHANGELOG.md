@@ -21,6 +21,8 @@ versions may include breaking changes; they'll always be listed here.
 - Words under a Menu section's dishes show, instead of being left out
 - Post settings say when Settings turns something off for that post or
   page, with a link to change it
+- The post chosen as the homepage follows the contents' settings for
+  pages, as the side panels already did
 
 ## [1.0.0-beta] - 2026-11-17
 

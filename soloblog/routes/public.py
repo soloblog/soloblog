@@ -1309,9 +1309,9 @@ def view_post(req, session, hdrs, slug: str, preview: str = "", lang: str = ""):
     # beside the post: the contents, and the tag cloud and archive links if wanted there
     side_columns, side_after = SidePanels(
         s, toc_panel(toc_content, s.get("toc_fold")) if toc_content and toc_where in ("side", "right") else None,
-        {"side": "left", "right": "right"}.get(toc_where), where="pages" if posts.is_page(row) or at_home else "posts",
+        {"side": "left", "right": "right"}.get(toc_where), where="pages" if pages.counts_as_page(row, s) or at_home else "posts",
         shown="sides" not in hides, beside=not nothing_beside, own=row["sides"])
-    side_author_here = side_places(s, "pages" if posts.is_page(row) or at_home else "posts", "sides" not in hides,
+    side_author_here = side_places(s, "pages" if pages.counts_as_page(row, s) or at_home else "posts", "sides" not in hides,
                                    row["sides"]).get("side_author") in ("under", "left", "right")
     body_section = Div(
         lay["before"],
