@@ -49,9 +49,16 @@ TABLES = {
 ALSO_LEFT_OUT = {"posts": ("posts", "post_links", "post_translations", "posts_fts"),
                  "members": ("member_sessions", "member_tokens")}
 # what the restore screen counts, per table
-COUNTED = {"post_revisions": "revision(s)", "settings": "setting(s)", "comments": "comment(s)",
-           "webmentions": "mention(s)", "contact_messages": "message(s)", "members": "member(s)",
-           "subscribers": "subscriber(s)", "ap_followers": "follower(s)"}
+COUNTED = {"post_revisions": ("revision", "revisions"), "settings": ("setting", "settings"),
+           "comments": ("comment", "comments"), "webmentions": ("mention", "mentions"),
+           "contact_messages": ("message", "messages"), "members": ("member", "members"),
+           "subscribers": ("subscriber", "subscribers"), "ap_followers": ("follower", "followers")}
+
+
+def counted(table: str, n: int) -> str:
+    """"1 revision", "110 revisions" - the restore screen's count of one table."""
+    one, many = COUNTED[table]
+    return f"{n} {one if n == 1 else many}"
 
 
 def _expand(include) -> set:

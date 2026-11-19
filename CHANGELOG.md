@@ -39,6 +39,8 @@ versions may include breaking changes; they'll always be listed here.
   and similar buttons did shows beside them, not at the top of the page
 - Recent backups lists the newest three, with the rest under Older
   backups - every kept backup can be restored
+- The restore screen counts "1 revision" and "110 revisions", not
+  "revision(s)"
 
 ## [1.0.0-beta] - 2026-11-17
 

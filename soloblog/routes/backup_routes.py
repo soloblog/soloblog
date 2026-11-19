@@ -381,7 +381,7 @@ def _RestoreConfirmPanel(result):
             bits = [str(info["count"])] + ([f"{info['trashed']} in the trash"] if info.get("trashed") else [])
         else:
             bits = []
-        bits += [f"{n} {backup.COUNTED[table]}" for table, n in info.get("rows", {}).items() if table in backup.COUNTED]
+        bits += [backup.counted(table, n) for table, n in info.get("rows", {}).items() if table in backup.COUNTED]
         return ", ".join(bits) if bits else None
 
     return Div(
@@ -486,7 +486,7 @@ async def inspect_backup(session, request):
         with open(backup.STAGED_RESTORE_PATH, "wb") as f:
             f.write(data)
     return Layout(
-        PageHeader("Settings"),
+        PageHeader("Settings: Backup and import"),
         SettingsNav("backup"),
         BackupTab(inspect_result=result),
         settings=settings.get_all(), logged_in=True, pinned_tree=posts.list_pinned_tree(), admin_page=True
@@ -570,7 +570,7 @@ def restore_from_bucket(session, key: str = ""):
     with open(backup.STAGED_RESTORE_PATH, "wb") as f:
         f.write(data)
     return Layout(
-        PageHeader("Settings"),
+        PageHeader("Settings: Backup and import"),
         SettingsNav("backup"),
         BackupTab(inspect_result=backup.inspect_zip(data)),
         settings=settings.get_all(), logged_in=True, pinned_tree=posts.list_pinned_tree(), admin_page=True
@@ -585,7 +585,7 @@ def restore_pending(session):
     with open(backup.STAGED_RESTORE_PATH, "rb") as f:
         result = backup.inspect_zip(f.read())
     return Layout(
-        PageHeader("Settings"),
+        PageHeader("Settings: Backup and import"),
         SettingsNav("backup"),
         BackupTab(inspect_result=result),
         settings=settings.get_all(), logged_in=True, pinned_tree=posts.list_pinned_tree(), admin_page=True

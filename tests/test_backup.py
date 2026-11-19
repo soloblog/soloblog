@@ -378,3 +378,11 @@ def test_a_backup_from_before_layouts_went_restores_and_every_page_renders(admin
     finally:
         for slug in pages:
             posts.delete_post(slug)
+
+
+def test_the_restore_screen_counts_in_words():
+    # "1 revision", "110 revisions" - never "revision(s)"
+    from soloblog import backup
+    assert backup.counted("post_revisions", 1) == "1 revision"
+    assert backup.counted("settings", 207) == "207 settings"
+    assert all("(s)" not in one + many for one, many in backup.COUNTED.values())
