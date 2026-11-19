@@ -753,16 +753,53 @@ def _site_default(choices, name):
                   value="")
 
 
-def _site_side_place(name):
-    """Where the site puts a side panel on a post (Settings > Blog layout):
-    its place if it shows beside posts, else off."""
+def _site_side_place(name, page=False):
+    """Where the site puts a side panel on a post or a page (Settings >
+    Blog layout): its place if it shows beside that kind, else off."""
     place = settings.get(f"side_{name}") or "off"
-    shown_on_posts = "posts" in (settings.get(f"side_{name}_where") or "").split(",")
-    return place if shown_on_posts else "off"
+    shown_here = ("pages" if page else "posts") in (settings.get(f"side_{name}_where") or "").split(",")
+    return place if shown_here else "off"
 
 
-def _site_side(name):
-    return dict(OWN_SIDE_PLACES).get(_site_side_place(name), "Off")
+def _site_side(name, page=False):
+    return dict(OWN_SIDE_PLACES).get(_site_side_place(name, page), "Off")
+
+
+def _site_toc(page):
+    """Where the site puts a post's or a page's contents: off where
+    Shows on leaves that kind out (pages.toc_style)."""
+    kind = "pages" if page else "posts"
+    shows = (settings.get("toc_style_where") or "posts,pages").split(",")
+    return _site_value("toc_style") if kind in shows else "off"
+
+
+# Settings, opened at one setting (the search's own links, tab, panel and
+# setting) - a test checks each is still there
+SETTING_LINKS = {
+    ("Shows on", "Contents and sections"): ("posts", "posts-contents"),
+    ("Tag cloud", "Side panels"): ("blog", "blog-side"),
+    ("Archive links", "Side panels"): ("blog", "blog-side"),
+    ("About the author", "Side panels"): ("blog", "blog-side"),
+    ("Allow comments", "Comments"): ("messages", "messages-comments"),
+    ("Add a support link", "Support"): ("profile", "profile-support"),
+    ("Bio", ""): ("profile", "profile-bio"),
+    ("Readers subscribe with", "Newsletter"): ("newsletter", "newsletter-main"),
+    ("Reader reactions", "Reading"): ("posts", "posts-reading"),
+    ("Each post in the list shows", "Blog layout"): ("blog", "blog-layout"),
+}
+
+
+def _setting_href(name, panel):
+    tab, key = SETTING_LINKS[(name, panel)]
+    return f"/admin/settings?tab={tab}&panel={key}" + (f"&setting={quote(name)}" if panel else "")
+
+
+def SiteTurnsOff(text, name, panel, link="Change in Settings"):
+    """A setting here that the site's Settings turns off for this post:
+    what that means, and a link straight there - shown only while it's so
+    (docs/DEVELOPMENT.md > Writing and settings)."""
+    return P(f"{text} ", A(link, href=_setting_href(name, panel), cls="link"),
+             cls="text-xs text-base-content/60")
 
 
 TITLE_STYLES = {"": "Left (default)", "centre": "Centred", "hidden": "Hidden"}
@@ -795,13 +832,14 @@ def PagePanel(row, start=None, page=False):
     # changed when it's set and isn't that (choosing what the site has isn't
     # changed, though it won't follow the site any more); the page's width
     # follows the site's column, so any width of its own is
-    sites = {"toc_style": _site_value("toc_style"), "heading_fold": _site_value("heading_fold"),
+    sites = {"toc_style": _site_toc(page), "heading_fold": _site_value("heading_fold"),
              "cover_width": _site_value("cover_width"), "section_space": _site_value("section_space"),
-             "section_motion": _site_value("section_motion"), "page_width": "", **{f"sides_{n}": _site_side_place(n) for n in ("tags", "archive", "author")}}
+             "section_motion": _site_value("section_motion"), "page_width": "", **{f"sides_{n}": _site_side_place(n, page) for n in ("tags", "archive", "author")}}
     values = {**{n: own(n) for n in sites if not n.startswith("sides_")},
               **{f"sides_{n}": own_sides.get(n, "") for n in ("tags", "archive", "author")}}
     custom = {n: bool(values[n]) and values[n] != site for n, site in sites.items()}
     differing_ticks = {key for key in pages.EXTRAS if (key in shown) != (key in site_shown)}
+    extras_notes = ExtrasNotes()
     return SettingsPanel(
         "Page",
         Div(
@@ -813,10 +851,14 @@ def PagePanel(row, start=None, page=False):
                 name="page_width", data_site_value=sites["page_width"], cls="select select-sm w-full"),
                 custom=bool(custom["page_width"])),
             FormField("Contents", Select(
-                _site_default(pages.TOC_STYLES, "toc_style"),
+                Option(f"{pages.TOC_STYLES.get(sites['toc_style'], 'Off')} (default)", value=""),
                 *[Option(label, value=key, selected=(values["toc_style"] == key))
                   for key, label in pages.TOC_STYLES.items()],
                 name="toc_style", data_site_value=sites["toc_style"], cls="select select-sm w-full"),
+                # off only because Shows on leaves this kind out: say so, and where
+                SiteTurnsOff(f"Contents are off for {'pages' if page else 'posts'}.", "Shows on",
+                             "Contents and sections")
+                if sites["toc_style"] == "off" and _site_value("toc_style") != "off" else None,
                 custom=bool(custom["toc_style"])),
             FormField("Fold headings", Select(
                 _site_default(pages.FOLD_STYLES, "heading_fold"),
@@ -845,9 +887,11 @@ def PagePanel(row, start=None, page=False):
             # this post's own places for the side panels - greyed out while
             # Show leaves them out altogether (data-off-unless, ACTIONS_JS)
             Div(*[FormField(label, Select(
-                    Option(f"{_site_side(name)} (default)", value=""),
+                    Option(f"{_site_side(name, page)} (default)", value=""),
                     *[Option(text, value=key, selected=own_sides.get(name) == key) for key, text in OWN_SIDE_PLACES],
                     name=f"sides_{name}", data_site_value=sites[f"sides_{name}"], cls="select select-sm w-full"),
+                    SiteTurnsOff(f"Off for {'pages' if page else 'posts'}.", label, "Side panels")
+                    if sites[f"sides_{name}"] == "off" and (settings.get(f"side_{name}") or "off") != "off" else None,
                     custom=bool(custom[f"sides_{name}"]))
                   for name, label in (("tags", "Tag cloud"), ("archive", "Archive links"),
                                       ("author", "About the author"))],
@@ -874,12 +918,15 @@ def PagePanel(row, start=None, page=False):
               for key, label in pages.EXTRAS.items()],
             # two columns where the panel has room - in a phone's 320 px,
             # "Reading progress bar" broke a word a line
-            cls="grid @xs:grid-cols-2 gap-2"), cls="@container"),
+            cls="grid @xs:grid-cols-2 gap-2"),
+            cls="@container"),
             # what it was, so a post that's only moved to the menu still
             # follows the page default instead of keeping a post's extras
             Input(type="hidden", name="extras_before", value=row["extras"] if row else ""),
             Input(type="hidden", name="extras_before_page", value="1" if row and posts.is_page(row) else ""),
-            help="Around the text.", cls=FIELD_GAP, custom=bool(differing_ticks)),
+            help="Around the text.", cls="" if extras_notes else FIELD_GAP, custom=bool(differing_ticks)),
+        # ticks that show nothing until something's set up, or the site has them off
+        Div(extras_notes, cls=FIELD_GAP) if extras_notes else None,
         # what few pages use, in one fold that opens by itself when the
         # page uses one of them
         Details(
@@ -905,6 +952,25 @@ def PagePanel(row, start=None, page=False):
         custom=sum(custom.values()) + bool(differing_ticks),
         key="page"
     )
+
+
+def ExtrasNotes():
+    """Under Show: each tick that shows nothing on any post yet - what it
+    needs, with a link straight there."""
+    from soloblog.ui.post import support_links
+    s = settings.get_all()
+    notes = [
+        ("Support links need a link first.", "Add a support link", "Support", "Add a support link")
+        if not support_links(s) else None,
+        ("About the author needs your name or bio.", "Bio", "", "Add them in Settings")
+        if not (s.get("author_name") or s.get("author_bio")) else None,
+        ("Newsletter sign-up needs the newsletter set up.", "Readers subscribe with", "Newsletter", "Set it up")
+        if not (newsletter.mode(s) or members.enabled(s)) else None,
+        ("Likes are off for the whole site.", "Reader reactions", "Reading", "Change in Settings")
+        if s.get("reactions_style") == "off" else None,
+    ]
+    notes = [SiteTurnsOff(text, name, panel, link) for text, name, panel, link in filter(None, notes)]
+    return Div(*notes, cls="grid gap-1 mt-1") if notes else None
 
 
 def word_goal(post_id):
@@ -1128,8 +1194,10 @@ def PublishingPanel(row, pinned, pin_location):
                                            and pin_location in ("header", "footer")),
           cls=f"text-xs text-base-content/60 -mt-2 {FIELD_GAP}"),
         ToggleField("Allow comments on this post", "comments_enabled", checked=bool(comments_enabled),
-                    cls=FIELD_GAP, site="1" if site_comments else None,
+                    cls="" if not site_comments else FIELD_GAP, site="1" if site_comments else None,
                     custom=(site_comments and not comments_enabled) if site_comments else None),
+        None if site_comments else Div(SiteTurnsOff("Comments are off for the whole site.", "Allow comments",
+                                                    "Comments"), cls=f"-mt-1 {FIELD_GAP}"),
         NewsletterChoice(row),
         # the members area (members.py) - only while it's on
         FormField("Who can read it", Select(
@@ -1157,6 +1225,7 @@ def DetailsPanel(row, start):
     # the blog roll shows covers: hiding one post's is set differently from the site
     lists_covers = "cover" in (settings.get("roll_shows") or "").split(",")
     hides_cover = bool(row and row["hide_list_cover"])
+    # the blog roll shows no covers at all: hiding this one changes nothing yet
     progress = settings.get("editor_progress") == "1"
     goal = word_goal(row["id"]) if row else None
     usual = default_goal()
@@ -1193,9 +1262,11 @@ def DetailsPanel(row, start):
             cls=FIELD_GAP
         ),
         ToggleField("Hide the cover in post lists", "hide_list_cover", checked=hides_cover,
-                    help="It still shows on the post.", cls=FIELD_GAP,
+                    help="It still shows on the post.", cls=FIELD_GAP if lists_covers else "",
                     site="0" if lists_covers else None,
                     custom=hides_cover if lists_covers else None),
+        None if lists_covers else Div(SiteTurnsOff("Post lists don't show covers.", "Each post in the list shows",
+                                                   "Blog layout"), cls=f"-mt-1 {FIELD_GAP}"),
         # room to read a summary back whole; it's still one line (save)
         FormField("Summary", Textarea(summary, name="summary", rows=3,
                                       cls="textarea textarea-sm w-full field-sizing-content min-h-20"),

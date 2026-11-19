@@ -599,6 +599,12 @@ they need to decide, and nothing else.
 - **No directions around the admin.** If something must be set up first,
   say so with a link to it ("[Set up email](...) first"), and only while
   it isn't set up. Never "(Integrations > Email)" in running text.
+- **A post's "(default)" says what this post gets.** A choice that
+  follows the site names what the site gives *this* post or page - "Off
+  (default)" where Settings leaves its kind out - never the site's value
+  regardless. Whatever Settings turns off for it (comments for the whole
+  site, a tick under Show that needs setting up) says so beside it, with
+  a link to that setting (`editor.SiteTurnsOff`), only while it's so.
 - **Codes from other services: one short line and a link** - "From
   AdSense, under Account information". Not the click path plus what the
   code looks like.

@@ -19,6 +19,8 @@ versions may include breaking changes; they'll always be listed here.
 - On a page with writing of its own, two sections in a row are spaced
   like headings too
 - Words under a Menu section's dishes show, instead of being left out
+- Post settings say when Settings turns something off for that post or
+  page, with a link to change it
 
 ## [1.0.0-beta] - 2026-11-17
 

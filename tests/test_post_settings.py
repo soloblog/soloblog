@@ -357,3 +357,63 @@ def test_a_post_held_back_from_subscribers_is_changed(admin, monkeypatch):
     assert _count(html, "publishing").endswith("changed")
     monkeypatch.setattr(newsletter, "skipped", lambda s: False)
     assert not _changed(_block(_editor(admin, slug), "newsletter_email"))
+
+
+def test_a_default_says_what_this_post_or_page_gets(admin):
+    # the site's place for the contents and a side panel counts only where
+    # Shows on has that kind - a page left out gets "Off (default)", and a
+    # line saying where that's set
+    keys = ("toc_style", "toc_style_where", "side_tags", "side_tags_where")
+    before = {k: settings.get(k) for k in keys}
+    settings.set_many({"toc_style": "right", "toc_style_where": "posts", "side_tags": "left",
+                       "side_tags_where": "posts"})
+    try:
+        post = admin.get(f"/admin/edit/{save_post(admin, title='A post', body='Words.')}").text
+        assert '<option value="">On the right (default)</option>' in post
+        assert '<option value="">On the left (default)</option>' in post
+        assert "Contents are off for posts." not in post
+        page = admin.get(f"/admin/edit/{save_post(admin, title='A page', body='Words.', pin_location='header')}").text
+        toc = _block(page, "toc_style")
+        assert '<option value="">Off (default)</option>' in toc
+        assert "Contents are off for pages." in toc and "tab=posts&amp;panel=posts-contents" in toc
+        tags = _block(page, "sides_tags")
+        assert '<option value="">Off (default)</option>' in tags
+        assert "Off for pages." in tags and "tab=blog&amp;panel=blog-side" in tags
+    finally:
+        settings.set_many(before)
+
+
+def test_what_the_site_turns_off_says_so_beside_it(admin):
+    keys = ("comments_enabled", "support_kofi", "author_name", "author_bio", "newsletter_mode", "members_enabled",
+            "reactions_style", "roll_shows")
+    before = {k: settings.get(k) for k in keys}
+    try:
+        settings.set_many({"comments_enabled": "0", "support_kofi": "", "author_name": "", "author_bio": "",
+                           "newsletter_mode": "", "members_enabled": "0", "reactions_style": "off",
+                           "roll_shows": "title,date"})
+        html = admin.get(f"/admin/edit/{save_post(admin, title='Quiet', body='Words.')}").text
+        for line in ("Comments are off for the whole site.", "Support links need a link first.",
+                     "About the author needs your name or bio.",
+                     "Newsletter sign-up needs the newsletter set up.", "Likes are off for the whole site.",
+                     "Post lists don't show covers."):
+            assert line in html, line
+        # each with a link straight to its setting
+        assert "tab=messages&amp;panel=messages-comments" in html and "tab=posts&amp;panel=posts-reading" in html
+        settings.set_many({"comments_enabled": "1", "author_name": "Sam", "reactions_style": "like",
+                           "roll_shows": "title,cover"})
+        html = admin.get(f"/admin/edit/{save_post(admin, title='Loud', body='Words.')}").text
+        for line in ("Comments are off for the whole site.", "About the author needs your name or bio.",
+                     "Likes are off for the whole site.", "Post lists don't show covers."):
+            assert line not in html, line
+    finally:
+        settings.set_many(before)
+
+
+def test_each_link_to_a_setting_is_still_there(admin):
+    # the links beside what the site turns off open Settings at that setting,
+    # as its search does
+    from soloblog.routes import editor
+    from soloblog.routes.admin_settings.pages import settings_index
+    hrefs = {e["href"] for e in settings_index()}
+    for name, panel in editor.SETTING_LINKS:
+        assert editor._setting_href(name, panel) in hrefs, (name, panel)
