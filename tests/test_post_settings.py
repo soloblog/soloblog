@@ -435,3 +435,26 @@ def test_the_homepage_is_a_page_to_the_contents_shows_on(admin, client):
         assert 'href="#three"' in client.get("/").text
     finally:
         settings.set_many(before)
+
+
+def test_no_dropdown_lists_a_choice_twice(admin):
+    # the site's choice is the "(default)" entry, which follows the site;
+    # listed again on its own it read as the same choice twice
+    keys = ("toc_style", "heading_fold", "cover_width", "section_space", "side_tags", "side_tags_where")
+    before = {k: settings.get(k) for k in keys}
+    try:
+        settings.set_many({"toc_style": "right", "heading_fold": "off", "cover_width": "screen",
+                           "side_tags": "left", "side_tags_where": "posts,pages"})
+        for fields in ({}, {"pin_location": "header"}, {"toc_style": "right", "heading_fold": "off"}):
+            html = admin.get(f"/admin/edit/{save_post(admin, title='Twice', body='Words.', **fields)}").text
+            # the ones that follow the site, with a "(default)" entry
+            for select in [s for s in re.findall(r"<select\b.*?</select>", html, re.S) if "(default)" in s]:
+                labels = [re.sub(r"\s*\(default\)$", "", label.strip())
+                          for label in re.findall(r"<option\b[^>]*>(.*?)</option>", select, re.S)]
+                assert len(labels) == len(set(labels)), labels
+        # a post set to just what the site has shows it as the default, and keeps following it
+        html = admin.get(f"/admin/edit/{save_post(admin, title='Same', body='Words.', toc_style='right')}").text
+        toc = _block(html, "toc_style")
+        assert '<option value="">On the right (default)</option>' in toc and '<option value="right"' not in toc
+    finally:
+        settings.set_many(before)

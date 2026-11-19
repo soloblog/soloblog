@@ -10,13 +10,13 @@ import pytest
 from soloblog import pages, post_templates, settings
 
 ALL = {"title_style": "centre", "page_width": "wide", "cover_width": "full", "toc_style": "side",
-       "heading_fold": "folded", "section_space": "large", "section_motion": "rise", "sides_tags": "left",
-       "sides_archive": "off",
+       "heading_fold": "folded", "section_space": "large", "section_motion": "zoom", "sides_tags": "left",
+       "sides_archive": "under",
        "sides_author": "right", "slides": "1", "in_wiki": "1", "remind_update": "1",
        "link_url": "https://example.com/the-article"}
 KEPT = {"title_style": "centre", "page_width": "wide", "cover_width": "full", "toc_style": "side",
-        "heading_fold": "folded", "section_space": "large", "section_motion": "rise",
-        "sides": "tags=left,archive=off,author=right",
+        "heading_fold": "folded", "section_space": "large", "section_motion": "zoom",
+        "sides": "tags=left,archive=under,author=right",
         "extras": "byline,tags", "slides": True, "in_wiki": True, "remind_update": True,
         "link_url": "https://example.com/the-article"}
 
@@ -41,7 +41,8 @@ def _save(admin, **fields):
 def _select(html, name):
     """The value chosen in the select called name."""
     block = re.search(rf'<select[^>]*name="{name}".*?</select>', html, re.S).group(0)
-    return re.search(r'<option value="([^"]*)" selected', block).group(1)
+    chosen = re.search(r'<option value="([^"]*)" selected', block)
+    return chosen.group(1) if chosen else ""
 
 
 def _ticked(html):

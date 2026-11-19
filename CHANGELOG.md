@@ -23,6 +23,7 @@ versions may include breaking changes; they'll always be listed here.
   page, with a link to change it
 - The post chosen as the homepage follows the contents' settings for
   pages, as the side panels already did
+- Post settings list each choice once, instead of the site's twice
 
 ## [1.0.0-beta] - 2026-11-17
 

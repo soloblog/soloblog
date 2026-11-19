@@ -655,8 +655,8 @@ Search engines) gets a thin coloured line down its left edge, and a
 while this page sets it differently, and every panel's heading counts its
 own. Point to **Reset** to see what the default is. It puts the setting
 back to following the site - it empties the setting, so it keeps following
-later changes. Choosing what the site already has isn't a
-change, but it no longer follows the site.
+later changes. Each choice is listed once: the one marked **(default)** is
+the site's, and choosing it follows the site.
 
 A setting that follows the site says what this post or page gets:
 "On the right (default)", or "Off (default)" where Settings leaves it

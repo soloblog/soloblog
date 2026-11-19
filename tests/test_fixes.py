@@ -321,12 +321,14 @@ def test_what_each_post_shows(admin, client):
 
 def test_templates_keep_summary_cover_and_contents(admin):
     from soloblog import post_templates
+    # a place of its own, not the site's (that one is the default entry)
+    settings.set_many({"toc_style": "right"})
     admin.post("/admin/templates/save", data={"template_name": "Full template", "body": "## One",
                                               "summary": "Its summary", "cover_image": "/uploads/c.webp",
-                                              "toc_style": "right"})
+                                              "toc_style": "top"})
     t = next(t for t in post_templates.saved() if t["name"] == "Full template")
     page = admin.get(f"/admin/new?template=mine-{t['id']}").text
-    assert "Its summary" in page and 'value="/uploads/c.webp"' in page and 'value="right" selected' in page
+    assert "Its summary" in page and 'value="/uploads/c.webp"' in page and 'value="top" selected' in page
     assert "## What you'll need" in admin.get("/admin/new?template=howto").text
     assert "## Next week" in admin.get("/admin/new?template=journal").text
     post_templates.delete(t["id"])

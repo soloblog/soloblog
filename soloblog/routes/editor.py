@@ -831,9 +831,9 @@ def PagePanel(row, start=None, page=False):
     own_sides = dict(part.split("=", 1) for part in (row["sides"] if row else chosen.get("sides", "")).split(",")
                      if "=" in part)
     # what the site does for each setting that follows it: a choice is
-    # changed when it's set and isn't that (choosing what the site has isn't
-    # changed, though it won't follow the site any more); the page's width
-    # follows the site's column, so any width of its own is
+    # changed when it's set and isn't that (one set to just what the site
+    # has shows as the default, and follows the site once saved); the
+    # page's width follows the site's column, so any width of its own is
     sites = {"toc_style": _site_toc(as_page), "heading_fold": _site_value("heading_fold"),
              "cover_width": _site_value("cover_width"), "section_space": _site_value("section_space"),
              "section_motion": _site_value("section_motion"), "page_width": "", **{f"sides_{n}": _site_side_place(n, as_page) for n in ("tags", "archive", "author")}}
@@ -852,10 +852,12 @@ def PagePanel(row, start=None, page=False):
                 *[Option(label, value=key, selected=(page_width == key)) for key, label in PAGE_WIDTHS.items()],
                 name="page_width", data_site_value=sites["page_width"], cls="select select-sm w-full"),
                 custom=bool(custom["page_width"])),
+            # each choice once: the site's is the "(default)" one, which follows
+            # it; listed again, it read as the same choice twice
             FormField("Contents", Select(
                 Option(f"{pages.TOC_STYLES.get(sites['toc_style'], 'Off')} (default)", value=""),
                 *[Option(label, value=key, selected=(values["toc_style"] == key))
-                  for key, label in pages.TOC_STYLES.items()],
+                  for key, label in pages.TOC_STYLES.items() if key != sites["toc_style"]],
                 name="toc_style", data_site_value=sites["toc_style"], cls="select select-sm w-full"),
                 # off only because Shows on leaves this kind out: say so, and where
                 SiteTurnsOff(f"Contents are off for {'pages' if as_page else 'posts'}.", "Shows on",
@@ -865,32 +867,33 @@ def PagePanel(row, start=None, page=False):
             FormField("Fold headings", Select(
                 _site_default(pages.FOLD_STYLES, "heading_fold"),
                 *[Option(label, value=key, selected=(values["heading_fold"] == key))
-                  for key, label in pages.FOLD_STYLES.items()],
+                  for key, label in pages.FOLD_STYLES.items() if key != sites["heading_fold"]],
                 name="heading_fold", data_site_value=sites["heading_fold"], cls="select select-sm w-full"),
                 custom=bool(custom["heading_fold"])),
             FormField("Cover image", Select(
                 _site_default(pages.COVER_STYLES, "cover_width"),
                 *[Option(label.split(" - ")[0], value=key, selected=(values["cover_width"] == key))
-                  for key, label in pages.COVER_STYLES.items()],
+                  for key, label in pages.COVER_STYLES.items() if key != sites["cover_width"]],
                 name="cover_width", data_site_value=sites["cover_width"], cls="select select-sm w-full"),
                 custom=bool(custom["cover_width"])),
             FormField("Space between sections", Select(
                 _site_default(pages.SPACINGS, "section_space"),
                 *[Option(label, value=key, selected=(values["section_space"] == key))
-                  for key, label in pages.SPACINGS.items()],
+                  for key, label in pages.SPACINGS.items() if key != sites["section_space"]],
                 name="section_space", data_site_value=sites["section_space"], cls="select select-sm w-full"),
                 custom=bool(custom["section_space"])),
             FormField("Sections appear", Select(
                 _site_default(pages.SECTION_MOTIONS, "section_motion"),
                 *[Option(label, value=key, selected=(values["section_motion"] == key))
-                  for key, label in pages.SECTION_MOTIONS.items()],
+                  for key, label in pages.SECTION_MOTIONS.items() if key != sites["section_motion"]],
                 name="section_motion", data_site_value=sites["section_motion"], cls="select select-sm w-full"),
                 custom=bool(custom["section_motion"])),
             # this post's own places for the side panels - greyed out while
             # Show leaves them out altogether (data-off-unless, ACTIONS_JS)
             Div(*[FormField(label, Select(
                     Option(f"{_site_side(name, as_page)} (default)", value=""),
-                    *[Option(text, value=key, selected=own_sides.get(name) == key) for key, text in OWN_SIDE_PLACES],
+                    *[Option(text, value=key, selected=own_sides.get(name) == key) for key, text in OWN_SIDE_PLACES
+                      if key != sites[f"sides_{name}"]],
                     name=f"sides_{name}", data_site_value=sites[f"sides_{name}"], cls="select select-sm w-full"),
                     SiteTurnsOff(f"Off for {'pages' if as_page else 'posts'}.", label, "Side panels")
                     if sites[f"sides_{name}"] == "off" and (settings.get(f"side_{name}") or "off") != "off" else None,

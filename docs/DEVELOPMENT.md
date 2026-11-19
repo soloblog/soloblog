@@ -605,6 +605,10 @@ they need to decide, and nothing else.
   regardless. Whatever Settings turns off for it (comments for the whole
   site, a tick under Show that needs setting up) says so beside it, with
   a link to that setting (`editor.SiteTurnsOff`), only while it's so.
+- **A dropdown lists each choice once.** The site's is the "(default)"
+  entry, which follows the site, and isn't listed again on its own -
+  two "Off"s read as a mistake. A test checks every dropdown in Post
+  settings.
 - **Codes from other services: one short line and a link** - "From
   AdSense, under Account information". Not the click path plus what the
   code looks like.
