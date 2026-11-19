@@ -133,7 +133,8 @@ def PasskeysPanel():
                                 cls="input input-sm w-full"),
                   help="So you can tell your passkeys apart later."),
         Div(
-            Span(id="passkey-status", role="status", cls="text-xs"),
+            # removing one reports here too (a redirect to #passkey-status)
+            Span(id="passkey-status", data_status_slot=True, role="status", cls="text-xs"),
             Button(KEY_SVG, Span("Add a passkey", cls="ml-1"), type="button", cls="btn btn-sm ml-auto",
                    **on("click", "addPasskey")),
             cls="flex items-center gap-2 mt-3"
@@ -188,9 +189,10 @@ def SessionsPanel():
         P(f"With Keep me signed in ticked, you stay logged in for {config.SESSION_DAYS} days on each browser. "
           "Changing your password logs out the others.", cls="text-sm text-base-content/70"),
         Form(
-            Div(Button(X_SVG, Span("Log out other devices", cls="ml-1"), type="button", cls="btn btn-sm",
+            Div(Span(id="sessions-status", data_status_slot=True, role="status", cls="text-xs"),
+                Button(X_SVG, Span("Log out other devices", cls="ml-1"), type="button", cls="btn btn-sm",
                        data_confirm="Log out every other browser and device? This one stays logged in."),
-                cls="flex justify-end mt-3"),
+                cls="flex items-center justify-end gap-2 mt-3"),
             action="/admin/sessions/end-others", method="post"
         ),
         key="security-sessions"
@@ -244,7 +246,7 @@ async def passkey_register(session, request):
 def passkey_delete(session, credential_id: str = ""):
     passkeys.delete(credential_id)
     auth.end_other_sessions(session)
-    return _toast_redirect("/admin/settings?tab=security", "Passkey removed - other devices are logged out")
+    return _toast_redirect("/admin/settings?tab=security#passkey-status", "Passkey removed - other devices are logged out")
 
 
 @ar.post("/admin/recovery-key")
@@ -266,7 +268,7 @@ def recovery_key_panel(session):
 @ar.post("/admin/sessions/end-others")
 def end_other_sessions(session):
     auth.end_other_sessions(session)
-    return _toast_redirect("/admin/settings?tab=security", "Logged out everywhere else")
+    return _toast_redirect("/admin/settings?tab=security#sessions-status", "Logged out everywhere else")
 
 
 @ar.get("/admin/2fa/panel")

@@ -293,6 +293,9 @@ def PresetsPanel(s):
         "Settings presets",
         P("A starting style for your whole site, in one go. Your colours and writing stay as they are.",
           cls="text-sm text-base-content/70 mb-3"),
+        # what Use this, Save current look and Undo it did, at the top of the cards
+        # (a redirect to #presets-status) - not the page's header, a screen up
+        P(id="presets-status", data_status_slot=True, role="status", cls="text-xs -mt-1 mb-3 empty:hidden"),
         # Custom first, your own look saved; then Default, every look setting
         # back to how Soloblog comes. Two to a row where their column has
         # room (@container): in Preview mode's narrow settings column, one -
@@ -799,7 +802,7 @@ def preview_preset(session, key: str):
     from soloblog import presets
     from soloblog.app import PresetPreview
     if not presets.find(key):
-        return _toast_redirect("/admin/settings?tab=style", "That preset doesn't exist", "error")
+        return _toast_redirect("/admin/settings?tab=style#presets-status", "That preset doesn't exist", "error")
     r = RedirectResponse("/", status_code=303)
     r.set_cookie(PresetPreview.COOKIE, key, httponly=True, samesite="lax", path="/",
                  secure=config.BASE_URL.startswith("https://"))
@@ -819,12 +822,12 @@ def apply_preset(session, key: str = "", page: str = "", page_from: str = ""):
     from soloblog import presets
     from soloblog.app import PresetPreview
     if not presets.find(key):
-        return _toast_redirect("/admin/settings?tab=style", "That preset doesn't exist", "error")
+        return _toast_redirect("/admin/settings?tab=style#presets-status", "That preset doesn't exist", "error")
     made = presets.apply(key, "" if page_from == "new" else page)["made"]
     name = presets.find(key)[0]
     message = f"Now using {name}" + (" - with a new page as your homepage" if made else "")
     # no Undo here: the panel's own Undo it, at its foot, says what it puts back
-    r = status_redirect("/admin/settings?tab=style", message)
+    r = status_redirect("/admin/settings?tab=style#presets-status", message)
     r.delete_cookie(PresetPreview.COOKIE, path="/")
     return r
 
@@ -863,15 +866,15 @@ def delete_own_theme(key: str = ""):
 def save_custom_preset(session):
     from soloblog import presets
     presets.save_custom()
-    return _toast_redirect("/admin/settings?tab=style", "Saved as Custom")
+    return _toast_redirect("/admin/settings?tab=style#presets-status", "Saved as Custom")
 
 
 @ar.post("/admin/presets/undo")
 def undo_preset(session):
     from soloblog import presets
     if not presets.undo():
-        return _toast_redirect("/admin/settings?tab=style", "Nothing to undo", "error")
-    return _toast_redirect("/admin/settings?tab=style", "Put back as it was")
+        return _toast_redirect("/admin/settings?tab=style#presets-status", "Nothing to undo", "error")
+    return _toast_redirect("/admin/settings?tab=style#presets-status", "Put back as it was")
 
 
 # Settings > Appearance > Posts per page: numbers that fill rows of 2 and 3

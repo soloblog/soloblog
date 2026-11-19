@@ -38,9 +38,13 @@ def _when(iso: str) -> str:
     return f"{format_date(iso)} {local.strftime('%H:%M')}"
 
 
-def _button_row(*buttons):
-    """Actions sit right, primary rightmost - same as every SaveBar."""
-    return Div(*buttons, cls="flex items-center justify-end gap-2 mt-3")
+def _button_row(*buttons, status=""):
+    """Actions sit right, primary rightmost - same as every SaveBar - and
+    with status (an id) their result left of them: a redirect to
+    #that-id puts it there (showStatus), not in the page's header."""
+    slot = Span(id=status, data_status_slot=True, role="status", cls="text-xs flex-1 min-w-0 text-end") \
+        if status else None
+    return Div(slot, *buttons, cls="flex items-center justify-end gap-2 mt-3")
 
 
 def CloudStoragePanel():
@@ -137,6 +141,7 @@ def CloudStoragePanel():
                        formaction="/admin/backup/sync"),
                 Button(UPLOAD_SVG, Span("Back up now", cls="ml-1"), type="submit", cls="btn btn-primary btn-sm",
                        formaction="/admin/backup/now"),
+                status="cloud-status",
             ),
             method="post"
         ) if not problem else None,
@@ -161,7 +166,7 @@ def BackupTab(inspect_result=None):
             Form(
                 Div(*[_category_checkbox(cat) for cat in backup.CATEGORIES], cls="flex flex-col gap-1"),
                 _button_row(Button(DOWNLOAD_SVG, Span("Download", cls="ml-1"), type="submit",
-                                   cls="btn btn-primary btn-sm")),
+                                   cls="btn btn-primary btn-sm"), status="download-status"),
                 action="/admin/backup/download", method="get"
             ),
             key="backup-download"
@@ -273,8 +278,11 @@ def DiskPanel():
                            Td())),
                   cls="table table-sm"),
             cls="overflow-x-auto"),
-        P(f"{backup.size_label(disk[1])} free of {backup.size_label(disk[0])} on this disk",
-          cls="text-xs text-base-content/50 mt-2") if disk else None,
+        Div(P(f"{backup.size_label(disk[1])} free of {backup.size_label(disk[0])} on this disk",
+              cls="text-xs text-base-content/50") if disk else None,
+            # what clearing did, here beside the rows (a redirect to #disk)
+            Span(data_status_slot=True, role="status", cls="text-xs ms-auto"),
+            cls="flex flex-wrap items-center gap-2 mt-2"),
         key="backup-disk"
     )
 
@@ -335,7 +343,7 @@ def _RestoreUploadPanel():
             _button_row(Label(UPLOAD_SVG, Span("Upload", cls="ml-1"),
                               Input(type="file", name="backup_zip", accept=".zip", required=True, cls="hidden",
                                     data_autosubmit=True),
-                              cls="btn btn-sm cursor-pointer")),
+                              cls="btn btn-sm cursor-pointer"), status="restore-status"),
             action="/admin/backup/inspect", method="post", enctype="multipart/form-data"
         ),
     )
@@ -407,7 +415,7 @@ def download_backup(session, request):
     # "db" is the one database box before 2026-10-09 (backup._expand)
     include = {cat for cat in [*backup.CATEGORIES, "db"] if request.query_params.get(cat)}
     if not include:
-        return _toast_redirect("/admin/settings?tab=backup", "Select at least one thing to back up", "error")
+        return _toast_redirect("/admin/settings?tab=backup#download-status", "Select at least one thing to back up", "error")
     data = backup.build_backup_zip(include)
     settings.set_many({"last_backup_download": utcnow().isoformat()})
     return Response(
@@ -483,9 +491,9 @@ def backup_to_bucket(session):
     try:
         storage.backup_now()
     except storage.StorageError as e:
-        return _toast_redirect("/admin/settings?tab=backup", _bucket_problem("The backup didn't reach your bucket", e),
+        return _toast_redirect("/admin/settings?tab=backup#cloud-status", _bucket_problem("The backup didn't reach your bucket", e),
                                "error")
-    return _toast_redirect("/admin/settings?tab=backup", "Backed up")
+    return _toast_redirect("/admin/settings?tab=backup#cloud-status", "Backed up")
 
 
 _BACKED_UP = {"changes": "as you change it", "day": "once a day", "week": "once a week"}
@@ -525,8 +533,8 @@ def sync_bucket_images(session):
         storage.reseal_images()
         counts = storage.sync_uploads()
     except storage.StorageError as e:
-        return _toast_redirect("/admin/settings?tab=backup", _bucket_problem("The images didn't sync", e), "error")
-    return _toast_redirect("/admin/settings?tab=backup",
+        return _toast_redirect("/admin/settings?tab=backup#cloud-status", _bucket_problem("The images didn't sync", e), "error")
+    return _toast_redirect("/admin/settings?tab=backup#cloud-status",
                            f"Synced - {counts['uploaded']} uploaded, {counts['downloaded']} downloaded")
 
 
@@ -539,10 +547,10 @@ def restore_from_bucket(session, key: str = ""):
     try:
         data = storage.get_backup(key)
     except storage.StorageError as e:
-        return _toast_redirect("/admin/settings?tab=backup", _bucket_problem("Couldn't restore that backup", e),
+        return _toast_redirect("/admin/settings?tab=backup#cloud-status", _bucket_problem("Couldn't restore that backup", e),
                                "error")
     if data is None:
-        return _toast_redirect("/admin/settings?tab=backup", "Couldn't fetch that backup", "error")
+        return _toast_redirect("/admin/settings?tab=backup#cloud-status", "Couldn't fetch that backup", "error")
     with open(backup.STAGED_RESTORE_PATH, "wb") as f:
         f.write(data)
     return Layout(
@@ -557,7 +565,7 @@ def restore_from_bucket(session, key: str = ""):
 def restore_pending(session):
     """Back to choosing what to restore from the upload that's waiting."""
     if not backup.staged_restore():
-        return _toast_redirect("/admin/settings?tab=backup", "That upload expired, try again", "error")
+        return _toast_redirect("/admin/settings?tab=backup#restore-status", "That upload expired, try again", "error")
     with open(backup.STAGED_RESTORE_PATH, "rb") as f:
         result = backup.inspect_zip(f.read())
     return Layout(
@@ -580,7 +588,7 @@ def disk_clear_log(session, back: str = ""):
     from soloblog import health
     health.clear_log()
     # back to the log when it was cleared from there
-    return _toast_redirect("/admin/health?tab=log" if back == "log" else "/admin/health#disk", "Cleared")
+    return _toast_redirect("/admin/health?tab=log#log-status" if back == "log" else "/admin/health#disk", "Cleared")
 
 
 @ar.post("/admin/disk/clear-sizes")
@@ -599,7 +607,7 @@ def disk_clear_cards(session):
 @ar.post("/admin/backup/discard")
 def restore_discard(session):
     backup.discard_staged()
-    return _toast_redirect("/admin/settings?tab=backup", "Discarded")
+    return _toast_redirect("/admin/settings?tab=backup#restore-status", "Discarded")
 
 
 @ar.post("/admin/backup/restore-confirm")
@@ -607,7 +615,7 @@ async def restore_confirm(session, request):
     form = await request.form()
     include = {cat for cat in backup.CATEGORIES if form.get(cat)}
     if not backup.staged_restore():
-        return _toast_redirect("/admin/settings?tab=backup", "That upload expired, try again", "error")
+        return _toast_redirect("/admin/settings?tab=backup#restore-status", "That upload expired, try again", "error")
     with open(backup.STAGED_RESTORE_PATH, "rb") as f:
         data = f.read()
     backup.discard_staged()
@@ -626,7 +634,7 @@ async def restore_confirm(session, request):
               "members": "member(s)", "subscribers": "subscriber(s)", "ap_followers": "follower(s)"}
     parts = [f"{counts[key]} {label}" for key, label in labels.items() if counts.get(key)]
     message = f"Restored {', '.join(parts)}" if parts else "Nothing restored"
-    return _toast_redirect("/admin/settings?tab=backup", message)
+    return _toast_redirect("/admin/settings?tab=backup#restore-status", message)
 
 
 def _category_checkbox(cat, checked=True, note=None):

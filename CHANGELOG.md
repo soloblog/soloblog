@@ -35,6 +35,8 @@ versions may include breaking changes; they'll always be listed here.
   one works
 - When the bucket refuses, Backup and import says what's wrong and which
   setting to check, instead of the bucket's raw reply
+- What Back up now, Sync images, Restore, Verify a backup, Check again
+  and similar buttons did shows beside them, not at the top of the page
 
 ## [1.0.0-beta] - 2026-11-17
 

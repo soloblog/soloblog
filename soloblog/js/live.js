@@ -26,7 +26,7 @@ function _liveStatusFrom(url) {
   var type = params.get('toast_type') || 'success', undo = params.get('undo') || '';
   ['toast', 'toast_type', 'undo', 'undo_sig'].forEach(function (k) { params.delete(k); });
   var qs = params.toString();
-  history.replaceState(history.state, '', url.pathname + (qs ? '?' + qs : '') + location.hash);
+  history.replaceState(history.state, '', url.pathname + (qs ? '?' + qs : '') + (url.hash || location.hash));
   if (msg) showStatus(msg, type, undo);
 }
 function _liveFetch(url, init) {

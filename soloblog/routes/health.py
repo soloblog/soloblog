@@ -46,6 +46,9 @@ def CheckRow(r):
         Summary(
             icon(r["status"]),
             Span(r["title"], cls="flex-1 min-w-0 font-medium text-sm"),
+            # what its action did (Verify a backup) - in the row, open or folded
+            Span(id=f"status-{r['key']}", data_status_slot=True, role="status", cls="text-xs shrink-0 empty:hidden")
+            if action else None,
             Span(health.AREAS[r["area"]], cls="badge badge-sm badge-ghost shrink-0 max-sm:hidden"),
             Span(_STATUS_WORD[r["status"]], cls="sr-only"),
             cls="collapse-title flex items-center gap-3 min-h-0 py-3 pe-10"
@@ -92,6 +95,8 @@ def Summary_(results, checked_at):
               cls="text-xs text-base-content/50 mt-1") if settings.get("health_remote") != "0" else None,
             # min-w-48: on a phone the button goes underneath rather than squeeze this
             cls="flex-1 min-w-48"),
+        Span(id="check-again-status", data_status_slot=True, role="status", cls="text-xs empty:hidden")
+        if settings.get("health_remote") != "0" else None,
         Form(Button(SYNC_SVG, Span("Check again", cls="ml-1"), type="submit", cls="btn btn-sm"),
              action="/admin/health/refresh", method="post", cls="shrink-0")
         if settings.get("health_remote") != "0" else None,
@@ -183,7 +188,9 @@ def LogTab():
                     action="/admin/health/log/download", method="get") if health.has_detail() else None
     return Div(
         Div(P("Problems from the last two weeks, newest first - where to look when something didn't work.",
-              cls="text-sm text-base-content/60"), Div(download, clear, cls="flex flex-wrap gap-2"),
+              cls="text-sm text-base-content/60"),
+            Div(Span(id="log-status", data_status_slot=True, role="status", cls="text-xs empty:hidden"),
+                download, clear, cls="flex flex-wrap items-center gap-2"),
             cls="flex flex-wrap items-center justify-between gap-3 mb-2"),
         P(warning, cls="text-xs text-base-content/60 mb-3") if download else
         P("The detailed log is off - turn it on in Status > How it checks." if settings.get("detail_log") == "0"
@@ -240,11 +247,11 @@ def download_detail_log(session, request):
     from soloblog.routes.admin_settings import _toast_redirect
     if config.DEMO_MODE:
         from soloblog.demo import BLOCKED_MESSAGE
-        return _toast_redirect("/admin/health?tab=log", BLOCKED_MESSAGE, "error")
+        return _toast_redirect("/admin/health?tab=log#log-status", BLOCKED_MESSAGE, "error")
     host = request.url.hostname or ""
     text = health.detail_text(host)
     if not text:
-        return _toast_redirect("/admin/health?tab=log", "Nothing's been recorded yet", "error")
+        return _toast_redirect("/admin/health?tab=log#log-status", "Nothing's been recorded yet", "error")
     name = f"soloblog-log-{host or 'site'}-{utcnow():%Y-%m-%d}.txt"
     return Response(text, media_type="text/plain; charset=utf-8",
                     headers={"Content-Disposition": f'attachment; filename="{name}"', "Cache-Control": "no-store"})
@@ -277,8 +284,8 @@ def health_verify(session):
         result = f"it couldn't be opened: {e}"
     settings.set_many({"backup_verified_at": utcnow().isoformat(), "backup_verified_result": result})
     if result == "ok":
-        return _toast_redirect("/admin/health#check-verify", "The newest backup opened, and it would restore")
-    return _toast_redirect("/admin/health#check-verify", "The backup check found a problem", "error")
+        return _toast_redirect("/admin/health#status-verify", "The newest backup opened, and it would restore")
+    return _toast_redirect("/admin/health#status-verify", "The backup check found a problem", "error")
 
 
 @ar.post("/admin/health/refresh")
@@ -287,6 +294,6 @@ def health_refresh(session, request):
     from soloblog import health_remote, ratelimit
     from soloblog.routes.admin_settings import _toast_redirect
     if not ratelimit.hit("site", "health-refresh", limit=1, window_minutes=1):
-        return _toast_redirect("/admin/health", "Checked a moment ago - try again in a minute", "error")
+        return _toast_redirect("/admin/health#check-again-status", "Checked a moment ago - try again in a minute", "error")
     health_remote.refresh()
-    return _toast_redirect("/admin/health", "Checked again")
+    return _toast_redirect("/admin/health#check-again-status", "Checked again")

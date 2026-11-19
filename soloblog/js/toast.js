@@ -23,7 +23,11 @@ document.addEventListener('DOMContentLoaded', function () {
   if (saved) showStatus(saved, 'success');
 });
 function showStatus(message, type, undo) {
-  var slot = document.querySelector('[data-status-slot]');
+  // the slot beside the action, when the redirect named it (#its-id,
+  // status_redirect's at=); otherwise the page's first - its header's
+  var named = location.hash.length > 1 && document.getElementById(decodeURIComponent(location.hash.slice(1)));
+  var near = named && (named.matches('[data-status-slot]') ? named : named.querySelector('[data-status-slot]'));
+  var slot = near || document.querySelector('[data-status-slot]');
   if (slot) {
     slot.textContent = message;
     slot.className = 'text-xs ' + (type === 'error' ? 'text-error' : 'text-success');

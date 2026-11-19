@@ -1567,3 +1567,27 @@ def test_a_buttons_menu_opens_toward_the_room_it_has():
     assert "el.classList.contains('dropdown-end') && r.left + el.offsetWidth + 8 > window.innerWidth" in place
     # measured at its own width, not the one left from the last time it opened
     assert js.index("el.style.maxWidth = '';") < js.index("var atEnd")
+
+
+def test_a_result_goes_to_the_slot_beside_its_action(admin):
+    # an action whose buttons sit below the page's header names the slot
+    # beside them (#its-id); each one named must be a status slot on its page
+    import re
+    from pathlib import Path
+    root = Path(__file__).resolve().parent.parent / "soloblog"
+    source = "\n".join(p.read_text(encoding="utf-8") for p in root.rglob("*.py"))
+    named = set(re.findall(r'(?:_toast_redirect|status_redirect)\(\s*"/admin/[^"#]*#([a-z-]+)"', source))
+    named |= {m for m in re.findall(r'"/admin/[^"#]*#([a-z-]+)" if back', source)}
+    assert {"cloud-status", "restore-status", "download-status", "check-again-status", "status-verify", "log-status",
+            "sessions-status", "passkey-status", "presets-status", "disk"} <= named, named
+    pages = {"/admin/settings?tab=backup": ("restore-status", "download-status"),
+             "/admin/health": ("check-again-status", "disk"), "/admin/health?tab=log": ("log-status",),
+             "/admin/settings?tab=security": ("sessions-status", "passkey-status"),
+             "/admin/settings?tab=style": ("presets-status",)}
+    for page, ids in pages.items():
+        html = admin.get(page).text
+        for slot in ids:
+            at = re.search(rf'<[a-z]+[^>]*\bid="{slot}"[^>]*>', html)
+            assert at, (page, slot)
+            # the slot itself, or a box with one inside
+            assert "data-status-slot" in at.group(0) or "data-status-slot" in html[at.end():at.end() + 20000], (page, slot)
