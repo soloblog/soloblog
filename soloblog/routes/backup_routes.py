@@ -17,6 +17,7 @@ from soloblog.tz import utcnow
 from soloblog.render import format_date
 from soloblog.ui import IconAction
 from soloblog.ui import RowActions
+from soloblog.ui import SCROLLS
 from soloblog.ui import (Layout, Alert, FIELD_GAP, FormField, ToggleField, SettingsPanel,
                 SaveStatus,
                 DOWNLOAD_SVG, UPLOAD_SVG, RESTORE_SVG, PageHeader, X_SVG, SYNC_SVG, TRASH_SVG)
@@ -47,6 +48,10 @@ def _button_row(*buttons, status=""):
     return Div(slot, *buttons, cls="flex items-center justify-end gap-2 mt-3")
 
 
+# backups listed before the rest fold under "Older backups"
+RECENT_SHOWN = 3
+
+
 def CloudStoragePanel():
     if not storage.enabled():
         return SettingsPanel(
@@ -60,20 +65,31 @@ def CloudStoragePanel():
     problem = storage.check()
     status = storage.last_status()
     try:
-        backups = storage.list_backups()[:10] if not problem else []
+        backups = storage.list_backups() if not problem else []
     except storage.StorageError as e:
         problem, backups = str(e), []
-    rows = [
-        Div(
-            Div(P(_when(b["modified"]), cls="text-sm"),
-                P(f"{round(b['size'] / 1024, 1)} KB" + (" · encrypted" if b["key"].endswith(".enc") else ""),
+    def backup_row(i, b):
+        # a row action, as on every admin list: an icon, its words in the ⋯ menu on a
+        # phone - Restore still shows what's in it first, so nothing goes back by accident
+        return Div(
+            Div(P(_when(b["modified"]),
+                  Span("Latest", cls="badge badge-xs badge-ghost ms-2") if i == 0 else None, cls="text-sm"),
+                P(backup.size_label(b["size"]) + (" · encrypted" if b["key"].endswith(".enc") else ""),
                   cls="text-xs text-base-content/50")),
-            Form(Input(type="hidden", name="key", value=b["key"]),
-                 Button(RESTORE_SVG, Span("Restore", cls="ml-1"), type="submit", cls="btn btn-sm"),
-                 action="/admin/backup/from-bucket", method="post"),
+            RowActions(Form(Input(type="hidden", name="key", value=b["key"]),
+                            IconAction(RESTORE_SVG, "Restore"),
+                            action="/admin/backup/from-bucket", method="post", cls="contents"),
+                       id=f"backup-acts-{i}"),
             cls="flex items-center justify-between py-2 border-b-[length:var(--border)] border-base-300 last:border-0"
-        ) for b in backups
-    ]
+        )
+
+    # the newest few, which is what a restore is usually for; the rest folded,
+    # in a box that scrolls - every one kept can be restored, none takes the page
+    rows = [backup_row(i, b) for i, b in enumerate(backups[:RECENT_SHOWN])]
+    older = [backup_row(i, b) for i, b in enumerate(backups) if i >= RECENT_SHOWN]
+    if older:
+        rows.append(Details(Summary(f"Older backups ({len(older)})", cls="text-xs link link-hover w-fit py-2"),
+                            Div(*older, data_scroll_hint=True, cls=f"max-h-72 overflow-y-auto pe-1 {SCROLLS}")))
     if status["error"]:
         last = P(f"The last automatic backup failed: {status['error']}", cls="text-sm text-error")
     elif status["at"]:

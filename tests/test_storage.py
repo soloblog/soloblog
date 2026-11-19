@@ -310,3 +310,19 @@ def test_a_refusal_is_said_in_plain_words():
     other = str(storage._refused("Upload", 500, b"<Error><Code>Busy</Code><Message>Try &apos;later&apos;</Message></Error>"))
     assert other == "Upload failed (500): Try 'later'"
     assert str(storage._refused("Upload", 502, b"")) == "Upload failed (502)"
+
+
+def test_the_newest_backups_show_and_the_rest_fold(monkeypatch, admin):
+    # the newest few with Restore as a row icon; the rest under Older backups, all restorable
+    from datetime import timedelta
+    fake = [{"key": f"backups/soloblog-{i}.zip", "size": 168_000, "modified": (WHEN - timedelta(hours=i)).isoformat()}
+            for i in range(7)]
+    monkeypatch.setattr(storage, "enabled", lambda: True)
+    monkeypatch.setattr(storage, "check", lambda: "")
+    monkeypatch.setattr(storage, "list_backups", lambda: fake)
+    html = admin.get("/admin/settings?tab=backup").text
+    shown, folded = html.split("Older backups (4)")
+    assert shown.count('name="key" value="backups/soloblog-') == 3 and "Latest" in shown
+    assert folded.count('name="key" value="backups/soloblog-') == 4
+    # an icon named Restore, not a word button
+    assert 'aria-label="Restore"' in shown and 'class="ml-1">Restore<' not in shown
