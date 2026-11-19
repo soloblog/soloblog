@@ -40,6 +40,15 @@ out, are in [DECISIONS.md](DECISIONS.md). An idea of your own starts in
   left on pages and on the right on posts, say - instead of one place and
   a **Shows on**. Each post or page can still choose its own. A site's
   Shows on carries over, so nothing changes on update.
+- **Restoring a backup brings back the images it saw.** Each version of
+  an image is kept once in the bucket, named by a fingerprint of what's
+  in it, and each backup lists which version every image had. Restoring
+  an old backup puts back those versions - an image edited or deleted
+  since included - and storage stays close to the images themselves, as
+  an unchanged one is never kept twice. A version no kept backup or page
+  uses goes with the last backup that did. It works the same with every
+  storage company, and locked with a passphrase too; an existing bucket
+  is changed over once, by itself.
 - **Screenshots in Help, if people get lost.** The guide is written to
   work without pictures (every step names the button and where it is);
   pictures would add to every install and need retaking when the look
