@@ -1887,8 +1887,8 @@ _UNFOLDED = "<div data-fold-break>"
 _STORY_HEAD = ("@5xl:group-data-[live]/sw:sticky @5xl:group-data-[live]/sw:top-[calc(var(--header-h,0px)+var(--story-shift,0px))] "
                "@5xl:group-data-[live]/sw:z-20 @5xl:group-data-[live]/sw:bg-base-200 "
                "@5xl:group-data-[held]/sw:w-fit @5xl:group-data-[held]/sw:ms-(--story-head-x)! "
-               "@5xl:group-data-[held]/sw:mb-[calc(100svh-var(--story-top)-var(--footer-h,0px)+var(--story-gap))]!")
-_STORY_BODY = "@5xl:group-data-[held]/sw:mt-[calc(var(--story-top)+var(--footer-h,0px)-100svh)]! "
+               "@5xl:group-data-[held]/sw:mb-[calc(var(--story-pic-h,calc(100svh-var(--story-top)-var(--footer-h,0px)))+var(--story-gap))]!")
+_STORY_BODY = "@5xl:group-data-[held]/sw:mt-[calc(0px-var(--story-pic-h,calc(100svh-var(--story-top)-var(--footer-h,0px))))]! "
 _STORY_WRAP = "group/sw @container"
 
 
@@ -2841,7 +2841,7 @@ _SCROLL_FRAME = ("group/frame absolute inset-x-3 top-4 bottom-0 flex items-start
                  "motion-reduce:transition-none motion-reduce:scale-100 data-[active]:opacity-100 "
                  "data-[active]:scale-100 data-[active]:transition-opacity "
                  "@5xl:inset-0 @5xl:items-start "
-                 "@5xl:[--story-h:calc(100svh-var(--story-top,var(--header-h,0px))-var(--footer-h,0px)-3rem)]")
+                 "@5xl:[--story-h:var(--story-pic-h,calc(100svh-var(--story-top,var(--header-h,0px))-var(--footer-h,0px)-3rem))]")
 # only the shown picture takes a press, never the empty space round it, which lies over
 # the story's opening words and their links
 _SCROLL_WRAP = ("relative w-fit max-w-full group-data-[active]/frame:pointer-events-auto "
@@ -2907,7 +2907,8 @@ def _render_story(out, row, s, html, toc, logged_in, series):
     held = Div(Div(*frames, Div(cls="absolute inset-0 bg-linear-to-b from-transparent from-60% via-base-200/55 "
                                     "via-76% to-base-200/90 to-95% @5xl:hidden "
                                     "in-data-[story-card]:via-(--story-fade)/55 in-data-[story-card]:to-(--story-fade)/90"),
-                   cls="relative h-full w-full @5xl:h-[calc(100svh-var(--story-top,var(--header-h,0px))-var(--footer-h,0px)-3rem)] "
+                   cls="relative h-full w-full "
+                       "@5xl:h-[var(--story-pic-h,calc(100svh-var(--story-top,var(--header-h,0px))-var(--footer-h,0px)-3rem))] "
                        "@5xl:min-w-0 @5xl:flex-1"),
                # which step you're on: beside the picture on a wide screen, and on
                # a phone over its edge, on a pill of the page's colour so it shows on any picture
@@ -2920,7 +2921,10 @@ def _render_story(out, row, s, html, toc, logged_in, series):
                cls="hidden group-data-[live]/story:block sticky top-[var(--story-top,var(--header-h,0px))] "
                    "h-[calc(100svh-var(--header-h,0px))] self-start min-w-0 pointer-events-none "
                    "[grid-area:1/1] @5xl:[grid-area:1/2] "
-                   "@5xl:h-[calc(100svh-var(--story-top,var(--header-h,0px))-var(--footer-h,0px))] "
+                   # as tall as the picture (--story-pic-h, MOTION_JS), so the story lets go
+                   # when the picture's foot meets the section's - down to the window's foot,
+                   # a tall window left a screen of empty box before the next section
+                   "@5xl:h-[var(--story-pic-h,calc(100svh-var(--story-top,var(--header-h,0px))-var(--footer-h,0px)))] "
                    "@5xl:group-data-[live]/story:flex @5xl:items-start")
     out["body"] = Div(
         Div(_intro(intro), cls=_col(s)) if text_of(intro) else None,

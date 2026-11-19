@@ -51,6 +51,8 @@ versions may include breaking changes; they'll always be listed here.
   which backup it's from
 - Backup and import and Site health say when images haven't reached your
   bucket
+- On a tall window, the section after a Story follows at its usual gap,
+  instead of after a screen of empty space
 
 ## [1.0.0-beta] - 2026-11-17
 

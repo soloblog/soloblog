@@ -166,7 +166,7 @@
     function set() {
       wrap.removeAttribute('data-held');
       if (getComputedStyle(head).position !== 'sticky') {
-        ['--story-top', '--story-gap', '--story-shift', '--story-head-x', '--story-first-h', '--story-last-h'].forEach(function (v) { wrap.style.removeProperty(v); });
+        ['--story-top', '--story-gap', '--story-shift', '--story-head-x', '--story-first-h', '--story-last-h', '--story-pic-h'].forEach(function (v) { wrap.style.removeProperty(v); });
         return;
       }
       var was = head.style.position;
@@ -195,13 +195,16 @@
       var most = room - high - gap - under;
       var picture = Math.min(most, area ? tallest(area.clientWidth) : Infinity);
       var shift = Math.max(0, Math.round((most - picture) / 2));
-      // the first and last steps are as tall as puts their words level with the picture's
-      // middle when the story is caught and when it lets go (pages._SCROLL_STEP)
-      var top = (parseFloat(root.getPropertyValue('--header-h')) || 0) + shift + high + gap;
-      var foot = window.innerHeight - (parseFloat(root.getPropertyValue('--footer-h')) || 0);
+      // the held box is as tall as the picture, so the story lets go when the picture's foot
+      // meets the section's - and the next section follows at its own gap. The first and last
+      // steps are the picture's height too, which puts their words level with its middle when
+      // the story is caught and when it lets go (pages._SCROLL_STEP)
       if (picture < Infinity) {
+        wrap.style.setProperty('--story-pic-h', Math.round(picture) + 'px');
         wrap.style.setProperty('--story-first-h', Math.round(picture) + 'px');
-        wrap.style.setProperty('--story-last-h', Math.round(2 * (foot - top - picture / 2)) + 'px');
+        wrap.style.setProperty('--story-last-h', Math.round(picture) + 'px');
+      } else {
+        wrap.style.removeProperty('--story-pic-h');
       }
       wrap.style.setProperty('--story-gap', gap + 'px');
       wrap.style.setProperty('--story-shift', shift + 'px');

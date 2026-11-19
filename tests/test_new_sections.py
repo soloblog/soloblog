@@ -518,3 +518,16 @@ def test_a_storys_width_decides_how_far_it_spreads(admin, client):
     assert cap + "full" in wide and cap + "[110rem]" not in wide
     assert cap + "[110rem]" in full and cap + "full" not in full
     assert cap + "7xl" in column
+
+
+def test_a_story_lets_go_where_its_picture_ends(admin, client):
+    # beside the words, the held box is the picture's height (--story-pic-h), not down to
+    # the window's foot - so on a tall window the next section follows at its own gap,
+    # not after a screen of empty box; the last step is the picture's height, as the first
+    from soloblog import js, pages
+    html = _page(admin, client, STORY, title="A story end")
+    held = re.search(r'<div[^>]*data-story-held[^>]*>', html).group(0)
+    assert "@5xl:h-[var(--story-pic-h," in held
+    assert "var(--story-pic-h," in pages._STORY_HEAD and "var(--story-pic-h," in pages._STORY_BODY
+    motion = js.read("motion.js")
+    assert "setProperty('--story-pic-h'" in motion and "setProperty('--story-last-h', Math.round(picture)" in motion

@@ -1075,8 +1075,9 @@ def test_a_storys_heading_is_held_in_one_wrapper_with_its_story(admin, client, l
     assert "sticky top-[var(--story-top,var(--header-h,0px))]" in wrap
     # the heading is let go when the picture is: its margin runs on by the picture's height and
     # the story's pulls back by the same
-    assert "@5xl:group-data-[held]/sw:mb-[calc(100svh-var(--story-top)-var(--footer-h,0px)+var(--story-gap))]!" in head
-    assert "@5xl:group-data-[held]/sw:mt-[calc(var(--story-top)+var(--footer-h,0px)-100svh)]!" in wrap
+    from soloblog import pages
+    assert pages._STORY_HEAD.split()[-1] in head and "var(--story-pic-h," in pages._STORY_HEAD.split()[-1]
+    assert pages._STORY_BODY.strip() in wrap and "var(--story-pic-h," in pages._STORY_BODY
 
 
 def test_only_a_storys_heading_is_held(admin, client):
