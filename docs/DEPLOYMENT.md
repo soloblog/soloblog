@@ -754,6 +754,17 @@ still need the passphrase they were made with.
 | Your images | One copy of each, the latest. A trashed image moves to a trash folder, and is deleted when you empty the trash | With `BACKUP_PASSPHRASE` |
 | Backups | Your posts, settings and the rest you choose - not images | With `BACKUP_PASSPHRASE` |
 
+In the bucket, inside the folder `S3_PREFIX` names (or at the top, without one):
+
+| Folder | What's in it |
+|---|---|
+| `uploads/` | Your images, each under its own name |
+| `uploads/_trash/` | Images in the trash |
+| `backups/` | One file per backup, named by date and time: `soloblog-20261119-154700.zip`, or `.zip.enc` when it's encrypted. Each is the same zip as a download, without `uploads/` - see [Back up and restore](guide/run.md#back-up-and-restore) for what's inside |
+
+Two sites can share one bucket with a different `S3_PREFIX` each. Each
+only reads, backs up to and clears its own folder.
+
 **Who can see your images there?** Without `BACKUP_PASSPHRASE`, anyone
 with the bucket's access key, and the storage company. Published images
 are on your site for anyone anyway - this matters for images in drafts

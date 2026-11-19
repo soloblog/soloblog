@@ -152,10 +152,15 @@ If something goes wrong, you can bring it all back.
    start with.
 3. Select **Download**.
 
-You get a zip file named after your site and the date. Inside, each post
-is a markdown file that any text editor opens, and your images are in a
-folder called `uploads`. Keep the file somewhere private: it includes
-your settings, and those include the keys to services you've connected.
+You get a zip file named after your site and the date. Keep it somewhere
+private: it includes your settings, and those include the keys to
+services you've connected. Inside are the parts you ticked:
+
+| In the zip | What it is |
+|---|---|
+| `posts/` | Each post and page as a markdown file, which any text editor opens. Posts in the trash are in `posts/_trash/`. |
+| `uploads/` | Your images and other files. `_trash/` holds the ones in the trash, `_sizes/` the smaller copies made for pages, and `_originals/` an image as it was before you edited it. |
+| `blog.db` | Everything else - settings, comments, members, subscribers, stats - in one database file. |
 
 **To restore from a backup:** on the same page, under **Restore**, select
 **Upload** and choose the backup file. It shows what's inside. Tick what
@@ -168,6 +173,31 @@ pay for by how much you keep. Backups are then made for you after you
 change things, and a new server restores itself from the newest one.
 Cloud storage is set up on your host, not in Settings - see
 [Keep files in cloud storage](../DEPLOYMENT.md#keep-files-in-cloud-storage).
+
+Once it's connected, **Settings > Backup and import > Cloud storage**
+says **On** and shows the last backup. Your images are copied to the
+bucket as you add, change or delete them - not only when a backup is made.
+
+- **Sync images** copies every image the bucket doesn't have yet up to
+  it, and any image your server is missing down from it. Press it once
+  after you first connect storage, so the images you already had are
+  there too. It deletes nothing, so it's safe to press any time.
+- **Back up now** makes a backup straight away, instead of waiting for
+  the next change. Press it after you first connect storage, to check
+  the bucket works.
+- **What the backups include** - tick what goes into each backup. Your
+  images aren't in backups; the bucket keeps them separately.
+
+**To restore from your bucket:** under **Recent backups**, the newest
+three are listed with their date and size, and **Older backups** opens
+the rest. Select **Restore** (the ↺ icon; on a phone, under ⋯) beside
+the one you want. As with a file you upload, it shows what's inside
+first: tick what to bring back and select **Restore**.
+
+**Want to know a backup would work?** In **Site health**, select
+**Verify a backup**. It opens the newest backup in your bucket and checks
+it would restore, without restoring anything. Site health suggests it
+again after three months.
 
 **Want fewer backups?** In **Settings > Backup and import**, under
 **Cloud storage**, set **How often**:
