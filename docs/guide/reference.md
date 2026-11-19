@@ -227,7 +227,7 @@ Under **Advanced**. For Milestones sections, which show events along a line.
 ### Width and spacing
 
 - **Reading column** - How wide the column of text is: Standard, or Narrow, which is easier on the eyes for long reading.
-- **Space between sections** - Small, Medium or Large: the room between a page's sections, the sections in a post, a project's pictures, and before comments and related posts. Medium to start with. Each post or page can choose its own, and a section's own `Space:` line wins.
+- **Space between sections** - Small, Medium or Large: the room between a page's sections, a project's pictures, and before comments and related posts. Medium to start with. It's for a page made of sections, like a landing page: on a page with writing of its own (a plain `##` heading anywhere), sections sit as close as headings. Each post or page can choose its own, and a section's own `Space:` line wins.
 - **Section headings** - On the left or Centred: where every section's heading, and the words under it, sit. On the left to start with. A section's own `Heading:` line wins.
 
 ### Header
@@ -658,6 +658,17 @@ back to following the site - it empties the setting, so it keeps following
 later changes. Choosing what the site already has isn't a
 change, but it no longer follows the site.
 
+A setting that follows the site says what this post or page gets:
+"On the right (default)", or "Off (default)" where Settings leaves it
+out - contents and side panels have a **Shows on** in Settings for posts
+and pages. When Settings is what turns something off here, a line under
+it says so, with a link straight to that setting: contents or a side
+panel off for pages, comments off for the whole site, post lists that
+show no covers, or a tick under Show that needs something set up first
+(a support link, your name or bio, the newsletter). Choosing something
+here still works on this post or page alone - a page can have contents
+when Settings leaves pages out.
+
 - **Title** - Left, centred, or hidden (screen readers still read it).
   Hide it when a Hero section opens the page with its own heading.
 - **Page width** - The site's column, or wide: sections and pictures may
@@ -671,8 +682,9 @@ change, but it no longer follows the site.
 - **Cover image** - The site's default, as wide as the text, out to the
   side panels, edge to edge, or full screen with the title over it.
 - **Space between sections** - The site's default, or Small, Medium or
-  Large for this post or page alone. A section's own `Space:` line still
-  wins.
+  Large for this post or page alone: the room between sections on a page
+  made of them. A page with writing of its own keeps its sections as close
+  as headings. A section's own `Space:` line still wins.
 - **Sections appear** - The site's default, or how this post or page's
   sections come into view as they scroll in: Fade, Rise, Zoom, Slide left,
   Slide right, Slide both ways, Focus, Tilt, or None. A section's own `Appear:` line still wins.
@@ -680,7 +692,7 @@ change, but it no longer follows the site.
 - **Tag cloud**, **Archive links** and **About the author** - Where each
   side panel goes on this post: the site's default, under the post, on
   the left, on the right, or off - even a panel that Settings hides on
-  posts. Left and right need room: on a phone, on a wide page or on slides,
+  posts or pages. Left and right need room: on a phone, on a wide page or on slides,
   they go under the post. They're greyed out while **Side panels** isn't ticked
   under Show.
 - **Background sound** - One of your audio files, looping on this post or

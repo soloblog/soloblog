@@ -154,8 +154,8 @@ spacing**, set **Reading column** to **Narrow**.
 
 **Want more or less room between a page's sections?** Under **Width and
 spacing**, choose **Small**, **Medium** or **Large** for **Space between
-sections**. It changes every page - a landing page's sections, the
-sections in a post, a project's pictures, and the gap before comments.
+sections**. It changes every page - a landing page's sections, a
+project's pictures, and the gap before comments.
 For one page only, open its **Post settings > Page** and choose
 **Space between sections** there. One section can say otherwise with its
 own `Space:` line. On a wide screen **Small** is about half an inch,
