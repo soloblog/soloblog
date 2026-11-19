@@ -715,21 +715,27 @@ To set it up:
 
 1. At the storage company, make a private bucket, and an access key for
    that bucket only.
-2. Set these variables on your host, where its settings or environment
-   variables are:
+2. Set these on your host, where its settings or environment variables
+   are. **All five are needed:**
 
-   | Variable | Example |
+   | Variable | What to put |
    |---|---|
-   | `S3_BUCKET` | `my-blog` |
-   | `S3_ENDPOINT` | R2: `https://<account-id>.r2.cloudflarestorage.com`<br>Backblaze: `https://s3.us-west-004.backblazeb2.com` (with or without `https://`)<br>Amazon S3: leave blank |
-   | `S3_REGION` | R2: `auto`. S3 and Backblaze: the bucket's region, e.g. `us-west-004` |
-   | `S3_ACCESS_KEY_ID` | the access key's ID |
-   | `S3_SECRET_ACCESS_KEY` | the access key's secret |
-   | `S3_PREFIX` | optional folder inside the bucket, e.g. `soloblog` |
-   | `S3_AUTO_BACKUP` | `0` turns off automatic backups (images are still copied) |
-   | `S3_RESTORE_ON_BOOT` | `0` turns off restoring onto an empty disk |
-   | `S3_BACKUP_KEEP` | how many backups to keep at first (default `30`); change it later in the admin |
-   | `BACKUP_PASSPHRASE` | optional: locks every backup and image in the bucket with a passphrase (below) |
+   | `S3_BUCKET` | Your bucket's name, exactly as your storage company shows it - capital letters too. For a bucket called `My-Blog-Backups`, that's `My-Blog-Backups`. |
+   | `S3_ENDPOINT` | Your bucket's S3 address, copied from your storage company - it's different for each account and region, so don't copy the examples. Backblaze shows it as **Endpoint** on the bucket's page, like `s3.us-west-004.backblazeb2.com` (with or without `https://`). Cloudflare R2 shows it on the bucket's settings, like `https://<account-id>.r2.cloudflarestorage.com`. Amazon S3: leave it out. |
+   | `S3_REGION` | The bucket's region. Backblaze: the middle of its endpoint - `us-west-004` in the example above. Cloudflare R2: `auto`. Amazon S3: the region you chose, like `eu-west-1`. |
+   | `S3_ACCESS_KEY_ID` | The ID of an access key for this bucket. Backblaze calls it **keyID**. |
+   | `S3_SECRET_ACCESS_KEY` | That key's secret. Backblaze calls it **applicationKey**, and shows it only once, when the key is made - copy it then. |
+
+   **These are optional** - leave them out for what each one does by
+   itself:
+
+   | Variable | What it does | Left out |
+   |---|---|---|
+   | `S3_PREFIX` | A folder inside the bucket for this site's files, like `my-blog`. Needed only if the bucket holds anything else, or two sites share it. | Files go at the top of the bucket |
+   | `S3_BACKUP_KEEP` | How many backups to keep to start with. Change it later in **Settings > Backup and import**. | `30` |
+   | `S3_AUTO_BACKUP` | `0` turns off automatic backups. Images are still copied. | Automatic backups on |
+   | `S3_RESTORE_ON_BOOT` | `0` stops a site that starts on an empty disk from restoring itself from the bucket. | Restoring on |
+   | `BACKUP_PASSPHRASE` | Locks every backup and image in the bucket. [Read this first](#lock-the-bucket-with-a-passphrase). | Not locked |
 
 3. Restart Soloblog. **Settings > Backup and import > Cloud storage**
    shows which are set.
@@ -737,15 +743,21 @@ To set it up:
 **Keep the bucket private** - backups hold your whole site, keys
 included. It never needs to be public.
 
-**Want a second lock?** Set `BACKUP_PASSPHRASE`: backups and images are
-then encrypted, so someone who gets into the bucket - or the storage
-company itself - still can't open them. Images already there are
-encrypted the next time Soloblog starts. Restoring needs the same
-passphrase - **keep it outside the blog, in a password manager**.
-Without it, an encrypted backup can't be opened, and a new server can't
-get your images back. Change or remove it later and your images are
-copied again the new way when Soloblog restarts - but older backups
-still need the passphrase they were made with.
+### Lock the bucket with a passphrase
+
+> **Save the passphrase in a password manager before you set it.** Once
+> it's set, the images and backups in your bucket are replaced by locked
+> copies. Without the passphrase they can't be opened - not by you,
+> Soloblog or your storage company - and a new server can't get your site
+> back from the bucket.
+
+Set `BACKUP_PASSPHRASE`, and backups and images are encrypted, so
+someone who gets into the bucket - or the storage company itself -
+still can't open them. Images already there are encrypted the next time
+Soloblog starts. Restoring needs the same passphrase. Change or remove
+it later and your images are copied again the new way when Soloblog
+restarts - but older backups still need the passphrase they were made
+with.
 
 ### What's in the bucket
 

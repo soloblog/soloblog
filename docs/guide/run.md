@@ -163,9 +163,31 @@ services you've connected. Inside are the parts you ticked:
 | `blog.db` | Everything else - settings, comments, members, subscribers, stats - in one database file. |
 
 **To restore from a backup:** on the same page, under **Restore**, select
-**Upload** and choose the backup file. It shows what's inside. Tick what
-to bring back and select **Restore**. Each part you tick replaces what
-your site has now. Your password and passkeys stay as they are.
+**Upload** and choose the backup file. It shows what's inside, with a
+count for each part. Tick what to bring back and select **Restore**.
+It asks once more, then replaces what you ticked - read what that means
+below first.
+
+**What does a restore replace?** Only the parts you tick, and nothing
+is renamed or kept twice:
+
+- **Posts, pages and images** - each one in the backup replaces the one
+  on your site with the same name. A post you've edited since the backup
+  goes back to how it was then. A post or image you've added since isn't
+  in the backup, so it stays as it is.
+- **Settings, comments and messages, members, subscribers and followers,
+  stats and reactions** - each part you tick is replaced as a whole. A
+  comment, a member or a subscriber that arrived after the backup is
+  removed. A post's earlier versions go back to the backup's too.
+- **Your password and passkeys** always stay as they are, so you can
+  still log in.
+
+It doesn't ask about each post or image, and it doesn't show which ones
+will change - the ticks and the counts are what you choose by.
+
+**Before you restore, keep a copy of today.** Select **Back up now**, or
+**Download** a backup, first. If the restore brings back less than you
+hoped, restoring that copy puts your site back as it was this minute.
 
 **Want backups made for you?** Connect cloud storage - a bucket at
 Amazon S3, Cloudflare R2 or Backblaze B2, which is online storage you
@@ -173,15 +195,22 @@ pay for by how much you keep. Backups are then made for you after you
 change things, and a new server restores itself from the newest one.
 Cloud storage is set up on your host, not in Settings - see
 [Keep files in cloud storage](../DEPLOYMENT.md#keep-files-in-cloud-storage).
+Locking it with a passphrase? Read
+[the warning first](../DEPLOYMENT.md#lock-the-bucket-with-a-passphrase): without the
+passphrase, nothing in the bucket can be opened.
 
 Once it's connected, **Settings > Backup and import > Cloud storage**
 says **On** and shows the last backup. Your images are copied to the
 bucket as you add, change or delete them - not only when a backup is made.
 
-- **Sync images** copies every image the bucket doesn't have yet up to
-  it, and any image your server is missing down from it. Press it once
-  after you first connect storage, so the images you already had are
-  there too. It deletes nothing, so it's safe to press any time.
+- **Sync images** asks which way, for all your images at once. **This
+  site to your bucket** copies every image here to the bucket, replacing
+  its copies - press it once after you first connect storage, so the
+  images you already had are there too. **Your bucket to this site**
+  copies every image in the bucket here, replacing these. Neither
+  deletes anything: an image on only one side stays where it is. You
+  don't need it day to day - if an image ever fails to reach the bucket,
+  this page and **Site health** say so.
 - **Back up now** makes a backup straight away, instead of waiting for
   the next change. Press it after you first connect storage, to check
   the bucket works.
@@ -191,8 +220,11 @@ bucket as you add, change or delete them - not only when a backup is made.
 **To restore from your bucket:** under **Recent backups**, the newest
 three are listed with their date and size, and **Older backups** opens
 the rest. Select **Restore** (the ↺ icon; on a phone, under ⋯) beside
-the one you want. As with a file you upload, it shows what's inside
-first: tick what to bring back and select **Restore**.
+the one you want. The **Restore** card above fills in and comes into
+view, saying which backup it's from. As with a file you upload, tick
+what to bring back and select **Restore**. **Images** brings back the
+bucket's latest copy of each image, replacing your site's - the bucket
+keeps one copy of each, not one per backup.
 
 **Want to know a backup would work?** In **Site health**, select
 **Verify a backup**. It opens the newest backup in your bucket and checks

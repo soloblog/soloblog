@@ -570,17 +570,17 @@ A backup: a zip file of what you tick - posts and pages, images, settings, comme
 
 ### Restore
 
-**Upload** a backup to see what's in it, then tick what to bring back and select **Restore**. Each part you tick replaces what your site has now. Your password and passkeys stay as they are.
+**Upload** a backup to see what's in it, then tick what to bring back and select **Restore**. Posts, pages and images replace the ones with the same name; settings, comments, members, subscribers and stats are replaced as a whole. Your password and passkeys stay as they are. Before you restore: [what a restore replaces](run.md#back-up-and-restore).
 
 ### Cloud storage
 
-Keep your images and backups in online storage of your own - an Amazon S3, Cloudflare R2 or Backblaze B2 bucket - so backups are made for you. It's set up with the `S3_` settings on your host, not here: see [Keep files in cloud storage](../DEPLOYMENT.md#keep-files-in-cloud-storage). With `BACKUP_PASSPHRASE` set on your host, backups and images in the bucket are encrypted. Once connected:
+Keep your images and backups in online storage of your own - an Amazon S3, Cloudflare R2 or Backblaze B2 bucket - so backups are made for you. It's set up with the `S3_` settings on your host, not here: see [Keep files in cloud storage](../DEPLOYMENT.md#keep-files-in-cloud-storage). With `BACKUP_PASSPHRASE` set on your host, backups and images in the bucket are encrypted - keep the passphrase in a password manager, as [the warning](../DEPLOYMENT.md#lock-the-bucket-with-a-passphrase) says. Once connected:
 
 - **How often** - A minute after changes, or once a day or once a week if anything changed.
 - **Backups to keep** - How many stay in the bucket; older ones are deleted as new ones are made.
 - **What the backups include** - Posts and pages, settings, comments and messages, members, subscribers and followers, stats and reactions. Images are kept in the bucket separately.
-- **Recent backups** - The newest three, with **Older backups** folded under them, each with **Restore**, which shows what's in it first.
-- **Sync images** - Copies images the bucket is missing up, and ones your server is missing down. Deletes nothing.
+- **Recent backups** - The newest three, with **Older backups** folded under them, each with **Restore**, which shows what's in it first - and **Images**, the bucket's latest copy of each.
+- **Sync images** - All your images at once, the way you choose: this site to your bucket, or your bucket to this site, replacing the other side's copies. Deletes nothing. When an image fails to reach the bucket, this panel says so.
 - **Back up now** - Makes a backup straight away.
 
 Steps: [Back up and restore](run.md#back-up-and-restore).
