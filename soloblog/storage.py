@@ -454,7 +454,7 @@ def backup_now() -> str:
     _state["last_result"], _state["last_at"] = "", datetime.now(UTC).isoformat()
     # kept across restarts, for Site health
     from soloblog import settings
-    settings.set_many({"backup_last_at": utcnow().isoformat()})
+    settings.set_many({"backup_last_at": utcnow().isoformat(), "backup_last_error": ""})
     return key
 
 
@@ -500,7 +500,10 @@ def list_backups() -> list:
 
 
 def last_status() -> dict:
-    return {"at": _state["last_at"], "error": _state["last_result"],
+    # a failure is kept across restarts (backup_last_error) - a restart
+    # must not hide that backups aren't reaching the bucket
+    from soloblog import settings
+    return {"at": _state["last_at"], "error": _state["last_result"] or settings.get("backup_last_error") or "",
             "pending": _state["timer"] is not None}
 
 
@@ -513,6 +516,8 @@ def _run_scheduled():
     except Exception as e:  # a background thread - never let it die silently
         _state["last_result"] = str(e)
         log.warning("automatic backup failed: %s", e)
+        from soloblog import settings
+        settings.set_many({"backup_last_error": str(e)[:500]})
 
 
 def note_change():

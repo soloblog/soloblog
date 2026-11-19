@@ -94,6 +94,14 @@ def backup_check():
     times = [t for t in (settings.get("backup_last_at"), settings.get("last_backup_download")) if t]
     last = min((_ago(t) for t in times if _ago(t) is not None), default=None)
     where = "to your bucket, automatically" if bucket else "by download"
+    # cloud storage connected, but nothing has reached it: say so, not "connect cloud storage"
+    if bucket and not settings.get("backup_last_at") and (last is None or last > timedelta(days=7)):
+        return check("backup", "backups", CRITICAL if last is None or last > timedelta(days=30) else RECOMMENDED,
+                     "No backup has reached your bucket yet" if last is None else
+                     f"The last backup was {_days(last)}",
+                     "Cloud storage is connected, but no backup has been made there yet. Back up now to check "
+                     "it works - after that, it's done for you a minute after every change.",
+                     "Back up now", "/admin/settings?tab=backup")
     if last is None:
         return check("backup", "backups", CRITICAL, "There's no backup yet",
                      "If the server's disk failed, everything on it would be gone. Download a backup, or "
@@ -115,7 +123,8 @@ def verify_check():
     """Only with a bucket: a backup there can be opened and checked here.
     Without one, Restore does the same for a downloaded file."""
     from soloblog import storage
-    if not storage.enabled():
+    if not storage.enabled() or not settings.get("backup_last_at"):
+        # nothing in the bucket to check yet - the backup check says so
         return None
     verified = _ago(settings.get("backup_verified_at"))
     result = settings.get("backup_verified_result")

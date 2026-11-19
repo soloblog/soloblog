@@ -86,6 +86,7 @@ DEFAULTS = {
     "stripe_last_error": "",
     # Site health (health.py): what it last found, kept between visits
     "backup_last_at": "",           # the last backup made to the bucket
+    "backup_last_error": "",        # why the last automatic backup failed, until one works
     "backup_verified_at": "",       # Verify a backup: when, and "ok" or what was wrong
     "backup_verified_result": "",
     "mail_last_ok_at": "",          # the last email that went out, and the last that didn't

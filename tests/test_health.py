@@ -57,6 +57,29 @@ def test_backups(monkeypatch):
         settings.set_many(before)
 
 
+def test_a_connected_bucket_with_no_backup_says_so(monkeypatch):
+    # connected but empty: no "connect cloud storage", and nothing to verify yet
+    from soloblog import storage
+    before = _keep()
+    try:
+        monkeypatch.setattr(storage, "enabled", lambda: True)
+        monkeypatch.setattr(storage, "note_change", lambda: None)
+        monkeypatch.setattr(storage, "last_status", lambda: {"at": None, "error": "", "pending": False})
+        settings.set_many({"backup_last_at": "", "last_backup_download": _ago(days=52)})
+        r = health.backup_check()
+        assert r["status"] == health.CRITICAL and "connect cloud storage" not in r["why"]
+        assert "no backup has been made there yet" in r["why"]
+        assert health.verify_check() is None
+        settings.set_many({"last_backup_download": ""})
+        assert health.backup_check()["title"] == "No backup has reached your bucket yet"
+        # once one has, it's checked as before
+        settings.set_many({"backup_last_at": _ago(hours=1)})
+        assert health.backup_check()["status"] == health.GOOD
+        assert health.verify_check()["status"] in (health.RECOMMENDED, health.GOOD, health.CRITICAL)
+    finally:
+        settings.set_many(before)
+
+
 def test_security(monkeypatch):
     monkeypatch.setattr(config, "SESSION_SECRET", health.DEFAULT_SECRET)
     assert health.secret_check()["status"] == health.CRITICAL
@@ -182,6 +205,7 @@ def test_verify_a_backup(admin, monkeypatch):
         monkeypatch.setattr(storage, "enabled", lambda: True)
         monkeypatch.setattr(storage, "note_change", lambda: None)
         monkeypatch.setattr(storage, "list_backups", lambda: [{"key": "backups/soloblog-1.zip"}])
+        settings.set_many({"backup_last_at": _ago(hours=1)})
         good = backup.build_backup_zip({"posts", "db"})
         monkeypatch.setattr(storage, "get_backup", lambda key: good)
         r = admin.post("/admin/health/verify")

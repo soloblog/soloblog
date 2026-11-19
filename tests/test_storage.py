@@ -282,6 +282,21 @@ def test_images_in_the_bucket_are_encrypted_with_the_passphrase(bucket, monkeypa
         settings.set_many({"bucket_images_sealed": ""})
 
 
+def test_a_failed_automatic_backup_is_remembered_until_one_works(bucket, monkeypatch):
+    # kept in settings, so a restart doesn't hide it from Site health
+    from soloblog import settings
+    working = config.S3_ENDPOINT
+    monkeypatch.setattr(config, "S3_ENDPOINT", "http://127.0.0.1:9")  # nothing listening
+    storage._state["last_result"] = ""
+    storage._run_scheduled()
+    assert "can't reach" in settings.get("backup_last_error")
+    storage._state["last_result"] = ""  # as after a restart
+    assert "can't reach" in storage.last_status()["error"]
+    monkeypatch.setattr(config, "S3_ENDPOINT", working)
+    storage.backup_now()
+    assert settings.get("backup_last_error") == "" and storage.last_status()["error"] == ""
+
+
 def test_a_refusal_is_said_in_plain_words():
     # what the bucket says, as words that name the setting to check - never its raw XML
     xml = (b'<?xml version="1.0" encoding="UTF-8"?>\n<Error>\n <Code>InvalidAccessKeyId</Code>\n'

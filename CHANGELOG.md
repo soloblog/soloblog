@@ -28,6 +28,11 @@ versions may include breaking changes; they'll always be listed here.
   https://
 - Backup and import says what's wrong with a cloud storage endpoint,
   instead of showing an error page
+- Site health says when cloud storage is connected but has no backup
+  yet, instead of asking to connect it and to check backups that don't
+  exist
+- A failed automatic backup stays in Site health after a restart, until
+  one works
 - When the bucket refuses, Backup and import says what's wrong and which
   setting to check, instead of the bucket's raw reply
 
