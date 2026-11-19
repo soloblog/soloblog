@@ -721,7 +721,7 @@ To set it up:
    | Variable | Example |
    |---|---|
    | `S3_BUCKET` | `my-blog` |
-   | `S3_ENDPOINT` | R2: `https://<account-id>.r2.cloudflarestorage.com`<br>Backblaze: `https://s3.us-west-004.backblazeb2.com`<br>Amazon S3: leave blank |
+   | `S3_ENDPOINT` | R2: `https://<account-id>.r2.cloudflarestorage.com`<br>Backblaze: `https://s3.us-west-004.backblazeb2.com` (with or without `https://`)<br>Amazon S3: leave blank |
    | `S3_REGION` | R2: `auto`. S3 and Backblaze: the bucket's region, e.g. `us-west-004` |
    | `S3_ACCESS_KEY_ID` | the access key's ID |
    | `S3_SECRET_ACCESS_KEY` | the access key's secret |

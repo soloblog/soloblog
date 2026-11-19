@@ -1,9 +1,12 @@
 import functools
+from html import unescape
 import logging
 import hashlib
+import http.client
 import hmac
 import os
 import queue
+import re
 import threading
 import time
 import urllib.error
@@ -41,7 +44,11 @@ def enabled() -> bool:
 
 
 def endpoint() -> str:
-    return config.S3_ENDPOINT or f"https://s3.{config.S3_REGION}.amazonaws.com"
+    # Backblaze and others show the endpoint without https:// - taken as it's shown
+    given = config.S3_ENDPOINT.strip()
+    if given and "://" not in given:
+        given = f"https://{given}"
+    return given or f"https://s3.{config.S3_REGION}.amazonaws.com"
 
 
 class StorageError(Exception):
@@ -112,21 +119,51 @@ def _request(method: str, key: str = "", body: bytes = b"", query: dict = None, 
                   config.S3_SECRET_ACCESS_KEY, config.S3_REGION)
     signed.pop("host")  # urllib sets it itself
     signed["User-Agent"] = "Soloblog"  # some firewalls turn away Python's default name
-    req = urllib.request.Request(url, data=body if method in ("PUT", "POST") else None, method=method,  # noqa: S310 - opened through netguard
-                                 headers=signed)
+    try:
+        req = urllib.request.Request(url, data=body if method in ("PUT", "POST") else None, method=method,  # noqa: S310 - opened through netguard
+                                     headers=signed)
+    except ValueError as e:
+        # an endpoint that isn't an address at all: said where it's set, not a crash
+        raise StorageError(f"can't reach the bucket: {e}") from e
     try:
         with netguard.open_url(req, timeout=timeout, private_ok=True) as resp:
             return resp.status, resp.read()
     except urllib.error.HTTPError as e:
         return e.code, e.read()
-    except (urllib.error.URLError, OSError) as e:
+    except (urllib.error.URLError, OSError, http.client.HTTPException, netguard.Blocked) as e:
+        # not reachable, or not an address that can be (a space, not http or https)
         raise StorageError(f"can't reach the bucket: {e}") from e
+
+
+# What the bucket's refusals mean, in the words Backup and import and
+# Site health show - and which setting to look at - for the codes people
+# meet setting up (S3's own, which R2 and Backblaze B2 use too)
+REFUSALS = {
+    "InvalidAccessKeyId": "The bucket doesn't know the key in S3_ACCESS_KEY_ID - check it, and that the key "
+                          "still exists",
+    "SignatureDoesNotMatch": "The secret doesn't match the key - check S3_SECRET_ACCESS_KEY",
+    "NoSuchBucket": "There's no bucket by that name - check S3_BUCKET",
+    "AccessDenied": "The key isn't allowed to use this bucket - check its access, and any file name prefix "
+                    "matches S3_PREFIX",
+    "AuthorizationHeaderMalformed": "The region doesn't match the bucket - check S3_REGION and S3_ENDPOINT",
+    "InvalidRegion": "The region doesn't match the bucket - check S3_REGION and S3_ENDPOINT",
+}
+
+
+def _refused(what: str, status: int, body: bytes) -> "StorageError":
+    """A refusal as plain words: what it means where it's known, else the
+    bucket's own message - never its raw XML."""
+    found = {tag: m.group(1).decode("utf-8", "replace").strip()
+             for tag in ("Code", "Message") if (m := re.search(rb"<%s>(.*?)</%s>" % (tag.encode(), tag.encode()),
+                                                              body or b"", re.S))}
+    said = REFUSALS.get(found.get("Code", "")) or unescape(found.get("Message") or found.get("Code") or "")
+    return StorageError(f"{what} failed ({status})" + (f": {said}" if said else ""))
 
 
 def put(key: str, data: bytes, content_type: str = "application/octet-stream"):
     status, body = _request("PUT", key, data, headers={"content-type": content_type})
     if status >= 300:
-        raise StorageError(f"upload failed ({status}): {body[:200]!r}")
+        raise _refused("Upload", status, body)
 
 
 def get(key: str):
@@ -135,14 +172,14 @@ def get(key: str):
     if status == 404:
         return None
     if status >= 300:
-        raise StorageError(f"download failed ({status}): {body[:200]!r}")
+        raise _refused("Download", status, body)
     return body
 
 
 def delete(key: str):
     status, body = _request("DELETE", key)
     if status >= 300 and status != 404:
-        raise StorageError(f"delete failed ({status}): {body[:200]!r}")
+        raise _refused("Delete", status, body)
 
 
 def list_keys(prefix: str) -> list:
@@ -157,7 +194,7 @@ def list_keys(prefix: str) -> list:
             query["continuation-token"] = token
         status, body = _request("GET", query=query)
         if status >= 300:
-            raise StorageError(f"listing failed ({status}): {body[:200]!r}")
+            raise _refused("Listing", status, body)
         root = ET.fromstring(body)  # noqa: S314 - the admin's own storage server; ElementTree reads no outside entities
         ns = root.tag[:root.tag.index("}") + 1] if root.tag.startswith("{") else ""
         for item in root.iter(f"{ns}Contents"):

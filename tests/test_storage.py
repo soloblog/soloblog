@@ -72,6 +72,22 @@ def test_bad_credentials_are_reported(bucket, monkeypatch):
     assert "can't reach" in storage.check()
 
 
+def test_an_endpoint_without_https_is_taken_as_shown(monkeypatch):
+    # Backblaze shows "s3.us-west-004.backblazeb2.com", with no https://
+    monkeypatch.setattr(config, "S3_ENDPOINT", "s3.us-west-004.backblazeb2.com")
+    assert storage.endpoint() == "https://s3.us-west-004.backblazeb2.com"
+    monkeypatch.setattr(config, "S3_ENDPOINT", "http://127.0.0.1:9000")
+    assert storage.endpoint() == "http://127.0.0.1:9000"
+
+
+@pytest.mark.parametrize("junk", ["https://", "ftp://example.com", "://nothing", "https://exa mple.com/x"])
+def test_an_endpoint_that_isnt_an_address_is_said_not_crashed(bucket, monkeypatch, admin, junk):
+    # the Backup and import page shows why, as for a wrong key - never a server error
+    monkeypatch.setattr(config, "S3_ENDPOINT", junk)
+    assert storage.check()
+    assert admin.get("/admin/settings?tab=backup").status_code == 200
+
+
 def _png():
     from PIL import Image
     import io
@@ -264,3 +280,18 @@ def test_images_in_the_bucket_are_encrypted_with_the_passphrase(bucket, monkeypa
         assert not storage.get(f"uploads/{name}").startswith(storage.MAGIC)
     finally:
         settings.set_many({"bucket_images_sealed": ""})
+
+
+def test_a_refusal_is_said_in_plain_words():
+    # what the bucket says, as words that name the setting to check - never its raw XML
+    xml = (b'<?xml version="1.0" encoding="UTF-8"?>\n<Error>\n <Code>InvalidAccessKeyId</Code>\n'
+           b' <Message>The key &apos;000abc&apos; is not valid</Message>\n</Error>\n')
+    said = str(storage._refused("Listing", 403, xml))
+    assert said.startswith("Listing failed (403): ") and "S3_ACCESS_KEY_ID" in said and "<" not in said
+    for code, setting in (("SignatureDoesNotMatch", "S3_SECRET_ACCESS_KEY"), ("NoSuchBucket", "S3_BUCKET"),
+                          ("AuthorizationHeaderMalformed", "S3_REGION")):
+        assert setting in str(storage._refused("Upload", 403, f"<Error><Code>{code}</Code></Error>".encode()))
+    # one it doesn't know keeps the bucket's own words, unescaped
+    other = str(storage._refused("Upload", 500, b"<Error><Code>Busy</Code><Message>Try &apos;later&apos;</Message></Error>"))
+    assert other == "Upload failed (500): Try 'later'"
+    assert str(storage._refused("Upload", 502, b"")) == "Upload failed (502)"

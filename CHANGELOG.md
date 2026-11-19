@@ -24,6 +24,12 @@ versions may include breaking changes; they'll always be listed here.
 - The post chosen as the homepage follows the contents' settings for
   pages, as the side panels already did
 - Post settings list each choice once, instead of the site's twice
+- A cloud storage endpoint works as the storage company shows it, without
+  https://
+- Backup and import says what's wrong with a cloud storage endpoint,
+  instead of showing an error page
+- When the bucket refuses, Backup and import says what's wrong and which
+  setting to check, instead of the bucket's raw reply
 
 ## [1.0.0-beta] - 2026-11-17
 
