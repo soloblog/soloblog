@@ -1136,9 +1136,10 @@ def test_a_section_after_words_follows_on_as_a_heading_does(admin, client):
     slug = save_post(admin, title="Gaps", body=body)
     html = client.get(f"/post/{slug}").text
     heads = {m.group(2): m.group(1) for m in re.finditer(r'<h2 class="([^"]*)"[^>]*id="([a-z-]+)"', html)}
-    # after words: a heading's room; after a section: the page's gap between sections
+    # a page with writing of its own: a heading's room, after words and
+    # after a section alike
     assert pages.SECTION_AFTER_WORDS in heads["numbers"] and pages.HEADING_GAP not in heads["numbers"]
-    assert pages.HEADING_GAP in heads["next"]
+    assert pages.SECTION_AFTER_WORDS in heads["next"] and pages.HEADING_GAP not in heads["next"]
     # its own Space: line asks for room, and gets it
     assert pages.HEADING_GAP in heads["own-room"]
     # a section drawing its own heading starts with a heading's room after words too
@@ -1166,3 +1167,15 @@ def test_a_note_under_a_menu_course_shows(admin, client):
                                               "- Toast - sourdough · $5\n\nServed until noon.\n")
     html = client.get(f"/post/{slug}").text
     assert "Toast" in html and "Served until noon." in html
+
+
+def test_a_page_made_of_sections_keeps_the_gap_between_them(admin, client):
+    from soloblog import pages
+    body = ("A line to open with.\n\n## Numbers\n\nSection: Numbers\n\n### 3\nthings\n\n"
+            "## Next\n\nSection: Numbers\n\n### 4\nmore\n")
+    slug = save_post(admin, title="Made of sections", body=body)
+    html = client.get(f"/post/{slug}").text
+    heads = {m.group(2): m.group(1) for m in re.finditer(r'<h2 class="([^"]*)"[^>]*id="([a-z-]+)"', html)}
+    # the opening line is a heading's room away; one section to the next, the page's gap
+    assert pages.SECTION_AFTER_WORDS in heads["numbers"]
+    assert pages.HEADING_GAP in heads["next"]

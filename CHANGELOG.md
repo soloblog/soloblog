@@ -16,6 +16,8 @@ versions may include breaking changes; they'll always be listed here.
 - A section after ordinary writing sits as close as a heading does,
   instead of leaving a big gap above it
 - The space under a section is the same for every kind of section
+- On a page with writing of its own, two sections in a row are spaced
+  like headings too
 - Words under a Menu section's dishes show, instead of being left out
 
 ## [1.0.0-beta] - 2026-11-17

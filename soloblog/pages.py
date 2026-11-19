@@ -1352,15 +1352,16 @@ HEADING_GAP = "mt-(--section-gap)!"
 # by another ##, where the next room starts): the words under a heading,
 # or the gap where the section starts itself
 SECTION_GAP = "mt-[calc(1.5rem*var(--space,1))] sm:mt-[calc(2rem*var(--space,1))]"
-# ...and where a section meets plain writing, the room a heading has
-# there: the whole gap is for one section to the next - in a post it
-# opened a hole in the middle of the reading. On a section's ##
+# ...and where a section meets plain writing, or sits on a page with
+# writing of its own, the room a heading has there: the whole gap is for
+# one section to the next on a page made of them - in a post it opened
+# a hole in the middle of the reading. On a section's ##
 # (important, as the page's rule on .prose>h2 is more specific), as a
 # folded heading's (_fold) - the writing above keeps its last margin -
-# and on the writing after a section, whose own first margin goes: a
-# paragraph's margin and a heading's, as between two parts of the writing
+# and on the writing after a section, whose own first margin goes, as
+# under anything with no margin of its own
 SECTION_AFTER_WORDS = "mt-[calc(2rem*var(--space,1))]!"
-WORDS_AFTER_SECTION = "mt-[calc(3.5rem*var(--space,1))] [&>:first-child]:mt-0!"
+WORDS_AFTER_SECTION = "mt-[calc(2rem*var(--space,1))] [&>:first-child]:mt-0!"
 # A section ends where its last thing does: a margin under its last
 # block (a grid, a list) is for words after it, and only pushed the next
 # part of the page further away, by a different amount in each section
@@ -1893,6 +1894,10 @@ def place_sections(row, s, html, toc, logged_in, series, out):
     if not any(found):
         return html
     kept = [intro]
+    # a page with writing of its own (a plain ##) reads as one post: its
+    # sections sit as close as headings, one after another too. The page's
+    # gap between sections is for a page made of them
+    writing_page = any(not kind_text for kind_text in found)
     page_motion = section_motion(row, s)
     drawn = 0
     # (where in kept, where its outer <div> starts) of a section that's
@@ -1906,8 +1911,8 @@ def place_sections(row, s, html, toc, logged_in, series, out):
         kind, text = kind_text
         # the first thing on the page has no gap above it
         lead = not "".join(kept).strip()
-        # plain writing above it: it follows on as a heading does
-        after_words = not lead and last is None
+        # plain writing above it, or on the page: it follows on as a heading does
+        after_words = not lead and (last is None or writing_page)
         width, text = section_registry.section_width(text)
         # Style: Cover is a hero (on the kinds that take it), Style: Card sets it apart
         style, text = section_registry.take_line(text, "style")

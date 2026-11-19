@@ -463,8 +463,8 @@ signing in, writing, publishing, the outbox - are in
   read the post look for `[data-post-body]`, not `.prose`. Under a
   `not-prose` the text styling can't be switched back on, so a section
   inside the writing lost its own words' links, lists and spacing. The
-  page's section gap is for a section after a section; after writing, a
-  section has a heading's room.
+  page's section gap is for a page made of sections; on a page with a
+  plain `##`, and after any writing, a section has a heading's room.
 - **There are no page layouts, and a new kind of page is never one.** The
   pattern is: a Post setting, the places that check it, a template that
   switches it on and - if the pages need gathering - a built-in page. In the

@@ -529,9 +529,11 @@ the section. `Small` and `Large` give it less or more room than
   the site's, in **Settings > Header and footer**.
 - It sets the room around that section, the room above its heading and
   the gaps inside it.
-- After ordinary writing, a section with no `Space:` line sits as close
-  as a heading would, and so does the writing after it. The room is for
-  one section to the next.
+- On a page with writing of its own (a plain `##` heading anywhere), a
+  section with no `Space:` line sits as close as a heading would, even
+  right after another section, and so does the writing after it. The
+  room between sections is for a page made of them, like a landing page.
+  An opening paragraph before the first section doesn't count.
 
 **`Appear:`** - how the section comes into view as the reader scrolls to
 it, played once. `Fade`, `Rise`, `Zoom`, `Slide left`,

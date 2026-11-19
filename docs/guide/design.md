@@ -160,9 +160,9 @@ For one page only, open its **Post settings > Page** and choose
 **Space between sections** there. One section can say otherwise with its
 own `Space:` line. On a wide screen **Small** is about half an inch,
 **Medium** an inch and a half and **Large** three inches; a phone gets
-less. The space is for one section to the next: a section that comes
-straight after ordinary writing sits as close as a heading would, so
-the reading flows on.
+less. The space is for a page made of sections, like a landing page. On
+a page with writing of its own - a plain `##` heading anywhere - each
+section sits as close as a heading would, so the reading flows on.
 
 **Want sections to move as they come into view?** Under **Advanced** in
 **Settings > Style > Motion**, choose how for **Sections appear** - Fade,
