@@ -183,7 +183,7 @@ def delete(key: str):
 
 
 def list_keys(prefix: str) -> list:
-    """[{"key", "size", "modified"}] under prefix, keys relative to
+    """[{"key", "size", "modified", "etag"}] under prefix, keys relative to
     S3_PREFIX - every page of the listing, not just the first 1000."""
     out, token = [], None
     full_prefix = _key(prefix)
@@ -202,6 +202,8 @@ def list_keys(prefix: str) -> list:
                 "key": item.findtext(f"{ns}Key")[strip:],
                 "size": int(item.findtext(f"{ns}Size") or 0),
                 "modified": item.findtext(f"{ns}LastModified") or "",
+                # an MD5 of what was uploaded in one go - what an image is compared by
+                "etag": (item.findtext(f"{ns}ETag") or "").strip('"').lower(),
             })
         if root.findtext(f"{ns}IsTruncated") != "true":
             return out
@@ -317,31 +319,59 @@ def fetch_upload(filename: str) -> bool:
     return True
 
 
+def _same(data: bytes, remote: dict) -> bool:
+    """Whether the bucket's copy is this image already - by its MD5
+    (the listing's ETag); locked, by its size, as a locked copy differs
+    every time it's made but is always the same size bigger."""
+    if config.BACKUP_PASSPHRASE:
+        return remote["size"] == len(MAGIC) + 16 + 12 + len(data) + 16
+    return remote["etag"] == hashlib.md5(data, usedforsecurity=False).hexdigest()
+
+
 def sync_uploads(way: str = "both") -> dict:
     """Images between this disk and the bucket. "up": every image here
-    copied to the bucket, replacing its copies; "down": every image in the
-    bucket copied here, replacing these. "both": only what's missing on
-    each side, each way (a new server refilling itself). Nothing is
-    deleted on either side."""
-    counts = {"uploaded": 0, "downloaded": 0}
+    the bucket hasn't got as it is here copied to it; "down": every image
+    in the bucket this disk hasn't got as it is there copied here. "both":
+    only what's missing on each side, each way (a new server refilling
+    itself). The same image is never copied again - a bucket that keeps
+    every version (Backblaze, unless told not to) would keep it twice -
+    and nothing is deleted on either side."""
+    counts = {"uploaded": 0, "downloaded": 0, "same": 0}
     for folder, prefix in ((config.uploads_dir(), "uploads/"),
                            (os.path.join(config.uploads_dir(), "_trash"), "uploads/_trash/")):
         os.makedirs(folder, exist_ok=True)
-        remote = {k["key"][len(prefix):] for k in list_keys(prefix) if "/" not in k["key"][len(prefix):]}
+        remote = {k["key"][len(prefix):]: k for k in list_keys(prefix) if "/" not in k["key"][len(prefix):]}
         local = {f for f in os.listdir(folder) if os.path.isfile(os.path.join(folder, f))}
-        for fn in sorted(local if way == "up" else local - remote if way == "both" else ()):
-            with open(os.path.join(folder, fn), "rb") as f:
-                _put_image(prefix + fn, f.read())
-            counts["uploaded"] += 1
-        for fn in sorted(remote if way == "down" else remote - local if way == "both" else ()):
-            data = get(prefix + fn)
-            if data is not None:
+        if way in ("up", "both"):
+            for fn in sorted(local):
+                if way == "both" and fn in remote:
+                    continue
+                with open(os.path.join(folder, fn), "rb") as f:
+                    data = f.read()
+                if fn in remote and _same(data, remote[fn]):
+                    counts["same"] += 1
+                    continue
+                _put_image(prefix + fn, data)
+                counts["uploaded"] += 1
+        if way in ("down", "both"):
+            for fn in sorted(remote):
+                path = os.path.join(folder, fn)
+                if fn in local:
+                    if way == "both":
+                        continue
+                    with open(path, "rb") as f:
+                        if _same(f.read(), remote[fn]):
+                            counts["same"] += 1
+                            continue
+                data = get(prefix + fn)
+                if data is None:
+                    continue
                 try:
                     data = _from_bucket(data)
                 except StorageError as e:  # one image the passphrase can't open needn't stop the rest
                     log.warning("couldn't open %s from the bucket: %s", fn, e)
                     continue
-                with open(os.path.join(folder, fn), "wb") as f:
+                with open(path, "wb") as f:
                     f.write(data)
                 counts["downloaded"] += 1
     if way in ("up", "both"):

@@ -204,11 +204,12 @@ says **On** and shows the last backup. Your images are copied to the
 bucket as you add, change or delete them - not only when a backup is made.
 
 - **Sync images** asks which way, for all your images at once. **This
-  site to your bucket** copies every image here to the bucket, replacing
-  its copies - press it once after you first connect storage, so the
-  images you already had are there too. **Your bucket to this site**
-  copies every image in the bucket here, replacing these. Neither
-  deletes anything: an image on only one side stays where it is. You
+  site to your bucket** copies each image the bucket doesn't have, or
+  has a different copy of - press it once after you first connect
+  storage, so the images you already had are there too. **Your bucket
+  to this site** does the same the other way. An image that's the same
+  on both sides is left alone, and nothing is deleted: an image on only
+  one side stays where it is. You
   don't need it day to day - if an image ever fails to reach the bucket,
   this page and **Site health** say so.
 - **Back up now** makes a backup straight away, instead of waiting for

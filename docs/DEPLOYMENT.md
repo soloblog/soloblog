@@ -714,7 +714,10 @@ With it on:
 To set it up:
 
 1. At the storage company, make a private bucket, and an access key for
-   that bucket only.
+   that bucket only. On Backblaze, also open the bucket's **Lifecycle
+   Settings** and choose **Keep only the last version of the file** -
+   otherwise it keeps every earlier copy of each image and backup, and
+   you pay to store them all.
 2. Set these on your host, where its settings or environment variables
    are. **All five are needed:**
 

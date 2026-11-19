@@ -405,3 +405,34 @@ def test_a_bucket_restore_brings_images_back_when_ticked(bucket, admin):
     with open(os.path.join(config.uploads_dir(), "from-bucket.png"), "rb") as f:
         assert f.read() == b"bucket copy"
     os.remove(os.path.join(config.uploads_dir(), "from-bucket.png"))
+
+
+@pytest.mark.parametrize("passphrase", ["", "a passphrase"])
+def test_sync_images_never_copies_the_same_image_again(bucket, monkeypatch, passphrase):
+    # a bucket that keeps every version (Backblaze, unless told not to)
+    # would keep a second copy of each one
+    monkeypatch.setattr(config, "BACKUP_PASSPHRASE", passphrase)
+    _write_upload("twice.png", b"the same picture")
+    storage.sync_uploads("up")
+    puts = []
+    real_put = storage.put
+    monkeypatch.setattr(storage, "put", lambda key, *a, **kw: (puts.append(key), real_put(key, *a, **kw)))
+    counts = storage.sync_uploads("up")
+    assert "uploads/twice.png" not in puts and counts["same"] >= 1
+    gets = []
+    real_get = storage.get
+    monkeypatch.setattr(storage, "get", lambda key: (gets.append(key), real_get(key))[1])
+    storage.sync_uploads("down")
+    assert "uploads/twice.png" not in gets
+    # a changed one is copied
+    _write_upload("twice.png", b"a cropped picture, longer")
+    storage.sync_uploads("up")
+    assert "uploads/twice.png" in puts
+    os.remove(os.path.join(config.uploads_dir(), "twice.png"))
+
+
+def test_the_sync_message_says_what_was_already_there():
+    from soloblog.routes.backup_routes import _synced
+    assert _synced(0, 82, "to") == "Nothing to copy - 82 images already the same on both sides"
+    assert _synced(3, 79, "to") == "Copied 3 images to your bucket - 79 were the same already"
+    assert _synced(1, 0, "from") == "Copied 1 image from your bucket"

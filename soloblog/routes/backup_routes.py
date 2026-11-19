@@ -597,6 +597,20 @@ async def save_backup_include(session, request):
     return Span("Saved - applies from the next backup", id="include-status", role="status", cls="text-xs text-success")
 
 
+def _images(n: int) -> str:
+    return f"{n} image{'' if n == 1 else 's'}"
+
+
+def _synced(copied: int, same: int, direction: str) -> str:
+    """What Sync images did, and what it found already the same."""
+    if copied:
+        return f"Copied {_images(copied)} {direction} your bucket" + (
+            f" - {same} {'was' if same == 1 else 'were'} the same already" if same else "")
+    if same:
+        return f"Nothing to copy - {_images(same)} already the same on both sides"
+    return "No images to copy"
+
+
 @ar.post("/admin/backup/sync")
 def sync_bucket_images(session, way: str = "up"):
     way = way if way in ("up", "down") else "up"
@@ -606,9 +620,9 @@ def sync_bucket_images(session, way: str = "up"):
     except storage.StorageError as e:
         return _toast_redirect("/admin/settings?tab=backup#cloud-status", _bucket_problem("The images didn't sync", e),
                                "error")
-    n = counts["uploaded"] if way == "up" else counts["downloaded"]
-    return _toast_redirect("/admin/settings?tab=backup#cloud-status",
-                           f"Copied {n} image{'' if n == 1 else 's'} {'to' if way == 'up' else 'from'} your bucket")
+    copied = counts["uploaded"] if way == "up" else counts["downloaded"]
+    message = _synced(copied, counts["same"], "to" if way == "up" else "from")
+    return _toast_redirect("/admin/settings?tab=backup#cloud-status", message)
 
 
 @ar.post("/admin/backup/from-bucket")
