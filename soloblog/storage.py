@@ -238,6 +238,8 @@ def _mirror_worker():
             action(*args)
         except Exception:
             log.exception("copying to the bucket failed")
+            if action is _put_image:
+                _set_unsynced(unsynced() | {args[0]})
         finally:
             _mirror_queue.task_done()
 
@@ -282,6 +284,8 @@ def _put_image(key: str, data: bytes):
     content_type = "application/octet-stream" if config.BACKUP_PASSPHRASE else \
         mimetypes.guess_type(key)[0] or "application/octet-stream"
     put(key, _to_bucket(data), content_type)
+    if key in (missing := unsynced()):
+        _set_unsynced(missing - {key})
 
 
 def mirror_move(filename: str, to_trash: bool):
@@ -313,20 +317,23 @@ def fetch_upload(filename: str) -> bool:
     return True
 
 
-def sync_uploads() -> dict:
-    """Both directions: local images the bucket doesn't have go up,
-    bucket images this disk doesn't have come down."""
+def sync_uploads(way: str = "both") -> dict:
+    """Images between this disk and the bucket. "up": every image here
+    copied to the bucket, replacing its copies; "down": every image in the
+    bucket copied here, replacing these. "both": only what's missing on
+    each side, each way (a new server refilling itself). Nothing is
+    deleted on either side."""
     counts = {"uploaded": 0, "downloaded": 0}
     for folder, prefix in ((config.uploads_dir(), "uploads/"),
                            (os.path.join(config.uploads_dir(), "_trash"), "uploads/_trash/")):
         os.makedirs(folder, exist_ok=True)
         remote = {k["key"][len(prefix):] for k in list_keys(prefix) if "/" not in k["key"][len(prefix):]}
         local = {f for f in os.listdir(folder) if os.path.isfile(os.path.join(folder, f))}
-        for fn in local - remote:
+        for fn in sorted(local if way == "up" else local - remote if way == "both" else ()):
             with open(os.path.join(folder, fn), "rb") as f:
                 _put_image(prefix + fn, f.read())
             counts["uploaded"] += 1
-        for fn in remote - local:
+        for fn in sorted(remote if way == "down" else remote - local if way == "both" else ()):
             data = get(prefix + fn)
             if data is not None:
                 try:
@@ -337,7 +344,26 @@ def sync_uploads() -> dict:
                 with open(os.path.join(folder, fn), "wb") as f:
                     f.write(data)
                 counts["downloaded"] += 1
+    if way in ("up", "both"):
+        # everything here has reached the bucket now
+        _set_unsynced(set())
     return counts
+
+
+# ---- images that didn't reach the bucket: remembered (across restarts)
+# until they do, so Backup and import and Site health can say so - a
+# copy that fails while the bucket can't be reached is never retried
+
+def unsynced() -> set:
+    from soloblog import settings
+    return {k for k in (settings.get("images_not_in_bucket") or "").split("\n") if k}
+
+
+def _set_unsynced(keys: set):
+    from soloblog import settings
+    value = "\n".join(sorted(keys)[:1000])
+    if (settings.get("images_not_in_bucket") or "") != value:
+        settings.set_many({"images_not_in_bucket": value})
 
 
 # ---- backups: posts + comments/settings, a zip per change burst

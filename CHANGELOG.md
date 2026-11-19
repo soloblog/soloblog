@@ -7,6 +7,12 @@ versions may include breaking changes; they'll always be listed here.
 
 ## [Unreleased]
 
+### Added
+
+- Sync images asks which way: this site to your bucket, or your bucket to
+  this site
+- Restoring a bucket backup can bring back the bucket's images too
+
 ### Fixed
 
 - A Buttons line in a Call to action or a Hero shows its buttons on the
@@ -39,8 +45,12 @@ versions may include breaking changes; they'll always be listed here.
   and similar buttons did shows beside them, not at the top of the page
 - Recent backups lists the newest three, with the rest under Older
   backups - every kept backup can be restored
-- The restore screen counts "1 revision" and "110 revisions", not
-  "revision(s)"
+- The restore screen and the message after a restore count "1 revision"
+  and "110 revisions", not "revision(s)"
+- Restore on a bucket backup brings the Restore card into view and says
+  which backup it's from
+- Backup and import and Site health say when images haven't reached your
+  bucket
 
 ## [1.0.0-beta] - 2026-11-17
 

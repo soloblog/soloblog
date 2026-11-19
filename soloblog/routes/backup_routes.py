@@ -1,6 +1,7 @@
 """Settings > Backup and import: download, restore and import, the cloud bucket's backups, and Site health's disk panel."""
 import logging
 import os
+import re
 import shutil
 
 from fasthtml.common import *
@@ -18,6 +19,7 @@ from soloblog.render import format_date
 from soloblog.ui import IconAction
 from soloblog.ui import RowActions
 from soloblog.ui import SCROLLS
+from soloblog.ui import CHEVRON_DOWN_SVG, glass_fill
 from soloblog.ui import (Layout, Alert, FIELD_GAP, FormField, ToggleField, SettingsPanel,
                 SaveStatus,
                 DOWNLOAD_SVG, UPLOAD_SVG, RESTORE_SVG, PageHeader, X_SVG, SYNC_SVG, TRASH_SVG)
@@ -48,6 +50,25 @@ def _button_row(*buttons, status=""):
     return Div(slot, *buttons, cls="flex items-center justify-end gap-2 mt-3")
 
 
+def SyncMenu():
+    """Sync images asks which way, for every image at once - a drop menu,
+    each choice a line of its own."""
+    item = "w-full text-start whitespace-nowrap"
+    return Div(
+        Button(SYNC_SVG, Span("Sync images", cls="ml-1"), Span(CHEVRON_DOWN_SVG, cls="opacity-60 [&>svg]:h-3 [&>svg]:w-3"),
+               type="button", popovertarget="sync-menu", cls="btn btn-sm gap-1"),
+        Div(Ul(Li(Button("This site to your bucket", type="submit", formaction="/admin/backup/sync?way=up",
+                         cls=item)),
+               Li(Button("Your bucket to this site", type="submit", formaction="/admin/backup/sync?way=down",
+                         data_confirm="Replace this site's images with your bucket's copies? Images only on "
+                                      "this site stay.", cls=item)),
+               cls="menu menu-sm flex-nowrap w-max"),
+            id="sync-menu", popover="auto",
+            cls=f"dropdown-content {glass_fill(settings.get_all())} rounded-box z-20 mt-1 p-1 shadow "
+                "border-[length:var(--border)] border-base-200"),
+    )
+
+
 # backups listed before the rest fold under "Older backups"
 RECENT_SHOWN = 3
 
@@ -63,12 +84,13 @@ def CloudStoragePanel():
             key="backup-cloud"
         )
     problem = storage.check()
+    missing = storage.unsynced()
     status = storage.last_status()
     try:
         backups = storage.list_backups() if not problem else []
     except storage.StorageError as e:
         problem, backups = str(e), []
-    def backup_row(i, b):
+    def backup_row(i, b, folded=False):
         # a row action, as on every admin list: an icon, its words in the ⋯ menu on a
         # phone - Restore still shows what's in it first, so nothing goes back by accident
         return Div(
@@ -77,7 +99,8 @@ def CloudStoragePanel():
                 P(backup.size_label(b["size"]) + (" · encrypted" if b["key"].endswith(".enc") else ""),
                   cls="text-xs text-base-content/50")),
             RowActions(Form(Input(type="hidden", name="key", value=b["key"]),
-                            IconAction(RESTORE_SVG, "Restore"),
+                            # in the box that scrolls, beside the icon: above, its edges clipped it
+                            IconAction(RESTORE_SVG, "Restore", tip="tooltip-left" if folded else ""),
                             action="/admin/backup/from-bucket", method="post", cls="contents"),
                        id=f"backup-acts-{i}"),
             cls="flex items-center justify-between py-2 border-b-[length:var(--border)] border-base-300 last:border-0"
@@ -86,10 +109,12 @@ def CloudStoragePanel():
     # the newest few, which is what a restore is usually for; the rest folded,
     # in a box that scrolls - every one kept can be restored, none takes the page
     rows = [backup_row(i, b) for i, b in enumerate(backups[:RECENT_SHOWN])]
-    older = [backup_row(i, b) for i, b in enumerate(backups) if i >= RECENT_SHOWN]
+    older = [backup_row(i, b, folded=True) for i, b in enumerate(backups) if i >= RECENT_SHOWN]
     if older:
         rows.append(Details(Summary(f"Older backups ({len(older)})", cls="text-xs link link-hover w-fit py-2"),
-                            Div(*older, data_scroll_hint=True, cls=f"max-h-72 overflow-y-auto pe-1 {SCROLLS}")))
+                            # up and down only - a scrolling box scrolls sideways too, unless told
+                            Div(*older, data_scroll_hint=True,
+                                cls=f"max-h-72 overflow-y-auto overflow-x-hidden pe-1 {SCROLLS}")))
     if status["error"]:
         last = P(f"The last automatic backup failed: {status['error']}", cls="text-sm text-error")
     elif status["at"]:
@@ -151,10 +176,12 @@ def CloudStoragePanel():
         ) if not problem else None,
         FormField("Recent backups", Div(*rows) if rows else
                   P("None yet.", cls="text-sm text-base-content/60"), cls="mt-2") if not problem else None,
+        P(("1 image hasn't" if len(missing) == 1 else f"{len(missing)} images haven't")
+          + " reached your bucket. Sync this site's images to it.", cls="text-sm text-warning mt-3")
+        if missing and not problem else None,
         Form(
             _button_row(
-                Button(SYNC_SVG, Span("Sync images", cls="ml-1"), type="submit", cls="btn btn-sm",
-                       formaction="/admin/backup/sync"),
+                SyncMenu(),
                 Button(UPLOAD_SVG, Span("Back up now", cls="ml-1"), type="submit", cls="btn btn-primary btn-sm",
                        formaction="/admin/backup/now"),
                 status="cloud-status",
@@ -168,10 +195,11 @@ def CloudStoragePanel():
     )
 
 
-def BackupTab(inspect_result=None):
+def BackupTab(inspect_result=None, source="", from_bucket=False):
+    """source: where a backup being restored came from, said above its ticks."""
     pending = backup.staged_restore() if inspect_result is None else None
     restore_section = (
-        _RestoreConfirmPanel(inspect_result) if inspect_result is not None
+        _RestoreConfirmPanel(inspect_result, source, from_bucket) if inspect_result is not None
         else _RestorePendingPanel(pending) if pending else _RestoreUploadPanel()
     )
     return Div(
@@ -187,11 +215,11 @@ def BackupTab(inspect_result=None):
             ),
             key="backup-download"
         ),
-        SettingsPanel(
+        _arriving(SettingsPanel(
             "Restore",
             Div(restore_section, id="restore-section"),
             key="backup-restore"
-        ),
+        ), inspect_result is not None),
         CloudStoragePanel(),
         ImportPanel(),
         P(A("See what's using the disk", href="/admin/health#disk", cls="link"),
@@ -365,7 +393,25 @@ def _RestoreUploadPanel():
     )
 
 
-def _RestoreConfirmPanel(result):
+def _arriving(panel, now):
+    """The next step, brought into view and marked as a search result is
+    (data-arrive, index_search.js) - Restore on a bucket backup fills a
+    card further up the page."""
+    if now:
+        panel.attrs["data-arrive"] = "1"
+    return panel
+
+
+def _backup_source(key: str) -> str:
+    """"your backup of 19 Nov 2026 16:27", from its name in the bucket."""
+    m = re.search(r"soloblog-(\d{8})-(\d{6})", key)
+    if not m:
+        return "your backup"
+    d, t = m.groups()
+    return f"your backup of {_when(f'{d[:4]}-{d[4:6]}-{d[6:]}T{t[:2]}:{t[2:4]}:{t[4:]}+00:00')}"
+
+
+def _RestoreConfirmPanel(result, source="", from_bucket=False):
     present = [cat for cat in backup.CATEGORIES if result[cat]["present"]]
     if not present:
         return Div(
@@ -385,11 +431,19 @@ def _RestoreConfirmPanel(result):
         return ", ".join(bits) if bits else None
 
     return Div(
+        P(f"From {source}.", cls="text-sm font-medium mb-1") if source else None,
         P("Each one you tick replaces what you have now with the backup's. Your password and passkeys stay "
           "as they are.",
           cls="text-sm text-base-content/60 mb-3"),
         Form(
-            Div(*[_category_checkbox(cat, note=note(cat)) for cat in present], cls="flex flex-col gap-1"),
+            Div(*[_category_checkbox(cat, note=note(cat)) for cat in present],
+                # a bucket backup has no images - they're in the bucket, the latest copy of each
+                Label(Input(type="checkbox", name="images_from_bucket", value="1", checked=True,
+                            cls="checkbox checkbox-sm"),
+                      Span("Images (the latest copy of each, from your bucket)"),
+                      cls="label cursor-pointer gap-2 justify-start items-start text-sm whitespace-normal")
+                if from_bucket else None,
+                cls="flex flex-col gap-1"),
             _button_row(
                 _DiscardButton(),
                 Button(RESTORE_SVG, Span("Restore", cls="ml-1"), type="button", cls="btn btn-primary btn-sm",
@@ -488,7 +542,7 @@ async def inspect_backup(session, request):
     return Layout(
         PageHeader("Settings: Backup and import"),
         SettingsNav("backup"),
-        BackupTab(inspect_result=result),
+        BackupTab(inspect_result=result, source=f"the file “{getattr(file, 'filename', '') or 'you uploaded'}”"),
         settings=settings.get_all(), logged_in=True, pinned_tree=posts.list_pinned_tree(), admin_page=True
     )
 
@@ -544,14 +598,17 @@ async def save_backup_include(session, request):
 
 
 @ar.post("/admin/backup/sync")
-def sync_bucket_images(session):
+def sync_bucket_images(session, way: str = "up"):
+    way = way if way in ("up", "down") else "up"
     try:
         storage.reseal_images()
-        counts = storage.sync_uploads()
+        counts = storage.sync_uploads(way)
     except storage.StorageError as e:
-        return _toast_redirect("/admin/settings?tab=backup#cloud-status", _bucket_problem("The images didn't sync", e), "error")
+        return _toast_redirect("/admin/settings?tab=backup#cloud-status", _bucket_problem("The images didn't sync", e),
+                               "error")
+    n = counts["uploaded"] if way == "up" else counts["downloaded"]
     return _toast_redirect("/admin/settings?tab=backup#cloud-status",
-                           f"Synced - {counts['uploaded']} uploaded, {counts['downloaded']} downloaded")
+                           f"Copied {n} image{'' if n == 1 else 's'} {'to' if way == 'up' else 'from'} your bucket")
 
 
 @ar.post("/admin/backup/from-bucket")
@@ -572,7 +629,7 @@ def restore_from_bucket(session, key: str = ""):
     return Layout(
         PageHeader("Settings: Backup and import"),
         SettingsNav("backup"),
-        BackupTab(inspect_result=backup.inspect_zip(data)),
+        BackupTab(inspect_result=backup.inspect_zip(data), source=_backup_source(key), from_bucket=True),
         settings=settings.get_all(), logged_in=True, pinned_tree=posts.list_pinned_tree(), admin_page=True
     )
 
@@ -587,7 +644,7 @@ def restore_pending(session):
     return Layout(
         PageHeader("Settings: Backup and import"),
         SettingsNav("backup"),
-        BackupTab(inspect_result=result),
+        BackupTab(inspect_result=result, source="the backup you uploaded"),
         settings=settings.get_all(), logged_in=True, pinned_tree=posts.list_pinned_tree(), admin_page=True
     )
 
@@ -636,21 +693,30 @@ async def restore_confirm(session, request):
         data = f.read()
     backup.discard_staged()
     counts = backup.import_backup_zip(data, include=include)
-    if storage.enabled() and (counts.get("images") or counts.get("trashed_images")):
+    problem = ""
+    if form.get("images_from_bucket") and storage.enabled():
+        # a bucket backup's images: the bucket's latest copy of each, replacing these
+        try:
+            counts["images"] = storage.sync_uploads("down")["downloaded"]
+        except storage.StorageError as e:
+            problem = ". " + _bucket_problem("The images didn't come back from your bucket", e)
+    elif storage.enabled() and (counts.get("images") or counts.get("trashed_images")):
         # restored images belong in the bucket too - in the background,
         # a large backup shouldn't hold this response up
         import threading
-        threading.Thread(target=lambda: storage._mirror(storage.sync_uploads), daemon=True).start()
+        threading.Thread(target=lambda: storage._mirror(storage.sync_uploads, "up"), daemon=True).start()
     # only the categories that actually had something restored - an
     # older backup with no trashed posts/images shouldn't read as
     # "0 trashed posts, 0 images" clutter
-    labels = {"posts": "post(s)", "trashed_posts": "trashed post(s)",
-              "images": "image(s)", "trashed_images": "trashed image(s)",
-              "settings": "setting(s)", "comments": "comment(s)", "contact_messages": "message(s)",
-              "members": "member(s)", "subscribers": "subscriber(s)", "ap_followers": "follower(s)"}
-    parts = [f"{counts[key]} {label}" for key, label in labels.items() if counts.get(key)]
-    message = f"Restored {', '.join(parts)}" if parts else "Nothing restored"
-    return _toast_redirect("/admin/settings?tab=backup#restore-status", message)
+    labels = {"posts": ("post", "posts"), "trashed_posts": ("trashed post", "trashed posts"),
+              "images": ("image", "images"), "trashed_images": ("trashed image", "trashed images"),
+              "settings": ("setting", "settings"), "comments": ("comment", "comments"),
+              "contact_messages": ("message", "messages"), "members": ("member", "members"),
+              "subscribers": ("subscriber", "subscribers"), "ap_followers": ("follower", "followers")}
+    parts = [f"{counts[key]} {one if counts[key] == 1 else many}" for key, (one, many) in labels.items()
+             if counts.get(key)]
+    message = (f"Restored {', '.join(parts)}" if parts else "Nothing restored") + problem
+    return _toast_redirect("/admin/settings?tab=backup#restore-status", message, "error" if problem else "success")
 
 
 def _category_checkbox(cat, checked=True, note=None):

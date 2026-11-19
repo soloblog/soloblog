@@ -425,14 +425,16 @@ ENV_VARS = [
 # optional storage settings (storage.py) - "Not set" is a normal state
 # for these, not a warning
 S3_ENV_VARS = [
-    ("S3_BUCKET", "The bucket's name. With the two keys, it turns cloud storage on."),
-    ("S3_ENDPOINT", "Your provider's S3 address, like https://<account>.r2.cloudflarestorage.com. Empty for "
-                    "Amazon S3."),
-    ("S3_REGION", "\"auto\" for Cloudflare R2; otherwise the bucket's region."),
-    ("S3_ACCESS_KEY_ID", "The access key's ID."),
-    ("S3_SECRET_ACCESS_KEY", "The access key's secret."),
-    ("S3_PREFIX", "A folder in the bucket, if you share it."),
-    ("BACKUP_PASSPHRASE", "Locks the backups in the bucket. Keep it safe - without it they can't be restored."),
+    ("S3_BUCKET", "Your bucket's name, exactly as your storage company shows it. With the two keys, it turns cloud "
+                  "storage on."),
+    ("S3_ENDPOINT", "Your bucket's S3 address, from your storage company - Backblaze calls it Endpoint. Leave it out "
+                    "for Amazon S3."),
+    ("S3_REGION", "The bucket's region - \"auto\" for Cloudflare R2."),
+    ("S3_ACCESS_KEY_ID", "The access key's ID - Backblaze calls it keyID."),
+    ("S3_SECRET_ACCESS_KEY", "The access key's secret - Backblaze calls it applicationKey."),
+    ("S3_PREFIX", "Optional: a folder in the bucket, if it holds anything else."),
+    ("BACKUP_PASSPHRASE", "Optional: locks the backups and images in the bucket. Without it they can't be restored - "
+                          "keep it in a password manager."),
 ]
 SECRET_ENV = {"SESSION_SECRET", "SETUP_TOKEN", "RESEND_API_KEY", "SMTP_PASSWORD", "S3_ACCESS_KEY_ID", "S3_SECRET_ACCESS_KEY", "BACKUP_PASSPHRASE"}
 OPTIONAL_ENV = {name for name, _ in S3_ENV_VARS} | {"SETUP_TOKEN", "RESEND_API_KEY", "RESEND_FROM", "ADMIN_EMAIL",

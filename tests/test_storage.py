@@ -1,3 +1,4 @@
+import re
 import hashlib
 from datetime import datetime, UTC
 
@@ -326,3 +327,81 @@ def test_the_newest_backups_show_and_the_rest_fold(monkeypatch, admin):
     assert folded.count('name="key" value="backups/soloblog-') == 4
     # an icon named Restore, not a word button
     assert 'aria-label="Restore"' in shown and 'class="ml-1">Restore<' not in shown
+    # the older ones scroll up and down in their box, never sideways
+    assert "overflow-y-auto overflow-x-hidden" in folded
+
+
+def test_restoring_a_bucket_backup_says_which_and_comes_into_view(monkeypatch, admin):
+    # the Restore card fills up the page from Cloud storage's list - it says
+    # which backup it's from, and is marked to be brought into view
+    from soloblog import backup
+    data = backup.build_backup_zip({"posts", "settings"})
+    monkeypatch.setattr(storage, "enabled", lambda: True)
+    monkeypatch.setattr(storage, "check", lambda: "")
+    monkeypatch.setattr(storage, "list_backups", lambda: [])
+    monkeypatch.setattr(storage, "get_backup", lambda key: data)
+    html = admin.post("/admin/backup/from-bucket", data={"key": "backups/soloblog-20261119-162700.zip"}).text
+    restore = re.search(r'<details[^>]*data-panel="backup-restore"[^>]*>', html).group(0)
+    assert "data-arrive" in restore
+    assert re.search(r"From your backup of [^<]*2026", html)
+    backup.discard_staged()
+
+
+def _write_upload(name, data):
+    os.makedirs(config.uploads_dir(), exist_ok=True)
+    with open(os.path.join(config.uploads_dir(), name), "wb") as f:
+        f.write(data)
+
+
+def test_sync_images_goes_the_way_asked_and_deletes_nothing(bucket, admin):
+    _write_upload("same-name.png", b"this site's")
+    _write_upload("only-here.png", b"here")
+    storage.put("uploads/same-name.png", b"the bucket's")
+    storage.put("uploads/only-there.png", b"there")
+    # this site to the bucket: its copies replace the bucket's; the bucket's own stays
+    r = admin.post("/admin/backup/sync?way=up")
+    assert re.search(r"Copied \d+ images to your bucket", r.headers["location"].replace("%20", " "))
+    assert storage.get("uploads/same-name.png") == b"this site's"
+    assert storage.get("uploads/only-there.png") == b"there"
+    # the bucket to this site: its copies replace these; this site's own stays
+    storage.put("uploads/same-name.png", b"the bucket's again")
+    admin.post("/admin/backup/sync?way=down")
+    with open(os.path.join(config.uploads_dir(), "same-name.png"), "rb") as f:
+        assert f.read() == b"the bucket's again"
+    assert os.path.isfile(os.path.join(config.uploads_dir(), "only-here.png"))
+    assert os.path.isfile(os.path.join(config.uploads_dir(), "only-there.png"))
+    for name in ("same-name.png", "only-here.png", "only-there.png"):
+        os.remove(os.path.join(config.uploads_dir(), name))
+
+
+def test_an_image_that_didnt_reach_the_bucket_is_said_until_it_does(bucket, monkeypatch, admin):
+    from soloblog import health, settings
+    settings.set_many({"images_not_in_bucket": ""})
+    working = config.S3_ENDPOINT
+    monkeypatch.setattr(config, "S3_ENDPOINT", "http://127.0.0.1:9")  # nothing listening
+    storage._mirror(storage._put_image, "uploads/lost.png", b"x")
+    storage.wait_for_mirroring()
+    assert storage.unsynced() == {"uploads/lost.png"}
+    assert health.bucket_images_check()["title"] == "1 image hasn't reached your bucket"
+    monkeypatch.setattr(config, "S3_ENDPOINT", working)
+    monkeypatch.setattr(storage, "check", lambda: "")
+    assert "1 image hasn&#x27;t reached your bucket" in admin.get("/admin/settings?tab=backup").text \
+        or "1 image hasn't reached your bucket" in admin.get("/admin/settings?tab=backup").text
+    # once it's copied, it's no longer said
+    storage._put_image("uploads/lost.png", b"x")
+    assert storage.unsynced() == set() and health.bucket_images_check() is None
+
+
+def test_a_bucket_restore_brings_images_back_when_ticked(bucket, admin):
+    from soloblog import backup
+    storage.put("uploads/from-bucket.png", b"bucket copy")
+    data = backup.build_backup_zip({"posts", "settings"})
+    storage.put("backups/soloblog-20261119-162700.zip", data)
+    html = admin.post("/admin/backup/from-bucket", data={"key": "backups/soloblog-20261119-162700.zip"}).text
+    assert 'name="images_from_bucket"' in html and "the latest copy of each, from your bucket" in html
+    r = admin.post("/admin/backup/restore-confirm", data={"settings": "1", "images_from_bucket": "1"})
+    said = r.headers["location"].replace("%20", " ")
+    assert "image" in said and "(s)" not in said
+    with open(os.path.join(config.uploads_dir(), "from-bucket.png"), "rb") as f:
+        assert f.read() == b"bucket copy"
+    os.remove(os.path.join(config.uploads_dir(), "from-bucket.png"))

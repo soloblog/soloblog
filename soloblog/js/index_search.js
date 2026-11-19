@@ -305,10 +305,16 @@ document.addEventListener('DOMContentLoaded', function () {
 // looked for. Also what a result does on the page it's already on.
 function _arrive() {
   var params = new URLSearchParams(location.search), find = params.get('find');
+  // a page's next step, marked by the page itself (data-arrive): brought into view the same way
+  var next = document.querySelector('[data-arrive]');
   // ?panel= alone opens it too: a link to one setting
-  if (!find && !params.get('panel')) return;
+  if (!find && !params.get('panel') && !next) return;
   var target = null;
-  if (params.get('panel')) {
+  if (next) {
+    if (next.tagName === 'DETAILS') next.open = true;
+    target = next;
+    params.delete('find');
+  } else if (params.get('panel')) {
     var panel = document.querySelector('details[data-panel="' + CSS.escape(params.get('panel')) + '"]');
     if (panel) {
       panel.open = true;
@@ -325,7 +331,7 @@ function _arrive() {
   if (!target) return;
   for (var p = target.parentElement; p; p = p.parentElement) if (p.tagName === 'DETAILS') p.open = true;
   // a help section: the words looked for, marked in it
-  if (!params.get('panel')) {
+  if (!params.get('panel') && !next) {
     var words = _fold(find).split(/\s+/).filter(function (w) { return w.length > 1; });
     var scope = target.closest('details') || target.parentElement;
     var walker = document.createTreeWalker(scope, NodeFilter.SHOW_TEXT), nodes = [];

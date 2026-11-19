@@ -119,6 +119,21 @@ def backup_check():
     return check("backup", "backups", GOOD, f"Backed up {_days(last)}", f"The last backup was made {where}.")
 
 
+def bucket_images_check():
+    """Only with a bucket, and only when some image's copy to it failed -
+    nothing else would say so, and it's never retried by itself."""
+    from soloblog import storage
+    missing = len(storage.unsynced()) if storage.enabled() else 0
+    if not missing:
+        return None
+    return check("bucket-images", "backups", RECOMMENDED,
+                 "1 image hasn't reached your bucket" if missing == 1 else f"{missing} images haven't reached your bucket",
+                 "Copying it there failed, so if the server's disk failed it would be gone. Sync this site's images "
+                 "to your bucket." if missing == 1 else "Copying them there failed, so if the server's disk failed "
+                 "they'd be gone. Sync this site's images to your bucket.",
+                 "Open Backup and import", "/admin/settings?tab=backup#cloud-status")
+
+
 def verify_check():
     """Only with a bucket: a backup there can be opened and checked here.
     Without one, Restore does the same for a downloaded file."""
@@ -477,7 +492,7 @@ def run(request_host: str = "") -> list:
     """Every check, the stored results of the remote ones with them -
     most serious first, then by area."""
     from soloblog import health_remote
-    results = [updates_check(), backup_check(), verify_check(), https_check(), secret_check(), login_check(),
+    results = [updates_check(), backup_check(), bucket_images_check(), verify_check(), https_check(), secret_check(), login_check(),
                recovery_check(), email_check(), address_check(request_host), storage_check(), disk_check(),
                database_check(), *visibility_checks(), payments_check(), scheduler_check(), copies_check(),
                *health_remote.stored()]

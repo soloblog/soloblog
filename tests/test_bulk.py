@@ -358,7 +358,7 @@ def test_mentions_stats_and_row_menus(admin):
 def test_settings_links_open_their_panel():
     """A link to one setting (?panel=) opens it, without a search."""
     from soloblog import js
-    assert "if (!find && !params.get('panel')) return;" in js.read("index_search.js")
+    assert "if (!find && !params.get('panel') && !next) return;" in js.read("index_search.js")
 
 
 def test_search_dialogs_fit_above_the_keyboard(admin):
