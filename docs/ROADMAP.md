@@ -34,6 +34,12 @@ out, are in [DECISIONS.md](DECISIONS.md). An idea of your own starts in
   marked as a referral or paid link, and gets `rel="sponsored"`, which
   search engines ask for on links that earn money. The simplest way: a
   choice in the link box.
+- **Side panels placed separately for posts and pages.** In Settings,
+  the contents and each side panel (tag cloud, archive links, About the
+  author) get a place for posts and a place for pages - contents on the
+  left on pages and on the right on posts, say - instead of one place and
+  a **Shows on**. Each post or page can still choose its own. A site's
+  Shows on carries over, so nothing changes on update.
 - **Screenshots in Help, if people get lost.** The guide is written to
   work without pictures (every step names the button and where it is);
   pictures would add to every install and need retaking when the look
