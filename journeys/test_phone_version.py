@@ -3,6 +3,7 @@ phone one, gives the wide one the phone one as its phone version in Media,
 and a reader sees the phone one on a phone and the wide one on a laptop -
 and it changes by itself when the window is resized."""
 from PIL import Image
+from playwright.sync_api import TimeoutError as PlaywrightTimeout
 
 from conftest import Window, publish
 
@@ -92,7 +93,13 @@ def test_a_phone_picture_with_its_own_dark_version(owner, browser, site, tmp_pat
     owner.page.locator("label:has(input[name=theme][value=light])").click()
     owner.page.locator("label:has(input[name=theme_dark][value=dark])").click()
     owner.page.locator("input[name=theme_mode][value=auto]").check(force=True)
-    owner.page.locator("form[hx-post='/admin/settings/style'] button[type=submit]").last.click()
+    # Save shows only once something changed - the site may have these already
+    save = owner.page.locator("form[hx-post='/admin/settings/style'] button[type=submit]").last
+    try:
+        save.wait_for(state="visible", timeout=3000)
+        save.click()
+    except PlaywrightTimeout:
+        pass
     owner.page.wait_for_load_state("networkidle")
     owner.page.wait_for_timeout(800)
     shots = {"alpha-wide": (1600, 900), "bravo-phone": (600, 1200), "charlie-phonenight": (600, 1200),
