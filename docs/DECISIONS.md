@@ -62,7 +62,8 @@ the same commit. How each one is carried out is in
 - **Settings are pages under small headings,** searchable from any admin
   page. Switches save as they change; typed text waits for Save.
 - **Words for people who aren't developers:** what something does for
-  them, never how it works.
+  them, never how it works, in the standard terms they already know and
+  search for - never a paraphrase of one.
 
 ## Technology
 

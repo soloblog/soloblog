@@ -216,8 +216,11 @@ desktop - in the same change, not just where it was first asked for.
   load it before writing any text a user sees; where the two differ, this
   project's rules win: written for someone who isn't a developer - what
   a setting does for them, never how it works, no reassurance about the
-  machinery, one help line at most; short, plain, the wording the app
-  already has for the same action; no full stop on a status message or a
+  machinery, one help line at most; plain isn't avoiding the words people
+  know - the standard term they'd search for (URL, image, bold,
+  two-factor authentication), never a home-made paraphrase of it, and one
+  term for one thing everywhere; short, the wording the app already has
+  for the same action; no full stop on a status message or a
   tooltip. Long choices are pickers, set-once groups are summaries that
   open, a page fits in about three screens.
 - **Soloblog is described in its official words** - the tagline, the one

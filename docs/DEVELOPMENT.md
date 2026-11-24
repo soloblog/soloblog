@@ -575,6 +575,10 @@ what happens behind the scenes. They scan the page for the setting they
 came for, read its label, and maybe one line under it. Give them what
 they need to decide, and nothing else.
 
+Not a developer doesn't mean new to computers. They use the web every
+day and know its words - a URL, an image, bold, a password manager - so
+plain means leaving out the machinery, not those words.
+
 ### Labels
 
 - **Name the thing, in their words.** "Time zone", "Cover image",
@@ -585,6 +589,36 @@ they need to decide, and nothing else.
   nouns for things.
 - **The same idea has one name everywhere** - in a label, a heading, a
   button and the guide.
+
+### Standard terms
+
+- **Use the term people already know**, the one other apps, the
+  standards and a search use: "URL", "Bold", "Placeholder",
+  "Two-factor authentication (2FA)". Never a home-made paraphrase of it
+  ("address", "Makes words stand out", "the words in grey", "a second
+  step when you log in") - it makes people work out what we mean, and
+  they can't search for it.
+- **The test:** would Ghost, WordPress, Notion or Google Docs say it, or
+  would someone type it into a search? Then it's a term, not jargon.
+- **Common abbreviations stay short:** URL, RSS, HTML, CSS, DNS, HTTPS,
+  API, SEO. A less common term gets a few words or a link once, where
+  it first comes up: "Webmentions - replies and mentions from other sites".
+- **Jargon only a developer knows stays out** - caches, requests,
+  endpoints, payloads, "renders" - unless it must be typed (an
+  environment variable, a DNS record, a key's prefix), and then it's
+  written exactly.
+- **Terms are names, not a style.** The sentence around a term stays
+  short and plain.
+
+| Instead of | Write |
+|---|---|
+| address (of a page or a site) | URL, or link |
+| picture | image |
+| words (of a post, a caption, a block) | text |
+| the words in grey | placeholder |
+| Makes words stand out, Crosses words out | Bold, Strikethrough |
+
+"Address" stays for an email or a postal address.
 
 ### Help text (the grey line)
 
@@ -614,8 +648,6 @@ they need to decide, and nothing else.
   code looks like.
 - **No "Optional."** An empty field is optional. Say "Required" on the
   rare one that isn't.
-- **Technical names only when they must be typed** - an environment
-  variable, a DNS record, a key's prefix.
 
 ### Options
 
@@ -770,7 +802,10 @@ the app works, so don't make them work it out from a compressed line.
 Say what a thing is before what the screen does with it; say when
 something appears and what each button is for; use everyday words
 ("bottom", "its current state") over shorthand ("at the foot", "how it
-stands"). Clear beats short - an extra sentence is fine if it saves
+stands"). Everyday words aren't a reason to avoid a standard term
+([Standard terms](#standard-terms)): say "URL", and explain a less
+common term once, where it first comes up - new to Soloblog isn't new
+to the web. Clear beats short - an extra sentence is fine if it saves
 someone from getting lost.
 
 > Not: What you type saves with **Save**, which shows at the foot of the

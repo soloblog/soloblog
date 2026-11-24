@@ -49,7 +49,7 @@ Security comes before features ([CLAUDE.md](../CLAUDE.md)).
 |---|---|---|
 | [daisyUI](https://daisyui.com) and [Tailwind](https://tailwindcss.com) | Their components, sizes and theme colours - custom CSS only with a written reason ([DEVELOPMENT.md > Custom CSS](DEVELOPMENT.md#custom-css)) | Review; tests |
 | [Nielsen Norman Group's heuristics](https://www.nngroup.com/articles/ten-usability-heuristics/) | Plain words, consistency, recognition over recall, errors that say how to fix them | Review |
-| Words | Written for someone who isn't a developer ([DEVELOPMENT.md > Writing and settings](DEVELOPMENT.md#writing-and-settings)) | Review |
+| Words | Written for someone who isn't a developer, in the standard terms people know and search for ([DEVELOPMENT.md > Writing and settings](DEVELOPMENT.md#writing-and-settings)) | Review |
 | One look | A new pattern goes everywhere it fits, phone and desktop | `tools/phone_check.py`: sideways scrolling, things sticking out, small targets, squeezed words, script errors |
 
 Before UI work, look up current practice (Apple's HIG, Material, WCAG,
