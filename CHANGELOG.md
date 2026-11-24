@@ -23,6 +23,8 @@ versions may include breaking changes; they'll always be listed here.
 
 ### Fixed
 
+- Typing in Chinese, Japanese or Korean, Enter confirms the word in the
+  post title and the editor's searches
 - Restoring a backup made with an older passphrase brings its images back
   too
 - A damaged backup no longer stops a new server from starting

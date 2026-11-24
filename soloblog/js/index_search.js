@@ -251,7 +251,9 @@ document.addEventListener('focusout', function (e) {
 document.addEventListener('keydown', function (e) {
   var box = e.target.matches && e.target.matches('[data-recent-searches]') && e.target;
   if (!box) return;
-  if (e.key === 'Enter' && !e.isComposing) {
+  // Safari sends the Enter that ends a composed word with isComposing
+  // false, but key code 229
+  if (e.key === 'Enter' && !e.isComposing && e.keyCode !== 229) {
     var active = _recentOpen(box) && document.getElementById(box.getAttribute('aria-activedescendant') || '');
     if (active) { e.preventDefault(); _recentChoose(box, active); } else _recentRemember(box);
   } else if (e.key === 'Escape' && _recentOpen(box)) {

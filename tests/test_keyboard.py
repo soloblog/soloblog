@@ -43,3 +43,34 @@ def test_the_code_box_is_where_the_keyboard_starts(client):
     settings.set_many({"members_enabled": "0"})
     assert r.status_code == 200 and 'name="code"' in r.text
     assert re.search(r"<input[^>]*name=\"code\"[^>]*autofocus|<input[^>]*autofocus[^>]*name=\"code\"", r.text)
+
+
+def _keydown_handlers(js):
+    """Each keydown handler's body, found by matching its braces."""
+    for m in re.finditer(r"addEventListener\('keydown', function \(e\) \{", js):
+        depth, i = 1, m.end()
+        while depth:
+            depth += {"{": 1, "}": -1}.get(js[i], 0)
+            i += 1
+        yield js[m.end():i]
+
+
+def test_enter_in_a_text_field_waits_for_a_word_being_composed():
+    # With Chinese, Japanese or Korean, Enter and the arrows pick and
+    # confirm characters while a word is composed: a handler on a field
+    # you type in leaves them alone until then. Lists and pictures have
+    # no typing, so they don't need it.
+    from soloblog.js import _HERE
+    no_typing = ("listEl.addEventListener", "img.media-picker-row")
+    checked = 0
+    for name in sorted(p.name for p in _HERE.glob("*.js")):
+        js = read_js(name)
+        for body in _keydown_handlers(js):
+            if "'Enter'" not in body:
+                continue
+            start = js.index(body)
+            if any(t in js[max(0, start - 200):start + len(body)] for t in no_typing):
+                continue
+            assert "isComposing" in body and "229" in body, (name, body[:120])
+            checked += 1
+    assert checked >= 5

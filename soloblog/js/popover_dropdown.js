@@ -37,7 +37,7 @@ document.addEventListener('click', function (e) {
 });
 // Enter chooses the first match - never the form's Save
 document.addEventListener('keydown', function (e) {
-  if (e.key !== 'Enter' || !e.target.closest) return;
+  if (e.key !== 'Enter' || e.isComposing || e.keyCode === 229 || !e.target.closest) return;
   var box = e.target.closest('[data-combo]');
   if (!box || e.target.tagName !== 'INPUT') return;
   e.preventDefault();

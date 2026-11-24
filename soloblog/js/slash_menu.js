@@ -660,6 +660,9 @@ function setupSlashMenu(mde, slashOn) {
     var input = search.querySelector('input');
     input.addEventListener('input', function () { active = 0; draw(); });
     input.addEventListener('keydown', function (e) {
+      // while a word is being composed (Chinese, Japanese, Korean), Enter,
+      // the arrows and Esc belong to the input method
+      if (e.isComposing || e.keyCode === 229) return;
       var k = { ArrowDown: 1, ArrowUp: -1 }[e.key];
       if (k) { e.preventDefault(); move(k); }
       else if (e.key === 'Enter') { e.preventDefault(); choose(active); }

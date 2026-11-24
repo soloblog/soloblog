@@ -1351,6 +1351,8 @@ document.addEventListener('DOMContentLoaded', function () {
       // and Shift+Tab goes back to the bar (the box's own order would put it
       // in the writing first)
       heading.addEventListener('keydown', function (e) {
+        // Enter confirms a word being composed (Chinese, Japanese, Korean)
+        if (e.isComposing || e.keyCode === 229) return;
         if (e.key === 'Tab' && e.shiftKey && !e.ctrlKey && !e.metaKey && !e.altKey) {
           var back = mde.tabBeside(false);
           if (back) { e.preventDefault(); back.focus(); }
@@ -1654,7 +1656,7 @@ document.addEventListener('DOMContentLoaded', function () {
         begin(custom.kind, custom.target);
       };
       go.addEventListener('click', start);
-      count.addEventListener('keydown', function (e) { if (e.key === 'Enter') { e.preventDefault(); start(); } });
+      count.addEventListener('keydown', function (e) { if (e.key === 'Enter' && !e.isComposing && e.keyCode !== 229) { e.preventDefault(); start(); } });
       wrap.append(count, kind, go);
       return wrap;
     };
