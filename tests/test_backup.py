@@ -277,7 +277,7 @@ def test_a_backup_from_another_version(admin):
         zf.write(path, "blog.db")
     title = get_db().execute("SELECT value FROM settings WHERE key='site_title'").fetchone()
     try:
-        counts = backup.import_backup_zip(buf.getvalue(), {"db"})
+        counts = backup.import_backup_zip(buf.getvalue(), {"settings", "comments", "members", "subscribers", "stats"})
         assert counts["settings"] == 1 and "contact_messages" not in counts
         assert get_db().execute("SELECT 1 FROM contact_messages WHERE body='still here'").fetchone()
     finally:

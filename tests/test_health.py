@@ -206,7 +206,7 @@ def test_verify_a_backup(admin, monkeypatch):
         monkeypatch.setattr(storage, "note_change", lambda: None)
         monkeypatch.setattr(storage, "list_backups", lambda: [{"key": "backups/soloblog-1.zip"}])
         settings.set_many({"backup_last_at": _ago(hours=1)})
-        good = backup.build_backup_zip({"posts", "db"})
+        good = backup.build_backup_zip({"posts", "settings", "comments"})
         monkeypatch.setattr(storage, "get_backup", lambda key: good)
         r = admin.post("/admin/health/verify")
         assert r.status_code == 303 and settings.get("backup_verified_result") == "ok"

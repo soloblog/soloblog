@@ -495,8 +495,7 @@ def _RestorePendingPanel(pending):
 
 @ar.get("/admin/backup/download")
 def download_backup(session, request):
-    # "db" is the one database box before 2026-10-09 (backup._expand)
-    include = {cat for cat in [*backup.CATEGORIES, "db"] if request.query_params.get(cat)}
+    include = {cat for cat in backup.CATEGORIES if request.query_params.get(cat)}
     if not include:
         return _toast_redirect("/admin/settings?tab=backup#download-status", "Select at least one thing to back up", "error")
     data = backup.build_backup_zip(include)

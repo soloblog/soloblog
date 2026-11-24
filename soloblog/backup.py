@@ -62,11 +62,8 @@ def counted(table: str, n: int) -> str:
 
 
 def _expand(include) -> set:
-    """include, with the names before 2026-10-09 in bookmarks and older
-    callers: "db" all of the database's, trash with its own kind."""
+    """include, with trash going with its own kind."""
     include = set(CATEGORIES if include is None else include)
-    if "db" in include:
-        include |= {"settings", "comments", "members", "subscribers", "stats"}
     include |= {kind for trash, kind in (("trashed_posts", "posts"), ("trashed_images", "images")) if trash in include}
     return include & set(CATEGORIES)
 

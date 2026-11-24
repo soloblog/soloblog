@@ -307,8 +307,7 @@ def MediaDetailsDrawer():
     )
 
 
-# "gallery" stays the key - links and bookmarks to ?tab=gallery keep working
-MEDIA_TABS = [("gallery", "All"), ("used", "In use"), ("unused", "Unused"), ("trash", "Trash")]
+MEDIA_TABS = [("all", "All"), ("used", "In use"), ("unused", "Unused"), ("trash", "Trash")]
 MEDIA_PER_PAGE = 20
 # two to a row on a phone, like a phone's own photos - one filled the screen
 MEDIA_GRID = "grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4"
@@ -359,10 +358,10 @@ def _media_tab_files(tab, q, kind, post):
 
 
 @ar.get("/admin/media")
-def media_library(session, tab: str = "gallery", sort: str = "newest", post: str = "", page: int = 1,
+def media_library(session, tab: str = "all", sort: str = "newest", post: str = "", page: int = 1,
                   q: str = "", kind: str = ""):
     if tab not in dict(MEDIA_TABS):
-        tab = "gallery"
+        tab = "all"
     if sort not in dict(MEDIA_SORT_OPTIONS):
         sort = "newest"
     page = max(1, page)
@@ -382,13 +381,13 @@ def media_library(session, tab: str = "gallery", sort: str = "newest", post: str
     sort_picker = None
     bulk_actions = None
     per = rows_per_page(MEDIA_PER_PAGE)
-    if tab in ("gallery", "used"):
+    if tab in ("all", "used"):
         # ?post= (a link to one post's images) still narrows the gallery;
         # there's no picker for it - the search box finds images by post
         post_title = next((u["title"] for entries in usage.values() for u in entries if u["slug"] == post),
                           "") if post else ""
         # everything, in use or not - an Unused pill on the ones no post uses
-        gallery_items = list(all_items) if tab == "gallery" else [i for i in all_items if i["filename"] in usage]
+        gallery_items = list(all_items) if tab == "all" else [i for i in all_items if i["filename"] in usage]
         if post:
             gallery_items = [i for i in gallery_items
                               if any(u["slug"] == post for u in usage.get(i["filename"], []))]
@@ -454,13 +453,13 @@ def media_library(session, tab: str = "gallery", sort: str = "newest", post: str
 
     kinds = [("", "All"), ("image", "Images"), ("audio", "Audio"), ("video", "Video"), ("document", "PDFs"),
              ("noalt", "No alt text")]
-    filtered = q or kind or (tab == "gallery" and post)
+    filtered = q or kind or (tab == "all" and post)
     header = ListHeader(
         list_summary(total_count, "file", q, dict(kinds)[kind].lower() if kind else "",
-                     f"in “{post_title}”" if tab == "gallery" and post else ""),
+                     f"in “{post_title}”" if tab == "all" and post else ""),
         clear=f"/admin/media?tab={tab}&sort={sort}" if filtered else None,
         form_id="media-bulk" if shown else None, action="/admin/media/bulk", return_to=return_to,
-        total=total_count, scope={"in_tab": tab, "in_q": q, "in_kind": kind, "in_post": post if tab == "gallery" else ""},
+        total=total_count, scope={"in_tab": tab, "in_q": q, "in_kind": kind, "in_post": post if tab == "all" else ""},
         buttons=[BulkButton("Restore", "restore"),
                  BulkButton("Delete forever", "delete", danger=True,
                             confirm="Permanently delete the selected files? This can't be undone.",
