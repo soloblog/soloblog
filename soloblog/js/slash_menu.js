@@ -127,7 +127,7 @@ function setupSlashMenu(mde, slashOn) {
       });
       if (style) option('Site default', 'The style set in Settings > Posts', OPTIONS.icons['default'],
                         function () { write('', false); }, false, 'gallery style');
-      if (style === 'slider') option(auto ? 'Stop moving by itself' : 'Move by itself', 'A slide every few seconds',
+      if (style === 'slider') option(auto ? 'Stop autoplay' : 'Autoplay', 'A slide every few seconds',
                                      OPTIONS.icons.auto, function () { write('slider', !auto); }, false, 'slider auto');
       return ['Gallery', out];
     }

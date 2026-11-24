@@ -112,7 +112,7 @@ Your posts, translated for you into other languages by a service you choose. A r
 - **API key** - The key the service gives you, so your site can use it: DeepL's from deepl.com/pro-api, Google's from Google Cloud, under Cloud Translation. LibreTranslate: only if your server asks for one.
 - **LibreTranslate server** - Your own LibreTranslate server's URL, if you run one. Empty: libretranslate.com, which needs a key.
 - **Offer posts in** - The languages to translate into. Each post gets a page in each one, like `/es/post/your-post`. Every language is another translation of every post, so check the service's prices.
-- **Translate every post now** - Translates the posts you wrote before turning it on. New posts are translated by themselves.
+- **Translate every post now** - Translates the posts you wrote before turning it on. New posts are translated automatically.
 
 ## Style
 
@@ -709,7 +709,7 @@ when Settings leaves pages out.
 - **Background sound** - One of your audio files, looping on this post or
   page - for a band, a project or a talk. **Pick** shows your audio, and
   uploads a new file too. Visitors get a play button in the corner, under
-  Back to top; it never starts by itself.
+  Back to top; it never plays automatically.
 - **Show** - What appears around the text. Tick any of: breadcrumbs, the
   reading progress bar, author and date, tags, Listen, likes, share
   buttons, Print or save as PDF, support links, the series' other parts,
@@ -781,7 +781,7 @@ lightbox.
 | `grid` | even squares |
 | `masonry` | columns, each image at its own height |
 | `justified` | rows of equal height, edge to edge |
-| `slider` | one image at a time, with arrows, and its caption and count under it - and when every image has a caption, their names in a row above it, to pick one. Write `slider auto` to have it move along by itself, a slide every few seconds: it stops when a reader moves it, and has a pause button |
+| `slider` | one image at a time, with arrows, and its caption and count under it - and when every image has a caption, their names in a row above it, to pick one. Write `slider auto` to have it play automatically, a slide every few seconds: it stops when a reader moves it, and has a pause button |
 | `filmstrip` | a row that scrolls sideways, with arrows |
 
 Leave the style out to use the default from **Settings > Posts >

@@ -486,7 +486,7 @@ and `Tag:` on a [Portfolio](#section-portfolio), `Series:` on
 [Contents](#section-contents), and three on a
 [Photo story](#section-photo-story). A gallery's style goes after
 `` ```gallery `` on its first line: `grid`, `masonry`, `justified`,
-`slider` (add `auto` to move by itself) or `filmstrip` - see
+`slider` (add `auto` to play automatically) or `filmstrip` - see
 [Galleries](reference.md#galleries).
 
 **`Width: Column`, `Wide` or `Full`** - as wide as the text, out to the

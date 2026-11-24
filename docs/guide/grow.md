@@ -153,7 +153,7 @@ choose a **Post to send**, then select **Send to** your subscribers.
 
 **More subscribers than your email service sends in a day?** Resend's
 free plan, for example, sends 100 emails a day. When the limit is
-reached, Soloblog stops and sends the rest by itself the next day. Until
+reached, Soloblog stops and sends the rest automatically the next day. Until
 then, the post's settings and **Newsletter** show how many it has reached.
 
 **Members on too?** The sign-up box becomes a way to join: readers who

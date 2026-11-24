@@ -125,7 +125,7 @@ see [Embed from other sites](#embed-from-other-sites).
 
 **Want music or a sound to play through a whole page?** In the editor,
 open **Settings**, then **Page**, and choose a **Background sound**.
-Readers get a play button; it never starts by itself.
+Readers get a play button; it never plays automatically.
 
 ## Embed from other sites
 
@@ -171,7 +171,7 @@ anywhere in it and open **Insert** or type `/` - on a phone, select
   adds. **Latest posts:** how many (**Count**) and which tag.
   **Contents:** which series. **Photo story:** how its first paragraph,
   images and short lines are arranged. **Hero:** also **Window**.
-- **Gallery:** its style, and for a slider, whether it moves by itself.
+- **Gallery:** its style, and for a slider, whether it plays automatically.
 - **Callout:** Note, Tip, Warning or Danger. **Collapsible:** whether it
   starts open.
 
@@ -235,7 +235,7 @@ can turn each of these on or off in **Settings > Editor > Focus**.
 
 ## Schedule a post
 
-Write a post now, and have it published by itself at a time you choose.
+Write a post now, and have it published automatically at a time you choose.
 
 1. In the editor, open **Settings** (the gear icon), then **Publishing**.
 2. Set **Publish at** to the day and time. **Published** switches on by

@@ -2457,7 +2457,7 @@ def SoundField(row):
         Input(name="sound", id="sound", value=row["sound"] if row else "", data_picker_kind="audio",
               placeholder="/uploads/your-sound.mp3", cls="input input-sm flex-1 min-w-0 join-item"),
         MediaPickerButton("sound", icon=SPEAKER_SVG), cls="join w-full"),
-        help="Loops while a visitor has it on. It never starts by itself.", cls="mt-3")
+        help="Loops while a visitor has it on. It never plays automatically.", cls="mt-3")
 
 
 def NewsletterChoice(row):

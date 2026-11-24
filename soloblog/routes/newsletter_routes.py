@@ -221,7 +221,7 @@ def subscribers_page(session, page: int = 1, q: str = "", state: str = "", sort:
         P("Moving from Substack, Buttondown, Mailchimp or Kit? Import their subscriber export (CSV) - they come "
           "in confirmed, and anyone already here is skipped.", cls="text-xs text-base-content/50 mb-4"),
         P("✓ marks a post that's already been sent. ",
-          A("Send new posts by themselves", href="/admin/settings?tab=newsletter", cls="link")
+          A("Send new posts automatically", href="/admin/settings?tab=newsletter", cls="link")
           if not (newsletter.sending(s) or newsletter.digest(s)) else None,
           cls="text-xs text-base-content/50 mb-4") if send_form else None,
         ListToolbar([SearchField(q, "Search by email…", "/admin/newsletter",

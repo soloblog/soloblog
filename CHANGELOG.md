@@ -29,6 +29,7 @@ versions may include breaking changes; they'll always be listed here.
 - The admin and Help say text where they said words, and the editor's
   tooltips no longer describe Bold or Italic in other words
 - Two-factor login is called two-factor authentication (2FA)
+- A slider's Move by itself is called Autoplay
 
 ### Fixed
 
