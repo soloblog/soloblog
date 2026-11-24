@@ -189,10 +189,10 @@ def secret_check():
 def login_check():
     from soloblog import passkeys, totp
     if totp.is_enabled() or passkeys.count():
-        return check("login", "security", GOOD, "Your login has a second step",
-                     "A passkey or two-factor login protects it beyond the password.")
+        return check("login", "security", GOOD, "Your login is protected beyond the password",
+                     "With a passkey or two-factor authentication (2FA).")
     return check("login", "security", RECOMMENDED, "Your login has only a password",
-                 "Add a passkey - your fingerprint, face or device PIN - or two-factor login, so a leaked "
+                 "Add a passkey - your fingerprint, face or device PIN - or two-factor authentication, so a leaked "
                  "password isn't enough to get in.", "Open Security", "/admin/settings?tab=security")
 
 
@@ -615,7 +615,7 @@ def features() -> list:
         ("Analytics", s.get("analytics_provider") or "off"),
         ("Ads", "on" if s.get("adsense_client") else "off"),
         ("Custom code", "set" if s.get("custom_css") or s.get("custom_head") else "none"),
-        ("Two-factor login", "on" if one("SELECT COUNT(*) FROM admin WHERE totp_secret != ''") else "off"),
+        ("Two-factor authentication", "on" if one("SELECT COUNT(*) FROM admin WHERE totp_secret != ''") else "off"),
         ("Passkeys", _about(one("SELECT COUNT(*) FROM passkeys"))),
     ]
 

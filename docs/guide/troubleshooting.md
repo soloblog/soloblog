@@ -33,7 +33,7 @@ password appears in the server's log. Remove the setting afterwards.
 
 ## I'm locked out by two-factor
 
-When you turned on two-factor login, you were given ten recovery codes.
+When you turned on two-factor authentication, you were given ten recovery codes.
 Type one of them where it asks for the 6-digit code. Each code works
 once.
 

@@ -307,8 +307,8 @@ def test_help_search_finds_the_guides_smallest_headings(admin):
     # the settings reference's #### headings were part of their ###: a
     # search for one landed on "Security" (planned fix 29)
     sections = admin.get("/admin/help/search-index").json()
-    two = [e for e in sections if e["title"] == "Two-factor login" and e["group"] == "Reference"]
-    assert two and two[0]["sub"] == "Security" and two[0]["href"].endswith("#two-factor-login")
+    two = [e for e in sections if e["title"] == "Two-factor authentication (2FA)" and e["group"] == "Reference"]
+    assert two and two[0]["sub"] == "Security" and two[0]["href"].endswith("#two-factor-authentication-2fa")
     # its words are its own, not the section's above too
     security = [e for e in sections if e["title"] == "Security" and e["group"] == "Reference"]
     assert security and two[0]["text"][:40] not in security[0]["text"]
@@ -328,7 +328,7 @@ def test_a_search_for_a_pages_name_finds_it_once_on_top(admin):
                 and not e["sub"]]) == 1
     # and the search puts an exact name first, folding in what only
     # matched through it (checked in a browser: "email", "comments",
-    # "security", "two-factor login")
+    # "security", "two-factor authentication")
     from soloblog import app as app_module
     js = app_module.INDEX_SEARCH_JS
     assert "e._title === _fold(q) ? 20 : whole(e) ? 10 : 0" in js

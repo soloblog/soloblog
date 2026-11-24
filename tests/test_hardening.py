@@ -244,7 +244,7 @@ def test_update_notice(admin, monkeypatch):
 
 def test_an_emailed_reset_keeps_two_factor(app, admin):
     """The inbox alone isn't a second factor: an emailed link can't turn
-    two-factor login off, and the code is still asked for after it."""
+    two-factor authentication off, and the code is still asked for after it."""
     import time
     from starlette.testclient import TestClient
     from soloblog import auth, totp
@@ -255,7 +255,7 @@ def test_an_emailed_reset_keeps_two_factor(app, admin):
         attacker = TestClient(app, follow_redirects=False)
         token = auth.start_reset(60, by_email=True)
         page = attacker.get(f"/reset-password?token={token}").text
-        assert "Also turn off two-factor login" not in page and "asked for a code next" in page
+        assert "Also turn off two-factor authentication" not in page and "asked for a code next" in page
         r = attacker.post("/reset-password", data={"token": token, "password": "attacker pass 1",
                                                    "confirm": "attacker pass 1", "disable_2fa": "1"})
         assert r.headers["location"] == "/login/code" and totp.is_enabled()
@@ -264,7 +264,7 @@ def test_an_emailed_reset_keeps_two_factor(app, admin):
         assert attacker.post("/login/code", data={"code": code}).headers["location"].startswith("/admin/posts")
         # a link from the server's log proves more - that one may turn it off
         token = auth.start_reset(60)
-        assert "Also turn off two-factor login" in TestClient(app).get(f"/reset-password?token={token}").text
+        assert "Also turn off two-factor authentication" in TestClient(app).get(f"/reset-password?token={token}").text
         auth.finish_reset()
     finally:
         totp.disable()

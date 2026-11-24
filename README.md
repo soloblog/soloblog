@@ -61,7 +61,7 @@ own.
   and Google Analytics waits for a reader's consent; embeds load nothing
   until a reader selects them. Every palette passes WCAG AA contrast, and
   motion respects "reduce motion".
-- **Safe to leave running.** Passkeys, two-factor login, automatic backups
+- **Safe to leave running.** Passkeys, two-factor authentication, automatic backups
   to a bucket, Site health, and updates that migrate themselves.
 
 ## What you can make
@@ -192,7 +192,7 @@ and the website has
 <summary><strong>Running it</strong></summary>
 
 - Backups to a zip, or automatic backups to S3, Cloudflare R2 or Backblaze B2
-- Passkeys, two-factor login, rate limiting, CSRF protection, sanitised
+- Passkeys, two-factor authentication, rate limiting, CSRF protection, sanitised
   HTML and SRI-pinned scripts
 - An API, Micropub, an MCP server for AI assistants and a Ghost-compatible
   layer, with drafts-only keys

@@ -77,8 +77,8 @@ def guessing(minutes: int):
             "than a person would type.\n\n"
             "Until it stops, the password works only in a browser that has logged in before. On a new "
             "device, use a passkey or your recovery key, or wait.\n\n"
-            "A long password that you use nowhere else can't be guessed this way. For a second step "
-            "when you log in, add two-factor login or a passkey:\n"
+            "A long password that you use nowhere else can't be guessed this way. To protect your login "
+            "beyond the password, add a passkey or two-factor authentication (2FA):\n"
             f"{config.BASE_URL}/admin/settings?tab=security\n")
     threading.Thread(target=mail.send_email, daemon=True,
                      args=(s["admin_email"], f"Someone is guessing the password for {s.get('site_title')}",

@@ -43,7 +43,7 @@ def TwoFactorBody(state=None, secret="", codes=None, error=""):
     if state == "off":
         return Div(
             P(Span("Off", cls="badge badge-sm badge-ghost mr-2"),
-              "Adds a second step to logging in: a 6-digit code from an authenticator app on your phone "
+              "After your password, logging in asks for a 6-digit code from an authenticator app on your phone "
               "(1Password, Google Authenticator, Aegis...).", cls="text-sm text-base-content/70"),
             _action_row(Button(KEY_SVG, Span("Set up", cls="ml-1"), type="button", cls="btn btn-sm",
                                **_twofactor_swap(hx_get="/admin/2fa/setup")), status=error),
@@ -202,7 +202,7 @@ def SessionsPanel():
 def SecurityTab():
     from soloblog.routes.auth_routes import AccountName, NewPasswordFields
     return Div(
-        SettingsPanel("Two-factor login", Div(TwoFactorBody(), id="twofactor-body"), key="security-2fa"),
+        SettingsPanel("Two-factor authentication (2FA)", Div(TwoFactorBody(), id="twofactor-body"), key="security-2fa"),
         PasskeysPanel(),
         SettingsPanel("Recovery key", Div(RecoveryKeyBody(), id="recovery-key-body"), key="security-recovery"),
         SessionsPanel(),

@@ -327,7 +327,7 @@ Much of it is built in, with nothing to set up:
   trying wait before they can try again. If wrong passwords pour in from
   many places at once, only a browser that has logged in before can use
   the password until it stops, and your site emails you. A passkey or
-  two-factor login
+  two-factor authentication
   adds a second step - see [Keep the login safe](guide/run.md#keep-the-login-safe).
 - **Your readers.** Members sign in with a link or a code sent to their
   email, so they have no password to forget. Their details stay on your
@@ -356,7 +356,7 @@ With cloud storage connected, backups are made for you. See
 ### How do I keep my account safe?
 
 Use a long password, and add a passkey (log in with your fingerprint or
-face) or two-factor login (a code from an app on your phone), in
+face) or two-factor authentication (a code from an app on your phone), in
 **Settings > Security**. See [Keep the login safe](guide/run.md#keep-the-login-safe).
 
 ### Something's wrong - where do I ask?

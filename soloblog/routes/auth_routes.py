@@ -389,7 +389,7 @@ def RecoveryKeyForm(error=""):
                   cls=FIELD_GAP),
         *NewPasswordFields("New password"),
         Label(Input(type="checkbox", name="disable_2fa", value="1", cls="checkbox checkbox-sm"),
-              Span("Also turn off two-factor login", cls="text-sm"),
+              Span("Also turn off two-factor authentication", cls="text-sm"),
               cls="flex items-center gap-2 mt-3") if totp.is_enabled() else None,
         Span(error, data_status_slot=True, role="status", cls="text-xs text-error block mt-2" if error else "text-xs block mt-2"),
         _submit("Reset my password"),
@@ -477,9 +477,9 @@ def reset_page(hdrs=None, token: str = "", error: str = ""):
             Input(type="hidden", name="token", value=token),
             *NewPasswordFields("New password"),
             Label(Input(type="checkbox", name="disable_2fa", value="1", cls="checkbox checkbox-sm"),
-                  Span("Also turn off two-factor login", cls="text-sm"),
+                  Span("Also turn off two-factor authentication", cls="text-sm"),
                   cls="flex items-center gap-2 mt-3") if totp.is_enabled() and not auth.reset_by_email(token) else None,
-            P("Two-factor login stays on: you'll be asked for a code next.", cls="text-xs text-base-content/60 mt-3")
+            P("Two-factor authentication stays on: you'll be asked for a code next.", cls="text-xs text-base-content/60 mt-3")
             if totp.is_enabled() and auth.reset_by_email(token) else None,
             _submit("Save and log in"),
             action="/reset-password", method="post"

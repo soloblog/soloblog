@@ -532,9 +532,9 @@ Under **Advanced**. Some settings are set on your host, not in Soloblog - `SESSI
 
 ## Security
 
-### Two-factor login
+### Two-factor authentication (2FA)
 
-A second step when you log in: after your password, a 6-digit code from an authenticator app on your phone (1Password, Google Authenticator, Aegis…). **Turn on** shows a QR code to scan with the app, and ten recovery codes to keep in case you lose your phone.
+After your password, a 6-digit code from an authenticator app on your phone (1Password, Google Authenticator, Aegis…). **Turn on** shows a QR code to scan with the app, and ten recovery codes to keep in case you lose your phone.
 
 ### Passkeys
 

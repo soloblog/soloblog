@@ -121,7 +121,7 @@ def _keep_reset_links(links: list):
 
 def start_reset(minutes: int = 60, by_email: bool = False) -> str:
     """by_email: the link went to the admin's inbox - which proves only the
-    inbox, so two-factor login stays on and its code is still asked for.
+    inbox, so two-factor authentication stays on and its code is still asked for.
     One from the server's log proves more, and can turn it off."""
     token = secrets.token_urlsafe(24)
     now = time.time()

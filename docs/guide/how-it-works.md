@@ -29,7 +29,7 @@ stops. With email set up, you get an email about that, and one
 whenever a browser your site hasn't seen before logs in, so you know
 straight away if it wasn't you. It's the switch **Email me when a new
 device signs in**, on to start with. A passkey (your fingerprint, face or device
-PIN) or two-factor login (a code from an app on your phone) adds a second
+PIN) or two-factor authentication (a code from an app on your phone) adds a second
 step, and a recovery key lets you back in if you forget your password.
 You stay logged in for 14 days on each browser, or until you close it if
 you untick **Keep me signed in**, and **Log out other devices** ends the

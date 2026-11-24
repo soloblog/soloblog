@@ -415,7 +415,7 @@ Make sure nobody but you can log in to your site.
 With a passkey, you log in with your fingerprint, face or PIN instead of
 typing a password. A fake login page can't steal a passkey.
 
-**Prefer a code from an app on your phone?** Under **Two-factor login**,
+**Prefer a code from an app on your phone?** Under **Two-factor authentication**,
 select **Turn on**, scan the QR code with an authenticator app, and keep
 the ten recovery codes somewhere safe. Each time you log in, you then
 type a code from the app too.
