@@ -410,7 +410,7 @@ def test_a_locked_backup_asks_for_the_passphrase_it_was_made_with(admin, monkeyp
     source = "the file “soloblog-20261119-162700.zip.enc”"
     for wrong in ["the new one", "x" * 5000, "' OR 1=1 --", "<script>alert(1)</script>"]:
         r = admin.post("/admin/backup/unlock", data={"passphrase": wrong, "source": source})
-        assert r.status_code == 200 and "That passphrase doesn" in r.text and "<script>alert" not in r.text
+        assert r.status_code == 200 and "Wrong passphrase, try again" in r.text and "<script>alert" not in r.text
         assert os.path.exists(backup.STAGED_LOCKED_PATH)
     r = admin.post("/admin/backup/unlock", data={"passphrase": "", "source": source})
     assert "Type the passphrase" in r.text

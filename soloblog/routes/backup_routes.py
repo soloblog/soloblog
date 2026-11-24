@@ -604,7 +604,7 @@ def _open_backup(data, source, from_bucket=False, passphrase=""):
             with open(backup.STAGED_LOCKED_PATH, "wb") as f:
                 f.write(data)
             return _backup_page(source=source, from_bucket=from_bucket,
-                                locked={"error": "That passphrase doesn't open it" if passphrase else ""})
+                                locked={"error": "Wrong passphrase, try again" if passphrase else ""})
     result = backup.inspect_zip(data)
     # kept for the next step only if there's something in it to restore
     if any(info["present"] for info in result.values()):
@@ -621,7 +621,7 @@ def unlock_backup(session, passphrase: str = "", source: str = "", from_bucket: 
     source = source[:200]
     if not passphrase or len(passphrase) > PASSPHRASE_MAX:
         return _backup_page(source=source, from_bucket=bool(from_bucket),
-                            locked={"error": "That passphrase doesn't open it" if passphrase else "Type the passphrase"})
+                            locked={"error": "Wrong passphrase, try again" if passphrase else "Type the passphrase"})
     return _open_backup(data, source, bool(from_bucket), passphrase)
 
 
