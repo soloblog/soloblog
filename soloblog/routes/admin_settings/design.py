@@ -77,7 +77,7 @@ def preset_changes(values: dict, s, every=False) -> list:
            "header_width": ("Header width", HEADER_WIDTHS),
            **{k: (SIDE_LABELS[k][0], SIDE_PLACES) for k in SIDE_KEYS},
            "toc_style": ("Table of contents", pages.TOC_STYLES), "toc_numbers": ("Number the contents", on_off),
-           "heading_fold": ("Fold headings", pages.FOLD_STYLES), "cover_width": ("Cover image", pages.COVER_STYLES),
+           "heading_fold": ("Collapsible headings", pages.FOLD_STYLES), "cover_width": ("Cover image", pages.COVER_STYLES),
            "gallery_style": ("Default gallery style", gallery.STYLES),
            "portfolio_style": ("Portfolio pages", pages.PORTFOLIO_STYLES), "page_animations": ("Animations", on_off),
            "section_motion": ("Sections appear", pages.SECTION_MOTIONS),
@@ -101,7 +101,7 @@ def preset_changes(values: dict, s, every=False) -> list:
            "sidenotes": ("Footnotes beside the text", on_off),
            "links_new_tab": ("Open links to other sites in a new tab", on_off),
            "reactions_style": ("Reader reactions", dict(reactions.STYLES)),
-           "toc_fold": ("Fold contents", pages.TOC_FOLDS),
+           "toc_fold": ("Collapsible contents", pages.TOC_FOLDS),
            "heading_links": ("A copy-link button beside each heading", on_off),
            "lightbox_images": ("Open any image bigger with a click", on_off),
            "footer_enabled": ("Show the footer", on_off), "footer_style": ("Footer position", FOOTER_POSITIONS),
@@ -657,17 +657,17 @@ def _post_panels(s) -> list:
                   for where, text in pages.TOC_WHERE.items()],
                 cls="flex flex-wrap gap-x-4 gap-y-1")),
                 data_shown_for="toc_style!=off", hidden=s["toc_style"] == "off", cls=FIELD_GAP),
-            RadioGroupField("Fold contents", "toc_fold", list(pages.TOC_FOLDS.items()),
+            RadioGroupField("Collapsible contents", "toc_fold", list(pages.TOC_FOLDS.items()),
                             s["toc_fold"] if s["toc_fold"] in pages.TOC_FOLDS else "auto",
-                            help="Whether subheadings fold under their heading.",
+                            help="Whether subheadings collapse under their heading.",
                             cls=FIELD_GAP),
             ToggleField("Number the contents", "toc_numbers", checked=(s["toc_numbers"] == "1"),
                         help="1, 2, 2.1 - handy for guides.", cls=FIELD_GAP),
             ToggleField("A copy-link button beside each heading", "heading_links",
                         checked=(s["heading_links"] == "1"), help="To share a section.", cls=FIELD_GAP),
-            RadioGroupField("Fold headings", "heading_fold", list(pages.FOLD_STYLES.items()),
+            RadioGroupField("Collapsible headings", "heading_fold", list(pages.FOLD_STYLES.items()),
                             s["heading_fold"] if s["heading_fold"] in pages.FOLD_STYLES else "off",
-                            help="Readers fold the writing under a heading by selecting it. Sections don't fold."),
+                            help="Readers collapse the text under a heading by selecting it. Sections don't collapse."),
             key="posts-contents"
         ),
         SettingsPanel(
@@ -721,7 +721,7 @@ def _motion_panel(s):
     return SettingsPanel(
         "Motion",
         ToggleField("Animations", "page_animations", checked=(s["page_animations"] == "1"),
-                    help="Pages fade in, panels slide, sections fold - never for readers who've asked "
+                    help="Pages fade in, panels slide, sections collapse - never for readers who've asked "
                          "their device for less motion.", cls=FIELD_GAP),
         RadioGroupField("Sections appear", "section_motion", list(pages.SECTION_MOTIONS.items()),
                         s["section_motion"] if s["section_motion"] in pages.SECTION_MOTIONS else "fade",

@@ -397,7 +397,8 @@ SEARCH_ALSO = {
     "Site title": "name blog name", "Custom code": "css javascript script analytics head html",
     "Analytics": "stats tracking visitors google plausible",
     "Notifications": "email alerts slack discord webhook new comment message", "Redirects": "old links moved 301",
-    "Site URL": "address web address domain base_url", "Search engines": "seo google",
+    "Site URL": "address web address domain base_url", "Search engines": "seo google", "Collapsible headings": "fold folding accordion",
+    "Collapsible contents": "fold folding table of contents",
 }
 
 _index_cache = {}

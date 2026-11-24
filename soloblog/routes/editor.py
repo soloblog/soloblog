@@ -864,7 +864,7 @@ def PagePanel(row, start=None, page=False):
                              "Contents and sections")
                 if sites["toc_style"] == "off" and _site_value("toc_style") != "off" else None,
                 custom=bool(custom["toc_style"])),
-            FormField("Fold headings", Select(
+            FormField("Collapsible headings", Select(
                 _site_default(pages.FOLD_STYLES, "heading_fold"),
                 *[Option(label, value=key, selected=(values["heading_fold"] == key))
                   for key, label in pages.FOLD_STYLES.items() if key != sites["heading_fold"]],

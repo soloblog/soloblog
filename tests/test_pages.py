@@ -1129,7 +1129,7 @@ def test_the_last_section_has_room_under_it(admin, client):
 
 
 def test_only_plain_writing_folds(admin, client):
-    """One rule to guess: with Fold headings on, plain writing under a ##
+    """One rule to guess: with Collapsible headings on, plain writing under a ##
     folds and a section never does, whatever its kind or width - before,
     a section in the column folded and a wide one didn't."""
     from bs4 import BeautifulSoup

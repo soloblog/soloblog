@@ -92,7 +92,7 @@ PRESETS = {
                        section_space="small", post_shows="byline,share,related"),
                  ("business", "Visit us")),
     "docs": ("Docs", "A knowledge base or a guide: a start page, numbered contents beside each page, sections "
-             "that fold and pages that print well.",
+             "that collapse and pages that print well.",
              _look(roll_style="minimal", toc_numbers="1", cover_width="column", heading_fold="folded",
                    post_shows="breadcrumbs,progress,print,series,related,sides"),
              ("docs", "Start here")),

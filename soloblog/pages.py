@@ -175,8 +175,8 @@ def is_wide(row) -> bool:
 # goes, then Off
 TOC_STYLES = {"top": "At the top", "side": "On the left", "right": "On the right", "off": "Off"}
 # whether a ## in the contents folds its ###s away (site-wide)
-TOC_FOLDS = {"auto": "Follow the reader", "open": "Foldable, open", "off": "Always open"}
-FOLD_STYLES = {"off": "Off", "open": "Foldable, open", "folded": "Foldable, folded"}
+TOC_FOLDS = {"auto": "Follow the reader", "open": "Collapsible, open", "off": "Always open"}
+FOLD_STYLES = {"off": "Off", "open": "On, open", "folded": "On, collapsed"}
 # a post's cover and the homepage banner (ui.Breakout)
 COVER_WIDTHS = {"column": "Column - as wide as the text", "wide": "Wide - out to the side panels",
                 "full": "Edge to edge"}

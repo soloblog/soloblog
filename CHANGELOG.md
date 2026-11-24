@@ -30,6 +30,8 @@ versions may include breaking changes; they'll always be listed here.
   tooltips no longer describe Bold or Italic in other words
 - Two-factor login is called two-factor authentication (2FA)
 - A slider's Move by itself is called Autoplay
+- Fold headings and Fold contents are called Collapsible headings and
+  Collapsible contents, like the editor's Collapsible block
 
 ### Fixed
 

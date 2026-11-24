@@ -155,7 +155,7 @@ Up to 10. Like the palettes that come with Soloblog, their text colours are adju
 
 Under **Advanced**. Readers who've set their device to reduce motion never see animations, whatever you choose here.
 
-- **Animations** (on/off) - Pages fade in, menus and panels slide, sections fold smoothly. Off, nothing moves - not the editor's sheets or drawers either.
+- **Animations** (on/off) - Pages fade in, menus and panels slide, sections collapse smoothly. Off, nothing moves - not the editor's sheets or drawers either.
 - **Sections appear** - How each section comes into view as it scrolls in: Fade, Rise, Zoom, Slide left, Slide right, Slide both ways, Focus, Tilt, or None. Fade to start with. Only while Animations are on. Each post or page can choose its own, and a section's own `Appear:` line wins.
 - **Smooth scrolling** (on/off) - Selecting a link to a heading glides down to it, instead of jumping.
 
@@ -204,10 +204,10 @@ Under **Advanced**. Readers who've set their device to reduce motion never see a
 
 - **Table of contents** - At the top, on the left, on the right, or off. For posts with three or more headings. Each post can choose its own.
 - **Shows on** - Posts, pages, or both. Each post or page can still choose its own contents in its settings.
-- **Fold contents** - Follow the reader, foldable, or always open.
+- **Collapsible contents** - Follow the reader, collapsible and open, or always open.
 - **Number the contents** (on/off) - 1, 2, 2.1 - handy for guides.
 - **A copy-link button beside each heading** (on/off) - To share a section.
-- **Fold headings** - Off, foldable and open, or foldable and folded. Readers fold the writing under a heading by selecting it. Only plain writing folds: a section (a `##` with a `Section:` line) never does, whatever its width.
+- **Collapsible headings** - Off, on and open, or on and collapsed. Readers collapse the text under a heading by selecting it. Only plain writing collapses: a section (a `##` with a `Section:` line) never does, whatever its width.
 
 ### Images
 
@@ -687,9 +687,9 @@ when Settings leaves pages out.
   [Which setting wins](put-together.md#which-setting-wins).
 - **Contents** - This post's table of contents: the site's default, at the
   top, beside the post (left or right), or off.
-- **Fold headings** - Whether the writing under this post's headings
-  folds: the site's default, off, foldable and open, or foldable and
-  folded. A section never folds.
+- **Collapsible headings** - Whether the text under this post's
+  headings collapses: the site's default, off, on and open, or on and
+  collapsed. A section never collapses.
 - **Cover image** - The site's default, as wide as the text, out to the
   side panels, edge to edge, or full screen with the title over it.
 - **Space between sections** - The site's default, or Small, Medium or
