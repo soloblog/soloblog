@@ -484,13 +484,26 @@ def reseal_images() -> int:
     return n
 
 
-def get_backup(key: str):
+def get_backup(key: str, raw: bool = False):
     """A backup's zip, decrypted if it was stored encrypted. None if
-    it's gone."""
+    it's gone. raw: as it's stored, locked or not (open_backup)."""
     data = get(key)
-    if data is not None and key.endswith(".enc"):
+    if data is not None and key.endswith(".enc") and not raw:
         data = unseal(data, config.BACKUP_PASSPHRASE)
     return data
+
+
+def is_locked(data: bytes) -> bool:
+    return bool(data) and data.startswith(MAGIC)
+
+
+def open_backup(data: bytes, passphrase: str = "") -> bytes:
+    """A backup's zip: as it is, or unlocked with passphrase - the host's
+    BACKUP_PASSPHRASE when none is given. Raises StorageError when it
+    doesn't open."""
+    if not is_locked(data):
+        return data
+    return unseal(data, passphrase or config.BACKUP_PASSPHRASE)
 
 
 def backup_now() -> str:

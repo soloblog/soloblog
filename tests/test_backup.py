@@ -386,3 +386,61 @@ def test_the_restore_screen_counts_in_words():
     assert backup.counted("post_revisions", 1) == "1 revision"
     assert backup.counted("settings", 207) == "207 settings"
     assert all("(s)" not in one + many for one, many in backup.COUNTED.values())
+
+
+def _locked_upload(admin, passphrase):
+    from soloblog import storage
+    data = storage.seal(backup.build_backup_zip({"posts"}), passphrase)
+    return admin.post("/admin/backup/inspect",
+                      files={"backup_zip": ("soloblog-20261119-162700.zip.enc", data, "application/octet-stream")})
+
+
+def test_a_locked_backup_asks_for_the_passphrase_it_was_made_with(admin, monkeypatch):
+    # the host's passphrase changed since (or it came from another site):
+    # the one typed opens it for this restore only, and isn't kept
+    from soloblog import config, settings
+    monkeypatch.setattr(config, "BACKUP_PASSPHRASE", "the new one")
+    save_post(admin, title="Locked and back")
+    r = _locked_upload(admin, "the old one")
+    assert 'action="/admin/backup/unlock"' in r.text and 'name="passphrase"' in r.text
+    assert "doesn" not in r.text  # nothing typed yet, so nothing wrong
+    assert os.path.exists(backup.STAGED_LOCKED_PATH) and not os.path.exists(backup.STAGED_RESTORE_PATH)
+    # still asking when the page is opened again
+    assert 'action="/admin/backup/unlock"' in admin.get("/admin/settings?tab=backup").text
+    source = "the file “soloblog-20261119-162700.zip.enc”"
+    for wrong in ["the new one", "x" * 5000, "' OR 1=1 --", "<script>alert(1)</script>"]:
+        r = admin.post("/admin/backup/unlock", data={"passphrase": wrong, "source": source})
+        assert r.status_code == 200 and "That passphrase doesn" in r.text and "<script>alert" not in r.text
+        assert os.path.exists(backup.STAGED_LOCKED_PATH)
+    r = admin.post("/admin/backup/unlock", data={"passphrase": "", "source": source})
+    assert "Type the passphrase" in r.text
+    r = admin.post("/admin/backup/unlock", data={"passphrase": "the old one", "source": source})
+    assert 'action="/admin/backup/restore-confirm"' in r.text and "From the file" in r.text
+    assert os.path.exists(backup.STAGED_RESTORE_PATH) and not os.path.exists(backup.STAGED_LOCKED_PATH)
+    r = admin.post("/admin/backup/restore-confirm", data={"posts": "1"})
+    assert "Restored" in r.headers["location"]
+    assert config.BACKUP_PASSPHRASE == "the new one"
+    assert "the old one" not in str(settings.get_all())
+
+
+def test_the_hosts_passphrase_opens_a_locked_backup_without_asking(admin, monkeypatch):
+    from soloblog import config
+    monkeypatch.setattr(config, "BACKUP_PASSPHRASE", "the same one")
+    r = _locked_upload(admin, "the same one")
+    assert 'action="/admin/backup/restore-confirm"' in r.text and 'name="passphrase"' not in r.text
+    backup.discard_staged()
+
+
+def test_a_locked_backup_can_be_discarded_and_expires(admin, monkeypatch):
+    from soloblog import config
+    monkeypatch.setattr(config, "BACKUP_PASSPHRASE", "")
+    _locked_upload(admin, "only on the old site")
+    admin.post("/admin/backup/discard")
+    assert not os.path.exists(backup.STAGED_LOCKED_PATH)
+    r = admin.post("/admin/backup/unlock", data={"passphrase": "only on the old site"})
+    assert r.status_code == 303 and "expired" in r.headers["location"]
+    # a day old, it goes by itself
+    _locked_upload(admin, "only on the old site")
+    old = time.time() - backup.STAGED_MAX_AGE - 60
+    os.utime(backup.STAGED_LOCKED_PATH, (old, old))
+    assert backup.staged_locked() is None and not os.path.exists(backup.STAGED_LOCKED_PATH)

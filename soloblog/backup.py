@@ -73,6 +73,9 @@ def _expand(include) -> set:
 # file is simpler than inventing session storage just for a two-step
 # form
 STAGED_RESTORE_PATH = os.path.join(config.data_dir(), "_pending_restore.zip")
+# a locked backup (BACKUP_PASSPHRASE) the host's passphrase didn't open,
+# waiting for the one it was made with - kept as it came
+STAGED_LOCKED_PATH = os.path.join(config.data_dir(), "_pending_restore.zip.enc")
 # an uploaded backup nobody restored or discarded goes after this long -
 # it's a whole copy of a site, and nothing else would ever remove it
 STAGED_MAX_AGE = 24 * 60 * 60
@@ -92,8 +95,22 @@ def staged_restore():
 
 
 def discard_staged():
-    with contextlib.suppress(FileNotFoundError):
-        os.remove(STAGED_RESTORE_PATH)
+    for path in (STAGED_RESTORE_PATH, STAGED_LOCKED_PATH):
+        with contextlib.suppress(FileNotFoundError):
+            os.remove(path)
+
+
+def staged_locked():
+    """The locked backup waiting for its passphrase, as it came, or None
+    (one older than a day goes, as the waiting upload does)."""
+    try:
+        if time.time() - os.stat(STAGED_LOCKED_PATH).st_mtime > STAGED_MAX_AGE:
+            discard_staged()
+            return None
+        with open(STAGED_LOCKED_PATH, "rb") as f:
+            return f.read()
+    except OSError:
+        return None
 
 
 def size_label(n: int) -> str:

@@ -339,7 +339,7 @@ def test_restoring_a_bucket_backup_says_which_and_comes_into_view(monkeypatch, a
     monkeypatch.setattr(storage, "enabled", lambda: True)
     monkeypatch.setattr(storage, "check", lambda: "")
     monkeypatch.setattr(storage, "list_backups", lambda: [])
-    monkeypatch.setattr(storage, "get_backup", lambda key: data)
+    monkeypatch.setattr(storage, "get_backup", lambda key, raw=False: data)
     html = admin.post("/admin/backup/from-bucket", data={"key": "backups/soloblog-20261119-162700.zip"}).text
     restore = re.search(r'<details[^>]*data-panel="backup-restore"[^>]*>', html).group(0)
     assert "data-arrive" in restore
@@ -449,3 +449,19 @@ def test_the_backup_page_doesnt_wait_for_the_bucket(monkeypatch, admin):
     assert calls == [] and 'hx-get="/admin/backup/cloud"' in html and "Checking your bucket" in html
     part = admin.get("/admin/backup/cloud").text
     assert "check" in calls and "Back up now" in part and 'id="cloud-status"' in part
+
+
+def test_a_bucket_backup_from_before_the_passphrase_changed_still_restores(bucket, monkeypatch, admin):
+    from soloblog import backup
+    sealed = storage.seal(backup.build_backup_zip({"posts", "settings"}), "the old one")
+    storage.put("backups/soloblog-20261119-162700.zip.enc", sealed)
+    monkeypatch.setattr(config, "BACKUP_PASSPHRASE", "the new one")
+    html = admin.post("/admin/backup/from-bucket", data={"key": "backups/soloblog-20261119-162700.zip.enc"}).text
+    assert 'name="passphrase"' in html and re.search(r"From your backup of [^<]*2026", html)
+    assert re.search(r'<details[^>]*data-panel="backup-restore"[^>]*data-arrive', html) \
+        or re.search(r'<details[^>]*data-arrive[^>]*data-panel="backup-restore"', html)
+    html = admin.post("/admin/backup/unlock", data={"passphrase": "the old one", "source": "your backup",
+                                                    "from_bucket": "1"}).text
+    # still offers the bucket's images, as any bucket backup does
+    assert 'name="images_from_bucket"' in html
+    backup.discard_staged()

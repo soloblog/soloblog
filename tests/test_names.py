@@ -58,9 +58,9 @@ def test_settings_and_help_share_one_menu_on_a_phone(admin):
     """Settings' twenty pages and Help's sixteen: the same grouped menu where
     the admin menu isn't beside the page (ui.PageNav) - tabs are for a few
     choices. Help had tabs with the rest under More."""
-    # a backup's own screens (checked after an upload) use the Settings one too
+    # a backup's own screens (checked after an upload, _backup_page) use the Settings one too
     backup = Path("soloblog/routes/backup_routes.py").read_text(encoding="utf-8")
-    assert backup.count('SettingsNav("backup")') == 3 and "SettingsTabs" not in backup
+    assert backup.count('SettingsNav("backup")') == 1 and "SettingsTabs" not in backup
     for url, nav in (("/admin/settings?tab=email", "settings-nav"), ("/admin/help?tab=faq", "help-nav")):
         html = admin.get(url, follow_redirects=True).text
         assert f'popovertarget="{nav}"' in html and f'id="{nav}"' in html, url

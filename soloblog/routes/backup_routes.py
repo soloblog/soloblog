@@ -208,11 +208,16 @@ def CloudStoragePanel(now=False):
     )
 
 
-def BackupTab(inspect_result=None, source="", from_bucket=False):
-    """source: where a backup being restored came from, said above its ticks."""
-    pending = backup.staged_restore() if inspect_result is None else None
+def BackupTab(inspect_result=None, source="", from_bucket=False, locked=None):
+    """source: where a backup being restored came from, said above its ticks.
+    locked: a locked backup waiting for its passphrase - {"error": ...}."""
+    waiting = inspect_result is None and locked is None
+    pending = backup.staged_restore() if waiting else None
+    if waiting and not pending and backup.staged_locked():
+        locked = {}
     restore_section = (
         _RestoreConfirmPanel(inspect_result, source, from_bucket) if inspect_result is not None
+        else _RestoreLockedPanel(source, from_bucket, **locked) if locked is not None
         else _RestorePendingPanel(pending) if pending else _RestoreUploadPanel()
     )
     return Div(
@@ -232,7 +237,7 @@ def BackupTab(inspect_result=None, source="", from_bucket=False):
             "Restore",
             Div(restore_section, id="restore-section"),
             key="backup-restore"
-        ), inspect_result is not None),
+        ), inspect_result is not None or bool(locked)),
         CloudStoragePanel(),
         ImportPanel(),
         P(A("See what's using the disk", href="/admin/health#disk", cls="link"),
@@ -398,7 +403,7 @@ def _RestoreUploadPanel():
           cls="text-sm text-base-content/60"),
         Form(
             _button_row(Label(UPLOAD_SVG, Span("Upload", cls="ml-1"),
-                              Input(type="file", name="backup_zip", accept=".zip", required=True, cls="hidden",
+                              Input(type="file", name="backup_zip", accept=".zip,.enc", required=True, cls="hidden",
                                     data_autosubmit=True),
                               cls="btn btn-sm cursor-pointer"), status="restore-status"),
             action="/admin/backup/inspect", method="post", enctype="multipart/form-data"
@@ -467,11 +472,40 @@ def _RestoreConfirmPanel(result, source="", from_bucket=False):
     )
 
 
-def _DiscardButton():
+PASSPHRASE_MAX = 1000
+
+
+def _RestoreLockedPanel(source="", from_bucket=False, error=""):
+    """A backup locked with a passphrase the host's BACKUP_PASSPHRASE
+    doesn't open - one made before it changed, or on another site. The
+    passphrase typed here opens it for this restore and isn't kept."""
+    return Div(
+        P(f"From {source}.", cls="text-sm font-medium mb-1") if source else None,
+        P("This backup is locked with a passphrase. Type the one it was made with.",
+          cls="text-sm text-base-content/60 mb-3"),
+        Form(
+            FormField("Passphrase", Input(type="password", name="passphrase", required=True, autofocus=True,
+                                          autocomplete="off", maxlength=str(PASSPHRASE_MAX),
+                                          cls="input input-sm w-full" + (" input-error" if error else ""))),
+            P(error, cls="text-xs text-error mt-1", role="alert") if error else None,
+            Input(type="hidden", name="source", value=source),
+            Input(type="hidden", name="from_bucket", value="1" if from_bucket else ""),
+            _button_row(
+                # its own form: Enter in the field sends a form's first button
+                _DiscardButton(form="discard-locked"),
+                Button(RESTORE_SVG, Span("Open", cls="ml-1"), type="submit", cls="btn btn-primary btn-sm"),
+            ),
+            action="/admin/backup/unlock", method="post"
+        ),
+        Form(id="discard-locked", action="/admin/backup/discard", method="post"),
+    )
+
+
+def _DiscardButton(form=None):
     # deletes the uploaded copy waiting on the server - it used to just go
     # back, and leave a whole site's backup on the disk
     return Button(X_SVG, Span("Discard", cls="ml-1"), type="submit", formaction="/admin/backup/discard",
-                  formmethod="post", cls="btn btn-sm",
+                  formmethod="post", formnovalidate=True, form=form, cls="btn btn-sm",
                   data_confirm="Discard this uploaded backup? Nothing is restored, and the file on your "
                                "computer isn't touched.")
 
@@ -545,18 +579,50 @@ async def inspect_backup(session, request):
     if not file:
         return RedirectResponse("/admin/settings?tab=backup", status_code=303)
     data = await file.read()
+    return _open_backup(data, f"the file “{getattr(file, 'filename', '') or 'you uploaded'}”")
+
+
+def _backup_page(**tab):
+    return Layout(
+        PageHeader("Settings: Backup and import"),
+        SettingsNav("backup"),
+        BackupTab(**tab),
+        settings=settings.get_all(), logged_in=True, pinned_tree=posts.list_pinned_tree(), admin_page=True
+    )
+
+
+def _open_backup(data, source, from_bucket=False, passphrase=""):
+    """Stage a backup and show what's in it - or, when it's locked and
+    the passphrase (the host's, unless one was typed) doesn't open it,
+    keep it locked and ask for the one it was made with."""
+    backup.discard_staged()
     os.makedirs(config.data_dir(), exist_ok=True)
+    if storage.is_locked(data):
+        try:
+            data = storage.open_backup(data, passphrase)
+        except storage.StorageError:
+            with open(backup.STAGED_LOCKED_PATH, "wb") as f:
+                f.write(data)
+            return _backup_page(source=source, from_bucket=from_bucket,
+                                locked={"error": "That passphrase doesn't open it" if passphrase else ""})
     result = backup.inspect_zip(data)
     # kept for the next step only if there's something in it to restore
     if any(info["present"] for info in result.values()):
         with open(backup.STAGED_RESTORE_PATH, "wb") as f:
             f.write(data)
-    return Layout(
-        PageHeader("Settings: Backup and import"),
-        SettingsNav("backup"),
-        BackupTab(inspect_result=result, source=f"the file “{getattr(file, 'filename', '') or 'you uploaded'}”"),
-        settings=settings.get_all(), logged_in=True, pinned_tree=posts.list_pinned_tree(), admin_page=True
-    )
+    return _backup_page(inspect_result=result, source=source, from_bucket=from_bucket)
+
+
+@ar.post("/admin/backup/unlock")
+def unlock_backup(session, passphrase: str = "", source: str = "", from_bucket: str = ""):
+    data = backup.staged_locked()
+    if data is None:
+        return _toast_redirect("/admin/settings?tab=backup#restore-status", "That upload expired, try again", "error")
+    source = source[:200]
+    if not passphrase or len(passphrase) > PASSPHRASE_MAX:
+        return _backup_page(source=source, from_bucket=bool(from_bucket),
+                            locked={"error": "That passphrase doesn't open it" if passphrase else "Type the passphrase"})
+    return _open_backup(data, source, bool(from_bucket), passphrase)
 
 
 def _bucket_problem(what, e):
@@ -650,20 +716,13 @@ def restore_from_bucket(session, key: str = ""):
     if not key.startswith(storage.BACKUP_PREFIX) or ".." in key:
         return RedirectResponse("/admin/settings?tab=backup", status_code=303)
     try:
-        data = storage.get_backup(key)
+        data = storage.get_backup(key, raw=True)
     except storage.StorageError as e:
         return _toast_redirect("/admin/settings?tab=backup#cloud-status", _bucket_problem("Couldn't restore that backup", e),
                                "error")
     if data is None:
         return _toast_redirect("/admin/settings?tab=backup#cloud-status", "Couldn't fetch that backup", "error")
-    with open(backup.STAGED_RESTORE_PATH, "wb") as f:
-        f.write(data)
-    return Layout(
-        PageHeader("Settings: Backup and import"),
-        SettingsNav("backup"),
-        BackupTab(inspect_result=backup.inspect_zip(data), source=_backup_source(key), from_bucket=True),
-        settings=settings.get_all(), logged_in=True, pinned_tree=posts.list_pinned_tree(), admin_page=True
-    )
+    return _open_backup(data, _backup_source(key), from_bucket=True)
 
 
 @ar.post("/admin/backup/pending")
@@ -673,12 +732,7 @@ def restore_pending(session):
         return _toast_redirect("/admin/settings?tab=backup#restore-status", "That upload expired, try again", "error")
     with open(backup.STAGED_RESTORE_PATH, "rb") as f:
         result = backup.inspect_zip(f.read())
-    return Layout(
-        PageHeader("Settings: Backup and import"),
-        SettingsNav("backup"),
-        BackupTab(inspect_result=result, source="the backup you uploaded"),
-        settings=settings.get_all(), logged_in=True, pinned_tree=posts.list_pinned_tree(), admin_page=True
-    )
+    return _backup_page(inspect_result=result, source="the backup you uploaded")
 
 
 @ar.post("/admin/disk/clear-detail-log")

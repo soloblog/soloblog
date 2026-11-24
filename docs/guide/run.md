@@ -227,6 +227,12 @@ what to bring back and select **Restore**. **Images** brings back the
 bucket's latest copy of each image, replacing your site's - the bucket
 keeps one copy of each, not one per backup.
 
+**A backup asks for a passphrase?** It's locked with a passphrase other
+than the one on your host now - it was made before you changed
+`BACKUP_PASSPHRASE`, or on another site. Type the passphrase it was made
+with and select **Open**. It's used for this restore only, and your
+host's setting stays as it is.
+
 **Want to know a backup would work?** In **Site health**, select
 **Verify a backup**. It opens the newest backup in your bucket and checks
 it would restore, without restoring anything. Site health suggests it

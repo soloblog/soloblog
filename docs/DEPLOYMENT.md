@@ -760,7 +760,7 @@ still can't open them. Images already there are encrypted the next time
 Soloblog starts. Restoring needs the same passphrase. Change or remove
 it later and your images are copied again the new way when Soloblog
 restarts - but older backups still need the passphrase they were made
-with.
+with, and restoring one asks for it.
 
 ### What's in the bucket
 

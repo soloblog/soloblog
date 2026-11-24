@@ -16,6 +16,8 @@ versions may include breaking changes; they'll always be listed here.
   like Home or Blog, as it can under a page of yours
 - Search lists Soloblog's own pages in your menu, like Blog or Archive,
   when their name matches
+- Restoring a locked backup asks for the passphrase it was made with,
+  when it isn't the one set now
 
 ### Fixed
 
