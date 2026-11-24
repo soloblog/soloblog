@@ -18,11 +18,14 @@ versions may include breaking changes; they'll always be listed here.
   when their name matches
 - Restoring a locked backup asks for the passphrase it was made with,
   when it isn't the one set now
+- A new server that can't open its newest backup asks to bring your site
+  back, instead of starting as an empty site
 
 ### Fixed
 
 - Restoring a backup made with an older passphrase brings its images back
   too
+- A damaged backup no longer stops a new server from starting
 - A Buttons line in a Call to action or a Hero shows its buttons on the
   card, instead of repeating the last one
 - Links, lists, quotes and paragraph spacing in a section's words look as

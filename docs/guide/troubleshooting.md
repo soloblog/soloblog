@@ -83,6 +83,42 @@ storage mounted at `/data`, or connect cloud storage, so a fresh server
 restores itself from your newest backup. See
 [Keep files in cloud storage](../DEPLOYMENT.md#keep-files-in-cloud-storage).
 
+## Your site shows "Bring your site back"
+
+A new server, or a restart on a host without a disk, brings your site
+back from the newest backup in your storage bucket. When it can't, it
+shows this page instead of starting as an empty site, and makes no
+backups until you choose what to do - so your real backups are never
+replaced by empty ones.
+
+1. Find your setup token: the `SETUP_TOKEN` setting on your host, or
+   the server's log on the lines marked `[setup]`.
+2. Type it in **Setup token**.
+3. If the page asks for a **Passphrase**, type the passphrase the
+   backup was made with - the `BACKUP_PASSPHRASE` your host had before
+   you changed or removed it.
+4. Select **Restore**.
+
+Your whole site comes back, and you log in with its password as before.
+A new backup is made straight away with the passphrase your host has
+now, so the next restart opens it by itself.
+
+**The page says the bucket didn't answer?** Check the `S3_` settings on
+your host - the endpoint, the bucket name and both keys - then select
+**Try again**.
+
+**The newest backup couldn't be opened?** Choose an earlier one under
+**Backup**.
+
+**Lost the passphrase?** Nothing can open those backups. Select **Start
+a new site instead** to set up a new site. The old backups stay in your
+bucket, but new backups replace the oldest ones, as they always do -
+copy any you want to keep from your storage company's dashboard first.
+
+**Expected your site, but it started empty with no message?** Check
+`S3_PREFIX` on your host: a different folder name means Soloblog looks
+in an empty folder, and the backups in the old one aren't touched.
+
 ## A translation isn't showing
 
 New translations can take a minute. If one still isn't there, open

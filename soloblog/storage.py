@@ -1,3 +1,4 @@
+import contextlib
 import functools
 from html import unescape
 import logging
@@ -53,6 +54,14 @@ def endpoint() -> str:
 
 class StorageError(Exception):
     pass
+
+
+class BucketSilent(StorageError):
+    """The bucket didn't answer, or refused."""
+
+
+class WontOpen(StorageError):
+    """A locked backup the passphrase doesn't open."""
 
 
 # ---- AWS Signature Version 4
@@ -251,7 +260,7 @@ def _mirror(action, *args):
     bucket that's briefly unreachable just gets logged; "Sync images"
     in Backup and import catches it up later."""
     global _mirror_thread
-    if not enabled():
+    if not enabled() or held:
         return
     with _mirror_lock:
         if _mirror_thread is None:
@@ -526,6 +535,8 @@ def backup_now() -> str:
     """Writes a backup zip to the bucket and prunes old ones. Returns
     the new object's key."""
     from soloblog import backup
+    if held:
+        raise StorageError("the site is waiting to be brought back from your bucket")
     key = f"{BACKUP_PREFIX}soloblog-{datetime.now(UTC).strftime('%Y%m%d-%H%M%S')}.zip"
     data = backup.build_backup_zip(backup_categories())
     if config.BACKUP_PASSPHRASE:
@@ -612,7 +623,7 @@ def note_change():
     steady activity still gets backed up. Once a day or a week instead:
     a day or a week after the last backup, and only if something changed -
     or at shutdown, by flush(), so a host without its own disk loses nothing."""
-    if not enabled() or not config.S3_AUTO_BACKUP:
+    if not enabled() or not config.S3_AUTO_BACKUP or held:
         return
     gap = every()
     with _lock:
@@ -680,38 +691,67 @@ class ChangeTracker:
 
 # ---- starting on an empty disk
 
+# Why the newest backup didn't come back at start: "locked" (another
+# passphrase), "unreachable" or "damaged". While it's set the site is
+# held - nothing is backed up, deleted or copied to the bucket - so a
+# blank site never takes the real one's place there, and /setup offers
+# to bring it back (restore_held). Every start on an empty disk tries again.
+held = {}
+
+
+def _held_path() -> str:
+    # remembered on disk: a restart on a disk that's kept finds the blank
+    # database this start made, and would otherwise take it for the site
+    return os.path.join(config.data_dir(), "_held_restore")
+
+
+def _hold(why: str):
+    held["why"] = why
+    with contextlib.suppress(OSError):
+        os.makedirs(config.data_dir(), exist_ok=True)
+        with open(_held_path(), "w") as f:
+            f.write(why)
+
+
+def release_hold():
+    """The site is back, or a new one was chosen: backups go on."""
+    held.clear()
+    with contextlib.suppress(FileNotFoundError):
+        os.remove(_held_path())
+
+
 def restore_on_boot():
     """Runs before migrations. If this disk has no database yet but the
     bucket has backups, the newest one is unpacked - database (admin
     login included) and posts - and the images come back from the
     bucket. What makes a host without a persistent disk usable: every
     restart picks up where the last backup left off."""
-    if not enabled() or not config.S3_RESTORE_ON_BOOT or os.path.exists(config.db_path()):
+    held.clear()
+    retry = os.path.exists(_held_path())  # the database here is the blank one a held start made
+    if retry and _has_admin(config.db_path()):  # never over a site someone has set up
+        release_hold()
+        retry = False
+    if not enabled() or not config.S3_RESTORE_ON_BOOT or (os.path.exists(config.db_path()) and not retry):
         return False
     try:
         backups = list_backups()
         if not backups:
+            release_hold()
             return False
-        data = get_backup(backups[0]["key"])
+        raw = get_backup(backups[0]["key"], raw=True)
     except StorageError as e:
         log.warning("couldn't restore on boot: %s", e)
+        _hold("unreachable")
         return False
-    import io
-    import zipfile
-    from soloblog.backup import _safe_member
-    os.makedirs(os.path.join(config.posts_dir(), "_trash"), exist_ok=True)
-    with zipfile.ZipFile(io.BytesIO(data)) as zf:
-        for info in zf.infolist():
-            if info.filename == "blog.db":
-                dest = config.db_path()
-            elif (base := _safe_member(info.filename, "posts/_trash/")) and base.endswith(".md"):
-                dest = os.path.join(config.posts_dir(), "_trash", base)
-            elif (base := _safe_member(info.filename, "posts/")) and base.endswith(".md"):
-                dest = os.path.join(config.posts_dir(), base)
-            else:
-                continue
-            with zf.open(info) as src, open(dest, "wb") as dst:
-                dst.write(src.read())
+    try:
+        if raw is None:
+            raise StorageError("it's gone from the bucket")
+        unpack_backup(open_backup(raw))
+    except Exception as e:
+        log.warning("couldn't restore %s on boot: %s", backups[0]["key"], e)
+        _hold("locked" if is_locked(raw or b"") and not _opens(raw) else "damaged")
+        return False
+    release_hold()
     try:
         counts = sync_uploads()
     except StorageError as e:
@@ -719,3 +759,124 @@ def restore_on_boot():
         counts = {"downloaded": 0}
     log.info("restored %s and %s image(s) from the bucket", backups[0]['key'], counts['downloaded'])
     return True
+
+
+def _has_admin(path: str) -> bool:
+    import sqlite3
+    if not os.path.exists(path):
+        return False
+    try:
+        conn = sqlite3.connect(f"file:{path}?mode=ro", uri=True)
+        try:
+            return conn.execute("SELECT 1 FROM admin WHERE id=1").fetchone() is not None
+        finally:
+            conn.close()
+    except sqlite3.Error:
+        return False
+
+
+def _opens(raw: bytes) -> bool:
+    try:
+        open_backup(raw)
+        return True
+    except StorageError:
+        return False
+
+
+def unpack_backup(data: bytes, live: bool = False):
+    """A backup's database and posts put in place, the whole site as it
+    was - the admin login too. The database is checked first and put in
+    place last, so a restore cut short runs again on the next start
+    rather than leaving a database without its posts. live: into the
+    running site's database (restore_held), through its own connection."""
+    import io
+    import sqlite3
+    import zipfile
+    from soloblog.backup import _safe_member
+    with zipfile.ZipFile(io.BytesIO(data)) as zf:
+        if "blog.db" not in zf.namelist():
+            raise StorageError("there's no database in it")
+        os.makedirs(os.path.dirname(os.path.abspath(config.db_path())), exist_ok=True)
+        staged = config.db_path() + ".restoring"
+        with open(staged, "wb") as f:
+            f.write(zf.read("blog.db"))
+        try:
+            check = sqlite3.connect(staged)
+            try:
+                if check.execute("PRAGMA quick_check").fetchone()[0] != "ok":
+                    raise StorageError("its database is damaged")
+            finally:
+                check.close()
+            os.makedirs(os.path.join(config.posts_dir(), "_trash"), exist_ok=True)
+            for info in zf.infolist():
+                if (base := _safe_member(info.filename, "posts/_trash/")) and base.endswith(".md"):
+                    dest = os.path.join(config.posts_dir(), "_trash", base)
+                elif (base := _safe_member(info.filename, "posts/")) and base.endswith(".md"):
+                    dest = os.path.join(config.posts_dir(), base)
+                else:
+                    continue
+                with zf.open(info) as src, open(dest, "wb") as dst:
+                    dst.write(src.read())
+            if not live:
+                # over a held start's blank database: its write-ahead files would be read into this one
+                for leftover in ("-wal", "-shm"):
+                    with contextlib.suppress(FileNotFoundError):
+                        os.remove(config.db_path() + leftover)
+                os.replace(staged, config.db_path())
+                return
+            from soloblog.db import get_db
+            src = sqlite3.connect(staged)
+            try:
+                src.backup(get_db())
+            finally:
+                src.close()
+        except sqlite3.DatabaseError as e:
+            raise StorageError(f"its database is damaged: {e}") from None
+        finally:
+            with contextlib.suppress(FileNotFoundError):
+                os.remove(staged)
+
+
+def restore_held(key: str, passphrase: str = "") -> str:
+    """The site brought back at /setup while it's held: the backup chosen
+    (one that's in the bucket), opened with passphrase or the host's,
+    unpacked whole into the running site; its images come back, any
+    locked with that passphrase locked again with the host's; and a
+    backup is made the current way at once, so the next start opens it.
+    Raises StorageError when the bucket doesn't answer or it won't open.
+    Returns what went wrong after it was back, if anything."""
+    try:
+        keys = {b["key"] for b in list_backups()}
+        raw = get_backup(key, raw=True) if key in keys else None
+    except StorageError as e:
+        raise BucketSilent(str(e)) from None
+    if key not in keys:
+        raise StorageError("not one of the backups")
+    if raw is None:
+        raise StorageError("it's gone from the bucket")
+    try:
+        data = open_backup(raw, passphrase)
+    except StorageError as e:
+        raise WontOpen(str(e)) from None
+    unpack_backup(data, live=True)
+    from soloblog import cache, posts, settings
+    from soloblog.db import run_migrations
+    run_migrations()
+    posts.reindex_from_disk()
+    settings.use_site_url()
+    cache.bump()
+    release_hold()
+    problem = ""
+    try:
+        sync_uploads("down", passphrase)
+    except StorageError as e:
+        log.warning("images will load on demand instead: %s", e)
+    try:
+        backup_now()
+    except StorageError as e:
+        log.warning("the backup after bringing the site back failed: %s", e)
+        settings.set_many({"backup_last_error": str(e)[:500]})
+        problem = str(e)
+    _mirror(reseal_images)
+    log.info("brought the site back from %s", key)
+    return problem

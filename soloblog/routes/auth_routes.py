@@ -15,7 +15,8 @@ from soloblog import passkeys
 from soloblog import config
 from soloblog import mail
 from soloblog import notify
-from soloblog.ui import Layout, Alert, FormField, FIELD_GAP, CHECK_SVG, LOGIN_SVG, KEY_SVG, COPY_SVG, DOWNLOAD_SVG
+from soloblog.ui import (Layout, Alert, FormField, FIELD_GAP, CHECK_SVG, LOGIN_SVG, KEY_SVG, COPY_SVG, DOWNLOAD_SVG,
+                         RESTORE_SVG)
 
 ar = APIRouter()
 
@@ -181,11 +182,57 @@ def token_help() -> str:
     return "It's in the server's log, on the lines marked [setup], and in setup-token.txt in the data folder."
 
 
+HELD_WHY = {
+    "locked": "Your bucket has a backup of this site, locked with a passphrase other than the one on your "
+              "host. Type the passphrase it was made with.",
+    "unreachable": "Your storage bucket didn't answer, so your site couldn't be brought back. Check the S3_ "
+                   "settings on your host, then try again.",
+    "damaged": "The newest backup in your bucket couldn't be opened. Choose an earlier one.",
+}
+PASSPHRASE_MAX = 1000
+
+
+def BringBackCard(error="", token="", key=""):
+    """While storage.held: the site's own backups, offered before a fresh
+    start - a blank site set up here would be backed up over them."""
+    from soloblog import storage
+    from soloblog.routes.backup_routes import backup_when
+    why = storage.held.get("why", "damaged")
+    try:
+        backups = storage.list_backups()[:10] if why != "unreachable" else []
+    except storage.StorageError:
+        backups, why = [], "unreachable"
+    return AuthCard(
+        "Bring your site back",
+        HELD_WHY[why],
+        Alert(error, "error") if error else None,
+        Form(
+            FormField("Setup token", Input(type="text", name="token", required=True, autocomplete="off",
+                                           value=token, cls="input input-sm w-full font-mono"), help=token_help(),
+                      cls=FIELD_GAP),
+            FormField("Backup", Select(*[Option(backup_when(b["key"]) or b["key"], value=b["key"],
+                                                selected=b["key"] == key) for b in backups],
+                                       name="key", cls="select select-sm w-full"),
+                      cls=FIELD_GAP) if backups else None,
+            FormField("Passphrase", Input(type="password", name="passphrase", autocomplete="off",
+                                          maxlength=str(PASSPHRASE_MAX), cls="input input-sm w-full"),
+                      help="The one the backup was made with", cls=FIELD_GAP) if why == "locked" else None,
+            Span(data_status_slot=True, role="status", cls="text-xs block mt-2"),
+            _submit("Try again" if why == "unreachable" else "Restore", RESTORE_SVG),
+            action="/setup/restore", method="post"
+        ),
+        A("Start a new site instead", href="/setup?new=1",
+          cls="link link-hover text-xs text-base-content/60 mt-3 self-center"),
+    )
+
+
 @ar.get("/setup")
-def setup_page(hdrs=None, error: str = ""):
+def setup_page(hdrs=None, error: str = "", new: str = "", token: str = "", key: str = ""):
     if auth.admin_exists():
         return RedirectResponse("/login", status_code=303)
-    from soloblog import health
+    from soloblog import health, storage
+    if storage.held and not new:
+        return _page(hdrs, "Bring your site back", "/setup", BringBackCard(error, token, key))
     return _page(hdrs, "Set up your site", "/setup", AuthCard(
         "Set up your site",
         token_help(),
@@ -193,6 +240,10 @@ def setup_page(hdrs=None, error: str = ""):
         None if health.data_kept() else Alert(
             "This site isn't on lasting storage, so your posts would be lost on the next update. "
             + health.keep_it(), "warning"),
+        # a fresh start beside backups that couldn't be opened
+        Alert("Your bucket's backups stay there for now, but each new backup replaces the oldest, as usual.",
+              "warning")
+        if storage.held else None,
         Alert(error, "error") if error else None,
         Form(
             AccountName(),
@@ -201,9 +252,46 @@ def setup_page(hdrs=None, error: str = ""):
             *NewPasswordFields(),
             Span(data_status_slot=True, role="status", cls="text-xs block mt-2"),
             _submit("Create admin account"),
+            Input(type="hidden", name="new", value="1") if storage.held else None,
             action="/setup", method="post"
         ),
     ))
+
+
+@ar.post("/setup/restore")
+def setup_restore(req, token: str = "", key: str = "", passphrase: str = ""):
+    from soloblog import storage
+    if auth.admin_exists() or not storage.held:
+        return RedirectResponse("/login", status_code=303)
+    if not ratelimit.hit(f"ip:{ratelimit.client_ip(req)}", "setup", limit=10, window_minutes=15):
+        return setup_page(error="Too many attempts. Try again in a few minutes.")
+    if not secrets.compare_digest(token.strip(), auth.setup_token()):
+        return setup_page(error="That setup token isn't right - check it and try again.")
+    if len(passphrase) > PASSPHRASE_MAX:
+        return setup_page(token=token, key=key, error="Wrong passphrase, try again")
+    try:
+        if not key:  # the bucket didn't answer before: the newest, if it does now
+            try:
+                backups = storage.list_backups()
+            except storage.StorageError as e:
+                raise storage.BucketSilent(str(e)) from None
+            if not backups:
+                storage.release_hold()
+                return RedirectResponse("/setup", status_code=303)
+            key = backups[0]["key"]
+        storage.restore_held(key, passphrase)
+    except storage.BucketSilent:
+        storage.held["why"] = "unreachable"
+        return setup_page(token=token, key=key, error="Your storage bucket didn't answer. Check the S3_ settings "
+                                                      "on your host, then try again.")
+    except storage.WontOpen:
+        storage.held["why"] = "locked"
+        return setup_page(token=token, key=key, error="Wrong passphrase, try again" if passphrase
+                          else "Type the passphrase the backup was made with")
+    except storage.StorageError:
+        return setup_page(token=token, key=key, error="That backup couldn't be opened. Choose an earlier one.")
+    auth.forget_setup_token()
+    return RedirectResponse("/login?back=1", status_code=303)
 
 
 def _reached_at(req) -> str:
@@ -215,19 +303,22 @@ def _reached_at(req) -> str:
 
 
 @ar.post("/setup")
-def do_setup(req, session, token: str, password: str, confirm: str):
+def do_setup(req, session, token: str, password: str, confirm: str, new: str = ""):
     if auth.admin_exists():
         return RedirectResponse("/login", status_code=303)
 
     if not ratelimit.hit(f"ip:{ratelimit.client_ip(req)}", "setup", limit=10, window_minutes=15):
-        return setup_page(error="Too many attempts. Try again in a few minutes.")
+        return setup_page(new=new, error="Too many attempts. Try again in a few minutes.")
     if not secrets.compare_digest(token.strip(), auth.setup_token()):
-        return setup_page(error="That setup token isn't right - check it and try again.")
+        return setup_page(new=new, error="That setup token isn't right - check it and try again.")
     if len(password) < 8:
-        return setup_page(error="Password needs to be at least 8 characters.")
+        return setup_page(new=new, error="Password needs to be at least 8 characters.")
     if password != confirm:
-        return setup_page(error="Passwords didn't match.")
+        return setup_page(new=new, error="Passwords didn't match.")
 
+    from soloblog import storage
+    # a fresh start, chosen over the backups that couldn't be opened
+    storage.release_hold()
     auth.create_admin(password)
     settings.set_many({"whatsnew_seen": config.VERSION})
     from soloblog.routes.welcome import make_welcome_post
@@ -249,12 +340,13 @@ def do_setup(req, session, token: str, password: str, confirm: str):
 
 
 @ar.get("/login")
-def login_page(hdrs=None, error: str = ""):
+def login_page(hdrs=None, error: str = "", back: str = ""):
     if not auth.admin_exists():
         return RedirectResponse("/setup", status_code=303)
     return _page(hdrs, "Log in", "/login", AuthCard(
         "Log in", None,
         Alert(error, "error") if error else None,
+        Alert("Your site is back. Log in with its password.", "success") if back and not error else None,
         Alert(Span("Password: ", Strong(config.DEMO_PASSWORD)), "info")
         if config.DEMO_MODE else None,
         Form(

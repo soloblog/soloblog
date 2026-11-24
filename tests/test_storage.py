@@ -467,6 +467,148 @@ def test_a_bucket_backup_from_before_the_passphrase_changed_still_restores(bucke
     backup.discard_staged()
 
 
+# ---- a start that can't bring the site back: held, never a blank site
+# backed up over the real one
+
+def _empty_disk(monkeypatch):
+    fresh = tempfile.mkdtemp()
+    for name, sub in (("DB_PATH", "blog.db"), ("POSTS_DIR", "posts"), ("UPLOADS_DIR", "uploads")):
+        monkeypatch.setattr(config, name, os.path.join(fresh, sub))
+    return fresh
+
+
+@pytest.mark.parametrize("why", ["locked", "unreachable", "damaged", "removed"])
+def test_a_start_that_cant_restore_holds_the_site(bucket, monkeypatch, admin, why):
+    from soloblog import backup
+    monkeypatch.setattr(config, "BACKUP_PASSPHRASE", "the old one")
+    if why == "damaged":
+        storage.put("backups/soloblog-29991231-235959.zip", b"not a zip at all")
+    else:
+        storage.backup_now()
+    real = {name: getattr(config, name) for name in ("DB_PATH", "POSTS_DIR", "UPLOADS_DIR")}
+    monkeypatch.setattr(config, "BACKUP_PASSPHRASE", {"removed": ""}.get(why, "the new one"))
+    working = config.S3_ENDPOINT
+    if why == "unreachable":
+        monkeypatch.setattr(config, "S3_ENDPOINT", "http://127.0.0.1:9")  # nothing listening
+    fresh = _empty_disk(monkeypatch)
+    try:
+        assert not storage.restore_on_boot()  # and no crash, even on a file that isn't a zip
+        assert storage.held["why"] == {"removed": "locked"}.get(why, why)
+        assert not os.path.exists(os.path.join(fresh, "blog.db"))
+        # nothing goes to the bucket while it's held
+        with pytest.raises(storage.StorageError):
+            storage.backup_now()
+        monkeypatch.setattr(config, "S3_AUTO_BACKUP", True)
+        if storage._state["timer"]:  # one an earlier test left
+            storage._state["timer"].cancel()
+            storage._state["timer"] = None
+        storage.note_change()
+        assert storage._state["timer"] is None
+        storage._mirror(storage.delete, "backups/anything")
+        assert storage._mirror_queue.empty()
+    finally:
+        storage.release_hold()
+        for name, value in real.items():
+            monkeypatch.setattr(config, name, value)
+        if why == "damaged":  # the test bucket outlives the test
+            monkeypatch.setattr(config, "S3_ENDPOINT", working)
+            storage.delete("backups/soloblog-29991231-235959.zip")
+    backup.discard_staged()
+
+
+def test_a_restore_cut_short_runs_again_rather_than_leaving_no_posts(monkeypatch):
+    import io
+    import zipfile
+    fresh = _empty_disk(monkeypatch)
+    buf = io.BytesIO()
+    with zipfile.ZipFile(buf, "w") as zf:
+        zf.writestr("posts/a.md", "---\ntitle: A\n---\nA")
+        zf.writestr("blog.db", b"this isn't a database")
+    with pytest.raises(storage.StorageError):
+        storage.unpack_backup(buf.getvalue())
+    assert not os.path.exists(os.path.join(fresh, "blog.db"))
+    assert not os.path.exists(os.path.join(fresh, "blog.db.restoring"))
+
+
+def test_setup_brings_a_held_site_back_with_the_old_passphrase(bucket, monkeypatch, admin, client):
+    # a host without a disk, its passphrase changed: the restart can't open
+    # the newest backup, so setup asks for the old one and restores it all
+    from conftest import save_post
+    from soloblog import auth, images, posts
+    from soloblog.db import get_db
+    monkeypatch.setattr(config, "BACKUP_PASSPHRASE", "the old one")
+    save_post(admin, title="Brought back whole")
+    name = images.save_upload(_png()).rsplit("/", 1)[1]
+    storage.wait_for_mirroring()
+    key = storage.backup_now()
+    monkeypatch.setattr(config, "BACKUP_PASSPHRASE", "the new one")
+    real = {n: getattr(config, n) for n in ("DB_PATH", "POSTS_DIR", "UPLOADS_DIR")}
+    _empty_disk(monkeypatch)
+    storage.restore_on_boot()
+    for n, value in real.items():
+        monkeypatch.setattr(config, n, value)
+    assert storage.held["why"] == "locked"
+    # this disk, as a blank start would have it
+    row = get_db().execute("SELECT * FROM admin WHERE id=1").fetchone()
+    get_db().execute("DELETE FROM admin")
+    get_db().commit()
+    os.remove(os.path.join(config.posts_dir(), "brought-back-whole.md"))
+    os.remove(os.path.join(config.uploads_dir(), name))
+    try:
+        page = client.get("/setup").text
+        assert "Bring your site back" in page and 'name="passphrase"' in page and f'value="{key}"' in page
+        assert 'action="/setup/restore"' in page and 'href="/setup?new=1"' in page
+        token = auth.setup_token()
+        tries = [({"token": "not it", "key": key, "passphrase": "the old one"}, "setup token isn"),
+                 ({"token": token, "key": key, "passphrase": "the new one"}, "Wrong passphrase, try again"),
+                 ({"token": token, "key": key, "passphrase": "x" * 5000}, "Wrong passphrase, try again"),
+                 ({"token": token, "key": key, "passphrase": ""}, "Type the passphrase"),
+                 ({"token": token, "key": "backups/../../etc/passwd", "passphrase": "the old one"},
+                  "couldn&#x27;t be opened")]
+        for data, said in tries:
+            r = client.post("/setup/restore", data=data)
+            assert r.status_code == 200 and (said in r.text or said.replace("&#x27;", "'") in r.text), data
+            assert not auth.admin_exists() and storage.held
+        # a fresh start is there too, and says the backups stay
+        assert "each new backup replaces the oldest" in client.get("/setup?new=1").text
+        r = client.post("/setup/restore", data={"token": token, "key": key, "passphrase": "the old one"})
+        assert r.status_code == 303 and r.headers["location"] == "/login?back=1"
+        assert "Your site is back" in client.get("/login?back=1").text
+        assert auth.admin_exists() and not storage.held
+        assert posts.get_post("brought-back-whole")
+        # its image is back, and locked again the new way in the bucket
+        assert os.path.isfile(os.path.join(config.uploads_dir(), name))
+        assert storage._from_bucket(storage.get(f"uploads/{name}"))
+        # and a backup the new way already, so the next start opens it
+        newest = storage.list_backups()[0]["key"]
+        assert storage.get_backup(newest)  # opens with the new passphrase
+    finally:
+        storage.release_hold()
+        if not auth.admin_exists():
+            get_db().execute("INSERT INTO admin VALUES (?, ?, ?, ?, ?, ?)", tuple(row))
+            get_db().commit()
+
+
+def test_a_fresh_start_over_held_backups_is_the_owners_choice(bucket, monkeypatch, admin, client):
+    from soloblog import auth
+    from soloblog.db import get_db
+    # nothing restores over a site that has its admin
+    storage.held["why"] = "locked"
+    assert client.post("/setup/restore", data={"token": auth.setup_token()}).status_code == 303
+    row = get_db().execute("SELECT * FROM admin WHERE id=1").fetchone()
+    get_db().execute("DELETE FROM admin")
+    get_db().commit()
+    try:
+        # its errors keep the fresh-start form, not the restore one
+        r = client.post("/setup", data={"token": "not it", "password": "x", "confirm": "x", "new": "1"})
+        assert "Set up your site" in r.text and "Bring your site back" not in r.text
+        assert storage.held  # only setting up a new site lets it go
+    finally:
+        storage.release_hold()
+        get_db().execute("INSERT INTO admin VALUES (?, ?, ?, ?, ?, ?)", tuple(row))
+        get_db().commit()
+
+
 def test_restoring_a_locked_bucket_backup_opens_its_images_with_the_passphrase_typed(bucket, monkeypatch, admin):
     from soloblog import backup, images
     monkeypatch.setattr(config, "BACKUP_PASSPHRASE", "the old one")
@@ -481,3 +623,38 @@ def test_restoring_a_locked_bucket_backup_opens_its_images_with_the_passphrase_t
     assert os.path.isfile(os.path.join(config.uploads_dir(), name))
     assert storage._from_bucket(storage.get(f"uploads/{name}"))  # locked the new way now
     assert backup.typed_passphrase() == ""  # gone with the backup
+
+
+def test_a_restart_after_a_held_start_is_still_held_then_restores(bucket, monkeypatch, admin):
+    # a disk that's kept: the held start left a blank database, which the
+    # next start mustn't take for the site
+    from soloblog.db import run_migrations, get_db, _local
+    monkeypatch.setattr(config, "BACKUP_PASSPHRASE", "the old one")
+    from conftest import save_post
+    save_post(admin, title="Back after two starts")
+    storage.backup_now()
+    real = {n: getattr(config, n) for n in ("DB_PATH", "POSTS_DIR", "UPLOADS_DIR")}
+    monkeypatch.setattr(config, "BACKUP_PASSPHRASE", "the new one")
+    fresh = _empty_disk(monkeypatch)
+    conn = getattr(_local, "conn", None)
+    try:
+        storage.restore_on_boot()
+        assert storage.held["why"] == "locked"
+        del _local.conn
+        run_migrations()  # the blank database a held start makes
+        get_db().close()
+        del _local.conn
+        assert os.path.exists(os.path.join(fresh, "blog.db"))
+        storage.restore_on_boot()  # restarted, still the wrong passphrase
+        assert storage.held["why"] == "locked"
+        monkeypatch.setattr(config, "BACKUP_PASSPHRASE", "the old one")  # put back on the host
+        assert storage.restore_on_boot() and not storage.held
+        assert os.path.exists(os.path.join(fresh, "posts", "back-after-two-starts.md"))
+        assert storage._has_admin(os.path.join(fresh, "blog.db"))
+        assert not os.path.exists(storage._held_path())
+    finally:
+        storage.release_hold()
+        if conn is not None:
+            _local.conn = conn
+        for n, value in real.items():
+            monkeypatch.setattr(config, n, value)

@@ -420,13 +420,20 @@ def _arriving(panel, now):
     return panel
 
 
-def _backup_source(key: str) -> str:
-    """"your backup of 19 Nov 2026 16:27", from its name in the bucket."""
+def backup_when(key: str) -> str:
+    """"19 Nov 2026 16:27", from a backup's name in the bucket - blank if
+    it has no date in it."""
     m = re.search(r"soloblog-(\d{8})-(\d{6})", key)
     if not m:
-        return "your backup"
+        return ""
     d, t = m.groups()
-    return f"your backup of {_when(f'{d[:4]}-{d[4:6]}-{d[6:]}T{t[:2]}:{t[2:4]}:{t[4:]}+00:00')}"
+    return _when(f'{d[:4]}-{d[4:6]}-{d[6:]}T{t[:2]}:{t[2:4]}:{t[4:]}+00:00')
+
+
+def _backup_source(key: str) -> str:
+    """"your backup of 19 Nov 2026 16:27"."""
+    when = backup_when(key)
+    return f"your backup of {when}" if when else "your backup"
 
 
 def _RestoreConfirmPanel(result, source="", from_bucket=False):
