@@ -334,7 +334,7 @@ bar at the bottom of the screen. Nothing is saved until you select
 
 **What happens to the page's settings?** The template's **Post settings**
 replace the page's own - its title, page width, cover image style,
-contents, collapsing, spacing, side panels, what **Show** ticks, and the
+contents, collapsing, spacing, side panels, what **Show** has selected, and the
 settings under **More**. A setting the template doesn't change goes back
 to following the site. Open **Page** to see what's now **Custom**. The
 page's summary, tags and cover image are filled in from the template only

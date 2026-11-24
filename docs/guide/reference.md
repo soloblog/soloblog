@@ -65,7 +65,7 @@ The choice each setting starts with on a new Soloblog site is tagged
 ### Homepage
 
 - **Your homepage shows** - What people see first when they visit: your latest posts; your wiki's front page; or one of your pages - **Pick** one that's in your menu or footer, or an unlisted post to keep it out of the menu. With a page or the wiki as your homepage, your posts move to `/blog`, and a Blog link is added to the menu.
-- **It also shows** - When a page is your homepage: tick what else it shows - the title (with the date and cover), reactions, share buttons, related posts, About the author, the newsletter sign-up, comments.
+- **It also shows** - When a page is your homepage: select what else it shows - the title (with the date and cover), reactions, share buttons, related posts, About the author, the newsletter sign-up, comments.
 
 ## URL and SEO
 
@@ -177,14 +177,14 @@ Under **Advanced**. Readers who've set their device to reduce motion never see a
 - **Tag cloud** - Under the posts, on the left, on the right, or off. Your most used tags.
 - **Archive links** - The same choices. The last 12 months.
 - **About the author** - The same choices. Your photo, name, bio and links (**Settings > Profile and links**). Where it shows, it takes the place of About the author under each post.
-- **Shows on** (for each) - The blog roll, posts, pages. Each post or page can leave them out. Clearing every tick turns the panel off.
+- **Shows on** (for each) - The blog roll, posts, pages. Each post or page can leave them out. Clearing every checkbox turns the panel off.
 - **Blend side panels into the page** (on/off) - No box around the panels beside the page.
 
 ## Posts
 
 ### Each post shows
 
-- **Around the text** - Tick what shows on each post, around your writing: breadcrumbs, the reading progress bar, author and date, tags, Listen (reads the post aloud), likes, share buttons, Print or save as PDF, support links, series links, related posts, About the author, the newsletter sign-up and the side panels. Each post or page can choose its own (**Post settings > Page > Show**). Comments have their own switch, under Comments.
+- **Around the text** - Select what shows on each post, around your writing: breadcrumbs, the reading progress bar, author and date, tags, Listen (reads the post aloud), likes, share buttons, Print or save as PDF, support links, series links, related posts, About the author, the newsletter sign-up and the side panels. Each post or page can choose its own (**Post settings > Page > Show**). Comments have their own switch, under Comments.
 
 ### Breadcrumbs
 
@@ -398,7 +398,7 @@ A row showing its current state; **Edit** opens it. Each new post is shared from
 
 A row showing its current state; **Edit** opens it. Each new post is shared from your Mastodon account as it's published, with a link back.
 
-- **Post to Mastodon** (on/off), with your **Server** (like `https://mastodon.social`) and an **Access token** - make an application in your Mastodon account's Development settings, with only `write:statuses` ticked, and copy its token.
+- **Post to Mastodon** (on/off), with your **Server** (like `https://mastodon.social`) and an **Access token** - make an application in your Mastodon account's Development settings, with only `write:statuses` selected, and copy its token.
 
 ### Fediverse
 
@@ -448,7 +448,7 @@ Footnotes, checklists, callouts, galleries and embedded videos always work. Thes
 
 - **Toolbar** - The bar of buttons above your writing: Icons (a row of the buttons you choose), Menus (like a word processor), or None (use the slash menu and keyboard shortcuts instead).
 - **On a phone** - The bar above a phone's keyboard: your buttons; sections, each opening a grid of buttons; or none.
-- **Buttons** - Tick which show, by group. The ones you leave off are still in the slash menu.
+- **Buttons** - Select which show, by group. The ones you leave off are still in the slash menu.
 
 ### Toolbar order
 
@@ -549,7 +549,7 @@ Lets you choose a new password if you forget yours - select **Forgot password?**
 
 ### Sessions
 
-With **Keep me signed in** ticked on the login page, you stay logged in for 14 days on each browser; unticked, until you close the browser. **Log out other devices** logs you out everywhere except the browser you're using now. Changing your password logs out the others.
+With **Keep me signed in** selected on the login page, you stay logged in for 14 days on each browser; not selected, until you close the browser. **Log out other devices** logs you out everywhere except the browser you're using now. Changing your password logs out the others.
 
 ### Password
 
@@ -566,11 +566,11 @@ A row showing its current state; **Edit** opens it.
 
 ### Download
 
-A backup: a zip file of what you tick - posts and pages, images, settings, comments and messages, members, subscribers and followers, and stats and reactions.
+A backup: a zip file of what you select - posts and pages, images, settings, comments and messages, members, subscribers and followers, and stats and reactions.
 
 ### Restore
 
-**Upload** a backup to see what's in it, then tick what to restore and select **Restore**. Posts, pages and images replace the ones with the same name; settings, comments, members, subscribers and stats are replaced as a whole. Your password and passkeys stay as they are. Before you restore: [what a restore replaces](run.md#back-up-and-restore).
+**Upload** a backup to see what's in it, then choose what to restore and select **Restore**. Posts, pages and images replace the ones with the same name; settings, comments, members, subscribers and stats are replaced as a whole. Your password and passkeys stay as they are. Before you restore: [what a restore replaces](run.md#back-up-and-restore).
 
 ### Cloud storage
 
@@ -658,7 +658,7 @@ own. Beside the editor, use the editor's own **Save**.
 The heading counts what this page changes from the site: **Page · 2
 changed**. Each setting that follows a site setting (Contents, Fold
 sections, Cover image, Space between sections, Sections appear, the side panels, Page
-width and a tick under Show; **Allow comments on this post** and **Email
+width and a checkbox under Show; **Allow comments on this post** and **Email
 it to subscribers** under Publishing; **Hide the cover in post lists** and
 **Word goal** under Details; **Hide this post from search engines** under
 Search engines) gets a thin coloured line down its left edge, and a
@@ -675,7 +675,7 @@ out - contents and side panels have a **Shows on** in Settings for posts
 and pages. When Settings is what turns something off here, a line under
 it says so, with a link straight to that setting: contents or a side
 panel off for pages, comments off for the whole site, post lists that
-show no covers, or a tick under Show that needs something set up first
+show no covers, or a checkbox under Show that needs something set up first
 (a support link, your name or bio, the newsletter). Choosing something
 here still works on this post or page alone - a page can have contents
 when Settings leaves pages out.
@@ -704,19 +704,19 @@ when Settings leaves pages out.
   side panel goes on this post: the site's default, under the post, on
   the left, on the right, or off - even a panel that Settings hides on
   posts or pages. Left and right need room: on a phone, on a wide page or on slides,
-  they go under the post. They're greyed out while **Side panels** isn't ticked
+  they go under the post. They're greyed out while **Side panels** isn't selected
   under Show.
 - **Background sound** - One of your audio files, looping on this post or
   page - for a band, a project or a talk. **Pick** shows your audio, and
   uploads a new file too. Visitors get a play button in the corner, under
   Back to top; it never plays automatically.
-- **Show** - What appears around the text. Tick any of: breadcrumbs, the
+- **Show** - What appears around the text. Select any of: breadcrumbs, the
   reading progress bar, author and date, tags, Listen, likes, share
   buttons, Print or save as PDF, support links, the series' other parts,
   related posts, About the author, the newsletter sign-up and the side
   panels.
 
-  A post starts with what **Settings > Posts > Each post shows** ticks; a
+  A post starts with what **Settings > Posts > Each post shows** has selected; a
   page in the menu or footer starts with only its title and content.
   Comments have their own switch, **Allow comments**.
 - **More** - Folded, and open by itself while the page uses one of these.
@@ -861,7 +861,7 @@ joins the last item.
 |---|---|---|
 | **Bulleted list** | `-` and a space at the start of each line | Points in no particular order |
 | **Numbered list** | `1.` and a space at the start of each line | Steps, numbered in order. The numbers are counted for you, so `1.` on every line works too. |
-| **Checklist** | `- [ ]` and a space for something to do; `- [x]` or `- [X]` for something done | Each item with a box beside it, empty or ticked. Readers can't tick the boxes. Nothing else makes a box - not `[ x]`, and not `[x]` without a space after it. |
+| **Checklist** | `- [ ]` and a space for something to do; `- [x]` or `- [X]` for something done | Each item with a box beside it, empty or checked. Readers can't select the boxes. Nothing else makes a box - not `[ x]`, and not `[x]` without a space after it. |
 | A list inside a list | The inner list's lines indented by four spaces, or one press of Tab | A list under one of the points |
 
 ### Quotes

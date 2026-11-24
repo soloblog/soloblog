@@ -457,7 +457,7 @@ def _RestoreConfirmPanel(result, source="", from_bucket=False):
 
     return Div(
         P(f"From {source}.", cls="text-sm font-medium mb-1") if source else None,
-        P("Each one you tick replaces what you have now with the backup's. Your password and passkeys stay "
+        P("Each one you select replaces what you have now with the backup's. Your password and passkeys stay "
           "as they are.",
           cls="text-sm text-base-content/60 mb-3"),
         Form(

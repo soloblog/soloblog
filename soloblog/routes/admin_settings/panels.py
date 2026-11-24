@@ -636,7 +636,7 @@ def LanguagesPanel(s):
             *[Option(label, value=key, selected=(key == s["translate_provider"]))
               for key, label in translate.PROVIDERS.items()],
             name="translate_provider", cls="select select-sm w-full"),
-            help="Offers each post in the languages you tick, translated by the service.",
+            help="Offers each post in the languages you select, translated by the service.",
             cls=FIELD_GAP),
         FormField("API key", SecretInput("translate_api_key", s["translate_api_key"],
                                    cls="input input-sm w-full"),

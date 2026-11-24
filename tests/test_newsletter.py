@@ -154,7 +154,7 @@ def test_ticking_subscribers(admin, client, monkeypatch):
         r = client.post("/admin/newsletter/bulk", data={"action": "remove", "ids": [ids["keep@example.com"]]})
         assert r.status_code in (302, 303) and "toast" not in r.headers["location"]
         r = admin.post("/admin/newsletter/bulk", data={"action": "remove"})
-        assert "Tick" in r.headers["location"] and newsletter.list_all()
+        assert "Select" in r.headers["location"] and newsletter.list_all()
         assert admin.get("/admin/newsletter/export").status_code in (404, 405)
     finally:
         settings.set_many(OFF)

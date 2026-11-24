@@ -33,6 +33,7 @@ versions may include breaking changes; they'll always be listed here.
 - Fold headings and Fold contents are called Collapsible headings and
   Collapsible contents, like the editor's Collapsible block
 - The admin and Help say restore where they said bring back
+- The admin and Help say select where they said tick
 
 ### Fixed
 

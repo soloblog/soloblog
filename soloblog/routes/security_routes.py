@@ -186,7 +186,7 @@ def RecoveryKeyBody(state=None, key="", error=""):
 def SessionsPanel():
     return SettingsPanel(
         "Sessions",
-        P(f"With Keep me signed in ticked, you stay logged in for {config.SESSION_DAYS} days on each browser. "
+        P(f"With Keep me signed in selected, you stay logged in for {config.SESSION_DAYS} days on each browser. "
           "Changing your password logs out the others.", cls="text-sm text-base-content/70"),
         Form(
             Div(Span(id="sessions-status", data_status_slot=True, role="status", cls="text-xs"),

@@ -859,7 +859,7 @@ new deploy.
 Move your site to another host, a new server, or your own domain.
 
 1. In **Settings > Backup and import**, select **Download** with
-   everything ticked - or copy the whole `/data` folder.
+   everything selected - or copy the whole `/data` folder.
 2. Start Soloblog on the new server and create an account, then
    **Restore** the zip there. Or start it with the old `/data` folder,
    and skip setup.

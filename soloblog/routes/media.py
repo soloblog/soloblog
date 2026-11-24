@@ -721,7 +721,7 @@ def bulk(session, action: str = "", filenames: list[str] = None, return_to: str 
         # others' on files in use or not - never across
         allowed = ("restore", "delete") if in_tab == "trash" else ("rename", "trash")
         if in_tab not in dict(MEDIA_TABS) or action not in allowed:
-            return _toast_redirect("Tick some files and choose what to do", "error", return_to=target)
+            return _toast_redirect("Select some files and choose what to do", "error", return_to=target)
         names = _media_tab_files(in_tab, in_q, in_kind, in_post)
     else:
         names = [f for f in (filenames or []) if f]
@@ -739,7 +739,7 @@ def bulk(session, action: str = "", filenames: list[str] = None, return_to: str 
     do = {"trash": images.move_to_trash, "restore": images.restore_from_trash,
           "delete": images.delete_forever}.get(action)
     if not names or not do:
-        return _toast_redirect("Tick some files and choose what to do", "error", return_to=target)
+        return _toast_redirect("Select some files and choose what to do", "error", return_to=target)
     for name in names:
         do(name)
     said = {"trash": "Moved {n} to trash", "restore": "Restored {n}", "delete": "Permanently deleted {n}"}[action]

@@ -42,7 +42,7 @@ yours, and the template stays as it was.
 
 **Which template?**
 
-- **A recipe** - **Recipe**: the times and servings, ingredients to tick
+- **A recipe** - **Recipe**: the times and servings, ingredients to check off
   off, and numbered steps. Readers get a **Print** button at the top, and
   search engines understand it as a recipe.
 - **A resume** - **Resume / CV**: jobs and schooling with their dates, and
@@ -222,7 +222,7 @@ Jump to any section of a long page without scrolling to find it.
    nothing is added to your writing.
 2. Choose a section. The list has one row for each, in the order they're
    on the page - its kind, like **Columns**, then the text of its heading.
-   The one your cursor is in has a tick.
+   The one your cursor is in has a checkmark.
 
 Your cursor goes to the start of that section's heading, and the text
 scrolls to it - in **Side by side**, the preview follows. It works in
@@ -304,7 +304,7 @@ buttons or author box, as those suit posts more than pages.
 Choose another URL there, or see
 [URLs Soloblog uses](reference.md#urls-soloblog-uses).
 
-**Want the date or share buttons on it after all?** Tick them in **Post
+**Want the date or share buttons on it after all?** Select them in **Post
 settings > Page**, under **Show**.
 
 **Want to change the order of the menu?** Open **Posts and pages** and
@@ -358,7 +358,7 @@ among your posts or in your feeds, and search finds it at your
 homepage's URL - unlisted or not.
 
 **Want more on the homepage than the page itself?** Under **It also
-shows**, tick what to add - its title, reactions, share buttons, a
+shows**, select what to add - its title, reactions, share buttons, a
 newsletter sign-up box, comments and more.
 
 **Keeping a knowledge base or a digital garden?** Choose **Your wiki**

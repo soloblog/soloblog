@@ -303,7 +303,7 @@ def bulk_subscribers(session, action: str = "", ids: list[int] = None, return_to
     else:
         rows = newsletter.by_ids(i for i in (ids or []) if i)
     if not rows or action not in ("export", "remove"):
-        return status_redirect(target, "Tick some subscribers first", "error")
+        return status_redirect(target, "Select some subscribers first", "error")
     if action == "export":
         from soloblog.backup import csv_download
         return csv_download("subscribers.csv", ["email", "subscribed", "confirmed", "unsubscribed"],

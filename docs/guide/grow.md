@@ -29,8 +29,8 @@ You choose which ones show under your posts, and reply to them.
 Approved comments show under the post. Your replies show straight away,
 marked **Author** so readers know they're from you.
 
-**Lots waiting?** Tick several comments and approve or trash them
-together. To pick every comment in the tab, tick the box above the list,
+**Lots waiting?** Select several comments and approve or trash them
+together. To pick every comment in the tab, select the checkbox above the list,
 then select **Select all**.
 
 **Want an email when a comment arrives?** Switch on **Email me about new
@@ -93,7 +93,7 @@ read** takes it off the count - **Mark as unread** puts it back.
 away, or open the **Trash** tab and select **Restore**. Messages stay in
 the trash until you delete them there, or select **Empty trash**.
 
-**Want your messages in a spreadsheet?** Tick them, then select
+**Want your messages in a spreadsheet?** Select them, then select
 **Export** to download them as a CSV file.
 
 **Getting spam through the form?** Add a check in **Settings >
@@ -183,8 +183,8 @@ Your subscribers are added, already confirmed, and the line beside
 **Using members?** You can import members too, in **Members** - from
 another Soloblog site, from Ghost, or from any list with an email column.
 
-**Want a copy of your list?** Tick the box above the list, then select
-**Select all** and choose **Export**. Or tick only the subscribers you
+**Want a copy of your list?** Select the checkbox above the list, then select
+**Select all** and choose **Export**. Or select only the subscribers you
 want.
 
 ## Let readers become members
@@ -282,7 +282,7 @@ automatically, as it's published.
    **Post to Mastodon**, and enter your **Server** (like
    `https://mastodon.social`) and an **Access token**. To get the token,
    make an application in your Mastodon account's **Development**
-   settings, with only `write:statuses` ticked, and copy its access
+   settings, with only `write:statuses` selected, and copy its access
    token.
 4. Select **Save**.
 
@@ -381,7 +381,7 @@ of its own.
 2. Open **Settings > Language and time**. Select **Edit** beside
    **Translation**.
 3. Choose your **Translation service** and paste its **API key**.
-4. Under **Offer posts in**, tick the languages to translate into.
+4. Under **Offer posts in**, select the languages to translate into.
 5. Select **Save**.
 
 Each new post now gets a translated page for each language, like

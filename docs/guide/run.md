@@ -18,17 +18,17 @@ grows.
 Publish, tag, export or trash many posts at once, instead of one by one.
 
 1. Open **Posts and pages**.
-2. Tick the posts you want. On a wide screen, a post's tick box shows
-   when you point at its row. On a phone, press and hold a row to tick
+2. Select the posts you want. On a wide screen, a post's checkbox shows
+   when you point at its row. On a phone, press and hold a row to select
    it.
 3. Choose what to do, in the line above the list: **Add tag** (type the
    tag first), **Publish**, **Move to drafts**, **Export** or **Move to
    trash**.
 
-Only the actions that make sense for what you ticked are shown -
-**Publish** shows only when you've ticked drafts, for example.
+Only the actions that make sense for what you selected are shown -
+**Publish** shows only when you've selected drafts, for example.
 
-**Want every post, not just the ones on this page?** Tick the box above
+**Want every post, not just the ones on this page?** Select the checkbox above
 the list, then select **Select all**. It picks every post that matches
 your search and filters.
 
@@ -57,7 +57,7 @@ for each list, in this browser.
 
 **Other lists work the same way.** In **Media**, **Comments** (and its
 **Mentions** tab), **Contact messages**, **Members** and **Newsletter**,
-tick the rows, then choose what to do with them. Each has its own **Per
+select the rows, then choose what to do with them. Each has its own **Per
 page** choice too.
 
 **Want to rename or merge a tag?** Select **Tags**, beside the page's
@@ -88,7 +88,7 @@ to its old name keep working.
 **Want to see only what your posts use?** The **In use** tab lists just
 those files.
 
-**Files that no post uses?** The **Unused** tab lists them. Tick them and
+**Files that no post uses?** The **Unused** tab lists them. Select them and
 select **Move to trash**.
 
 **A screenshot or diagram that's too bright when your site is dark?**
@@ -135,7 +135,7 @@ A phone then shows the phone version in light and its dark one in dark,
 and it changes by itself when the theme does. It counts as in use, so it
 never shows under **Unused**.
 
-**Images with names like IMG_4032?** Tick them and select **Name from alt
+**Images with names like IMG_4032?** Select them and choose **Name from alt
 text** to give each one a name from its description.
 
 **Trashed a file that a post still uses?** It asks you first. In the
@@ -148,13 +148,13 @@ A backup is a copy of everything on your site, in one file you keep.
 If something goes wrong, you can restore it all.
 
 1. Open **Settings > Backup and import**.
-2. Under **Download**, tick what to include. Everything is ticked to
+2. Under **Download**, select what to include. Everything is selected to
    start with.
 3. Select **Download**.
 
 You get a zip file named after your site and the date. Keep it somewhere
 private: it includes your settings, and those include the keys to
-services you've connected. Inside are the parts you ticked:
+services you've connected. Inside are the parts you selected:
 
 | In the zip | What it is |
 |---|---|
@@ -164,11 +164,11 @@ services you've connected. Inside are the parts you ticked:
 
 **To restore from a backup:** on the same page, under **Restore**, select
 **Upload** and choose the backup file. It shows what's inside, with a
-count for each part. Tick what to restore and select **Restore**.
-It asks once more, then replaces what you ticked - read what that means
+count for each part. Choose what to restore, then select **Restore**.
+It asks once more, then replaces what you selected - read what that means
 below first.
 
-**What does a restore replace?** Only the parts you tick, and nothing
+**What does a restore replace?** Only the parts you select, and nothing
 is renamed or kept twice:
 
 - **Posts, pages and images** - each one in the backup replaces the one
@@ -176,14 +176,14 @@ is renamed or kept twice:
   goes back to how it was then. A post or image you've added since isn't
   in the backup, so it stays as it is.
 - **Settings, comments and messages, members, subscribers and followers,
-  stats and reactions** - each part you tick is replaced as a whole. A
+  stats and reactions** - each part you select is replaced as a whole. A
   comment, a member or a subscriber that arrived after the backup is
   removed. A post's earlier versions go back to the backup's too.
 - **Your password and passkeys** always stay as they are, so you can
   still log in.
 
 It doesn't ask about each post or image, and it doesn't show which ones
-will change - the ticks and the counts are what you choose by.
+will change - the checkboxes and the counts are what you choose by.
 
 **Before you restore, keep a copy of today.** Select **Back up now**, or
 **Download** a backup, first. If the restore brings back less than you
@@ -215,14 +215,14 @@ bucket as you add, change or delete them - not only when a backup is made.
 - **Back up now** makes a backup straight away, instead of waiting for
   the next change. Press it after you first connect storage, to check
   the bucket works.
-- **What the backups include** - tick what goes into each backup. Your
+- **What the backups include** - select what goes into each backup. Your
   images aren't in backups; the bucket keeps them separately.
 
 **To restore from your bucket:** under **Recent backups**, the newest
 three are listed with their date and size, and **Older backups** opens
 the rest. Select **Restore** (the ↺ icon; on a phone, under ⋯) beside
 the one you want. The **Restore** card above fills in and comes into
-view, saying which backup it's from. As with a file you upload, tick
+view, saying which backup it's from. As with a file you upload, select
 what to restore and select **Restore**. **Images** restores the
 bucket's latest copy of each image, replacing your site's - the bucket
 keeps one copy of each, not one per backup.
@@ -261,8 +261,8 @@ cropped since comes back the new way. See
 [what's kept in the bucket](../DEPLOYMENT.md#whats-in-the-bucket).
 
 **Just want a spreadsheet of your posts, members or subscribers?** In
-**Posts and pages**, **Members** or **Newsletter**, tick what you want
-and choose **Export**. For the whole list, tick the box above it, then
+**Posts and pages**, **Members** or **Newsletter**, select what you want
+and choose **Export**. For the whole list, select the checkbox above it, then
 **Select all**. **Stats** has its own **Export**.
 
 ## Move a blog to Soloblog
@@ -282,7 +282,7 @@ folder of markdown files.
 
 2. Open **Settings > Backup and import**, and go to **Import from another
    blog**.
-3. Tick **Copy images into the media library**. Your images are then kept
+3. Select **Copy images into the media library**. Your images are then kept
    on your new site, so they still show after the old blog is gone.
 4. Select **Upload** and choose the file. The import starts straight
    away.
@@ -291,7 +291,7 @@ Posts keep their dates, tags and summaries; drafts stay drafts and pages
 stay pages. WordPress comments and Substack subscribers come across too.
 A big blog can take a few minutes; the page shows how far it's got.
 
-**Want to check each post before it's published?** Tick **Import as
+**Want to check each post before it's published?** Select **Import as
 drafts** before you upload.
 
 **Coming from Ghost?** Type your old blog's URL in **Old blog's

@@ -226,7 +226,7 @@ def bulk_messages(session, action: str = "", ids: list[int] = None, return_to: s
     else:
         ids = [i for i in (ids or []) if i]
     if action not in MESSAGE_ACTIONS[in_tab] or not ids:
-        return status_redirect(target, "Tick some messages first", "error")
+        return status_redirect(target, "Select some messages first", "error")
     if action == "export":
         return Response(contact.export_csv(ids), media_type="text/csv",
                         headers={"Content-Disposition": 'attachment; filename="messages.csv"',

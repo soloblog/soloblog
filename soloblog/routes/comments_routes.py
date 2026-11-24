@@ -275,7 +275,7 @@ def bulk_mentions(session, action: str = "", ids: list[int] = None, return_to: s
         ids = [i for i in (ids or []) if i]
     do = {"approve": webmention.approve, "delete": webmention.delete}.get(action)
     if not ids or not do:
-        return _toast_redirect(target, "Tick some mentions first", "error")
+        return _toast_redirect(target, "Select some mentions first", "error")
     for mention_id in ids:
         do(mention_id)
     n = f"{len(ids)} mention{'s' if len(ids) != 1 else ''}"
@@ -447,7 +447,7 @@ def bulk(session, action: str = "", ids: list[int] = None, return_to: str = "/ad
     target = return_to if is_local_path(return_to) else "/admin/comments"
     if all_matching == "1":
         if action not in TAB_ACTIONS.get(in_tab, ()):
-            return _toast_redirect(target, "Tick some comments and choose what to do", "error")
+            return _toast_redirect(target, "Select some comments and choose what to do", "error")
         ids = [c["id"] for c in comments.list_by_status(in_tab, "" if in_tab == "trash" else in_post, 1, 10 ** 6,
                                                          q=in_q)]
     else:
@@ -455,7 +455,7 @@ def bulk(session, action: str = "", ids: list[int] = None, return_to: str = "/ad
     do = {"approve": comments.approve, "trash": comments.move_to_trash, "restore": comments.restore_from_trash,
           "delete": comments.delete_permanently}.get(action)
     if not ids or not do:
-        return _toast_redirect(target, "Tick some comments and choose what to do", "error")
+        return _toast_redirect(target, "Select some comments and choose what to do", "error")
     for comment_id in ids:
         do(comment_id)
     if action == "approve":

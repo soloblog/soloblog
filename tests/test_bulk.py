@@ -32,7 +32,7 @@ def test_media_bulk(admin):
     assert "bulk-a.webp" in {i["filename"] for i in images.list_uploads()}
     assert "bulk-b.webp" not in {t["filename"] for t in images.list_trash()}
     r = admin.post("/admin/media/bulk", data={"action": "trash"})
-    assert "Tick" in r.headers["location"]
+    assert "Select" in r.headers["location"]
 
 
 def test_comments_and_messages_bulk(admin, client):
@@ -543,12 +543,12 @@ def test_select_all_on_messages_comments_and_media(admin):
     # an action that isn't the tab's own is refused, even with all_matching
     r = admin.post("/admin/comments/bulk", data={"action": "delete", "all_matching": "1", "in_tab": "pending",
                                                  "in_q": "Otter note"})
-    assert "Tick+some" in r.headers["location"].replace("%20", "+")
+    assert "Select+some" in r.headers["location"].replace("%20", "+")
     admin.post("/admin/comments/bulk", data={"action": "approve", "all_matching": "1", "in_tab": "pending",
                                              "in_post": slug, "in_q": "Otter note"})
     assert comments.count_by_status("approved", slug, q="Otter note") == 2
     r = admin.post("/admin/media/bulk", data={"action": "delete", "all_matching": "1", "in_tab": "gallery"})
-    assert "Tick+some" in r.headers["location"].replace("%20", "+")
+    assert "Select+some" in r.headers["location"].replace("%20", "+")
 
 
 def test_template_name_is_the_title_as_real_text(admin):
@@ -681,7 +681,7 @@ def test_ticking_posts_in_trash(admin):
     assert "Restored%202%20posts" in r.headers["location"]
     assert posts.get_post(a) and posts.get_post(b) and not posts.get_post(c)
     # nothing ticked, or something that isn't in trash: nothing happens
-    assert "Tick" in admin.post("/admin/posts/trash-bulk", data={"action": "delete", "slugs": [a]}).headers["location"]
+    assert "Select" in admin.post("/admin/posts/trash-bulk", data={"action": "delete", "slugs": [a]}).headers["location"]
     assert posts.get_post(a)
     admin.post("/admin/posts/trash-bulk", data={"action": "delete", "slugs": ["../../etc/passwd", c]})
     assert c not in {t["slug"] for t in posts.list_trash()}

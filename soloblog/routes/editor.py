@@ -902,7 +902,7 @@ def PagePanel(row, start=None, page=False):
                                       ("author", "About the author"))],
                 P("Beside the post where there's room - under it on a phone, on a wide page or on slides.",
                   cls="text-xs text-base-content/60"),
-                P("Off for this post: Side panels isn't ticked under Show.", data_off_note=True, hidden=True,
+                P("Off for this post: Side panels isn't selected under Show.", data_off_note=True, hidden=True,
                   cls="text-xs text-warning"),
                 data_off_unless="extras=sides", cls="grid gap-3"),
             cls="grid gap-3"
@@ -2414,7 +2414,7 @@ def trash_bulk(session, action: str = "", slugs: list[str] = None, return_to: st
     else:
         chosen = [slug for slug in (slugs or []) if slug in trashed]
     if action not in ("restore", "delete") or not chosen:
-        return _toast_redirect(target, "Tick some posts first", "error")
+        return _toast_redirect(target, "Select some posts first", "error")
     for slug in chosen:
         posts.restore_from_trash(slug) if action == "restore" else posts.delete_forever(slug)
     n = f"{len(chosen)} post{'s' if len(chosen) != 1 else ''}"

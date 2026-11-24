@@ -145,7 +145,7 @@ and behaves.
    away with the page, stays at the top, or floats over the page - and a
    **Header layout**: the menu beside your site's name, behind a button,
    or on a row of its own.
-3. Under **Footer**, choose a **Layout**. In **What to show**, tick what
+3. Under **Footer**, choose a **Layout**. In **What to show**, select what
    goes in it - your bio, social links, pages, the copyright line and the
    small print - and drag them into the order you want.
 
@@ -198,7 +198,7 @@ Choose how your homepage and tag pages show the list of your posts.
 2. Under **Posts are shown as**, choose **List**, **Cards**,
    **Magazine** (the newest post large, the rest as cards), **Minimal**
    (only dates and titles) or **Timeline**.
-3. Under **Each post in the list shows**, tick what to show for each post
+3. Under **Each post in the list shows**, select what to show for each post
    - its cover image, date, reading time, summary and tags.
 4. Choose how many **Posts per page**.
 
@@ -221,9 +221,9 @@ author box.
 2. For **Tag cloud**, **Archive links** and **About the author**, choose
    where each one goes: under the posts, on the left, on the right, or
    off.
-3. Under **Shows on**, tick where each one appears: **The blog roll**
+3. Under **Shows on**, select where each one appears: **The blog roll**
    (the list of your posts), **Posts** and **Pages**. **Shows on** is
-   hidden while a panel is off, and clearing every tick turns it off.
+   hidden while a panel is off, and clearing every checkbox turns it off.
 4. Drag them into the order you want.
 
 On a phone, on a wide page, on slides or on a page with a `Wide` or

@@ -171,7 +171,7 @@ the lines straight under `Section:`. Also written `Section: Posts`.
 ### Section: Compare
 
 A table of options. Write a table; ✓ or yes and ✗ or no in its cells
-show as ticks and crosses. Also written `Section: Comparison`.
+show as checkmarks and crosses. Also written `Section: Comparison`.
 
 ### Section: Steps
 
@@ -365,7 +365,7 @@ It also reads:
   section's words, under its `Style:` line.
 - Two links on one line, like `[Try it](/demo) · [Learn more](/about)`,
   are a main button and a quieter one.
-- A short bulleted list under the buttons shows as small ticked points
+- A short bulleted list under the buttons shows as small points with checkmarks
   in a row.
 
 ### Section: Bento grid
@@ -384,7 +384,7 @@ heading, a line for each: `Serves:` (or `Servings:`, `Yield:`, `Makes:`),
 
 ### Section: Ingredients
 
-A list readers can tick off - each item crosses out when ticked. Under
+A list readers can check off - each item crosses out when checked. Under
 the heading: a list. Text before or after the list stays as it is.
 
 ### Section: Method
@@ -396,7 +396,7 @@ numbered list. Also written `Section: Instructions` and
 Search engines understand a page with an Ingredients or a Method section
 as a recipe. They read the first Ingredients, the first Method and the
 first Recipe facts on the page. To give readers a **Print** button at the
-top, tick **Print or save as PDF** under **Show** in
+top, select **Print or save as PDF** under **Show** in
 [Post settings](reference.md#page), as the Recipe template does.
 
 ### Section: Interview

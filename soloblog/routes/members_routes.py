@@ -847,7 +847,7 @@ def bulk_members(session, action: str = "", ids: list[int] = None, return_to: st
     else:
         rows = [m for m in (members.get(i) for i in (ids or []) if i) if m]
     if not rows or action not in ("export", "remove"):
-        return status_redirect(target, "Tick some members first", "error")
+        return status_redirect(target, "Select some members first", "error")
     if action == "export":
         return Response(members.export_csv([m["id"] for m in rows]), media_type="text/csv",
                         headers={"Content-Disposition": 'attachment; filename="members.csv"',

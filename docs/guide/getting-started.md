@@ -44,7 +44,7 @@ you share it:
 - **Use a custom domain**, a domain like yourname.com.
 - **Write your first post**.
 
-Select one to open the **Settings** page where it's done. Each is ticked
+Select one to open the **Settings** page where it's done. Each is checked
 off by itself once it is - there's nothing to mark.
 
 The same list stays in **Getting started**, at the bottom of the admin
@@ -165,7 +165,7 @@ you're logged in.
   Select the empty box to see your last five searches - pick one to run
   it again, or **Clear recent searches**. They stay in this browser only.
 
-**Want to work on many posts at once - filters, ticking rows, Select
+**Want to work on many posts at once - filters, selecting rows, Select
 all?** See [Manage posts in bulk](run.md#manage-posts-in-bulk).
 
 ## Make it yours in 10 minutes

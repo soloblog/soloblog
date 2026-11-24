@@ -263,7 +263,7 @@ def DoneCard(s):
         Div(Div(
             StepsBar(INDEX["done"]),
             H1(f"{s['site_title']} is ready", cls="text-xl font-bold"),
-            P("A few things to do before you share it. Each is ticked off as you do it, and the list stays in "
+            P("A few things to do before you share it. Each is checked off as you do it, and the list stays in "
               "Getting started, at the bottom of the admin menu.", cls="text-sm text-base-content/60") if left else None,
             *Progress_(steps),
             Ul(*[StepRow(*step) for step in steps], cls="flex flex-col gap-1 mt-4 -mx-3"),

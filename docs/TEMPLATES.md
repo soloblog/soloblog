@@ -100,7 +100,7 @@ Review (Reviews).
 | Sign-up (also Signup, Newsletter) | The text | The newsletter sign-up box under the text. |
 | Contact form (also Contact) | The text | The contact form under the text. |
 | Latest posts (also Posts) | `Count:` (1 to 12, Default three), `Tag:` (Default any) | The newest posts as cards. |
-| Compare (also Comparison) | A table; ticks and crosses | A table of options with ticks. |
+| Compare (also Comparison) | A table; checkmarks and crosses | A table of options with checkmarks. |
 | Steps (also How it works) | The first numbered list | Numbered steps as cards. |
 | Milestones (also Timeline) | Each `###` a dated entry, its date before a `·` | Entries on a line. |
 | Events (also Talks) | Each `###` an event; `Date:`, `Place:`, words, links | Events to come, then past ones by their date. |
@@ -120,7 +120,7 @@ Review (Reviews).
 | Hero | A `Label:` line (Window only), the first image, a paragraph of links or a Buttons line (buttons), a short list (points), the `##` | A big heading, a line and a button over its image on a dark layer. Style Window: the label, a very big heading, the line, buttons, points and the image framed as a window. |
 | Bento grid (also Bento) | Each `###` a tile, the first big | Tiles of different sizes. |
 | Recipe facts | Each `Key: value` line (Serves, Servings, Yield or Makes; Prep; Cook or Bake; Total) | A strip of facts, side by side in a wide column and one under another in a narrow one. |
-| Ingredients | The first list | Items to tick off that cross out. |
+| Ingredients | The first list | Items to check off that cross out. |
 | Method (also Instructions, Directions) | The first numbered list | Steps with big numbers. |
 | Interview | Paragraphs that start with a bold speaker (`**Sam:**`) | Chat bubbles: the first speaker plain on the left, the others in the main colour on the right. |
 | Contents (also Parts) | `Series:` (Default is this page's own series) | A numbered list of the series' live parts, the current one marked; nothing for readers while it's empty, a note for the admin. |
