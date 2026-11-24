@@ -294,15 +294,15 @@ site, or to its footer at the bottom.
    **Blog**, are offered there too.
 4. Switch **Published** on and select **Save**.
 
-The page is now in your menu or footer, at a short address like
+The page is now in your menu or footer, at a short URL like
 `/about`. It shows only its title, cover image and text - no date, share
 buttons or author box, as those suit posts more than pages.
 
-**Is the address you want taken?** A few names are Soloblog's own, like
+**Is the URL you want taken?** A few names are Soloblog's own, like
 `/contact` and `/search`. A page with one of those names stays at
-`/post/` and its name, and **Post settings** says so under its address.
-Choose another address there, or see
-[Addresses Soloblog uses](reference.md#addresses-soloblog-uses).
+`/post/` and its name, and **Post settings** says so under its URL.
+Choose another URL there, or see
+[URLs Soloblog uses](reference.md#urls-soloblog-uses).
 
 **Want the date or share buttons on it after all?** Tick them in **Post
 settings > Page**, under **Show**.
@@ -355,7 +355,7 @@ instead.
 The page is now the front of your site. Your posts move to `/blog`, and
 your menu gets a **Blog** link to them. The page itself isn't listed
 among your posts or in your feeds, and search finds it at your
-homepage's address - unlisted or not.
+homepage's URL - unlisted or not.
 
 **Want more on the homepage than the page itself?** Under **It also
 shows**, tick what to add - its title, reactions, share buttons, a
@@ -394,16 +394,16 @@ notes yet**. It comes back when the page does.
 **To add a link to another site, a tag or one of your own pages:**
 
 1. Select **New post** and give it the title the menu should show.
-2. Open **Post settings > Page**, select **More**, and type the address in
+2. Open **Post settings > Page**, select **More**, and type the URL in
    **Link to**. Or select **Pick** to choose one of your posts or built-in
    pages.
 3. Open **Post settings > Publishing**, set **Where it appears** to **In
    the menu** or **In the footer**, switch **Published** on, and select
    **Save**.
 
-Selecting it in the menu goes straight to that address.
+Selecting it in the menu goes straight to that URL.
 
-**Want a tag in the menu?** Use the tag's address in **Link to**, like
+**Want a tag in the menu?** Use the tag's URL in **Link to**, like
 `/tag/travel`.
 
 **Which built-in pages are there?** `/archive` (every post, by month),
@@ -414,7 +414,7 @@ members' pages - see
 can be added with **Add to menu**; the members' pages are only a link.
 
 **Writing about someone else's page?** Start from the **Link post**
-template, put the page's address in **Link to**, and write your thoughts.
+template, put the page's URL in **Link to**, and write your thoughts.
 Your title links there, and a button under your words does too.
 
 ## Start a series
@@ -429,7 +429,7 @@ parts of a story or the lessons of a course.
 4. Save each post.
 
 Each post in the series now shows which part it is, like "Part 2 of 4",
-with links to the others. The address `/series/` followed by the series'
+with links to the others. The URL `/series/` followed by the series'
 name lists every part, in order.
 
 **Writing a tutorial?** Start each part from the **Docs / guide**
@@ -463,7 +463,7 @@ digital garden - kept beside your blog.
 4. Select **Save**.
 
 Each note lists the notes it links to, and the notes that link back to
-it. The address `/wiki` is your wiki's front page: notes to start from,
+it. The URL `/wiki` is your wiki's front page: notes to start from,
 the latest edited, the most read, and every note from A to Z.
 
 **Do notes show in the blog?** No, they live in the wiki. Tags, search,

@@ -13,7 +13,7 @@ OFF = {"crosspost_bluesky": "0", "crosspost_mastodon": "0", "bluesky_handle": ""
 
 
 def _site(admin, **fields):
-    return admin.post("/admin/settings/address", headers={"hx-request": "true"},
+    return admin.post("/admin/settings/url", headers={"hx-request": "true"},
                       data={**fields, "declared_fields": ",".join(fields)})
 
 

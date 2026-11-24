@@ -158,7 +158,7 @@ async def _json(req):
     if "page_width" in fields and fields["page_width"] not in posts.PAGE_WIDTHS:
         return None, _error(400, "page_width is empty (the site's column) or wide")
     if fields.get("link_url") and posts.clean_link(fields["link_url"]) != fields["link_url"].strip():
-        return None, _error(400, "link_url is an address starting with https://, or a path on this site")
+        return None, _error(400, "link_url is a URL starting with https://, or a path on this site")
     if "visibility" in fields and fields["visibility"] not in posts.VISIBILITIES:
         return None, _error(400, "visibility is public, members or paid")
     if "pin_location" in fields and fields["pin_location"] not in ("", *posts.VALID_PIN_LOCATIONS):
@@ -379,14 +379,14 @@ async def api_media(req):
         except (ValueError, AttributeError):
             return _error(400, "Send a file, or JSON with \"url\"")
         if not isinstance(url, str) or not url.startswith(("http://", "https://")):
-            return _error(400, "url is an http or https address")
+            return _error(400, "url is an http or https URL")
         try:
             data = netguard.fetch(url, max_bytes=MAX_IMAGE)
         except netguard.Blocked as e:
             return _error(400, f"Couldn't fetch that: {e}")
         except Exception as e:  # anything a server can answer with - see DEVELOPMENT.md > Errors
             log.info("an image for the API couldn't be fetched from %s: %s", urlsplit(url).hostname, e)
-            return _error(400, "Couldn't fetch that address")
+            return _error(400, "Couldn't fetch that URL")
         name = url.rsplit("/", 1)[-1].split("?")[0]
     if len(data) > MAX_IMAGE:
         return _error(413, "That image is too big - 8 MB at most")

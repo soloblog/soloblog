@@ -17,7 +17,7 @@ CODE = {"custom_head": '<meta name="custom-probe" content="1">', "custom_css": "
 
 
 def test_search_and_code_settings(admin, client):
-    r = admin.post("/admin/settings/address", data=SITE, headers={"hx-request": "true"})
+    r = admin.post("/admin/settings/url", data=SITE, headers={"hx-request": "true"})
     assert "Saved" in r.text
     r = admin.post("/admin/settings/integrations", data={**CODE, "declared_fields": "custom_head,custom_css"},
                    headers={"hx-request": "true"})
@@ -29,10 +29,10 @@ def test_search_and_code_settings(admin, client):
         assert '<meta name="custom-probe" content="1">' in public
         assert "--probe:1" in public and "</style><script>" not in public
         # never on admin pages
-        admin_page = admin.get("/admin/settings?tab=address").text
+        admin_page = admin.get("/admin/settings?tab=url").text
         assert '<meta name="custom-probe"' not in admin_page and "--probe:1" not in admin_page.split("</head>")[0]
         # a whole tag pasted as the code is refused
-        r = admin.post("/admin/settings/address", data={**SITE, "google_site_verification": '<meta content="x">'},
+        r = admin.post("/admin/settings/url", data={**SITE, "google_site_verification": '<meta content="x">'},
                        headers={"hx-request": "true"})
         assert "text-error" in r.text and settings.get("google_site_verification") == ""
     finally:

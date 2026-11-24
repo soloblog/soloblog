@@ -186,7 +186,7 @@ def _check_request(client_id, redirect_uri, code_challenge, code_challenge_metho
         return None, "The app needs to prove it's the one asking (PKCE with S256), and it didn't."
     info = client_info(client_id)
     if not _redirect_allowed(client_id, redirect_uri, info):
-        return None, "The app asked to be sent back to an address that isn't its own."
+        return None, "The app asked to be sent back to a URL that isn't its own."
     return info, None
 
 
@@ -424,7 +424,7 @@ async def micropub(req):
         if q == "source":
             slug = _slug_from_url(req.query_params.get("url", ""))
             if not slug:
-                return _mp_error(400, "invalid_request", "No post at that address")
+                return _mp_error(400, "invalid_request", "No post at that URL")
             row = posts.get_post(slug)
             props = {"name": [row["title"]], "content": [posts.load_post_body(slug)],
                      "category": [t.strip() for t in (row["tags"] or "").split(",") if t.strip()],
@@ -486,11 +486,11 @@ async def _act(req, action: dict):
             return err
         slug = urlsplit(url).path.rstrip("/").rsplit("/", 1)[-1]
         if not posts.restore_from_trash(slug):
-            return _mp_error(400, "invalid_request", "Nothing in trash at that address")
+            return _mp_error(400, "invalid_request", "Nothing in trash at that URL")
         return Response(status_code=204)
     slug = _slug_from_url(url)
     if not slug:
-        return _mp_error(400, "invalid_request", "No post at that address")
+        return _mp_error(400, "invalid_request", "No post at that URL")
     row = posts.get_post(slug)
     if what == "delete":
         key, err = api_key(req, "publish", via="micropub")

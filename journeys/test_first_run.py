@@ -64,7 +64,7 @@ def test_the_setup_screens_then_getting_started(owner):
     assert "Finish setting up" not in box.inner_text()
     box.get_by_role("link", name="Describe your site").first.click()
     owner.page.wait_for_load_state("networkidle")
-    assert "tab=address" in owner.page.url and owner.page.locator('[name="meta_description"]').is_visible()
+    assert "tab=url" in owner.page.url and owner.page.locator('[name="meta_description"]').is_visible()
     # the setup runs again from Settings > Name and homepage
     owner.go("/admin/settings?tab=name&panel=name-identity")
     owner.page.get_by_role("link", name="Run setup again").click()

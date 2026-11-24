@@ -11,7 +11,7 @@ its own entry in [Sections and templates](sections-templates.md).
 **Settings**, in the admin menu, opens a list of pages, grouped under
 small headings. These are the headings and the pages under each:
 
-- **Site:** Name and homepage, Address and search, Language and time
+- **Site:** Name and homepage, URL and SEO, Language and time
 - **Design:** Style, Blog layout, Posts, Header and footer, Banner
 - **You:** Profile and links
 - **Readers:** Comments and messages, Newsletter, Members
@@ -67,11 +67,11 @@ The choice each setting starts with on a new Soloblog site is tagged
 - **Your homepage shows** - What people see first when they visit: your latest posts; your wiki's front page; or one of your pages - **Pick** one that's in your menu or footer, or an unlisted post to keep it out of the menu. With a page or the wiki as your homepage, your posts move to `/blog`, and a Blog link is added to the menu.
 - **It also shows** - When a page is your homepage: tick what else it shows - the title (with the date and cover), reactions, share buttons, related posts, About the author, the newsletter sign-up, comments.
 
-## Address and search
+## URL and SEO
 
-### Site address
+### Site URL
 
-- **Address** - Your site's web address, like `https://example.com`. It starts as the address you first set up Soloblog at. Change it when you move to a new domain. If the field can't be changed, your host sets the address (as `BASE_URL`): change it there instead.
+- **URL** - Your site's URL, like `https://example.com`. It starts as the URL you first set up Soloblog at. Change it when you move to a new domain. If the field can't be changed, your host sets the URL (as `BASE_URL`): change it there instead.
 
 ### Search engines
 
@@ -91,7 +91,7 @@ Under **Advanced**. Only needed if you use Google Search Console or Bing Webmast
 
 Under **Advanced**.
 
-- **Send old addresses somewhere new** - So links to pages that have moved keep working. One on each line: the old address, a space, and the new one - a page here or another site. End the old one with `*` for everything under it (`/2019/* /archive`). Renamed and imported posts need nothing here: their old addresses already work.
+- **Old and new URLs** - So links to pages that have moved keep working. One on each line: the old URL, a space, and the new one - a page here or another site. End the old one with `*` for everything under it (`/2019/* /archive`). Renamed and imported posts need nothing here: their old URLs already work.
 
 ## Language and time
 
@@ -110,7 +110,7 @@ Your posts, translated for you into other languages by a service you choose. A r
 
 - **Translation service** - Who does the translating: DeepL, Google Cloud Translation or LibreTranslate. You need an account with them; each has its own prices.
 - **API key** - The key the service gives you, so your site can use it: DeepL's from deepl.com/pro-api, Google's from Google Cloud, under Cloud Translation. LibreTranslate: only if your server asks for one.
-- **LibreTranslate server** - Your own LibreTranslate server's address, if you run one. Empty: libretranslate.com, which needs a key.
+- **LibreTranslate server** - Your own LibreTranslate server's URL, if you run one. Empty: libretranslate.com, which needs a key.
 - **Offer posts in** - The languages to translate into. Each post gets a page in each one, like `/es/post/your-post`. Every language is another translation of every post, so check the service's prices.
 - **Translate every post now** - Translates the posts you wrote before turning it on. New posts are translated by themselves.
 
@@ -285,7 +285,7 @@ Under **Advanced**. Phones let people add a website to their home screen, where 
 ### Social links
 
 - **Social links** - Links to your accounts on X, Facebook, Mastodon, Bluesky, Threads, LinkedIn, GitHub, Instagram, YouTube and your website. Drag to reorder - share buttons follow the same order.
-- **More links** - Any other links, one on each line: `Name|https://address`. Add `|icon` to choose one: link, globe, mail, heart, star, bookmark.
+- **More links** - Any other links, one on each line: `Name|URL`. Add `|icon` to choose one: link, globe, mail, heart, star, bookmark.
 
 ### Support
 
@@ -298,7 +298,7 @@ Links where readers can pay to support your writing, shown as buttons.
 ### Links page
 
 - **Turn on the links page** (on/off) - Your photo, bio and a stack of links, at `/links` - the link to put in a social profile.
-- **Links** - One on each line: `Name|https://address`.
+- **Links** - One on each line: `Name|URL`.
 - **Also show** - Your social links, support links and newest posts.
 
 ## Comments and messages
@@ -324,7 +324,7 @@ Links where readers can pay to support your writing, shown as buttons.
 
 Shown while comments or the contact form is on.
 
-- **Blocked words** - One word, phrase, email address or website address on each line. Comments and messages with any of them go straight to the trash.
+- **Blocked words** - One word, phrase, email address or website on each line. Comments and messages with any of them go straight to the trash.
 
 ### Notifications
 
@@ -332,7 +332,7 @@ Shown while comments or the contact form is on.
 
 - **Email me about new comments** (on/off) - When one is waiting for your approval. With Soloblog's own comments. Needs email set up.
 - **Also email messages to** - Your address, to get each message by email as well. Replying to the email answers the visitor. With Soloblog's own contact form. Needs email set up.
-- **Send new comments and messages to** - To get a message in Slack or Discord when a comment or contact message arrives. Paste a webhook address - a link Slack or Discord makes for posting into one of your channels.
+- **Send new comments and messages to** - To get a message in Slack or Discord when a comment or contact message arrives. Paste a webhook URL - a link Slack or Discord makes for posting into one of your channels.
 
 Spam protection is in [Security](#spam-protection).
 
@@ -404,7 +404,7 @@ A row showing its current state; **Edit** opens it. Each new post is shared from
 
 The fediverse is a network of social sites - Mastodon, Threads and others - where people follow each other across sites. Your blog can be an account there. See [Join the fediverse](grow.md#join-the-fediverse).
 
-- **Let people follow this blog** (on/off) - Needs your site at a public `https://` address.
+- **Let people follow this blog** (on/off) - Needs your site at a public `https://` URL.
 - The settings below appear once **Let people follow this blog** is on.
 - **Username** - Letters, numbers and _. Changing it later loses your followers.
 
@@ -467,7 +467,7 @@ your site sends it. Site health checks both.
 ### Admin email
 
 - **Email address** and **Type it again** - Where your site sends you password resets, sign-in alerts and news about comments. Never shown on your site. Saved with the page's **Save**, once both match.
-- **Password** - Your admin password, needed only when you change the address. The old address gets an email saying it was changed.
+- **Password** - Your admin password, needed only when you change the email address. The old address gets an email saying it was changed.
 - **Email me when a new device signs in** (on/off, on to start with) - An email the first time someone logs in to your admin from a new browser. If it wasn't you, change your password and log out other devices. The same switch sends you an email when someone is trying many passwords on your site.
 
 ### Sending email
@@ -501,7 +501,7 @@ An API key is a password for an app, a script or an AI assistant, letting it wor
 
 A webhook tells another service, like Zapier or your own script, when a post goes live or a comment arrives. See [Webhooks](../API.md#webhooks).
 
-- **Address** and **Tell it when** - The address to tell, and what about. **Add** saves it; **Send a test** checks it's listening; **Remove** stops it.
+- **URL** and **Tell it when** - The URL to tell, and what about. **Add** saves it; **Send a test** checks it's listening; **Remove** stops it.
 
 ### Stock photos
 
@@ -515,7 +515,7 @@ Search free photos from Pixabay, Pexels and Unsplash in the image picker. A row 
 
 Gives you an **Update now** button when a new version of Soloblog is out. A row showing whether it's set up; **Edit** opens it.
 
-- **Update hook** - A link your host gives you that redeploys your site (its deploy hook), or Watchtower's address if you run Soloblog with Docker Compose. See [Set up the Update now button](../DEPLOYMENT.md#set-up-the-update-now-button).
+- **Update hook** - A link your host gives you that redeploys your site (its deploy hook), or Watchtower's URL if you run Soloblog with Docker Compose. See [Set up the Update now button](../DEPLOYMENT.md#set-up-the-update-now-button).
 - **Token** - Watchtower's `WATCHTOWER_HTTP_API_TOKEN`. Empty for a deploy hook.
 
 ### Custom code
@@ -591,7 +591,7 @@ Moving from WordPress, Ghost, Medium, Substack or a static site? Upload its expo
 
 - **Copy images into the media library** (on/off) - Copies the old blog's images to your site, so they keep working when the old blog is gone.
 - **Import as drafts** (on/off) - Each post arrives as a draft, so you can look it over before you publish it.
-- **Old blog's address** - Helps bring images across from Ghost and some WordPress sites.
+- **Old blog's URL** - Helps bring images across from Ghost and some WordPress sites.
 
 ## Post settings
 
@@ -633,14 +633,14 @@ own. Beside the editor, use the editor's own **Save**.
   search and the newsletter. The password is kept as you typed it, so you
   can look it up to share it again - don't use one you use anywhere else.
 - **Preview link** (drafts and scheduled posts, once saved) - At the top
-  of Post settings: a private address to send someone, so they can read
+  of Post settings: a private link to send someone, so they can read
   the post before it's published, without logging in. **Copy** copies it.
 
 ### Details
 
-- **URL** - The post's address: a short one like `/about` for a page in
+- **URL** - The post's URL: a short one like `/about` for a page in
   the menu or footer, `/post/…` for the rest. Change it and the old
-  address still takes people to the new one.
+  URL still takes people to the new one.
 - **Cover image** - At the top of the post, on cards, and when the post is
   shared.
 - **Hide the cover in post lists** (on/off) - Keeps the cover off the
@@ -846,10 +846,10 @@ contents, get a copy-link button, and can fold (see
 
 | What | You type | You get |
 |---|---|---|
-| **Link** | `[words](https://example.com)` | The words, linking to that address |
+| **Link** | `[words](https://example.com)` | The text, linking to that URL |
 | **Link to a post or page** | Nothing - choose it, then pick a post or page from the list | A link to one of your own posts or pages, with its title as the words |
 | **Link by title** | `[[Another post]]`, or `[[its-url|some text]]` for other words. Type `[[` and a few letters of the title for suggestions. | A link to another of your posts, by its title or its address. Until that post exists, the link shows red for you and as plain text for visitors. |
-| Web address | `<https://example.com>` | The address itself, as a link. An address without `<` and `>` around it stays plain text. |
+| URL | `<https://example.com>` | The URL itself, as a link. A URL without `<` and `>` around it stays plain text. |
 
 ### Lists
 
@@ -898,8 +898,8 @@ joins the last item.
 |---|---|---|
 | **Image from your library** | Nothing - choose it, then pick a picture you've uploaded, or upload one | The picture. On a line of its own, its caption and credit from **Media** show under it. |
 | **Upload image** | Nothing - choose it, then pick a picture on your device. Or paste or drop one into your writing. | The picture, added to **Media** and to the post |
-| **Image by URL** | `![Text](address)`, with the picture's web address | A picture from another site |
-| Picture description | The Text in `![Text](address)` | A description of the picture. Screen readers read it aloud, search engines use it, and it shows if the picture can't load. Left empty, a picture from your library uses its **Alt text** from **Media**. |
+| **Image by URL** | `![Text](URL)`, with the image's URL | A picture from another site |
+| Picture description | The Text in `![Text](URL)` | A description of the picture. Screen readers read it aloud, search engines use it, and it shows if the picture can't load. Left empty, a picture from your library uses its **Alt text** from **Media**. |
 | **Gallery** | Nothing - choose it, then pick the pictures | Several pictures together, as a grid, a slider and more - see [Galleries](#galleries) |
 
 ### Callouts, tabs and other blocks
@@ -937,7 +937,7 @@ Example callout:
 | What | You type | You get |
 |---|---|---|
 | **Video or embed** | The link to a video, social media post, map or form, alone on a line of its own | The video, post, map or form, shown in the post. It loads only when a reader selects it. See [Embed from other sites](writing.md#embed-from-other-sites). |
-| Your own audio, video or PDF | Its address from **Media**, alone on a line of its own | A player, or the PDF shown in the post - see [Add video, audio and PDFs](writing.md#add-video-audio-and-pdfs) |
+| Your own audio, video or PDF | Its URL from **Media**, alone on a line of its own | A player, or the PDF shown in the post - see [Add video, audio and PDFs](writing.md#add-video-audio-and-pdfs) |
 | **Math** | `$E = mc^2$` in a sentence, or `$$` on lines of their own above and below a formula | The formula, set as in a textbook. No space just inside the `$` signs - that's how "$5 and $10" stays money. Switch on **Math** in **Settings > Editor > Markdown** first. |
 
 The parts of a page - a `##` heading with a `Section:` line under it -
@@ -989,9 +989,9 @@ in the middle in **Settings > Posts > Breadcrumbs**.
 Feedly or NetNewsWire: RSS at `/rss`, Atom at `/atom.xml`, JSON Feed at `/feed.json`,
 and one per tag at `/tag/<name>/rss`.
 
-### Addresses Soloblog uses
+### URLs Soloblog uses
 
-A page in the menu or footer gets a short address from its name, like
+A page in the menu or footer gets a short URL from its name, like
 `/about`. These names are Soloblog's own, so a page with one of them
 stays at `/post/` and its name instead:
 

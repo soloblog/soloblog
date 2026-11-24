@@ -41,7 +41,7 @@ _ICONS = {
 # and Ghost group theirs (docs/DEVELOPMENT.md > Writing and settings).
 # The keys are in addresses (?tab=) - rename the labels only.
 SETTINGS_GROUPS = [
-    ("Site", [("name", "Name and homepage"), ("address", "Address and search"), ("language", "Language and time")]),
+    ("Site", [("name", "Name and homepage"), ("url", "URL and SEO"), ("language", "Language and time")]),
     ("Design", [("style", "Style"), ("blog", "Blog layout"), ("posts", "Posts"),
                 ("header", "Header and footer"), ("banner", "Banner")]),
     ("You", [("profile", "Profile and links")]),

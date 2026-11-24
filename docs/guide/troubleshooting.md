@@ -57,8 +57,8 @@ the change straight away. Your readers will see it within the hour.
 
 ## Links in feeds or the sitemap say "localhost"
 
-Your site doesn't know its public address yet. Type it in **Settings >
-Address and search**, under **Site address**.
+Your site doesn't know its public URL yet. Type it in **Settings >
+URL and SEO**, under **Site URL**.
 
 ## Emails aren't arriving
 
@@ -70,8 +70,8 @@ provider's SPF and DKIM records to your domain. See
 
 ## Fediverse follows don't arrive
 
-Two things need to be right. The site address, in **Settings > Search
-engines**, must be its public `https://` address. And if your site runs
+Two things need to be right. The site URL, in **Settings > URL and
+SEO**, must be its public `https://` URL. And if your site runs
 behind a reverse proxy (like Caddy or nginx, which add HTTPS), it must
 pass the original `Host` header through - see
 [Put HTTPS in front](../DEPLOYMENT.md#put-https-in-front).
@@ -132,13 +132,13 @@ Only links from the services listed in
 [Embed from other sites](writing.md#embed-from-other-sites) become
 players or cards, and only when the link is on a line by itself.
 
-## My page isn't at the short address I expected
+## My page isn't at the short URL I expected
 
-Pages in your menu or footer usually get a short address, like `/about`.
+Pages in your menu or footer usually get a short URL, like `/about`.
 If the one you wanted is already used by Soloblog itself (like `/search`
 or `/tags`), your page stays at `/post/…` instead -
 **Post settings > Details** says so. Change its **URL** there to
-something else to give it a short address.
+something else to give it a short URL.
 
 ## Still stuck?
 

@@ -115,11 +115,11 @@ def test_english_spelling(admin, client):
         # Help, written in British English, reads American on an American site
         assert "colour" not in admin.get("/admin/help?tab=design").text.lower().split('data-toc')[-1]
         # saved from Settings, and only a known spelling
-        admin.post("/admin/settings/address", headers={"hx-request": "true"},
+        admin.post("/admin/settings/url", headers={"hx-request": "true"},
                    data={"site_language": "en", "english_spelling": "gb",
                          "declared_fields": "site_language,english_spelling"})
         assert settings.get("english_spelling") == "gb"
-        admin.post("/admin/settings/address", headers={"hx-request": "true"},
+        admin.post("/admin/settings/url", headers={"hx-request": "true"},
                    data={"english_spelling": "klingon", "declared_fields": "english_spelling"})
         assert settings.get("english_spelling") == "us"
         # another language: no spelling games

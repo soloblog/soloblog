@@ -54,8 +54,8 @@ do what it allows.
 
 ## Making a request
 
-Every address starts with your site's address and `/api/v1`. The key goes
-in the `Authorization` header - never in the address, where logs keep it:
+Every URL starts with your site's URL and `/api/v1`. The key goes
+in the `Authorization` header - never in the URL, where logs keep it:
 
 ```bash
 curl https://yourblog.com/api/v1/site \
@@ -129,13 +129,13 @@ What a post can have:
 | `body` | Markdown |
 | `tags` | A list of words, or one string with commas |
 | `summary` | Text |
-| `cover_image` | An image's address - one from [Images](#images) |
+| `cover_image` | An image's URL - one from [Images](#images) |
 | `visibility` | `public`, `members` or `paid` |
 | `unlisted`, `comments_enabled` | `true` or `false` |
 | `title_style` | `""` (left), `centre` or `hidden` |
 | `page_width` | `""` (the site's column) or `wide` |
 | `slides`, `in_wiki`, `remind_update` | `true` or `false` - the page as slides, a note in the wiki, a reminder to update it |
-| `link_url` | An address starting with `https://`, or a path on this site - the title points there |
+| `link_url` | A URL starting with `https://`, or a path on this site - the title points there |
 | `series_name`, `series_order` | A series' name, and the post's place in it |
 | `seo_title` | The title search engines show |
 | `published` | `true` publishes it - needs a **Publish** key |
@@ -185,7 +185,7 @@ curl https://yourblog.com/api/v1/media \
   -F "file=@photo.jpg"
 ```
 
-Or give an address for Soloblog to fetch:
+Or give a URL for Soloblog to fetch:
 
 ```bash
 curl https://yourblog.com/api/v1/media \
@@ -214,7 +214,7 @@ Something wrong gets a status and a sentence saying what:
 | 403 | The key can't do that, or you're on the demo |
 | 404 | No post with that slug |
 | 413 | Too big - 2 MB for JSON, 8 MB for an image |
-| 429 | Too many requests - 600 per 10 minutes for a key; 20 wrong keys in 15 minutes from one address |
+| 429 | Too many requests - 600 per 10 minutes for a key; 20 wrong keys in 15 minutes from one IP address |
 
 ## Micropub and signing in
 
@@ -234,7 +234,7 @@ How it works, for the curious:
 - The app sends you to your site's **Connect** page, with a PKCE
   challenge (S256 only - an app that can't prove it's the one asking
   isn't allowed). You choose what it can do.
-- Your site sends you back to the app - only to an address on the app's
+- Your site sends you back to the app - only to a URL on the app's
   own site, or one it lists on its page - with a code that works once,
   for 10 minutes.
 - The app swaps the code for an API key. It's listed under **Settings >
@@ -243,7 +243,7 @@ How it works, for the curious:
 - Micropub posts an **entry** (`h=entry`) as a form or JSON: `name` (the
   title - a note without one is titled by how it begins), `content`
   (text, or HTML that becomes markdown), `category` (tags), `summary`,
-  `photo` (files, or addresses fetched into your media library - public
+  `photo` (files, or URLs fetched into your media library - public
   ones only), `post-status`, `mp-slug` and `bookmark-of` (the page gets a Link to).
   `update` (replace, add, delete), `delete` and `undelete` work on a post
   by its address.
@@ -290,14 +290,14 @@ up to 5 minutes), sent as `Authorization: Ghost <token>`.
 
 | Address (under `/ghost/api/admin/`) | What it is |
 |---|---|
-| `site/` | The site's name and address - no key needed |
+| `site/` | The site's name and URL - no key needed |
 | `users/me/` | Who's signed in |
 | `tags/` | Every tag |
 | `posts/` | List, or create (`html`, or a markdown card in `mobiledoc`) |
 | `posts/{id}/` | Read, update (`PUT`) or move to trash (`DELETE`) |
 | `images/upload/` | Upload an image (multipart, `file`) |
 
-Older apps' addresses (`/ghost/api/v3/admin/` and the like) work the
+Older apps' URLs (`/ghost/api/v3/admin/` and the like) work the
 same. Scopes are as for any key. The site doesn't keep a signed key's
 secret: it works it out from its own `SESSION_SECRET` when it needs it,
 so changing that secret means making these keys again.

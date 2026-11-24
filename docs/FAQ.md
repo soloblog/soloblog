@@ -75,7 +75,7 @@ keeps a copy for you.
 
 Yes. Point your domain at your host - each host explains how in its own
 settings - then open setup at your domain. Already set up at another
-address? Change your site's address in **Settings > Address and search**, to
+URL? Change your site's URL in **Settings > URL and SEO**, to
 something like `https://example.com`. See
 [Use a custom domain](DEPLOYMENT.md#use-a-custom-domain).
 
@@ -139,13 +139,13 @@ comments and settings. See [Where posts are kept](guide/how-it-works.md#where-po
 ### Can I move my blog from WordPress, Ghost, Medium or Substack?
 
 Yes: **Settings > Backup and import > Import from another blog** brings in
-your posts, pages, tags and images, and old addresses keep working. See
+your posts, pages, tags and images, and old URLs keep working. See
 [Move a blog to Soloblog](guide/run.md#move-a-blog-to-soloblog).
 
 ### What's the difference between a post and a page?
 
 A page is a post you put in your site's menu or footer - About, Contact,
-Privacy. It has a short address like `/about`, and stays out of the list
+Privacy. It has a short URL like `/about`, and stays out of the list
 of your posts. See [Make a page for the menu or footer](guide/pages.md#make-a-page-for-the-menu-or-footer).
 
 ### What's the difference between a template, a section and Post settings?
@@ -303,7 +303,7 @@ No. It never sends usage statistics or counts of installs anywhere. See
 
 Yes, with nothing to set up. Add your site to Google Search Console and
 Bing Webmaster Tools to see how it's doing in search - their
-verification codes go in **Settings > Address and search**, under
+verification codes go in **Settings > URL and SEO**, under
 **Advanced**. See
 [Show up in search engines](guide/grow.md#show-up-in-search-engines).
 
@@ -315,7 +315,7 @@ and an image for shares.
 ### Can I hide a post, or the whole site, from search engines?
 
 Yes: **Post settings > Search engines** for one post, or **Settings >
-Address and search** for everything.
+URL and SEO** for everything.
 
 ## Keeping it safe
 

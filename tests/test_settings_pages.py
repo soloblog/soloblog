@@ -27,7 +27,7 @@ def test_pages_save_as_they_change_and_groups_together(admin):
     assert "data-autosave-off" in analytics and " open" not in analytics
     assert re.search(r'data-panel="analytics-main".*?Off</span>.*?>Edit<', html, re.S)
     # rare ones fold away at the foot
-    assert ">Advanced<" in admin.get("/admin/settings?tab=address").text
+    assert ">Advanced<" in admin.get("/admin/settings?tab=url").text
 
 
 def test_set_once_and_rare_settings_fold_away(admin):
@@ -41,7 +41,7 @@ def test_set_once_and_rare_settings_fold_away(admin):
             html = admin.get(f"/admin/settings?tab={tab}").text
             assert re.search(rf'data-panel="{key}".*?>Edit<', html, re.S), tab
         assert "me.bsky.social</span>" in admin.get("/admin/settings?tab=sharing").text
-        rare = {"address": "address-verify", "sharing": "sharing-webmentions", "header": "header-app",
+        rare = {"url": "url-verify", "sharing": "sharing-webmentions", "header": "header-app",
                 "integrations": "integrations-code"}
         for tab, key in rare.items():
             html = admin.get(f"/admin/settings?tab={tab}").text
@@ -191,7 +191,7 @@ def test_every_settings_form_saves_through_its_table(admin):
     from soloblog.ui import SETTINGS_GROUPS
     # every page's address, to the table of the handler it saves through
     tables = {**{f"/admin/settings/{p}": a.GENERAL_FIELDS for p in ("name", "messages", "newsletter", "analytics")},
-              **{f"/admin/settings/{p}": a.SITE_FIELDS for p in ("address", "language", "sharing")},
+              **{f"/admin/settings/{p}": a.SITE_FIELDS for p in ("url", "language", "sharing")},
               **{f"/admin/settings/{p}": a.DESIGN_FIELDS for p in ("style", "blog", "posts", "header", "banner")},
               **{f"/admin/settings/{p}": a.SECRETS_FIELDS for p in ("email", "integrations")},
               "/admin/settings/profile": a.PROFILE_FIELDS}
@@ -327,9 +327,9 @@ def test_folded_sections_say_how_they_stand(admin):
     before = {k: settings.get(k) for k in ("redirects", "webmention_receive")}
     try:
         settings.set_many({"redirects": "/old /new\n/2019/* /archive", "webmention_receive": "1"})
-        site = admin.get("/admin/settings?tab=address").text
-        assert re.search(r'data-panel="address-redirects".*?2 addresses</span>', site, re.S)
-        assert re.search(r'data-panel="address-verify".*?Not set</span>', site, re.S)
+        site = admin.get("/admin/settings?tab=url").text
+        assert re.search(r'data-panel="url-redirects".*?2 redirects</span>', site, re.S)
+        assert re.search(r'data-panel="url-verify".*?Not set</span>', site, re.S)
         sharing = admin.get("/admin/settings?tab=sharing").text
         webmentions = re.search(r'data-panel="sharing-webmentions".*?</summary>', sharing, re.S).group(0)
         assert ">On</span>" in webmentions and ">Edit</span>" in webmentions
@@ -356,7 +356,7 @@ def test_each_settings_page_is_at_its_names_address_and_saves_there(admin):
         for action in set(_re.findall(r'hx-post="(/admin/settings/[a-z-]+)"', html)) - {"/admin/settings/password"}:
             assert action == f"/admin/settings/{key}", (key, action)
     # the old names are gone, not kept as another way in
-    for old in ("general", "site", "appearance", "chrome", "hero", "author", "secrets"):
+    for old in ("general", "site", "appearance", "chrome", "hero", "author", "secrets", "address"):
         assert old not in dict(SETTINGS_SECTIONS)
         assert admin.post(f"/admin/settings/{old}", headers={"hx-request": "true"}).status_code in (404, 405)
 

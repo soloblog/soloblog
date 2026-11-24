@@ -380,7 +380,7 @@ def ImportPanel():
                         help="So they keep working when the old blog is gone.", cls=FIELD_GAP),
             ToggleField("Import as drafts", "as_drafts", checked=False,
                         help="Look each post over before it goes live.", cls=FIELD_GAP),
-            FormField("Old blog's address", Input(name="old_url", type="url", placeholder="https://blog.example.com",
+            FormField("Old blog's URL", Input(name="old_url", type="url", placeholder="https://blog.example.com",
                                                    cls="input input-sm w-full"),
                       help="Helps bring images across from Ghost and some WordPress sites."),
             _button_row(Label(UPLOAD_SVG, Span("Upload", cls="ml-1"),

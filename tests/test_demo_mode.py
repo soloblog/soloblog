@@ -79,7 +79,7 @@ assert c.get("/admin").headers["location"] == "/admin/posts", "admin link"
 # what the server itself would call - a translation server inside the
 # network, the site's own address - can't be changed, by any form
 before = {k: settings.get(k) for k in ("translate_url", "translate_provider", "site_url")}
-c.post("/admin/settings/address", data={"translate_provider": "libretranslate", "translate_url": "http://10.0.0.9:5000",
+c.post("/admin/settings/url", data={"translate_provider": "libretranslate", "translate_url": "http://10.0.0.9:5000",
                                      "site_url": "https://evil.example",
                                      "declared_fields": "translate_provider,translate_url,site_url"},
        headers={"HX-Request": "true"})
@@ -102,7 +102,7 @@ v.cookies.set("preview_preset", "portfolio")
 assert "Things I&#x27;ve made in the evenings" in v.get("/").text.replace("'", "&#x27;"), "portfolio shows Mira's projects page"
 assert "/demo/style/photo" in TestClient(app).get("/styles").text, "offered"
 # custom code is kept out of the pages; everything else saves
-c.post("/admin/settings/address", data={"custom_head": "<script>alert(1)</script>", "redirects": "/x /about",
+c.post("/admin/settings/url", data={"custom_head": "<script>alert(1)</script>", "redirects": "/x /about",
                                      "declared_fields": "custom_head,redirects"}, headers={"HX-Request": "true"})
 with seen_by(c):
     assert settings.get("custom_head") == "" and settings.get("redirects") == "/x /about"

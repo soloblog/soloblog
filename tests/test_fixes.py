@@ -212,7 +212,7 @@ def test_bulk_rename_from_alt_text_or_post(admin):
 
 
 def test_custom_redirects(admin, client):
-    admin.post("/admin/settings/address", headers={"hx-request": "true"}, data={
+    admin.post("/admin/settings/url", headers={"hx-request": "true"}, data={
         "redirects": "/old-page /archive\n/shop https://shop.example.com\n/2019/* /tags\nnot a redirect\n/x javascript:y",
         "declared_fields": "redirects"})
     try:
@@ -223,7 +223,7 @@ def test_custom_redirects(admin, client):
         assert client.get("/2019/05/something", follow_redirects=False).headers["location"] == "/tags"
         assert client.get("/nothing-here", follow_redirects=False).status_code == 404
         # a real page always wins
-        admin.post("/admin/settings/address", headers={"hx-request": "true"},
+        admin.post("/admin/settings/url", headers={"hx-request": "true"},
                    data={"redirects": "/archive /tags", "declared_fields": "redirects"})
         assert client.get("/archive", follow_redirects=False).status_code == 200
     finally:
@@ -682,7 +682,7 @@ def test_settings_live_where_they_are_used(admin):
             "footer_note": "© Mira", "app_icon_url": "/uploads/icon.webp", "app_name": "Mira",
             "declared_fields": "footer_note,app_icon_url,app_name"})
         assert "text-success" in r.text
-        admin.post("/admin/settings/address", headers=hx, data={
+        admin.post("/admin/settings/url", headers=hx, data={
             "meta_description": "Fog and ferries", "share_image_url": "/uploads/share.webp",
             "declared_fields": "meta_description,share_image_url"})
         assert {k: settings.get(k) for k in keys} == {
@@ -698,11 +698,11 @@ def test_settings_live_where_they_are_used(admin):
             "app_icon_url": "https://example.com/i.png", "declared_fields": "app_icon_url"})
         assert "one of your uploads" in r.text and settings.get("app_icon_url") == ""
         pages = {tab: admin.get(f"/admin/settings?tab={tab}").text
-                 for tab in ("name", "header", "address", "integrations", "security", "email", "backup", "sharing")}
+                 for tab in ("name", "header", "url", "integrations", "security", "email", "backup", "sharing")}
         assert 'name="footer_note"' in pages["header"] and 'name="app_name"' in pages["header"]
-        assert 'name="meta_description"' in pages["address"] and 'name="footer_note"' not in pages["name"]
+        assert 'name="meta_description"' in pages["url"] and 'name="footer_note"' not in pages["name"]
         assert 'name="share_image_url"' in pages["sharing"]
-        assert 'name="app_icon_url"' not in pages["address"] and 'name="admin_email"' in pages["email"]
+        assert 'name="app_icon_url"' not in pages["url"] and 'name="admin_email"' in pages["email"]
         assert "S3_BUCKET" in pages["backup"] and "S3_BUCKET" not in pages["integrations"]
     finally:
         settings.set_many(before)
@@ -1010,7 +1010,7 @@ def test_each_step_opens_the_place_its_done(admin):
         settings.set_many({"meta_description": "", "tagline": ""})
         steps = {title: (where, done) for _, title, _, where, done in welcome.next_steps(settings.get_all())}
         for title, panel in (("Protect your login", "security-passkeys"), ("Plan your backups", "backup-download"),
-                             ("Describe your site", "address-search")):
+                             ("Describe your site", "url-search")):
             where = steps[title][0]
             assert f"panel={panel}" in where, title
             assert f'data-panel="{panel}"' in admin.get(where).text, title
@@ -1080,7 +1080,7 @@ def test_the_look_resets_to_soloblogs_own_and_undoes(admin):
 
 def test_custom_code_and_comment_emails_are_where_theyre_about(admin):
     # Custom code was under Search engines, comment emails under Integrations
-    site = admin.get("/admin/settings?tab=address").text
+    site = admin.get("/admin/settings?tab=url").text
     integrations = admin.get("/admin/settings?tab=integrations").text
     comments = admin.get("/admin/settings?tab=messages").text
     assert 'name="custom_head"' not in site and 'name="custom_head"' in integrations
@@ -1365,8 +1365,8 @@ def test_the_insert_menu_offers_a_sections_and_a_gallerys_options_first(admin):
     assert "{ className: 'underline decoration-wavy decoration-error underline-offset-3' }" in script
     init = Path(os.path.join(os.path.dirname(js.__file__), "editor_init.js")).read_text()
     assert "if (here && here[1].length) { names.unshift(BLOCK); first = 0; }" in init
-    for name in ("Site address", "Admin email"):
-        assert name in admin.get("/admin/settings?tab=address" if name == "Site address" else "/admin/settings?tab=email").text
+    for name in ("Site URL", "Admin email"):
+        assert name in admin.get("/admin/settings?tab=url" if name == "Site URL" else "/admin/settings?tab=email").text
     assert "Custom colo" in admin.get("/admin/settings?tab=style").text
 
 

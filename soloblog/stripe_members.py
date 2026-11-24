@@ -182,7 +182,7 @@ def set_up(secret, currency, month, year) -> list:
                                                       "description": "Soloblog: paid members"}, secret=secret)
             out["stripe_webhook_id"], out["stripe_webhook_secret"] = made["id"], made["secret"]
     else:
-        problems.append("Stripe can't tell this site about payments until BASE_URL is its https:// address")
+        problems.append("Stripe can't tell this site about payments until BASE_URL is its https:// URL")
     settings.set_many(out)
     return problems
 

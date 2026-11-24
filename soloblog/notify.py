@@ -56,7 +56,7 @@ def sign_in(request):
     browser = (request.headers.get("user-agent") or "an unknown browser")[:160]
     text = (f"Someone signed in to {s.get('site_title')} from a browser it hasn't seen before.\n\n"
             f"When: {when} ({s.get('timezone') or 'UTC'})\n"
-            f"Address: {ratelimit.client_ip(request)}\n"
+            f"IP address: {ratelimit.client_ip(request)}\n"
             f"Browser: {browser}\n\n"
             "If this was you, there's nothing to do.\n\n"
             "If it wasn't, change your password and log out every other device:\n"

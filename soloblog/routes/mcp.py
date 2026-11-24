@@ -122,7 +122,7 @@ def images_without_alt(key, a):
     found = [{"url": u["url"], "used_in": [p["slug"] for p in usage.get(u["filename"], [])]}
              for u in images.list_uploads() if u["kind"] == "image" and u["filename"] not in has]
     return {"images": found[:min(max(int(a.get("limit") or 20), 1), 100)], "total": len(found),
-            "note": "Look at each image to describe it - the url is on the site's own address."}
+            "note": "Look at each image to describe it - the URL is on the site's own domain."}
 
 
 def set_alt_text(key, a):
@@ -131,7 +131,7 @@ def set_alt_text(key, a):
         raise ToolError("image_url is one of the site's images, like /uploads/photo.webp")
     filename = url[len("/uploads/"):]
     if not any(u["filename"] == filename for u in images.list_uploads()):
-        raise ToolError("There's no image with that address in the media library")
+        raise ToolError("There's no image with that URL in the media library")
     alt = str(a.get("alt_text") or "").strip()
     if not alt or len(alt) > 300:
         raise ToolError("alt_text is a short description - up to 300 characters")

@@ -169,7 +169,7 @@ and the website has
   homepage, a table of contents, footnotes in the margin and foldable
   sections
 - Visitor-facing text in **23 languages**, and built-in translation (DeepL,
-  Google or LibreTranslate) at real `/es/post/…` addresses
+  Google or LibreTranslate) at real `/es/post/…` URLs
 
 </details>
 
@@ -248,7 +248,7 @@ Almost everything is set in the admin. Environment variables cover the rest:
 | Variable | Purpose |
 |---|---|
 | `SESSION_SECRET` | Signs logins - made on the first start if you don't set one |
-| `BASE_URL` | The public address, when the host fixes it |
+| `BASE_URL` | The public URL, when the host fixes it |
 | `DATA_DIR` | Where data lives (`/data` in Docker) |
 | `S3_*`, `BACKUP_PASSPHRASE` | A bucket for images and encrypted automatic backups |
 | `CLIENT_IP_HEADER` | The real client IP behind a proxy, e.g. `CF-Connecting-IP` |

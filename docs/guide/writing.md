@@ -30,7 +30,7 @@ Write a post and publish it on your blog.
 5. Select **Save**, or press **Ctrl+S**.
 
 Your post is now on your blog. The first time you save, the post gets its
-own web address, made from its title. The small dot beside **Save** is
+own URL, made from its title. The small dot beside **Save** is
 green when everything is saved, and changes colour while you have changes
 that aren't saved yet. Point at it to see what it means.
 
@@ -113,8 +113,8 @@ Play your own video or audio in a post, or show a PDF.
 
 1. Open **Media** in the admin menu and upload the file. It can be audio
    (mp3, m4a, ogg, wav, flac), video (mp4, webm, mov) or a PDF.
-2. Select **Copy URL** on the file. This copies its web address.
-3. In your post, paste the address on a line of its own.
+2. Select **Copy URL** on the file. This copies its URL.
+3. In your post, paste the URL on a line of its own.
 
 Audio and video become a player readers can press play on. A PDF shows
 inside the post, with an **Open the PDF** link under it for readers on a
@@ -339,7 +339,7 @@ settings under **More**. A setting the template doesn't change goes back
 to following the site. Open **Page** to see what's now **Custom**. The
 page's summary, tags and cover image are filled in from the template only
 if they're empty. What you've chosen about publishing - published or not,
-the date, the address, who can read it, the series - stays as it was.
+the date, the URL, who can read it, the series - stays as it was.
 
 **Applied two?** Both templates' sections are on the page, and the second
 one's settings win.
@@ -368,7 +368,7 @@ you write in the same shape again and again.
 A line under it says it's saved. The template keeps the page's words, with
 its sections as written, its **Post settings** - everything under **Page**,
 including **More** - and its tags, summary and cover image. It leaves out
-what's about this one page: whether it's published, its date, its address,
+what's about this one page: whether it's published, its date, its URL,
 who can read it and its series.
 
 Your template is listed under **Custom**, with a **Custom** label, when you

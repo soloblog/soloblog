@@ -568,7 +568,7 @@ from.
 A template sets only what belongs to the page: its sections and words, its
 Post settings, and a starting summary, tags and cover picture. It never
 changes the site's header, footer, menu, colours or fonts, and it never sets
-whether the page is published, its date, its address, who can read it,
+whether the page is published, its date, its URL, who can read it,
 whether it's hidden from search engines, or its series.
 
 In the table below, **Contents off** means **Contents** in Post settings is

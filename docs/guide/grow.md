@@ -38,7 +38,7 @@ comments**, under **Notifications** in **Settings > Comments and
 messages**.
 
 **Getting spam?** In **Settings > Comments and messages**, add words, email addresses
-or website addresses to **Blocked words**, one on each line. Comments and
+or websites to **Blocked words**, one on each line. Comments and
 messages containing any of them go straight to the trash. For more
 protection, go to **Settings > Security** and select **Edit** beside
 **Spam protection**: it adds a check to the comment and contact forms,
@@ -63,8 +63,8 @@ Remark42 - comment services that keep the comments somewhere else.
 |---|---|---|
 | Giscus | In GitHub Discussions - readers sign in with GitHub to comment | The repository, category and their IDs, from giscus.app |
 | Bluesky | As replies to your Bluesky post that links to the blog post | Your Bluesky handle |
-| Isso | On your own Isso server | Its address |
-| Remark42 | On your own Remark42 server | Its address and site ID |
+| Isso | On your own Isso server | Its URL |
+| Remark42 | On your own Remark42 server | Its URL and site ID |
 
 Readers select **Load comments** under a post to show them.
 
@@ -107,7 +107,7 @@ messages to**, under **Notifications**. Replying to the email answers the
 visitor.
 
 **Want to hear about new comments and messages in Slack or Discord?**
-Paste a webhook address - a link Slack or Discord makes for posting into
+Paste a webhook URL - a link Slack or Discord makes for posting into
 one of your channels - in **Send new comments and messages to**, under
 **Notifications**.
 
@@ -265,7 +265,7 @@ paying keep their price.
 Meanwhile the member shows as **Past due**. If the payment never goes
 through, they become a free member.
 
-Payments need your site at its own `https://` address.
+Payments need your site at its own `https://` URL.
 
 ## Share new posts to Bluesky and Mastodon
 
@@ -321,7 +321,7 @@ webmentions**. Their likes, reposts and replies then show under your
 posts. With **Approve replies and mentions first** on, they wait in the
 **Mentions** tab of **Comments** for you to approve.
 
-Both need your site at a public `https://` address.
+Both need your site at a public `https://` URL.
 
 ## Show up in search engines
 
@@ -335,7 +335,7 @@ it, add it to Google Search Console or Bing Webmaster Tools:
 
 1. In Search Console or Webmaster Tools, add your site and choose to
    verify it with an HTML tag. Copy the code inside the tag.
-2. In Soloblog, open **Settings > Address and search**. Under **Advanced**,
+2. In Soloblog, open **Settings > URL and SEO**. Under **Advanced**,
    open **Verify with Google and Bing**.
 3. Paste Google's code into **Google Search Console**, or Bing's into
    **Bing Webmaster Tools**, and select **Save**.
@@ -345,10 +345,10 @@ it, add it to Google Search Console or Bing Webmaster Tools:
 **Title for search engines**, in its **Post settings > Search engines**.
 
 **Not ready to be found?** Switch on **Hide this site from search
-engines**, in **Settings > Address and search**. A single post can be hidden
+engines**, in **Settings > URL and SEO**. A single post can be hidden
 in its own **Post settings > Search engines**.
 
-**Moved from another blog?** Old addresses like `/2020/05/my-post/`
+**Moved from another blog?** Old URLs like `/2020/05/my-post/`
 take people to the same post here, so old links and search results keep
 working.
 

@@ -14,7 +14,7 @@ for one person, so there's one account to log in with: yours.
 Create your account, give your site a name and a look, then work through
 a short list that makes it safe and ready to share.
 
-1. In your browser, go to your site's address with `/setup` on the end -
+1. In your browser, go to your site's URL with `/setup` on the end -
    for example `https://example.com/setup`.
 2. Enter the **Setup token**. This is a one-time code that proves you're
    the person who installed Soloblog. The page tells you where to find
@@ -41,7 +41,7 @@ you share it:
 - **Plan your backups**: download one, or connect cloud storage.
 - **Describe your site** in a sentence, for search results and link
   previews.
-- **Use a custom domain**, an address like yourname.com.
+- **Use a custom domain**, a domain like yourname.com.
 - **Write your first post**.
 
 Select one to open the **Settings** page where it's done. Each is ticked

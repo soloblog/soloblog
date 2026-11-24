@@ -183,7 +183,7 @@ def test_searching_settings_and_help(admin, client):
     assert backups and backups[0]["group"] == "Common questions" and backups[0]["href"].endswith("#how-do-i-back-up")
     # one box for both, the top bar's; a search in the address of Settings
     # or Help comes back in it (index_search.js)
-    page = admin.get("/admin/settings?tab=address&q=address").text
+    page = admin.get("/admin/settings?tab=url&q=address").text
     assert 'id="admin-search"' in page and "settings/search-index" not in page
     from soloblog import app as app_module
     assert "(settings|help)$/.test(location.pathname)) bar.value = asked" in app_module.INDEX_SEARCH_JS
@@ -193,12 +193,14 @@ def test_settings_search_knows_everyday_words(admin):
     found = admin.get("/admin/settings/search-index").json()
     hay = lambda e: " ".join([e["title"], e["sub"], e["text"], e.get("words", "")]).lower()  # noqa: E731
     assert any("theme" in hay(e) and e["group"] == "Style" for e in found)
+    # the site's URL by the words people also use for it
+    assert any(e["title"] == "Site URL" and "domain" in hay(e) and "address" in hay(e) for e in found)
     assert any("logo" in hay(e) and e["title"] == "Header icon" for e in found)
 
 
 def test_every_admin_page_ends_with_the_version_and_help(admin, client):
     from soloblog import config
-    for path in ("/admin/posts", "/admin/media", "/admin/comments", "/admin/settings?tab=address",
+    for path in ("/admin/posts", "/admin/media", "/admin/comments", "/admin/settings?tab=url",
                  "/admin/help?tab=faq", "/admin/health", "/admin/new"):
         page = admin.get(path).text
         assert page.count(f"Soloblog {config.VERSION} · ") == 1, path
@@ -494,13 +496,13 @@ def test_every_settings_page_links_to_its_help(admin):
 
 
 def test_help_lists_every_address_a_page_cant_have():
-    # Reference > Addresses Soloblog uses: the same names as the app's own
+    # Reference > URLs Soloblog uses: the same names as the app's own
     # routes (posts.RESERVED_PATHS), so a new one can't go missing
     import os
     import re
     from soloblog import posts
     ref = Path(os.path.join(os.path.dirname(__file__), "..", "docs", "guide", "reference.md")).read_text()
-    part = ref.split("### Addresses Soloblog uses")[1].split("\n## ")[0].split("\n- ", 1)[1]
+    part = ref.split("### URLs Soloblog uses")[1].split("\n## ")[0].split("\n- ", 1)[1]
     assert set(re.findall(r"`([^`]+)`", part)) == posts.RESERVED_PATHS
 
 

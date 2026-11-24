@@ -165,7 +165,7 @@ def https_check():
                      "Visits are encrypted, and browsers show it as secure.")
     return check("https", "security", CRITICAL, "Your site isn't using HTTPS",
                  "Logins and comments travel unencrypted, and browsers mark the site as not secure. Most hosts "
-                 "turn HTTPS on for free; then set BASE_URL to the https:// address.",
+                 "turn HTTPS on for free; then set BASE_URL to the https:// URL.",
                  "How to set it up", "/admin/help?tab=deployment#put-https-in-front")
 
 
@@ -253,20 +253,20 @@ def address_check(request_host: str):
     if not request_host or request_host in ("localhost", "127.0.0.1", "testserver"):
         return None
     where = ("How to set it", "/admin/help?tab=deployment#settings-on-the-host") if config.BASE_URL_FIXED else \
-        ("Change the address", "/admin/settings?tab=address#site_url")
+        ("Change the URL", "/admin/settings?tab=url#site_url")
     if not config.BASE_URL_FIXED and config.BASE_URL == config.LOCAL_URL:
-        return check("address", "domain", RECOMMENDED, "The site address isn't set",
-                     f"Links in emails, feeds and shares say localhost. Set it to the address readers use - "
-                     f"https://{request_host}, by the look of it.", "Set the address", where[1])
+        return check("address", "domain", RECOMMENDED, "The site URL isn't set",
+                     f"Links in emails, feeds and shares say localhost. Set it to the URL readers use - "
+                     f"probably https://{request_host}.", "Set the URL", where[1])
     if is_local():
         return None
-    name = "BASE_URL" if config.BASE_URL_FIXED else "The site address"
+    name = "BASE_URL" if config.BASE_URL_FIXED else "The site URL"
     if request_host.lower() == configured.lower():
-        return check("address", "domain", GOOD, f"{name} matches your address, {configured}",
+        return check("address", "domain", GOOD, f"{name} matches the URL you're using, {configured}",
                      "Links in emails, feeds and shares point to the right place.")
-    return check("address", "domain", RECOMMENDED, f"{name} doesn't match the address you're using",
+    return check("address", "domain", RECOMMENDED, f"{name} doesn't match the URL you're using",
                  f"It's set to {configured}, but you're on {request_host}. Links in emails, feeds and shares "
-                 "would point to the wrong place" + (" - set BASE_URL on your host to the address readers use."
+                 "would point to the wrong place" + (" - set BASE_URL on your host to the URL readers use."
                                                       if config.BASE_URL_FIXED else "."), *where)
 
 
@@ -372,7 +372,7 @@ def visibility_checks():
     if settings.get("search_noindex") == "1":
         out.append(check("noindex", "visibility", RECOMMENDED, "Your site is hidden from search engines",
                          "Fine while it's private or unfinished - easy to forget once it's ready.",
-                         "Open Search engines", "/admin/settings?tab=address"))
+                         "Open Search engines", "/admin/settings?tab=url"))
     else:
         out.append(check("noindex", "visibility", GOOD, "Search engines can find your site",
                          "It has a sitemap and isn't asking to be hidden."))
@@ -479,7 +479,7 @@ def payments_check():
                      "test card.", *where)
     if not pay.ready(s):
         return check("payments", "payments", RECOMMENDED, "Paid members aren't finished",
-                     "Readers can't pay yet - add a price and save, at the site's own https:// address, so "
+                     "Readers can't pay yet - add a price and save, at the site's own https:// URL, so "
                      "Stripe can tell it about payments.", *where)
     if pay.test_mode():
         return check("payments", "payments", RECOMMENDED, "Payments are in test mode",
@@ -522,7 +522,7 @@ def info() -> list:
     return [
         ("Soloblog", [("Version", config.VERSION), ("Mode", "production" if config.IS_PROD else "development"),
                       # how the address is set, never the address - a bug report is pasted in public
-                      ("Address", ("https" if config.BASE_URL.startswith("https://") else "http") + ", " +
+                      ("URL", ("https" if config.BASE_URL.startswith("https://") else "http") + ", " +
                        ("set on the host" if config.BASE_URL_FIXED else
                         "from Settings" if settings.get("site_url") else
                         "the host's own" if config.PLATFORM_URL else "not set")),

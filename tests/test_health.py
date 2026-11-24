@@ -377,7 +377,7 @@ def test_bug_report_says_what_is_used_but_nothing_personal(admin):
     assert "A Very Private Diary" not in text
     # how the address is set, never the address itself - it's pasted in public
     from soloblog import config
-    assert config.BASE_URL.split("://")[1] not in text and "- Address: http" in text
+    assert config.BASE_URL.split("://")[1] not in text and "- URL: http" in text
     assert health._about(0) == "none" and health._about(12) == "10-49" and health._about(5000) == "1,000+"
 
 

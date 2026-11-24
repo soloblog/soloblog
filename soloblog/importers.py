@@ -388,7 +388,7 @@ def read(filename: str, data: bytes, old_url: str = "") -> tuple:
     as paths on it."""
     old_url = old_url.strip().rstrip("/")
     if old_url and not re.match(r"^https?://[^/\s]+(/[^\s]*)?$", old_url):
-        raise ImportError_("The old blog's address should look like https://blog.example.com")
+        raise ImportError_("The old blog's URL should look like https://blog.example.com")
     source, items = _read(data, old_url)
     return source, _absolute_images(items, old_url)
 

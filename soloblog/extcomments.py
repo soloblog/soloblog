@@ -35,8 +35,8 @@ FIELDS = {
     "giscus_category": ("Category", "Announcements", re.compile(r"^[^<>\"]{0,100}$")),
     "giscus_category_id": ("Category ID", "DIC_kwDO...", ID_RE),
     "bluesky_handle": ("Bluesky handle", "you.bsky.social", re.compile(r"^[a-z0-9.-]{0,253}$")),
-    "isso_url": ("Isso address", "https://comments.example.com", URL_RE),
-    "remark42_url": ("Remark42 address", "https://remark42.example.com", URL_RE),
+    "isso_url": ("Isso URL", "https://comments.example.com", URL_RE),
+    "remark42_url": ("Remark42 URL", "https://remark42.example.com", URL_RE),
     "remark42_site_id": ("Site ID", "remark", ID_RE),
 }
 

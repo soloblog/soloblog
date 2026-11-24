@@ -56,9 +56,9 @@ def reachable() -> str:
     fediverse needs a public https address in BASE_URL."""
     parts = urlsplit(config.BASE_URL)
     if parts.scheme != "https":
-        return "BASE_URL has to be an https:// address"
+        return "BASE_URL has to be an https:// URL"
     if parts.hostname in ("localhost", "127.0.0.1") or (parts.hostname or "").endswith(".local"):
-        return "BASE_URL has to be your public address, not localhost"
+        return "BASE_URL has to be your public URL, not localhost"
     return ""
 
 

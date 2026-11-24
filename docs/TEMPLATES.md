@@ -58,7 +58,7 @@ site. Every template has Contents off unless it says otherwise.
 | Uses | Uses | None. |
 | Slides | None, slides cut by `---` lines | Show as slides on. |
 
-Not in a template: Published, the date, the address, Members only, Unlisted,
+Not in a template: Published, the date, the URL, Members only, Unlisted,
 search engines, the menu, the footer and the series. A template never
 changes the site's header or footer.
 

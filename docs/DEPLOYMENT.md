@@ -88,7 +88,7 @@ posts on every update.
 1. Make an account at Render, then select the **Deploy to Render** button
    under [Render](#render). It sets everything up, including the disk
    your posts are kept on.
-2. Open your new site's address, which Render shows you. The setup page
+2. Open your new site's URL, which Render shows you. The setup page
    asks for a setup token - a one-time code Render made for you - and says
    where Render shows it. Then choose a password, and keep the recovery
    key it gives you.
@@ -152,7 +152,7 @@ First ask me, one question at a time:
 3. Whether I have a domain name for it, and where it's registered.
    If not, whether I'd like one now - then show me the registrars in
    the guide's "Use a custom domain" table - or would rather start
-   with the host's free address and add a domain later.
+   with the host's free URL and add a domain later.
 
 About the links: some links in the guide are referral links.
 Whenever you show me hosts, servers or registrars to choose from,
@@ -181,9 +181,9 @@ The domain: add it to the host, then show me exactly which DNS
 records to add, and where, at whoever runs my domain's DNS (if
 that's Cloudflare, follow the guide's "Use Cloudflare"). Wait until
 the blog opens at https:// on it - and have me open /setup there, on
-my domain, so the blog takes it as its address.
+my domain, so the blog takes it as its URL.
 
-When it's running: open the address and check that it loads, then
+When it's running: open the URL and check that it loads, then
 tell me to open /setup there with that SETUP_TOKEN to create my
 login - and to save the recovery key it shows me. Then tell me where
 my posts and images are kept and how to back them up (Settings >
@@ -420,12 +420,12 @@ Debian, then follow [With Docker Compose](#with-docker-compose).
 
 On your server, or any computer with Docker:
 
-1. Fetch the two files and fill in your address:
+1. Fetch the two files and fill in your URL:
 
    ```bash
    curl -O https://raw.githubusercontent.com/soloblog/soloblog/master/docker-compose.yml
    curl -o .env https://raw.githubusercontent.com/soloblog/soloblog/master/.env.example
-   # edit .env: BASE_URL, your site's address
+   # edit .env: BASE_URL, your site's URL
    ```
 
 2. Start it, and find your setup token:
@@ -435,7 +435,7 @@ On your server, or any computer with Docker:
    docker compose logs soloblog | grep setup
    ```
 
-3. [Put HTTPS in front](#put-https-in-front) before you share the address.
+3. [Put HTTPS in front](#put-https-in-front) before you share the URL.
 
 Your data is in the `soloblog-data` volume. To keep it in a folder
 instead, use `- ./data:/data` in `docker-compose.yml`.
@@ -519,7 +519,7 @@ settings.
 
 ## Use a custom domain
 
-Give your site an address of its own, like `yourname.com`. Move hosts
+Give your site a domain of its own, like `yourname.com`. Move hosts
 whenever you like, and every link still works.
 
 **What it costs:** a yearly fee to the registrar. Many charge little for
@@ -547,16 +547,16 @@ first.
    the exact DNS record to add - a line that points your domain at the
    host.
 3. Where your domain's settings are managed (usually the registrar, or
-   Cloudflare), add that record: a CNAME record for an address like
+   Cloudflare), add that record: a CNAME record for a name like
    `blog.example.com`, or an A record for `example.com` itself.
 4. Wait until your site opens at `https://` on the domain - it can take
    from a few minutes to a few hours. Then open setup there, so the site
-   takes the domain as its address.
+   takes the domain as its URL.
 
-**Already set up on another address?** Change it in **Settings > Search
-engines** - or `BASE_URL`, if you set that on your host.
+**Already set up at another URL?** Change it in **Settings > URL and
+SEO** - or `BASE_URL`, if you set that on your host.
 
-**Using passkeys?** A passkey works only on the address it was added on.
+**Using passkeys?** A passkey works only on the domain it was added on.
 Add yours on the domain you'll keep.
 
 ## Put HTTPS in front
@@ -584,16 +584,16 @@ Whichever you use:
 - **Pass `X-Forwarded-Proto` through,** so Soloblog knows the page came
   over HTTPS - passkeys need it.
 - **Allow uploads of about 110 MB** if you upload audio or video.
-- **Visitors' addresses:** Soloblog reads them from the last
+- **Visitors' IP addresses:** Soloblog reads them from the last
   `X-Forwarded-For` entry, which is right for one proxy - and only when
-  the proxy reaches Soloblog from a private address (the same machine,
+  the proxy reaches Soloblog from a private IP address (the same machine,
   Docker's network, a host's internal network); from anywhere else the
   header is ignored, since a visitor could write it. With more than one
   proxy (a CDN in front of yours), or one that connects from a public
-  address, set `CLIENT_IP_HEADER`.
+  IP address, set `CLIENT_IP_HEADER`.
   With no proxy at all in front, set `TRUSTED_PROXY=none`
   ([Settings on the host](#settings-on-the-host)).
-- **Open setup at the `https://` address,** so the site takes it as its
+- **Open setup at the `https://` URL,** so the site takes it as its
   own - or set `BASE_URL`.
 
 ## Use Cloudflare
@@ -645,8 +645,8 @@ changing your router's settings or opening ports on it.
 Let people on Mastodon and the rest of the fediverse follow your blog -
 switched on in **Settings > Sharing > Fediverse**. Your host needs:
 
-- your site's address (**Settings > Address and search**, or `BASE_URL`) set
-  to your public `https://` address, on the domain you'll keep - your
+- your site's URL (**Settings > URL and SEO**, or `BASE_URL`) set
+  to your public `https://` URL, on the domain you'll keep - your
   followers are tied to it;
 - the original `Host` header passed through your proxy;
 - `/.well-known/webfinger`, `/ap/*` and `/webmention` open to other
@@ -673,8 +673,8 @@ Either stops working once your account exists. Setup then shows your
 **recovery key**, once: it resets your password if you forget it. Keep
 it in a password manager, or print it.
 
-Without `BASE_URL`, setup keeps the address you opened it at as your
-site's address - change it later in **Settings > Address and search**.
+Without `BASE_URL`, setup keeps the URL you opened it at as your
+site's URL - change it later in **Settings > URL and SEO**.
 
 Then the guide takes over: [Getting started](guide/getting-started.md).
 
@@ -724,7 +724,7 @@ To set it up:
    | Variable | What to put |
    |---|---|
    | `S3_BUCKET` | Your bucket's name, exactly as your storage company shows it - capital letters too. For a bucket called `My-Blog-Backups`, that's `My-Blog-Backups`. |
-   | `S3_ENDPOINT` | Your bucket's S3 address, copied from your storage company - it's different for each account and region, so don't copy the examples. Backblaze shows it as **Endpoint** on the bucket's page, like `s3.us-west-004.backblazeb2.com` (with or without `https://`). Cloudflare R2 shows it on the bucket's settings, like `https://<account-id>.r2.cloudflarestorage.com`. Amazon S3: leave it out. |
+   | `S3_ENDPOINT` | Your bucket's S3 endpoint URL, copied from your storage company - it's different for each account and region, so don't copy the examples. Backblaze shows it as **Endpoint** on the bucket's page, like `s3.us-west-004.backblazeb2.com` (with or without `https://`). Cloudflare R2 shows it on the bucket's settings, like `https://<account-id>.r2.cloudflarestorage.com`. Amazon S3: leave it out. |
    | `S3_REGION` | The bucket's region. Backblaze: the middle of its endpoint - `us-west-004` in the example above. Cloudflare R2: `auto`. Amazon S3: the region you chose, like `eu-west-1`. |
    | `S3_ACCESS_KEY_ID` | The ID of an access key for this bucket. Backblaze calls it **keyID**. |
    | `S3_SECRET_ACCESS_KEY` | That key's secret. Backblaze calls it **applicationKey**, and shows it only once, when the key is made - copy it then. |
@@ -844,11 +844,11 @@ setup above keeps it on the private network between the two containers.
 
 **On a hosting service with deploy hooks.** Render (**Settings > Deploy
 Hook**), Coolify (the app's Webhooks), CapRover (**App Configs >
-Deployment**) and others give each app a secret address that starts a
+Deployment**) and others give each app a secret URL that starts a
 new deploy.
 
 1. In **Settings > Integrations**, select **Edit** beside **Updates**,
-   and paste that address into **Update hook**.
+   and paste that URL into **Update hook**.
 2. Leave **Token** empty - or put the host's API token there, if its hook
    wants one as a Bearer token.
 3. Make sure the app deploys from `:latest` (or the branch), so it picks
@@ -863,13 +863,13 @@ Move your site to another host, a new server, or your own domain.
 2. Start Soloblog on the new server and create an account, then
    **Restore** the zip there. Or start it with the old `/data` folder,
    and skip setup.
-3. If the domain changes, change the address in **Settings > Search
-   engines** (or `BASE_URL`, if you set it on your host).
+3. If the domain changes, change the URL in **Settings > URL and
+   SEO** (or `BASE_URL`, if you set it on your host).
 
 **Using passkeys?** They belong to the domain they were added on. Log in
 with your password and add them again on the new one.
 
-**Followers in the fediverse?** They stay with the old address. Tell them
+**Followers in the fediverse?** They stay with the old domain. Tell them
 your new handle.
 
 ## Run a public demo
@@ -936,7 +936,7 @@ are set.
 |---|---|---|
 | `SESSION_SECRET` | made on the first start, kept in `/data/.session_secret` | Signs logins. Set your own (`python3 -c "import secrets; print(secrets.token_hex(32))"`) if you like - it wins. |
 | `SETUP_TOKEN` | none | Optional. A first-login token you choose, 16 characters or more, instead of the one in the log. Only used until your account exists. |
-| `BASE_URL` | the address first-time setup was opened at; before that, the host's own on Render, Railway and Fly | Optional. Your public address, e.g. `https://blog.example.com`, used in feeds, the sitemap, links in emails and the fediverse. Without it, change the address in **Settings > Address and search**; set here, it wins and Settings can't change it. |
+| `BASE_URL` | the URL first-time setup was opened at; before that, the host's own on Render, Railway and Fly | Optional. Your public URL, e.g. `https://blog.example.com`, used in feeds, the sitemap, links in emails and the fediverse. Without it, change the address in **Settings > Address and search**; set here, it wins and Settings can't change it. |
 | `DATA_DIR` | `/data` in the image | Where data is stored. |
 | `PORT` | `8080` in the image | The port to listen on. Hosts that set `PORT` themselves are respected. |
 | `HOSTED_ON` | set by Soloblog's app-store packages (Umbrel, Unraid, Coolify...) | The platform's name, so first-time setup can say where it shows the setup token. Leave it out anywhere else. |
@@ -946,8 +946,8 @@ are set.
 | `LOG_LEVEL` | `INFO` | How much goes in the server's log: `WARNING` for problems only, `DEBUG` for everything. Site health's detailed log keeps its own, whatever this says. |
 | `RESET_PASSWORD` | unset | `1` writes a one-time password reset link to the log on start. Remove it again afterwards. |
 | `MAX_MEDIA_MB` | `100` | The largest audio or video upload. |
-| `CLIENT_IP_HEADER` | none | A header your proxy sets to the visitor's address, e.g. `CF-Connecting-IP` behind [Cloudflare](#use-cloudflare). |
-| `TRUSTED_PROXY` | none | Whose word counts for a visitor's address (`X-Forwarded-For` and `CLIENT_IP_HEADER`). Unset, any caller on a private network is believed - right when a proxy on the same machine or network is in front. With no proxy in front (the container's port open to the internet), set `none`, or a visitor can dodge the login limit by sending the header themselves. Or list your proxy's addresses or networks, with commas: `10.0.0.2, 172.18.0.0/16`. |
+| `CLIENT_IP_HEADER` | none | A header your proxy sets to the visitor's IP address, e.g. `CF-Connecting-IP` behind [Cloudflare](#use-cloudflare). |
+| `TRUSTED_PROXY` | none | Whose word counts for a visitor's IP address (`X-Forwarded-For` and `CLIENT_IP_HEADER`). Unset, any caller on a private network is believed - right when a proxy on the same machine or network is in front. With no proxy in front (the container's port open to the internet), set `none`, or a visitor can dodge the login limit by sending the header themselves. Or list your proxy's addresses or networks, with commas: `10.0.0.2, 172.18.0.0/16`. |
 | `SMTP_HOST` | none | Optional. Your email provider's SMTP server, e.g. `smtp.fastmail.com`: your site sends its email through it until you set up email in **Settings > Email**, where what you save wins. |
 | `SMTP_PORT` | `587` | Optional. The server's port: `587`, or `465`. |
 | `SMTP_USER` | none | Optional. The username for the server - usually your email address. |
@@ -997,11 +997,11 @@ If it doesn't arrive, it says why. Values set on your host show there as
 |---|---|
 | Can't find the setup token | It's in the logs until your account exists, and restarting writes a new one. Or set `SETUP_TOKEN` to one you choose (16 characters or more) and restart. |
 | Posts disappear after a redeploy | No lasting storage at `/data`: add a disk or volume there, or connect [cloud storage](#keep-files-in-cloud-storage). |
-| "Cross-site request refused" when saving | Your proxy changes the `Host` header, or your site's address doesn't match the one you're using. |
-| Links in feeds say localhost | Set your address in **Settings > Address and search**. |
+| "Cross-site request refused" when saving | Your proxy changes the `Host` header, or your site's URL doesn't match the one you're using. |
+| Links in feeds say localhost | Set your URL in **Settings > URL and SEO**. |
 | Uploads fail for large files | Raise your proxy's upload limit - see [Put HTTPS in front](#put-https-in-front). |
 | Everyone shares one login limit (people get "too many tries" they didn't make) | Several proxies in a row: set `CLIENT_IP_HEADER`. (On Fly.io, the visitor's address comes from Fly's own `Fly-Client-IP` by itself.) |
-| Fediverse follows don't arrive | The site address isn't public `https://`, the `Host` header is rewritten, or a firewall blocks `/ap/inbox`. |
+| Fediverse follows don't arrive | The site URL isn't public `https://`, the `Host` header is rewritten, or a firewall blocks `/ap/inbox`. |
 | A passkey doesn't work after moving | Passkeys belong to the domain they were added on. Log in with your password and add it again. |
 
 More, about using the site itself: [Troubleshooting](guide/troubleshooting.md).

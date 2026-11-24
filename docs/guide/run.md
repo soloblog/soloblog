@@ -294,11 +294,11 @@ A big blog can take a few minutes; the page shows how far it's got.
 **Want to check each post before it's published?** Tick **Import as
 drafts** before you upload.
 
-**Coming from Ghost?** Type your old blog's address in **Old blog's
-address** before you upload, so its images can be copied. Some WordPress
+**Coming from Ghost?** Type your old blog's URL in **Old blog's
+URL** before you upload, so its images can be copied. Some WordPress
 exports need it too.
 
-**Will old links still work?** Yes. Old addresses like
+**Will old links still work?** Yes. Old URLs like
 `/2020/05/my-post/` take people to the same post here.
 
 ## Update Soloblog
@@ -353,7 +353,7 @@ password, key or email address.
 
 **How do I know if my site goes down?** A site can't tell you that itself
 while it's down. Use a free uptime monitor like UptimeRobot, and point it
-at your site's address with `/healthz` on the end - for example
+at your site's URL with `/healthz` on the end - for example
 `https://example.com/healthz`. It emails you if your site stops
 answering.
 
@@ -432,7 +432,7 @@ password does the same.
 and use your recovery key to choose a new one.
 
 **Moving your site to a new domain?** A passkey only works on the
-address where you added it, so add a new one on the new domain.
+domain where you added it, so add a new one on the new domain.
 
 See also: [How your site is kept safe](how-it-works.md#how-your-site-is-kept-safe)
 
@@ -445,7 +445,7 @@ draft posts for you.
 apps):
 
 1. In the app, add an account, choose **Micropub**, and type your site's
-   address.
+   URL.
 2. Your site asks whether to let the app in. Choose whether it can
    **Write drafts** or **Publish**, and select **Connect**.
 
@@ -456,7 +456,7 @@ Ghost, another blogging platform, and your site can act as one.
    is a password for an app. Give the key a **Name**, choose what it can
    do, set **For** to **Apps that publish to Ghost**, and select **Make a
    key**. Copy the key - it's only shown once.
-2. In the app, add a **Ghost** account, with your site's address and the
+2. In the app, add a **Ghost** account, with your site's URL and the
    key.
 
 **An AI assistant** (Claude, ChatGPT, Cursor and others that support
@@ -464,7 +464,7 @@ MCP, a way for assistants to use other apps):
 
 1. Make a key that can **Write drafts**, as above.
 2. In the assistant, add your site as an MCP server at your site's
-   address with `/mcp` on the end - for example
+   URL with `/mcp` on the end - for example
    `https://example.com/mcp` - with the key as a header:
    `Authorization: Bearer sb_...`.
 

@@ -21,6 +21,11 @@ versions may include breaking changes; they'll always be listed here.
 - A new server that can't open its newest backup asks to bring your site
   back, instead of starting as an empty site
 
+### Changed
+
+- Settings > Address and search is now URL and SEO, and the admin and
+  Help say URL wherever they said address
+
 ### Fixed
 
 - A Hero's heading has no copy-link button beside it, so it stays centred

@@ -43,7 +43,7 @@ def _register_saves():
     serve several pages, which share their groups of fields)."""
     for page, handler in {"name": save_general, "messages": save_general, "newsletter": save_general,
                           "security": save_general, "analytics": save_general,
-                          "address": save_site, "language": save_site, "sharing": save_site,
+                          "url": save_site, "language": save_site, "sharing": save_site,
                           "style": save_design, "blog": save_design, "posts": save_design, "header": save_design,
                           "banner": save_banner, "profile": save_profile, "members": save_members,
                           "editor": save_editor, "email": save_secrets, "integrations": save_secrets}.items():
@@ -273,7 +273,7 @@ def _fediverse_name(form, key):
     return value if fediverse.USERNAME_RE.match(value) else settings.get(key)
 
 
-# Settings > Address and search, Language and time, Sharing, and Integrations >
+# Settings > URL and SEO, Language and time, Sharing, and Integrations >
 # Custom code - one form each, saved here
 SITE_FIELDS = {
     "timezone": one_of(lambda: tz.zone_names()),
@@ -303,7 +303,7 @@ async def save_site(request):
     if site_url is not None and not config.BASE_URL_FIXED and not config.DEMO_MODE:
         address = settings.clean_site_url(site_url)
         if site_url.strip() and not address:
-            return SaveStatus("The site address is just https:// and the domain, like https://example.com",
+            return SaveStatus("The site URL is just https:// and the domain, like https://example.com",
                               "error")
         settings.set_many({"site_url": address})
         settings.use_site_url(address)
@@ -323,7 +323,7 @@ async def save_site(request):
     if values.get("crosspost_bluesky") == "1" and not (now["bluesky_handle"] and now["bluesky_app_password"]):
         return SaveStatus("Saved - but Bluesky needs its handle and an app password", "error")
     if values.get("crosspost_mastodon") == "1" and not (now["mastodon_instance"] and now["mastodon_token"]):
-        return SaveStatus("Saved - but Mastodon needs its https:// server address and an access token", "error")
+        return SaveStatus("Saved - but Mastodon needs its server's https:// URL and an access token", "error")
     if any(typed(k) and not values.get(k) for k in ("google_site_verification", "bing_site_verification")):
         return SaveStatus("Saved - but a verification code is only the content=\"...\" part", "error")
     if typed("share_image_url") and not values.get("share_image_url"):

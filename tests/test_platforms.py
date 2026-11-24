@@ -32,10 +32,10 @@ assert config.BASE_URL == "https://pod-123.pikapod.net"
 assert not os.path.exists(auth.SETUP_TOKEN_FILE), "token file gone"
 assert "https://pod-123.pikapod.net/" in c.get("/rss").text, "feeds use it"
 # changed in Settings > Site; nonsense refused
-r = c.post("/admin/settings/address", data={"site_url": "javascript:alert(1)", "declared_fields": "site_url"},
+r = c.post("/admin/settings/url", data={"site_url": "javascript:alert(1)", "declared_fields": "site_url"},
            headers={"HX-Request": "true"})
 assert "just https://" in r.text and settings.get("site_url") == "https://pod-123.pikapod.net"
-c.post("/admin/settings/address", data={"site_url": "https://Blog.Example.org/", "declared_fields": "site_url"},
+c.post("/admin/settings/url", data={"site_url": "https://Blog.Example.org/", "declared_fields": "site_url"},
        headers={"HX-Request": "true"})
 assert settings.get("site_url") == "https://blog.example.org" and config.BASE_URL == "https://blog.example.org"
 print("SECRET=" + config.SESSION_SECRET)
@@ -91,16 +91,16 @@ c = TestClient(app, base_url="https://testserver", follow_redirects=False)
 c.post("/setup", data={"token": auth.setup_token(), "password": "a good password", "confirm": "a good password"},
        headers={"Host": "blog.example.org", "X-Forwarded-Proto": "https"})
 assert settings.get("site_url") == "https://blog.example.org" and config.BASE_URL == "https://blog.example.org"
-page = c.get("/admin/settings?tab=address").text
+page = c.get("/admin/settings?tab=url").text
 field = page[page.index('name="site_url"') - 200:page.index('name="site_url"') + 300]
 assert "disabled" not in field and 'placeholder="https://myblog.fly.dev"' in field, field
 # on the other address: Site health opens the field
 check = health.address_check("myblog.fly.dev")
-assert check["status"] == health.RECOMMENDED and "/admin/settings?tab=address#site_url" in str(check), check
+assert check["status"] == health.RECOMMENDED and "/admin/settings?tab=url#site_url" in str(check), check
 # emptied: the host's own again
-c.post("/admin/settings/address", data={"site_url": "", "declared_fields": "site_url"}, headers={"HX-Request": "true"})
+c.post("/admin/settings/url", data={"site_url": "", "declared_fields": "site_url"}, headers={"HX-Request": "true"})
 assert config.BASE_URL == "https://myblog.fly.dev", config.BASE_URL
-c.post("/admin/settings/address", data={"site_url": "https://blog.example.org", "declared_fields": "site_url"},
+c.post("/admin/settings/url", data={"site_url": "https://blog.example.org", "declared_fields": "site_url"},
        headers={"HX-Request": "true"})
 print("ok")
 '''

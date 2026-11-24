@@ -152,7 +152,7 @@ def WebhooksBody(error="", tested=None):
         P(error, role="alert", cls="text-sm text-error mb-2") if error else None,
         Div(*rows, cls="mb-3") if rows else None,
         Form(
-            FormField("Address", Input(name="url", type="url", required=True, placeholder="https://hooks.example.com/…",
+            FormField("URL", Input(name="url", type="url", required=True, placeholder="https://hooks.example.com/…",
                                        cls="input input-sm w-full font-mono"), cls=FIELD_GAP),
             Fieldset(Legend("Tell it when", cls="fieldset-legend"),
                      *[Label(Input(type="checkbox", name="events", value=k, checked=True, cls="checkbox checkbox-sm"),
@@ -211,7 +211,7 @@ def YourEmailPanel(s):
             cls=FIELD_GAP),
         FormField("Password", Input(type="password", name="current_password", autocomplete="current-password",
                                     cls="input input-sm w-full"),
-                  help="Only to change the address", cls=FIELD_GAP),
+                  help="Only to change the email address", cls=FIELD_GAP),
         ToggleField("Email me when a new device signs in", "signin_alerts",
                     checked=(s["signin_alerts"] != "0"),
                     help="The first time a browser signs in."),

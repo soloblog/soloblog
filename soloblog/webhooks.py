@@ -44,13 +44,13 @@ def add(url: str, events: list) -> str:
     url = (url or "").strip()
     events = [e for e in events if e in EVENTS]
     if not url.startswith(("https://", "http://")) or len(url) > 500:
-        return "The address starts with https://"
+        return "The URL starts with https://"
     if not events:
         return "Choose at least one thing to tell it about"
     try:
         netguard.check_url(url)
     except netguard.Blocked as e:
-        return f"That address can't be used - {e}"
+        return f"That URL can't be used - {e}"
     first_post_hook = "post.published" in events and not wanted("post.published")
     db = get_db()
     db.execute("INSERT INTO webhooks (url, events, created_at) VALUES (?, ?, ?)",

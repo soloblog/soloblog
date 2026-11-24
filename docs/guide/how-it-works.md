@@ -104,7 +104,7 @@ Your site only connects to other services for the features you turn on:
 | When | Where it connects | What's sent |
 |---|---|---|
 | Once a day, to see if there's a new version of Soloblog | GitHub | An ordinary request for the latest version - nothing about your site |
-| Site health's daily checks | GitHub, your own address, rdap.org, and Cloudflare's or Google's DNS | Only public names: your domain, to check its security certificate, when it needs renewing, and its email records |
+| Site health's daily checks | GitHub, your own site, rdap.org, and Cloudflare's or Google's DNS | Only public names: your domain, to check its security certificate, when it needs renewing, and its email records |
 | Emails your site sends - sign-ins, the newsletter, alerts | Your own email provider | The emails themselves |
 | Paid members | Stripe | Checkout and billing, between your reader and Stripe |
 | Sharing, the fediverse, webmentions | Bluesky, Mastodon, your followers' servers, and the sites you link to | The posts you publish |
@@ -121,7 +121,7 @@ has **Copy for a bug report**. It copies a summary to your clipboard and
 sends nothing anywhere. The summary has your Soloblog version, rough
 counts, which features are on, and the last week's problems with
 personal details taken out. It never includes your writing, names, email
-addresses or your site's address. You can read all of it before you copy
+addresses or your site's URL. You can read all of it before you copy
 it.
 
 **Your own stats keep nothing about your readers** - no IP addresses, no

@@ -1005,7 +1005,7 @@ def test_a_fallback_says_so_and_an_example_looks_like_one(admin):
     settings.set_many({"tagline": "Bread and bikes", "site_title": "Mira's"})
     try:
         pages = "".join(admin.get(f"/admin/settings?tab={t}").text
-                        for t in ("name", "address", "header", "banner", "newsletter", "members", "messages",
+                        for t in ("name", "url", "header", "banner", "newsletter", "members", "messages",
                                   "analytics", "sharing", "profile"))
         for name in ("app_name", "members_intro", "newsletter_title", "newsletter_intro", "consent_message",
                      "contact_intro", "banner_heading", "banner_subheading", "banner_button_text", "support_message"):

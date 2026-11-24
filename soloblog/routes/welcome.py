@@ -126,9 +126,9 @@ def next_steps(s):
          "/admin/settings?tab=backup&panel=backup-download", storage.enabled() or bool(s.get("last_backup_download"))),
         # a tagline is what search results show until there's a description
         (GLOBE_SVG, "Describe your site", "A sentence for search results and link previews.",
-         "/admin/settings?tab=address&panel=address-search&setting=Description",
+         "/admin/settings?tab=url&panel=url-search&setting=Description",
          bool((s.get("meta_description") or s.get("tagline") or "").strip())),
-        (LINK_SVG, "Use a custom domain", "An address like yourname.com instead of your host's.",
+        (LINK_SVG, "Use a custom domain", "A domain like yourname.com instead of your host's.",
          "/admin/help?tab=deployment#use-a-custom-domain", has_own_domain()),
         # the welcome draft every site starts with doesn't count
         (EDIT_SVG, "Write your first post", "Markdown, with a live preview.", "/admin/new",

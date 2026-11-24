@@ -32,8 +32,8 @@ from soloblog.routes.admin_settings.base import ANALYTICS_PROVIDERS
 COMMENT_SYSTEM_HELP = {
     "giscus": "All four are on giscus.app, once Discussions is on for a public GitHub repository.",
     "bluesky": "Share each post from this account - the replies to it show under the post.",
-    "isso": "Your Isso server's address.",
-    "remark42": "Your Remark42 server's address, and its SITE setting.",
+    "isso": "Your Isso server's URL.",
+    "remark42": "Your Remark42 server's URL, and its SITE setting.",
 }
 
 
@@ -158,8 +158,8 @@ def GeneralPanels(s):
 
 NEWSLETTER_HELP = {
     "buttondown": "The name in buttondown.com/yourname.",
-    "kit": "The number in your form's address: app.kit.com/forms/1234567.",
-    "mailchimp": "From Mailchimp's embedded sign-up form: the address after action=\" in its code.",
+    "kit": "The number in your form's URL: app.kit.com/forms/1234567.",
+    "mailchimp": "From Mailchimp's embedded sign-up form: the URL after action=\" in its code.",
     "substack": "The name in yourname.substack.com.",
 }
 
@@ -383,7 +383,7 @@ def ReaderPanels(s):
                     "Send new comments and messages to",
                     Input(name="comment_webhook_url", value=s["comment_webhook_url"],
                           placeholder="https://hooks.slack.com/...", cls="input input-sm w-full"),
-                    help="A webhook address from Slack or Discord."
+                    help="A webhook URL from Slack or Discord."
                 ),
                 key="messages-notify"
             ),
@@ -403,7 +403,7 @@ def ReaderPanels(s):
 # secret, and their current effective value is safe to print.
 ENV_VARS = [
     ("SESSION_SECRET", "Keeps logins safe. Made for you if you don't set one."),
-    ("BASE_URL", Span("The site address. Without it, ", A("the one you set", href="/admin/settings?tab=address",
+    ("BASE_URL", Span("The site URL. Without it, ", A("the one you set", href="/admin/settings?tab=url",
                                                             cls="link"), " is used.")),
     ("SITE_TITLE", "Only a new site's first name."),
     ("SETUP_TOKEN", "A code you choose, 16 characters or more, to start setting up without reading the "
@@ -427,7 +427,7 @@ ENV_VARS = [
 S3_ENV_VARS = [
     ("S3_BUCKET", "Your bucket's name, exactly as your storage company shows it. With the two keys, it turns cloud "
                   "storage on."),
-    ("S3_ENDPOINT", "Your bucket's S3 address, from your storage company - Backblaze calls it Endpoint. Leave it out "
+    ("S3_ENDPOINT", "Your bucket's S3 endpoint URL, from your storage company. Leave it out "
                     "for Amazon S3."),
     ("S3_REGION", "The bucket's region - \"auto\" for Cloudflare R2."),
     ("S3_ACCESS_KEY_ID", "The access key's ID - Backblaze calls it keyID."),
@@ -538,7 +538,7 @@ def SecretPanels(s):
                 FormField("Update hook", Input(name="update_hook_url", value=s["update_hook_url"],
                                                placeholder="http://watchtower:8080/v1/update",
                                                cls="input input-sm w-full font-mono"),
-                          help=Span("Your host's deploy hook, or Watchtower's address with Docker Compose. ",
+                          help=Span("Your host's deploy hook, or Watchtower's URL with Docker Compose. ",
                                     A("How to set it up", href="/admin/help?tab=deployment#set-up-the-update-now-button",
                                       cls="link"),
                                     "."),
@@ -668,7 +668,7 @@ def FediversePanel(s):
         "Fediverse",
         P("People on Mastodon, Threads and the rest of the fediverse can follow your site. New posts show in "
           "their timelines, and their replies arrive in Comments.", cls=f"text-sm text-base-content/60 {FIELD_GAP}"),
-        Alert(f"Your site needs a public address first: {problem}", "warning")
+        Alert(f"Your site needs a public URL first: {problem}", "warning")
         if problem else None,
         ToggleField("Let people follow this blog", "activitypub_enabled", checked=on, cls=FIELD_GAP),
         Div(
@@ -769,17 +769,17 @@ def SitePanels(s):
     return Form(
         Div(
             SettingsPanel(
-                "Site address",
-                FormField("Address", Input(value=config.BASE_URL, disabled=True, cls="input input-sm w-full font-mono"),
+                "Site URL",
+                FormField("URL", Input(value=config.BASE_URL, disabled=True, cls="input input-sm w-full font-mono"),
                           help="Set on your host, as BASE_URL.")
                 if config.BASE_URL_FIXED else
-                FormField("Address", Input(name="site_url", id="site_url", value=s.get("site_url"), type="url",
+                FormField("URL", Input(name="site_url", id="site_url", value=s.get("site_url"), type="url",
                                            placeholder=config.PLATFORM_URL or "https://example.com",
                                            spellcheck="false",
                                            cls="input input-sm w-full font-mono"),
                           help="Change it when you move to a new domain." +
-                               (" Empty: your host's own address." if config.PLATFORM_URL else "")),
-                key="address-site"
+                               (" Empty: the URL your host gave it." if config.PLATFORM_URL else "")),
+                key="url-site"
             ),
             SettingsPanel(
                 "Search engines",
@@ -790,7 +790,7 @@ def SitePanels(s):
                 ToggleField("Hide this site from search engines", "search_noindex",
                             checked=(s["search_noindex"] == "1"),
                             help="For a private or unfinished site."),
-                key="address-search"
+                key="url-search"
             ),
             SettingsPanel(
                 "Verify with Google and Bing",
@@ -806,7 +806,7 @@ def SitePanels(s):
                                                         value=s["bing_site_verification"],
                                                         cls="input input-sm w-full font-mono"),
                           help="The msvalidate.01 code."),
-                key="address-verify"
+                key="url-verify"
             ),
             *LanguagesPanel(s),
             FediversePanel(s),
@@ -831,18 +831,18 @@ def SitePanels(s):
             ),
             SettingsPanel(
                 "Redirects",
-                FormField("Send old addresses somewhere new",
+                FormField("Old and new URLs",
                           Textarea(s["redirects"], name="redirects", rows="4", spellcheck="false",
                                    placeholder="/old-page /new-page\n/2019/* /archive\n/shop https://shop.example.com",
                                    cls="textarea textarea-sm w-full font-mono text-xs"),
-                          help="One a line: the old address, a space, and the new one. End the old one with * "
+                          help="One a line: the old URL, a space, and the new one. End the old one with * "
                                "for everything under it."),
-                key="address-redirects"
+                key="url-redirects"
             ),
             cls=f"flex flex-col gap-3 {SECTION_GAP}"
         ),
         SaveBar(),
-        hx_post="/admin/settings/address", hx_target="#save-status", hx_swap="outerHTML show:none focus-scroll:false",
+        hx_post="/admin/settings/url", hx_target="#save-status", hx_swap="outerHTML show:none focus-scroll:false",
         data_declare_fields=True
     )
 
@@ -1066,7 +1066,7 @@ def ProfileTab(s):
                     Textarea(s["extra_social_links"], name="extra_social_links", rows="3",
                              placeholder="TikTok|https://tiktok.com/@you|star\nThreads|https://threads.net/@you",
                              cls="textarea textarea-sm w-full font-mono text-xs"),
-                    help="Any others, one a line: Name|https://address. Add |icon to choose one: "
+                    help="Any others, one a line: Name|URL. Add |icon to choose one: "
                          f"{', '.join(EXTRA_LINK_ICONS)}."
                 ),
                 key="profile-links"
@@ -1099,7 +1099,7 @@ def ProfileTab(s):
                     Textarea(s["links_items"], name="links_items", rows="4",
                              placeholder="My newsletter|https://example.com/newsletter\nPodcast|https://example.com/podcast",
                              cls="textarea textarea-sm w-full font-mono text-xs"),
-                    help="One a line: Name|https://address.", cls=FIELD_GAP
+                    help="One a line: Name|URL.", cls=FIELD_GAP
                 ),
                 FormField(
                     "Also show",

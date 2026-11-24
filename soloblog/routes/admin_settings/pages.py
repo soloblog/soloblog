@@ -166,8 +166,8 @@ def _folded_states(s) -> dict:
     host = sum(1 for name, _ in ENV_VARS if os.environ.get(name))
     from soloblog import apikeys, webhooks
     return {
-        "address-redirects": count(len(redirects), "address", "addresses", "No addresses"),
-        "address-verify": " and ".join(verified) or "Not set",
+        "url-redirects": count(len(redirects), "redirect", "redirects", "None"),
+        "url-verify": " and ".join(verified) or "Not set",
         "style-motion": "Animations on" if s.get("page_animations") == "1" else "Animations off",
         "posts-milestones": {"left": "Line on the left", "center": "Line in the middle",
                                   "right": "Line on the right"}.get(s.get("milestones_align"), ""),
@@ -235,8 +235,8 @@ def _pages(s):
 
     def site():
         p = _panels(SitePanels(s))
-        return SettingsForm("/admin/settings/address", p["address-site"], p["address-search"],
-                            Advanced(p["address-verify"], p["address-redirects"]))
+        return SettingsForm("/admin/settings/url", p["url-site"], p["url-search"],
+                            Advanced(p["url-verify"], p["url-redirects"]))
 
     def language():
         g, p = _panels(GeneralPanels(s)), _panels(SitePanels(s))
@@ -324,7 +324,7 @@ def _pages(s):
         return form
 
     return {
-        "name": general, "address": site, "language": language,
+        "name": general, "url": site, "language": language,
         # Custom colours' dialogs and delete forms sit outside the Style
         # form: forms can't nest, and the list's buttons inside it name them (form=)
         "style": lambda: Div(PresetsPanel(s), design("style", "style-colours", "style-fonts",
@@ -397,6 +397,7 @@ SEARCH_ALSO = {
     "Site title": "name blog name", "Custom code": "css javascript script analytics head html",
     "Analytics": "stats tracking visitors google plausible",
     "Notifications": "email alerts slack discord webhook new comment message", "Redirects": "old links moved 301",
+    "Site URL": "address web address domain base_url", "Search engines": "seo google",
 }
 
 _index_cache = {}

@@ -59,7 +59,7 @@ def test_untranslated_page_shows_original_and_is_not_indexed(admin, client, monk
 def test_languages_settings(admin):
     before = settings.get_all()
     try:
-        r = admin.post("/admin/settings/address", headers={"hx-request": "true"}, data={
+        r = admin.post("/admin/settings/url", headers={"hx-request": "true"}, data={
             "site_language": "fr", "translate_provider": "libretranslate", "translate_url": "http://lt:5000",
             "translate_languages": ["en", "de", "xx"]})
         assert "Saved" in r.text
