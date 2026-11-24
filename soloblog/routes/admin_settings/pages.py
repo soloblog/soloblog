@@ -144,10 +144,12 @@ def _setup(panel, state):
 
 def _with_state(panel, state, *after):
     """A section's heading with how it stands beside it - "Off", "2 keys" -
-    so a folded one says what's inside without opening it."""
+    so a folded one says what's inside without opening it. Open, its
+    fields say it, so it goes, as Edit does."""
     summary = panel.children[0]
     summary.children = (Span(*summary.children, cls="shrink-0", data_panel_title=True),
-                        Span(state, cls="ml-auto min-w-0 truncate text-xs font-normal text-base-content/60"),
+                        Span(state, data_panel_state=True,
+                             cls="ml-auto min-w-0 truncate text-xs font-normal text-base-content/60 group-open:hidden"),
                         *after)
     summary.attrs["class"] = summary.attrs.get("class", "") + " flex items-center gap-3 pe-10"
     panel.attrs["class"] = panel.attrs.get("class", "") + " group"

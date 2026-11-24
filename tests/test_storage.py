@@ -144,7 +144,7 @@ def test_backups_once_a_day(bucket, monkeypatch, admin):
     from soloblog.tz import utcnow
     monkeypatch.setattr(config, "S3_AUTO_BACKUP", True)
     monkeypatch.setattr(config, "S3_BACKUP_DELAY", 0.3)
-    assert "How often" in admin.get("/admin/settings?tab=backup").text
+    assert "How often" in admin.get("/admin/backup/cloud").text
     assert "Saved" in admin.post("/admin/backup/every", data={"backup_every": "day"}).text
     assert "Choose one" in admin.post("/admin/backup/every", data={"backup_every": "hourly"}).text
     assert settings.get("backup_every") == "day"
@@ -321,7 +321,7 @@ def test_the_newest_backups_show_and_the_rest_fold(monkeypatch, admin):
     monkeypatch.setattr(storage, "enabled", lambda: True)
     monkeypatch.setattr(storage, "check", lambda: "")
     monkeypatch.setattr(storage, "list_backups", lambda: fake)
-    html = admin.get("/admin/settings?tab=backup").text
+    html = admin.get("/admin/backup/cloud").text
     shown, folded = html.split("Older backups (4)")
     assert shown.count('name="key" value="backups/soloblog-') == 3 and "Latest" in shown
     assert folded.count('name="key" value="backups/soloblog-') == 4
@@ -385,8 +385,8 @@ def test_an_image_that_didnt_reach_the_bucket_is_said_until_it_does(bucket, monk
     assert health.bucket_images_check()["title"] == "1 image hasn't reached your bucket"
     monkeypatch.setattr(config, "S3_ENDPOINT", working)
     monkeypatch.setattr(storage, "check", lambda: "")
-    assert "1 image hasn&#x27;t reached your bucket" in admin.get("/admin/settings?tab=backup").text \
-        or "1 image hasn't reached your bucket" in admin.get("/admin/settings?tab=backup").text
+    assert "1 image hasn&#x27;t reached your bucket" in admin.get("/admin/backup/cloud").text \
+        or "1 image hasn't reached your bucket" in admin.get("/admin/backup/cloud").text
     # once it's copied, it's no longer said
     storage._put_image("uploads/lost.png", b"x")
     assert storage.unsynced() == set() and health.bucket_images_check() is None
@@ -436,3 +436,16 @@ def test_the_sync_message_says_what_was_already_there():
     assert _synced(0, 82, "to") == "Nothing to copy - 82 images already the same on both sides"
     assert _synced(3, 79, "to") == "Copied 3 images to your bucket - 79 were the same already"
     assert _synced(1, 0, "from") == "Copied 1 image from your bucket"
+
+
+def test_the_backup_page_doesnt_wait_for_the_bucket(monkeypatch, admin):
+    # the bucket answers in a second or two: the page comes first, and the
+    # Cloud storage card fills itself in from /admin/backup/cloud
+    calls = []
+    monkeypatch.setattr(storage, "enabled", lambda: True)
+    monkeypatch.setattr(storage, "check", lambda: calls.append("check") or "")
+    monkeypatch.setattr(storage, "list_backups", lambda: calls.append("list") or [])
+    html = admin.get("/admin/settings?tab=backup").text
+    assert calls == [] and 'hx-get="/admin/backup/cloud"' in html and "Checking your bucket" in html
+    part = admin.get("/admin/backup/cloud").text
+    assert "check" in calls and "Back up now" in part and 'id="cloud-status"' in part

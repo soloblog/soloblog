@@ -711,3 +711,16 @@ def test_followers_say_how_many_more(monkeypatch):
     monkeypatch.setattr(fediverse, "follower_count", lambda: 3)
     monkeypatch.setattr(fediverse, "list_followers", lambda n: [{"handle": "@a@example.social"}] * 3)
     assert "more" not in to_xml(FediversePanel({**settings.get_all(), "activitypub_enabled": "1"}))
+
+
+def test_a_pinned_rows_result_shows_beside_its_own_group(admin):
+    # each group on the Pinned tab has its own status slot, and an action goes to its group's
+    html = admin.get("/admin/posts?status=pinned").text
+    # (the posts pinned to the top have a group, and a slot, only while there are some)
+    for group in ("header", "footer"):
+        assert f'id="pinned-{group}-status"' in html
+    r = admin.post("/admin/nav/hide", data={"hidden": ""})
+    assert r.headers["location"].endswith("#pinned-header-status")
+    r = admin.post("/admin/nav/add", data={"site": "archive", "where": "footer"})
+    assert r.headers["location"].endswith("#pinned-footer-status")
+    admin.post("/admin/nav/remove", data={"site": "archive", "where": "footer"})

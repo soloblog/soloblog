@@ -55,6 +55,10 @@ versions may include breaking changes; they'll always be listed here.
   instead of after a screen of empty space
 - The page chosen as the homepage stays out of the list of posts and the
   feeds by itself, and search finds it at the homepage's address
+- Backup and import shows straight away; Cloud storage fills in once
+  your bucket answers
+- On the Pinned tab, what a row's button did shows beside its own group
+- A folded Settings card's summary goes when it's opened
 
 ## [1.0.0-beta] - 2026-11-17
 

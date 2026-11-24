@@ -64,6 +64,11 @@ def status_redirect(path: str, message: str, kind: str = "success", undo: str = 
     from starlette.responses import RedirectResponse
     base, _, frag = path.partition("#")
     extra = f"toast={quote(message)}&toast_type={kind}"
+    if frag:
+        # the slot beside the action (showStatus): in the query too - a page
+        # that swaps itself in place (live.js) fetches the redirect, and a
+        # fetch's address loses its #
+        extra += f"&toast_at={quote(frag)}"
     if undo and is_local_path(undo):
         extra += f"&undo={quote(undo)}&undo_sig={sign_undo(undo)}"
     sep = "&" if "?" in base else "?"

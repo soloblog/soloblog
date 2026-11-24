@@ -73,7 +73,20 @@ def SyncMenu():
 RECENT_SHOWN = 3
 
 
-def CloudStoragePanel():
+def CloudStoragePanel(now=False):
+    """The bucket's state, its backups and what's done with them. Unless
+    now, a line that fills itself in once the page is up
+    (/admin/backup/cloud) - the bucket answers in a second or two, and the
+    rest of the page shouldn't wait for it."""
+    if storage.enabled() and not now:
+        return SettingsPanel(
+            "Cloud storage",
+            Div(Span(cls="loading loading-spinner loading-xs"),
+                Span("Checking your bucket…", cls="text-sm text-base-content/60"),
+                hx_get="/admin/backup/cloud", hx_trigger="load", hx_swap="outerHTML",
+                role="status", cls="flex items-center gap-2"),
+            key="backup-cloud"
+        )
     if not storage.enabled():
         return SettingsPanel(
             "Cloud storage",
@@ -609,6 +622,12 @@ def _synced(copied: int, same: int, direction: str) -> str:
     if same:
         return f"Nothing to copy - {_images(same)} already the same on both sides"
     return "No images to copy"
+
+
+@ar.get("/admin/backup/cloud")
+def cloud_storage_part(session):
+    """What fills the Cloud storage card in, once the page is up."""
+    return Div(*CloudStoragePanel(now=True).children[1].children)
 
 
 @ar.post("/admin/backup/sync")

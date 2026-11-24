@@ -314,7 +314,7 @@ def test_the_backup_choices_save_as_they_change():
             mock.patch("soloblog.storage.check", return_value=""), \
             mock.patch("soloblog.storage.last_status", return_value={"error": "", "at": ""}), \
             mock.patch("soloblog.storage.list_backups", return_value=[]):
-        html = to_xml(CloudStoragePanel())
+        html = to_xml(CloudStoragePanel(now=True))
     for url in ("/admin/backup/every", "/admin/backup/keep", "/admin/backup/include"):
         form = re.search(rf'<form[^>]*hx-post="{url}"[^>]*>', html)
         assert form and 'hx-trigger="change"' in form.group(0), url
@@ -435,3 +435,10 @@ def test_blocked_words_and_alerts_wait_for_either_switch_and_email_is_asked_for_
         assert 'data-shown-for="comments_enabled=1;contact_enabled=1"' in panel(page, "messages-blocked")
     finally:
         settings.set_many(before)
+
+
+def test_a_folded_cards_summary_goes_when_its_open(admin):
+    # how it stands, beside a folded card's name - open, its fields say it
+    html = admin.get("/admin/settings?tab=posts").text
+    state = re.search(r'<span data-panel-state[^>]*>', html)
+    assert state and "group-open:hidden" in state.group(0)

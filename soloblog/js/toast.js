@@ -22,15 +22,43 @@ document.addEventListener('DOMContentLoaded', function () {
   try { saved = sessionStorage.getItem('soloblog-saved'); sessionStorage.removeItem('soloblog-saved'); } catch (e) {}
   if (saved) showStatus(saved, 'success');
 });
-function showStatus(message, type, undo) {
+function showStatus(message, type, undo, waited) {
   // the slot beside the action, when the redirect named it (#its-id,
-  // status_redirect's at=); otherwise the page's first - its header's
-  var named = location.hash.length > 1 && document.getElementById(decodeURIComponent(location.hash.slice(1)));
+  // status_redirect's at=); otherwise the page's first - its header's.
+  // A slot in a part that fills itself in after the page (Cloud storage)
+  // is waited for, a few seconds at most
+  var wanted = window._statusAt || (location.hash.length > 1 ? decodeURIComponent(location.hash.slice(1)) : '');
+  if (wanted && !document.getElementById(wanted) && !waited && document.querySelector('[hx-trigger="load"]')) {
+    var done = false;
+    var later = function () {
+      if (done || !document.getElementById(wanted)) return;
+      done = true;
+      document.removeEventListener('htmx:afterSettle', later);
+      showStatus(message, type, undo, true);
+    };
+    document.addEventListener('htmx:afterSettle', later);
+    setTimeout(function () {
+      if (done) return;
+      done = true;
+      document.removeEventListener('htmx:afterSettle', later);
+      showStatus(message, type, undo, true);
+    }, 5000);
+    return;
+  }
+  var named = wanted && document.getElementById(wanted);
   var near = named && (named.matches('[data-status-slot]') ? named : named.querySelector('[data-status-slot]'));
   var slot = near || document.querySelector('[data-status-slot]');
+  // arrived after the page did, or named in the query (a page swapped in
+  // place): the browser didn't scroll to it, so it's brought into view
+  if (near && (waited || window._statusAt)) near.scrollIntoView({block: 'nearest'});
+  window._statusAt = '';
   if (slot) {
     slot.textContent = message;
-    slot.className = 'text-xs ' + (type === 'error' ? 'text-error' : 'text-success');
+    // only its colour changes: a slot's own place in its row (ms-auto, flex-1) stays
+    [].slice.call(slot.classList).forEach(function (c) {
+      if (c === 'text-error' || c === 'text-success' || c.indexOf('text-base-content') === 0) slot.classList.remove(c);
+    });
+    slot.classList.add('text-xs', type === 'error' ? 'text-error' : 'text-success');
     if (_isUndoPath(undo)) slot.append(' ', _undoButton(undo));
     return;
   }
@@ -96,9 +124,11 @@ document.addEventListener('DOMContentLoaded', function () {
   var params = new URLSearchParams(location.search);
   var msg = params.get('toast');
   if (!msg) return;
+  window._statusAt = params.get('toast_at') || '';
   showStatus(msg, params.get('toast_type') || 'success', params.get('undo'));
   params.delete('toast');
   params.delete('toast_type');
+  params.delete('toast_at');
   params.delete('undo');
   params.delete('undo_sig');
   var qs = params.toString();

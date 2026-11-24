@@ -24,7 +24,9 @@ function _liveStatusFrom(url) {
   // the address bar so a reload doesn't show it again
   var params = url.searchParams, msg = params.get('toast');
   var type = params.get('toast_type') || 'success', undo = params.get('undo') || '';
-  ['toast', 'toast_type', 'undo', 'undo_sig'].forEach(function (k) { params.delete(k); });
+  // the slot beside the action, which a fetched address no longer carries as its #
+  window._statusAt = params.get('toast_at') || '';
+  ['toast', 'toast_type', 'toast_at', 'undo', 'undo_sig'].forEach(function (k) { params.delete(k); });
   var qs = params.toString();
   history.replaceState(history.state, '', url.pathname + (qs ? '?' + qs : '') + (url.hash || location.hash));
   if (msg) showStatus(msg, type, undo);

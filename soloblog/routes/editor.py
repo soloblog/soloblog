@@ -1843,7 +1843,7 @@ def PinRow(p, indent, is_first, is_last, prev_top_level, has_children_slugs):
                        IconAction(EDIT_SVG, "Edit", href=f"/admin/edit/{p['slug']}"),
                        IconAction(VIEW_SVG, "View", href=posts.url_for(p)),
                        IconAction(FOCUS_SVG, "Edit in Focus", href=f"/admin/edit/{p['slug']}?focus=1"),
-                       _delete_form(p, return_to="/admin/posts?status=pinned"), id=f"pin-acts-{p['slug']}"),
+                       _delete_form(p, return_to=_pinned_at(slug=p["slug"])), id=f"pin-acts-{p['slug']}"),
             cls="list-col-grow flex justify-between items-start gap-3"
         ),
         cls="list-row" + (" pl-10" if indent else "")
@@ -1968,7 +1968,11 @@ def PinnedGroup(label, tree, where=None):
     # headings exactly (routes/admin_settings) - mt-6 between groups
     # is this page's own addition, Settings doesn't need it since
     # SECTION_GAP on the previous field already provides that gap
-    return Div(Div(H2(label, cls="text-base font-semibold"), AddToMenu(where) if where else None,
+    # what a row's action did, beside its own group's heading - not the
+    # page's header, a screen above the footer's rows (_pinned_at)
+    slot = Span(id=f"pinned-{where or 'top'}-status", data_status_slot=True, role="status",
+                cls="text-xs ms-auto text-end min-w-0")
+    return Div(Div(H2(label, cls="text-base font-semibold shrink-0"), slot, AddToMenu(where) if where else None,
                    cls="flex items-center justify-between gap-3 mb-3 mt-6"),
                P(off, cls="text-xs text-base-content/60 -mt-2 mb-3") if off else None,
                Ul(*rows, cls="list"))
@@ -2304,18 +2308,28 @@ def PostsCalendar(month: str):
                  "Drafts have no date, so they aren't here.", cls="text-xs text-base-content/50 mt-3"))
 
 
+def _pinned_at(where: str = "", slug: str = "") -> str:
+    """The Pinned tab at a group's own status slot (PinnedGroup): the
+    header, the footer or the top of the posts, by where or by a page's
+    own place."""
+    if slug and (row := posts.get_post(slug)):
+        where = row["pin_location"]
+    group = where if where in ("header", "footer") else "top"
+    return f"/admin/posts?status=pinned#pinned-{group}-status"
+
+
 @ar.post("/admin/pin/move")
 def pin_move(session, slug: str, direction: str):
     if direction in ("up", "down"):
         posts.move_pin(slug, direction)
-    return RedirectResponse("/admin/posts?status=pinned", status_code=303)
+    return RedirectResponse(_pinned_at(slug=slug), status_code=303)
 
 
 @ar.post("/admin/nav/move")
 def nav_move(session, site: str = "", direction: str = "", where: str = "header"):
     if site in posts.SITE_ROWS:
         posts.move_menu_item("@" + site, direction, where)
-    return RedirectResponse("/admin/posts?status=pinned", status_code=303)
+    return RedirectResponse(_pinned_at(where), status_code=303)
 
 
 def _menu_word(where):
@@ -2326,42 +2340,42 @@ def _menu_word(where):
 def nav_add(session, site: str = "", where: str = "header"):
     s = settings.get_all()
     if where not in posts.MENUS or site not in posts.site_addable(where):
-        return status_redirect("/admin/posts?status=pinned", "Choose a page to add", "error")
+        return status_redirect(_pinned_at(where), "Choose a page to add", "error")
     if note := posts.menu_note(s, site):
-        return status_redirect("/admin/posts?status=pinned", f"{SITE_ROW_WORDS[site]} can't be added: {note}", "error")
+        return status_redirect(_pinned_at(where), f"{SITE_ROW_WORDS[site]} can't be added: {note}", "error")
     posts.add_site_page(where, site)
-    return status_redirect("/admin/posts?status=pinned", f"{SITE_ROW_WORDS[site]} is in the {_menu_word(where)}")
+    return status_redirect(_pinned_at(where), f"{SITE_ROW_WORDS[site]} is in the {_menu_word(where)}")
 
 
 @ar.post("/admin/nav/remove")
 def nav_remove(session, site: str = "", where: str = "header"):
     if where not in posts.MENUS or site not in posts.site_addable(where):
-        return status_redirect("/admin/posts?status=pinned", "Choose a page to remove", "error")
+        return status_redirect(_pinned_at(where), "Choose a page to remove", "error")
     posts.remove_site_page(where, site)
-    return status_redirect("/admin/posts?status=pinned", f"{SITE_ROW_WORDS[site]} is out of the {_menu_word(where)}")
+    return status_redirect(_pinned_at(where), f"{SITE_ROW_WORDS[site]} is out of the {_menu_word(where)}")
 
 
 @ar.post("/admin/nav/rename")
 def nav_rename(session, site: str = "", label: str = "", where: str = "header"):
     if where not in posts.MENUS or site not in posts.site_rows(settings.get_all(), where, True):
-        return status_redirect("/admin/posts?status=pinned", "Choose a page in the menu", "error")
+        return status_redirect(_pinned_at(where), "Choose a page in the menu", "error")
     label = " ".join(label.split())[:SITE_LABEL_MAX]
     settings.set_many({posts.site_key(where, site, "label"): label})
-    return status_redirect("/admin/posts?status=pinned",
+    return status_redirect(_pinned_at(where),
                            f"Renamed to {label}" if label else f"Back to {SITE_ROW_WORDS[site]}")
 
 
 @ar.post("/admin/nav/hide")
 def nav_hide(session, hidden: str = ""):
     settings.set_many({"nav_home_hidden": "1" if hidden == "1" else ""})
-    return status_redirect("/admin/posts?status=pinned", "Home is hidden from the menu" if hidden == "1"
+    return status_redirect(_pinned_at("header"), "Home is hidden from the menu" if hidden == "1"
                            else "Home is in the menu")
 
 
 @ar.post("/admin/pin/parent")
 def pin_parent(session, slug: str, parent_slug: str = ""):
     posts.set_parent(slug, parent_slug)
-    return RedirectResponse("/admin/posts?status=pinned", status_code=303)
+    return RedirectResponse(_pinned_at(slug=slug), status_code=303)
 
 
 @ar.post("/admin/posts/restore")
