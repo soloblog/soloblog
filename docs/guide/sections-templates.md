@@ -50,19 +50,17 @@ the page, in its description, the feed or the newsletter - and a
 translation keeps it as it is. A kind Soloblog doesn't know stays on the
 page as you wrote it, so you can spot it.
 
-**Another name for the same kind:** most kinds can be written under a
-second name too, shown as "Also written" in each entry - `Section: Stats`
-is the same as `Section: Numbers`. Capitals don't matter.
+**One name for each kind:** write it as it's headed below. Capitals don't
+matter.
 
 The kinds of section, in the order **Insert** lists them, each headed
 with the line you write:
 
-### Section: Picture and text
+### Section: Image and text
 
 An image beside its text, the image on one side and the text on the
 other, and the text under it on a phone. Under the heading: an image
-and a few lines. Without an image it's just the text. Also written
-`Section: Picture`.
+and a few lines. Without an image it's just the text.
 
 `Style: Cover` puts the text over the image, across the whole page,
 as a [Hero](#section-hero) does.
@@ -71,12 +69,11 @@ as a [Hero](#section-hero) does.
 
 Big figures in a row, two to a row on a phone; they count up as they
 appear. Each item is `### 10,000`, with the text under it saying what
-it counts. Also written `Section: Stats`.
+it counts.
 
 ### Section: Testimonials
 
-Quote cards. Each item: `### Their name`, `Role: …` (or `Who:`,
-`Company:`), their words (as a quote or not) and a photo if you have one.
+Quote cards. Each item: `### Their name`, `Role: …`, their words (as a quote or not) and a photo if you have one.
 
 ### Section: Logos
 
@@ -88,32 +85,30 @@ slowly sideways.
 
 Plan cards, one picked out. Each item: `### Plan`, `Price: …`,
 `Badge: Most popular` on the one to point out, what's included, and a
-link for its button. Any other key shows as a detail. Also written
-`Section: Plans`.
+link for its button. Any other key shows as a detail.
 
 ### Section: Products
 
 Things for sale. Each item: `### Product`, an image, `Price: …`
 (`Badge: Sold out` if it is), a line and a link to buy it - from Stripe,
 Gumroad, Lemon Squeezy or PayPal. There's no cart: each button goes to
-its own checkout. Also written `Section: Shop`.
+its own checkout.
 
 ### Section: Services
 
-What you offer. Each item: `### Service`, `From: US$400` (or `Price:`,
-`Starts at:`), what's included and a link. Any other key shows as a
+What you offer. Each item: `### Service`, `From: US$400`, what's
+included and a link. Any other key shows as a
 detail.
 
 ### Section: Team
 
-People. Each item: `### Name`, a photo, `Role: …` (or `Job:`,
-`Position:`) and a line about them. Also written `Section: People`.
+People. Each item: `### Name`, a photo, `Role: …` and a line about
+them.
 
 ### Section: FAQ
 
 Questions that open to their answers. Each item: `### A question?`, then
-the answer. Search engines can show them in their results. Also written
-`Section: Questions`.
+the answer. Search engines can show them in their results.
 
 ### Section: Photo gallery
 
@@ -127,8 +122,7 @@ a line, and a link for the button. For two buttons, write a
 [Buttons](reference.md#callouts-tabs-and-other-blocks) line instead, like
 `Buttons: [Get started](/start) [Try the demo](/demo)` - the first is
 the main button, the second a quieter one beside it. To give the card a
-big heading of its own, start it with one: `### Bring a friend`. Also
-written `Section: CTA`.
+big heading of its own, start it with one: `### Bring a friend`.
 
 `Style: Cover` makes it a [Hero](#section-hero): a big heading and a button
 over an image, across the page.
@@ -154,44 +148,41 @@ Text in columns, side by side. Each item: `### A heading` and its text.
 
 Your newsletter's sign-up box, with a line about what they'll get. It
 shows while the newsletter is on; with it off, readers see only the
-line. Also written `Section: Signup` and `Section: Newsletter`.
+line.
 
 ### Section: Contact form
 
 Your contact form, with a line about what to write about. It shows while
-the contact form is on; with it off, readers see only the line. Also
-written `Section: Contact`.
+the contact form is on; with it off, readers see only the line.
 
 ### Section: Latest posts
 
 Your newest posts, as cards. `Count: 3` for how many (up to 12; three
 with `Default` or no line) and `Tag: baking` for only that tag's posts, on
-the lines straight under `Section:`. Also written `Section: Posts`.
+the lines straight under `Section:`.
 
 ### Section: Compare
 
 A table of options. Write a table; ✓ or yes and ✗ or no in its cells
-show as checkmarks and crosses. Also written `Section: Comparison`.
+show as checkmarks and crosses.
 
 ### Section: Steps
 
 Numbered steps as cards - how it works, how to order. Write a numbered
 list. A step that starts in **bold** gets that as its title, and a link
-at its end becomes its button. Also written `Section: How it works`.
+at its end becomes its button.
 
 ### Section: Milestones
 
 Dated entries on a line - a history, a year in review. Each item:
-`### 2024 · What happened`, its date first, and a line about it. Also
-written `Section: Timeline`.
+`### 2024 · What happened`, its date first, and a line about it.
 
 ### Section: Events
 
 Talks, workshops and readings. Each item: `### A talk`,
-`Date: 12 March 2027` (or `When:`), `Place: …` (or `Where:`, `Venue:`)
-and links to the slides or video. Events to come are listed first,
+`Date: 12 March 2027`, `Place: …` and links to the slides or video. Events to come are listed first,
 soonest first; past ones fold away by themselves. Search engines
-understand each one as an event. Also written `Section: Talks`.
+understand each one as an event.
 
 ### Section: Menu
 
@@ -207,7 +198,7 @@ title lead there. A link to another site opens in a new tab, and the
 title ends in ↗ so readers know it leaves your site. The link's own
 words, like `[Visit](https://…)`, show only in **Full screen**, as a
 button under each piece. A piece without an image is a quiet tile of its own
-words. Also written `Section: Projects`. On the lines straight under
+words. On the lines straight under
 `Section:`:
 
 - `Tag: work` adds every post and page with that tag, by its cover,
@@ -225,7 +216,7 @@ words. Also written `Section: Projects`. On the lines straight under
 Books or films, with stars. Each item: `### A book`, a cover if you
 like, `Rating:` (`4/5`, `4`, `★★★★` and `4.5 out of 5` all work),
 `Author:`, `Finished:` and your notes. Search engines understand each one
-as a review. Also written `Section: Books`.
+as a review.
 
 ### Section: Uses
 
@@ -238,7 +229,7 @@ it's for`.
 When you're open, as a table: a line for each day, like
 `Monday: 9am – 5pm` (two or more). A day you're shut is `Saturday:
 Closed`. Search engines understand the page as a business with these
-hours. Also written `Section: Hours`.
+hours.
 
 ### Section: Contact details
 
@@ -254,8 +245,7 @@ Jobs or schooling, each with its dates. Each item: `### Designer, Acme ·
 and a line about what you did under it. The dates sit on the right of
 each entry. For a whole CV, write one section for each part (`##
 Experience`, `## Education`), and a [Skills](#section-skills) section.
-Search engines understand the page as a person's. Also written
-`Section: CV`.
+Search engines understand the page as a person's.
 
 ### Section: Skills
 
@@ -277,8 +267,7 @@ To show your newest writing under it, add a
 Bios to copy, and photos to download - for journalists and podcast
 hosts. Each item: `### Short bio`, `### Long bio` and their text; each
 plain bio gets a **Copy** button. An item that holds images shows them
-in a grid, each with a **Download** link. Also written
-`Section: Media kit`.
+in a grid, each with a **Download** link.
 
 ### Section: Project facts
 
@@ -305,8 +294,8 @@ Three Key: lines turn those arrangements off, on the lines straight
 under `Section:`:
 
 - `First paragraph:` `Big` or `Normal` (the same size as the rest).
-- `Pictures together:` `Side by side` or `One under another`.
-- `A line after a picture:` `Beside it` or `Under it`.
+- `Images:` `Side by side` or `Stacked`.
+- `Captions:` `Beside` or `Under`.
 
 Each also takes `Default`, which is the first one in each list.
 
@@ -316,8 +305,7 @@ Images that change as the text scrolls - a way to walk readers through
 a tour, a process or a project, one step at a time. Under the heading,
 write each step as `### A heading`, with one image and a few lines of
 text under it; a link on its own line becomes the step's button. Text
-before the first step show above the story. Also written
-`Section: Scroll story`.
+before the first step show above the story.
 
 - **On a wide screen**, the text scrolls in a column on the left while
   the image for the step being read stays in view on the right, whole
@@ -371,16 +359,14 @@ It also reads:
 ### Section: Bento grid
 
 Tiles of different sizes, the first one big. Each item: `### A tile`, a
-image if you like, a line and a link. It runs wide. Also written
-`Section: Bento`.
+image if you like, a line and a link. It runs wide.
 
 ### Section: Recipe facts
 
 A strip of times and servings at the top of a recipe, side by side where
 there's room and one under another in a narrow column. Under the
-heading, a line for each: `Serves:` (or `Servings:`, `Yield:`, `Makes:`),
-`Prep:` (or `Prep time:`), `Cook:` (or `Cook time:`, `Bake:`) and
-`Total:` (or `Total time:`). Any other key shows beside them.
+heading, a line for each: `Serves:`, `Prep:`, `Cook:` and
+`Total:`. Any other key shows beside them.
 
 ### Section: Ingredients
 
@@ -390,8 +376,7 @@ the heading: a list. Text before or after the list stays as it is.
 ### Section: Method
 
 The steps of a recipe, each with a big number. Under the heading: a
-numbered list. Also written `Section: Instructions` and
-`Section: Directions`.
+numbered list.
 
 Search engines understand a page with an Ingredients or a Method section
 as a recipe. They read the first Ingredients, the first Method and the
@@ -418,7 +403,7 @@ it's the page's own series - the one set in **Post settings > Series**.
 While the series has no published parts, readers see nothing, not even
 the heading. You see a note saying why, which only you can see - there's
 no series on the page, or a series by that name doesn't exist, or none of
-its parts is published yet. Also written `Section: Parts`.
+its parts is published yet.
 
 ### Section: Previous and next
 
@@ -475,7 +460,7 @@ Five Key: lines every section reads change how it's shown:
 | Line | Where it goes | Values |
 |---|---|---|
 | `Width:` | Under a section's `Section:` line | `Column`, `Wide`, `Full` |
-| `Style:` | Under a section's `Section:` line | `Card` on any section - `Cover` on a [Hero](#section-hero), [Call to action](#section-call-to-action) or [Picture and text](#section-picture-and-text), and `Window` on a Hero |
+| `Style:` | Under a section's `Section:` line | `Card` on any section - `Cover` on a [Hero](#section-hero), [Call to action](#section-call-to-action) or [Image and text](#section-image-and-text), and `Window` on a Hero |
 | `Heading:` | Under a section's `Section:` line | `Left`, `Centred` |
 | `Space:` | Under a section's `Section:` line | `Small`, `Medium`, `Large` |
 | `Appear:` | Under a section's `Section:` line | `Fade`, `Rise`, `Zoom`, `Slide left`, `Slide right`, `Slide both ways`, `Focus`, `Tilt`, `None` |
@@ -506,7 +491,7 @@ side panels, or edge to edge.
 its own. `Cover` puts its text over its image, across the page - the
 same as a [Hero](#section-hero) - and only a Hero, a
 [Call to action](#section-call-to-action) and
-[Picture and text](#section-picture-and-text) can have it. On any other
+[Image and text](#section-image-and-text) can have it. On any other
 section the `Style: Cover` line does nothing, and the editor underlines it.
 
 **`Heading: Left` or `Centred`** - where the section's heading sits, and
@@ -589,7 +574,7 @@ The templates Soloblog comes with, under **Built-in**:
 | Portfolio | Portfolio | Page width wide, Contents off, bare. |
 | Pricing | Pricing, and a plain Good to know heading | Page width wide, Contents off, bare. |
 | Profile / home | Profile, Latest posts (Count 3) | Title hidden, as the Profile's heading is the name. Contents off, bare, and About the author off. |
-| Landing page | Hero (Style Window), Picture and text twice, Numbers, Testimonials, Pricing, FAQ, Call to action | Title hidden, page width wide, space between sections large, Contents off, bare. |
+| Landing page | Hero (Style Window), Image and text twice, Numbers, Testimonials, Pricing, FAQ, Call to action | Title hidden, page width wide, space between sections large, Contents off, bare. |
 | Services | Services (Width Column), Steps | Contents off, bare. |
 | Testimonials | Testimonials (Width Column) | Contents off, bare. |
 | Project | Project facts, Photo story, Previous and next | Page width wide, cover image full screen, Contents off. |
@@ -635,39 +620,39 @@ its own - see [Writing a Key: value](put-together.md#writing-a-key-value).
 
 | Key | Where | Its values | See |
 |---|---|---|---|
-| `A line after a picture:` | Photo story | `Beside it` or `Under it` - or `Default` | [Photo story](#section-photo-story) |
-| `Address:` - also `Where:`, `Location:`, `Find us:` | Contact details | The address - a button to find it on a map | [Contact details](#section-contact-details) |
+| `Address:` | Contact details | The address - a button to find it on a map | [Contact details](#section-contact-details) |
+| Any other key | Project facts and Recipe facts; a detail on a plan, product, service, team member, event or book | Anything - `Client: Corner Café`, `Duration: 2 hours` | [Project facts](#section-project-facts) |
 | `Appear:` | Any section | `Fade`, `Rise`, `Zoom`, `Slide left`, `Slide right`, `Slide both ways`, `Focus`, `Tilt` or `None` - or `Default` | [Width, style, heading, space and appear](#width-style-heading-space-and-appear) |
 | `Author:` | Reviews | Who wrote it | [Reviews](#section-reviews) |
 | `Badge:` | Pricing, Products | Any label - `Most popular`, `Sold out` | [Pricing](#section-pricing) |
 | `Buttons:` | Anywhere in your writing | One or two links | [Callouts, tabs and other blocks](reference.md#callouts-tabs-and-other-blocks) |
-| `Cook:` - also `Cook time:`, `Bake:` | Recipe facts | A time - `30 min` | [Recipe facts](#section-recipe-facts) |
+| `Captions:` | Photo story | `Beside` or `Under` - or `Default` | [Photo story](#section-photo-story) |
+| `Cook:` | Recipe facts | A time - `30 min` | [Recipe facts](#section-recipe-facts) |
 | `Count:` | Latest posts | A number, up to 12 - or `Default` | [Latest posts](#section-latest-posts) |
 | `Countdown:` | Anywhere in your writing | A date - `12 March 2027` | [Callouts, tabs and other blocks](reference.md#callouts-tabs-and-other-blocks) |
-| `Date:` - also `When:` | Events | A date - `12 March 2027` | [Events](#section-events) |
+| `Date:` | Events | A date - `12 March 2027` | [Events](#section-events) |
 | `Email:` | Contact details | An email address - a button to write | [Contact details](#section-contact-details) |
 | `Finished:` | Reviews | When you finished it | [Reviews](#section-reviews) |
 | `First paragraph:` | Photo story | `Big` or `Normal` - or `Default` | [Photo story](#section-photo-story) |
-| `From:` - also `Starts at:`, `Price:` | Services | The price it starts at | [Services](#section-services) |
+| `From:` | Services | The price it starts at | [Services](#section-services) |
 | `Heading:` | Any section | `Left` or `Centred` - or `Default` | [Width, style, heading, space and appear](#width-style-heading-space-and-appear) |
 | `Icon:` | Features | An icon's name - `leaf` | [Features](#section-features) |
+| `Images:` | Photo story | `Side by side` or `Stacked` - or `Default` | [Photo story](#section-photo-story) |
 | `Label:` | Hero | A few words above the heading, with `Style: Window` | [Hero](#section-hero) |
 | `Monday:` (any day) | Opening hours | That day's hours - `9am – 5pm`, `Closed` | [Opening hours](#section-opening-hours) |
 | `Phone:` | Contact details | A phone number - a button to call | [Contact details](#section-contact-details) |
-| `Pictures together:` | Photo story | `Side by side` or `One under another` - or `Default` | [Photo story](#section-photo-story) |
-| `Place:` - also `Where:`, `Venue:`, `Location:` | Events | Where it is | [Events](#section-events) |
-| `Prep:` - also `Prep time:` | Recipe facts | A time - `15 min` | [Recipe facts](#section-recipe-facts) |
+| `Place:` | Events | Where it is | [Events](#section-events) |
+| `Prep:` | Recipe facts | A time - `15 min` | [Recipe facts](#section-recipe-facts) |
 | `Price:` | Pricing, Products | The price, and what it's per - `€45 per person` | [Pricing](#section-pricing) |
 | `Pull quote:` | Anywhere in your writing | A sentence to show big | [Quotes](reference.md#quotes) |
 | `Rating:` | Reviews | `4/5`, `4`, `★★★★` or `4.5 out of 5` | [Reviews](#section-reviews) |
-| `Role:` - also `Who:`, `Company:` (testimonials), `Job:`, `Position:` (team) | Team, Testimonials | Who they are | [Team](#section-team) |
+| `Role:` | Team, Testimonials | Who they are | [Team](#section-team) |
 | `Section:` | Any `##` | A kind of section - `Pricing`, `Team`… | [Sections](#sections) |
-| `Serves:` - also `Servings:`, `Yield:`, `Makes:` | Recipe facts | How many it serves | [Recipe facts](#section-recipe-facts) |
 | `Series:` | Contents | A series' name - or `Default` for the page's own | [Contents](#section-contents) |
+| `Serves:` | Recipe facts | How many it serves | [Recipe facts](#section-recipe-facts) |
 | `Show as:` | Portfolio | `Grid`, `Masonry`, `Rows`, `Full screen` or `Sideways` - or `Default` | [Portfolio](#section-portfolio) |
 | `Space:` | Any section | `Small`, `Medium` or `Large` - or `Default` | [Width, style, heading, space and appear](#width-style-heading-space-and-appear) |
-| `Style:` | Any section | `Card` - or `Cover` on a Hero, Call to action or Picture and text, and `Window` on a Hero - or `Default` | [Width, style, heading, space and appear](#width-style-heading-space-and-appear) |
+| `Style:` | Any section | `Card` - or `Cover` on a Hero, Call to action or Image and text, and `Window` on a Hero - or `Default` | [Width, style, heading, space and appear](#width-style-heading-space-and-appear) |
 | `Tag:` | Portfolio, Latest posts | A tag's name - `work` - or `Default` | [Portfolio](#section-portfolio) |
-| `Total:` - also `Total time:` | Recipe facts | A time - `45 min` | [Recipe facts](#section-recipe-facts) |
+| `Total:` | Recipe facts | A time - `45 min` | [Recipe facts](#section-recipe-facts) |
 | `Width:` | Any section | `Column`, `Wide` or `Full` - or `Default` | [Width, style, heading, space and appear](#width-style-heading-space-and-appear) |
-| Any other key | Project facts and Recipe facts; a detail on a plan, product, service, team member, event or book | Anything - `Client: Corner Café`, `Duration: 2 hours` | [Project facts](#section-project-facts) |

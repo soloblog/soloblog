@@ -238,7 +238,7 @@ Thirty-two pages on fixing the things you already own.
 
 ## What's inside
 
-Section: Picture and text
+Section: Image and text
 
 ![The cover](/uploads/zine.webp)
 
@@ -246,7 +246,7 @@ Toasters, trousers and a very stubborn lamp.
 
 ## Who it's for
 
-Section: Picture and text
+Section: Image and text
 
 ![A reader mending](/uploads/mending.webp)
 

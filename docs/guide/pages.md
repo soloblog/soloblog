@@ -150,7 +150,7 @@ then sections one after another.
    button. Two links on one line, like `[Try it](/demo) · [Learn more](/about)`,
    are a main button and a quieter one.
 3. Go down the sections below it and replace their sample words: two
-   **Picture and text** sections, **Numbers**, **Testimonials**,
+   **Image and text** sections, **Numbers**, **Testimonials**,
    **Pricing**, **FAQ** and a closing **Call to action**.
 4. Delete the sections you don't need, or add more with **Insert** - see
    [Add sections](#add-sections).

@@ -168,7 +168,7 @@ function setupSlashMenu(mde, slashOn) {
       if (o.type === 'choice') {
         // a kind's own Style values come after the shared ones
         o.values.concat(name === 'Style' ? spec.styles || [] : []).forEach(function (v) {
-          option(name + ': ' + v[1], v[2], v[3], write(v[1]), now === v[0] || now === v[1].toLowerCase() || o.aliases[now] === v[0], words);
+          option(name + ': ' + v[1], v[2], v[3], write(v[1]), now === v[1].toLowerCase(), words);
         });
       } else if (o.type === 'number') {
         o.suggest.forEach(function (n) {

@@ -147,9 +147,9 @@ A short bio: two or three sentences on where you've been and what you care about
 Why it's worth someone's time, in a sentence.
 
 [Get it now](https://example.com)""", {"Style": "Window"}),
-        _s("picture_and_text", "What you'll get", "![An image of it](/uploads/picture.webp)\n\n"
+        _s("image_and_text", "What you'll get", "![An image of it](/uploads/picture.webp)\n\n"
                                       "The first thing it gives people, in plain words."),
-        _s("picture_and_text", "Who it's for", "![Someone using it](/uploads/someone.webp)\n\n"
+        _s("image_and_text", "Who it's for", "![Someone using it](/uploads/someone.webp)\n\n"
                                    "The people it helps most - and who it isn't for."),
         _s("numbers", "In numbers", "### 1,000+\npeople using it\n\n### 4.9 ★\ntheir average rating"),
         _s("testimonials", "What people say", "### Their name\n\nRole: What they do\n\n> What they said about it."),

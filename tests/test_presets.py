@@ -335,9 +335,9 @@ def test_the_docs_start_page_has_a_contents_section(admin):
 def test_a_docs_template_with_a_contents_section_does_not_get_a_second(monkeypatch):
     from soloblog import post_templates
     real = post_templates.get
-    own = "Words.\n\n## Parts\n\nSection: Parts\n"
+    own = "Words.\n\n## Parts\n\nSection: Contents\n"
     monkeypatch.setattr(post_templates, "get", lambda key: {**real(key), "body": own} if key == "docs" else real(key))
-    assert presets._start_text("docs") == own  # Parts is Contents under another name
+    assert presets._start_text("docs") == own  # its own Contents section, under another heading
 
 
 def test_a_preview_shows_the_page_that_has_the_templates_first_section(admin):

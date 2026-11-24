@@ -55,47 +55,39 @@ def _show_as_values():
 
 # The Key: lines. type: "choice" (values: (key, label, what it does, icon)),
 # "number" (a whole number from limit, with suggestions), "tag" (any of
-# the site's tags) or "series" (any of the site's series). aliases: other spellings the page still reads.
+# the site's tags) or "series" (any of the site's series).
 # default: what Default does, as the / menu says it.
 OPTIONS = {
     "Width": {"about": "How wide it runs", "default": "Follow the site", "type": "choice",
               "values": (("column", "Column", "As wide as the text", "shrink"),
                          ("wide", "Wide", "Out to the side panels", "expand"),
-                         ("full", "Full", "Edge to edge", "maximize-2")),
-              "aliases": {}},
+                         ("full", "Full", "Edge to edge", "maximize-2"))},
     "Style": {"about": "How it's set apart", "default": "No card or cover", "type": "choice",
-              "values": (("card", "Card", "Set apart on a card", "rectangle-horizontal"),),
-              "aliases": {}},
+              "values": (("card", "Card", "Set apart on a card", "rectangle-horizontal"),)},
     "Heading": {"about": "Where its heading sits", "default": "Follow the site", "type": "choice",
                 "values": (("left", "Left", "On the left, with the text", "align-left"),
-                           ("centre", "Centred", "In the middle, over the text", "align-center")),
-                "aliases": {"center": "centre", "centered": "centre"}},
+                           ("centre", "Centred", "In the middle, over the text", "align-center"))},
     "Space": {"about": "How much room is around it", "default": "Follow the page", "type": "choice",
-              "values": _space_values, "aliases": {}},
+              "values": _space_values},
     "Appear": {"about": "How it comes into view", "default": "Follow the page", "type": "choice",
-               "values": _appear_values, "aliases": {}},
+               "values": _appear_values},
     "Show as": {"about": "How the images are arranged", "default": "Follow the site", "type": "choice",
-                "values": _show_as_values, "aliases": {}},
+                "values": _show_as_values},
     "Count": {"about": "How many posts", "default": "Three posts", "type": "number",
               "suggest": (3, 6, 9, 12), "limit": (1, 12), "unit": "posts"},
     "Tag": {"about": "Only posts with this tag", "default": "Any tag", "type": "tag"},
     "Series": {"about": "Which series", "default": "This page's own series", "type": "series"},
     "First paragraph": {"about": "How the opening paragraph looks", "default": "Big", "type": "choice",
                         "values": (("big", "Big", "Large, like a magazine's opening", "a-large-small"),
-                                   ("normal", "Normal", "The same size as the rest", "pilcrow")),
-                        "aliases": {}},
-    "Pictures together": {"about": "How images written together are placed", "default": "Side by side",
-                          "type": "choice",
-                          "values": (("side", "Side by side", "In a row, the same height", "columns-2"),
-                                     ("stack", "One under another", "Each one across the page",
-                                      "rectangle-horizontal")),
-                          "aliases": {}},
-    "A line after a picture": {"about": "Where a short line straight after an image goes", "default": "Beside it",
-                               "type": "choice",
-                               "values": (("beside", "Beside it", "Next to the image, sides taking turns",
-                                           "layout-panel-left"),
-                                          ("under", "Under it", "Under the image, like the rest", "image-up")),
-                               "aliases": {}},
+                                   ("normal", "Normal", "The same size as the rest", "pilcrow"))},
+    "Images": {"about": "How images written together are placed", "default": "Side by side",
+               "type": "choice",
+               "values": (("side", "Side by side", "In a row, the same height", "columns-2"),
+                          ("stack", "Stacked", "Each one across the page", "rectangle-horizontal"))},
+    "Captions": {"about": "Where a short line straight after an image goes", "default": "Beside",
+                 "type": "choice",
+                 "values": (("beside", "Beside", "Next to the image, sides taking turns", "layout-panel-left"),
+                            ("under", "Under", "Under the image, like the rest", "image-up"))},
 }
 
 # Style: Cover, offered only by the kinds made with cover=True
@@ -104,13 +96,13 @@ COVER = ("cover", "Cover", "Its text over its image, across the page", "image")
 
 def _kind(key, names, about, icon, words, heading, body="", options=None, width="", draw=None, styles=(),
           own_heading=False, cover=False):
-    """names: what may follow "Section:", the first is its label. options:
+    """names: its one name after "Section:", as (name,) - its label. options:
     {name: its own words for what it does here, "" for the option's own}
     after Width and Style. width: how wide it runs with no Width line. draw: the function in
     pages.py that draws it (_render_ and its key, unless named). styles: Style
     values only this kind has, (key, label, what it does, icon) like the shared
     ones. own_heading: it draws its own ##, so the page leaves it out. cover: it
-    takes Style: Cover - a section where words over a picture means something."""
+    takes Style: Cover - a section where text over an image means something."""
     return {"names": names, "label": names[0], "about": about, "icon": icon, "words": words,
             "heading": heading, "body": body, "options": options or {}, "width": width,
             "draw": f"_render_{key}" if draw is None else draw, "styles": styles, "own_heading": own_heading,
@@ -119,10 +111,10 @@ def _kind(key, names, about, icon, words, heading, body="", options=None, width=
 
 # In the order Insert lists them
 REGISTRY = {
-    "picture_and_text": _kind("picture_and_text", ("Picture and text", "Picture"), "An image beside its text", "layout-panel-left",
-                  ("image", "photo", "side"), "A heading",
+    "image_and_text": _kind("image_and_text", ("Image and text",), "An image beside its text", "layout-panel-left",
+                  ("image", "photo", "side", "picture", "picture and text"), "A heading",
                   "![An image](https://)\n\nA few words about it.", cover=True),
-    "numbers": _kind("numbers", ("Numbers", "Stats"), "Big figures, like 10,000 customers", "trending-up",
+    "numbers": _kind("numbers", ("Numbers",), "Big figures, like 10,000 customers", "trending-up",
                      ("stats", "figures"), "In numbers",
                      "### 10,000\nhappy customers\n\n### 4.9 ★\naverage rating"),
     "testimonials": _kind("testimonials", ("Testimonials",), "Quotes from people, with who said them",
@@ -130,28 +122,28 @@ REGISTRY = {
                           "### Their name\n\nRole: What they do\n\n> What they said."),
     "logos": _kind("logos", ("Logos",), "A row of logos - as seen in, trusted by", "award",
                    ("brands", "press"), "As seen in", "![A name](https://)\n![Another](https://)"),
-    "pricing": _kind("pricing", ("Pricing", "Plans"), "Plans as cards, one picked out", "badge-dollar-sign",
+    "pricing": _kind("pricing", ("Pricing",), "Plans as cards, one picked out", "badge-dollar-sign",
                      ("plans", "prices"), "Plans",
                      "### Basic\n\nPrice: US$10 a month\n\n- What's included\n\n[Choose Basic](https://)\n\n"
                      "### Pro\n\nPrice: US$20 a month\nBadge: Most popular\n\n- Everything in Basic\n- And more\n\n"
                      "[Choose Pro](https://)"),
-    "products": _kind("products", ("Products", "Shop"), "Things for sale, each with a button", "shopping-bag",
+    "products": _kind("products", ("Products",), "Things for sale, each with a button", "shopping-bag",
                   ("shop", "sell"), "Shop",
                   "### A product\n\n![An image](https://)\n\nPrice: US$25\n\nWhat it is.\n\n[Buy](https://)"),
     "services": _kind("services", ("Services",), "What you offer, with a starting price", "briefcase",
                       ("offer", "hire"), "Services",
                       "### A service\n\nFrom: US$400\n\nWhat's included.\n\n[Get in touch](/contact)"),
-    "team": _kind("team", ("Team", "People"), "The people, with a photo and a line", "users",
+    "team": _kind("team", ("Team",), "The people, with a photo and a line", "users",
                   ("people", "staff"), "The team",
                   "### A name\n\n![Their photo](https://)\n\nRole: What they do\n\nA line about them."),
-    "faq": _kind("faq", ("FAQ", "Questions"), "Questions that open to their answers", "message-circle-question",
+    "faq": _kind("faq", ("FAQ",), "Questions that open to their answers", "message-circle-question",
                  ("questions", "answers"), "Questions",
                  "### A question?\nIts answer.\n\n### Another question?\nIts answer."),
     "gallery": _kind("gallery", ("Photo gallery",), "A section of images, with its own heading", "layout-grid",
                      ("gallery", "photos", "images", "pictures"), "Photos",
                      "```gallery\n/uploads/a-photo.webp\n/uploads/another.webp\n```"),
-    "cta": _kind("cta", ("Call to action", "CTA"), "One line and a button, in a band", "megaphone",
-                 ("button", "call to action"), "Ready to start?",
+    "cta": _kind("cta", ("Call to action",), "One line and a button, in a band", "megaphone",
+                 ("button", "call to action", "cta"), "Ready to start?",
                  "One line about why.\n\n[Get started](https://)", cover=True),
     "features": _kind("features", ("Features",), "Short points with an icon, side by side", "sparkles",
                       ("benefits", "icons", "grid"), "Why it's good",
@@ -161,44 +153,44 @@ REGISTRY = {
     "columns": _kind("columns", ("Columns",), "Text in columns, side by side", "columns-3",
                      ("side by side", "two columns"), "Two sides",
                      "### The first\n\nSome words.\n\n### The second\n\nSome more."),
-    "signup": _kind("signup", ("Sign-up", "Signup", "Newsletter"), "Your newsletter's sign-up box", "mail",
-                    ("newsletter", "subscribe", "email"), "Get the next one",
+    "signup": _kind("signup", ("Sign-up",), "Your newsletter's sign-up box", "mail",
+                    ("newsletter", "subscribe", "email", "signup"), "Get the next one",
                     "A line about what they'll get."),
-    "contact": _kind("contact", ("Contact form", "Contact"), "Your contact form", "send",
-                     ("form", "message"), "Get in touch", "A line about what to write about."),
-    "latest": _kind("latest", ("Latest posts", "Posts"), "Your newest posts, as cards", "newspaper",
+    "contact": _kind("contact", ("Contact form",), "Your contact form", "send",
+                     ("form", "message", "contact"), "Get in touch", "A line about what to write about."),
+    "latest": _kind("latest", ("Latest posts",), "Your newest posts, as cards", "newspaper",
                     ("recent", "newest", "posts"), "Lately",
                     options={"Count": "", "Tag": ""}),
-    "compare": _kind("compare", ("Compare", "Comparison"), "A table of options, with checkmarks", "table-properties",
+    "compare": _kind("compare", ("Compare",), "A table of options, with checkmarks", "table-properties",
                      ("comparison", "table", "versus"), "Which one?",
                      "| | Basic | Pro |\n|---|---|---|\n| Every post | ✓ | ✓ |\n| Members-only posts | ✗ | ✓ |"),
-    "steps": _kind("steps", ("Steps", "How it works"), "Numbered steps - how it works", "footprints",
+    "steps": _kind("steps", ("Steps",), "Numbered steps - how it works", "footprints",
                    ("how it works", "process", "numbered"), "How it works",
                    "1. The first step.\n2. The next.\n3. The last."),
-    "milestones": _kind("milestones", ("Milestones", "Timeline"), "Dated entries on a line", "milestone",
+    "milestones": _kind("milestones", ("Milestones",), "Dated entries on a line", "milestone",
                       ("timeline", "history", "dates"), "So far",
                       "### 2024 · It began\n\nA line about it.\n\n### 2026 · Where it is now\n\nA line about it."),
-    "events": _kind("events", ("Events", "Talks"), "Events to come, then past ones", "calendar-check",
+    "events": _kind("events", ("Events",), "Events to come, then past ones", "calendar-check",
                     ("talks", "dates", "calendar"), "Coming up",
                     "### A talk\n\nDate: 12 March 2027\nPlace: Where it is\n\n[Details](https://)"),
     "menu": _kind("menu", ("Menu",), "Dishes with prices, lined up", "soup", ("food", "dishes", "prices"),
                   "On the menu", "### Breakfast\n\n- Porridge - oats, honey · $7\n- Toast - sourdough · $5"),
-    "portfolio": _kind("portfolio", ("Portfolio", "Projects"), "Images of your work, each leading to its page",
-                      "folder-open", ("portfolio", "work"), "Recent work",
+    "portfolio": _kind("portfolio", ("Portfolio",), "Images of your work, each leading to its page",
+                      "folder-open", ("portfolio", "work", "projects"), "Recent work",
                       "### A project\n\n![An image](https://)\n\nWhat it is.\n\n[See the project](https://)",
                       options={"Show as": "", "Tag": "Adds every post with this tag"}),
-    "reviews": _kind("reviews", ("Reviews", "Books"), "Books or films, with stars", "star",
+    "reviews": _kind("reviews", ("Reviews",), "Books or films, with stars", "star",
                        ("books", "films", "rating"), "Read lately",
                        "### A book\n\nAuthor: Their name\nRating: 4/5\n\nA line about it."),
     "uses": _kind("uses", ("Uses",), "Things you use, and what for", "hammer", ("tools", "gear", "setup"),
                   "What I use", "### At the desk\n\n- **A thing** - what it's for\n- **Another** - what it's for"),
-    "hours": _kind("hours", ("Opening hours", "Hours"), "When you're open, as a table", "clock-3",
-                   ("opening", "open", "times"), "Opening hours",
+    "hours": _kind("hours", ("Opening hours",), "When you're open, as a table", "clock-3",
+                   ("opening", "open", "times", "hours"), "Opening hours",
                    "Monday: 9am – 5pm\nTuesday: 9am – 5pm\nSaturday: Closed"),
     "details": _kind("details", ("Contact details",), "Buttons to call, write or find you", "contact",
                      ("phone", "address", "email", "map"), "Find us",
                      "Phone: +1 555 0100\nEmail: hello@example.com\nAddress: 1 High Street"),
-    "resume": _kind("resume", ("Resume", "CV"), "Jobs or schooling, each with its dates", "history",
+    "resume": _kind("resume", ("Resume",), "Jobs or schooling, each with its dates", "history",
                     ("cv", "experience", "education", "work history"), "Experience",
                     "### Designer, Acme · 2021 – 2024\n\nA line about what you did.\n\n"
                     "### Assistant, Studio North · 2018 – 2021\n\nA line about what you did.",
@@ -211,7 +203,7 @@ REGISTRY = {
                      "A couple of sentences about what you do.\n\n"
                      "[Writing](/blog) [About](/about) [Email me](mailto:hello@example.com)",
                      draw="_render_profile_part", own_heading=True),
-    "bios": _kind("bios", ("Bios", "Media kit"), "Bios to copy, and photos to download", "pen-line",
+    "bios": _kind("bios", ("Bios",), "Bios to copy, and photos to download", "pen-line",
                   ("press", "media kit", "about"), "For the press",
                   "### Short bio\n\nTwo sentences to paste into an introduction.\n\n"
                   "### Long bio\n\nA few sentences about who you are and what you do.\n\n"
@@ -224,10 +216,10 @@ REGISTRY = {
                          "A big opening paragraph that sets the scene.\n\n![An image](https://)\n\n"
                          "A short line that sits beside the image.\n\n> A line worth pulling out.\n\n"
                          "![An image](https://)\n![Another image](https://)",
-                         options={"First paragraph": "", "Pictures together": "", "A line after a picture": ""},
+                         options={"First paragraph": "", "Images": "", "Captions": ""},
                          width="wide"),
-    "story": _kind("story", ("Story", "Scroll story"), "Images that change as the text scrolls", "gallery-vertical-end",
-                   ("scroll", "scrolling", "pictures", "steps", "fullscreen", "tour"), "Take a look around",
+    "story": _kind("story", ("Story",), "Images that change as the text scrolls", "gallery-vertical-end",
+                   ("scroll", "scrolling", "pictures", "steps", "fullscreen", "tour", "scroll story"), "Take a look around",
                    "### Start here\n\n![An image for this step](https://)\n\n"
                    "Readers see this image while they read these words.\n\n"
                    "### Then the next\n\n![An image for the next step](https://)\n\n"
@@ -241,8 +233,8 @@ REGISTRY = {
                   width="full", cover=True,
                   styles=(("window", "Window", "The image framed like a window, as a launch page opens",
                            "panels-top-left"),)),
-    "bento": _kind("bento", ("Bento grid", "Bento"), "Tiles of different sizes, the first big", "grid-2x2",
-                   ("tiles", "grid", "mosaic"), "What's inside",
+    "bento": _kind("bento", ("Bento grid",), "Tiles of different sizes, the first big", "grid-2x2",
+                   ("tiles", "grid", "mosaic", "bento"), "What's inside",
                    "### The main thing\n\n![A picture](https://)\n\nA line about it.\n\n### Another\n\nA line.\n\n"
                    "### And another\n\nA line.\n\n### One more\n\nA line.\n\n### The last\n\nA line.",
                    width="wide"),
@@ -252,15 +244,15 @@ REGISTRY = {
     "ingredients": _kind("ingredients", ("Ingredients",), "A list readers can check off", "list-todo",
                          ("recipe", "shopping", "list"), "Ingredients",
                          "- 400 g tomatoes\n- 1 onion\n- A pinch of salt"),
-    "method": _kind("method", ("Method", "Instructions", "Directions"), "Numbered steps with big numbers",
-                    "utensils", ("recipe", "steps", "cook"), "Method",
+    "method": _kind("method", ("Method",), "Numbered steps with big numbers",
+                    "utensils", ("recipe", "steps", "cook", "instructions", "directions"), "Method",
                     "1. Chop the onion.\n2. Cook it with the tomatoes.\n3. Season and serve."),
     "interview": _kind("interview", ("Interview",), "Questions and answers as a chat", "message-circle",
                        ("q&a", "chat", "conversation", "speaker"), "The conversation",
                        "**Sam:** What got you started?\n\n**Alex:** A broken bike and a free weekend.\n\n"
                        "**Sam:** What would you tell someone starting out?\n\n**Alex:** Start small.",
                        draw="_render_interview_part"),
-    "contents": _kind("contents", ("Contents", "Parts"), "A series' parts, in order, each a link", "map",
+    "contents": _kind("contents", ("Contents",), "A series' parts, in order, each a link", "map",
                       ("series", "parts", "guide", "index"), "In this series", options={"Series": ""}),
     "previous_next": _kind("previous_next", ("Previous and next",), "The pages before and after this one, as images",
                            "refresh-cw", ("next", "previous", "more", "keep reading"), "Keep reading"),
@@ -300,8 +292,7 @@ def accepted(name, kind=None) -> set:
     option = OPTIONS[name]
     if option["type"] != "choice":
         return {DEFAULT.lower()}
-    return {DEFAULT.lower(), *option["aliases"],
-            *(w for key, label, *_ in values(name, kind) for w in (key, label.lower()))}
+    return {DEFAULT.lower(), *(label.lower() for _, label, *_ in values(name, kind))}
 
 
 def accepts(name, value, kind=None) -> bool:
@@ -320,10 +311,8 @@ def pick(name, value, kind=None) -> str:
     """The key of the choice a line says ("Side by side" -> "side"), "" for
     Default, a missing line or anything the page can't use."""
     value = str(value).strip().lower()
-    option = OPTIONS[name]
-    value = option["aliases"].get(value, value)
     for key, label, *_ in values(name, kind):
-        if value in (key, label.lower()):
+        if value == label.lower():
             return key
     return ""
 
@@ -418,7 +407,7 @@ def section_width(html):
     """A section's "Width:" - Column, Wide or Full, the names the cover and
     the header use ("" for Default)."""
     width, html = take_line(html, "width")
-    return OPTIONS["Width"]["aliases"].get(width, width), html
+    return width, html
 
 
 # What an excerpt, a feed and an email leave out: a paragraph of only a
@@ -480,7 +469,6 @@ def editor_data() -> dict:
                 "accepts": sorted(accepted(name, "")), "note": note(name)}
         if option["type"] == "choice":
             spec["values"] = [[key, label, about, icon(svg)] for key, label, about, svg in values(name, "")]
-            spec["aliases"] = option["aliases"]
         if option["type"] == "number":
             spec["suggest"] = list(option["suggest"])
             spec["limit"] = list(option["limit"])

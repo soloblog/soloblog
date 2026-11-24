@@ -166,7 +166,7 @@ anywhere in it and open **Insert** or type `/` - on a phone, select
 **+**. Its options come first, and the one it uses now says **In use**:
 
 - **Any section:** its width (**Column**, **Wide** or **Full**) and style
-  (**Card**, and **Cover** on a Hero, Call to action or Picture and text).
+  (**Card**, and **Cover** on a Hero, Call to action or Image and text).
 - **Portfolio:** how it's arranged (**Show as**) and a tag whose posts it
   adds. **Latest posts:** how many (**Count**) and which tag.
   **Contents:** which series. **Photo story:** how its first paragraph,

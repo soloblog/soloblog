@@ -1177,13 +1177,13 @@ def _recipe_ld(row, pairs, ingredients, steps):
             "recipeInstructions": [{"@type": "HowToStep", "text": t} for t in steps]}
     for k, v in pairs:
         key, value = k.lower(), text_of(v)
-        if key in ("serves", "servings", "yield", "makes"):
+        if key == "serves":
             data["recipeYield"] = value
-        elif key in ("prep", "prep time"):
+        elif key == "prep":
             data["prepTime"] = _iso_duration(value)
-        elif key in ("cook", "cook time", "bake"):
+        elif key == "cook":
             data["cookTime"] = _iso_duration(value)
-        elif key in ("total", "total time"):
+        elif key == "total":
             data["totalTime"] = _iso_duration(value)
     if row["cover_image"]:
         data["image"] = config.BASE_URL + row["cover_image"] if row["cover_image"].startswith("/") else row["cover_image"]
@@ -1684,7 +1684,7 @@ def _render_compare(out, row, s, html, toc, logged_in, series):
     out["body"] = _prose(html, "prose-table:my-0")
 
 
-def _render_picture_and_text(out, row, s, html, toc, logged_in, series):
+def _render_image_and_text(out, row, s, html, toc, logged_in, series):
     """A picture beside its words; the words alone when there's no picture."""
     img, credit, rest = _take_image(html)
     if not img:
@@ -2131,7 +2131,7 @@ def _render_services(out, row, s, html, toc, logged_in, series):
             cards.clear()
     for h, inner, body in secs:
         pairs, rest = facts(body.strip())
-        price = next((v for k, v in pairs if k.lower() in ("from", "price", "starts at", "starting at")), None)
+        price = next((v for k, v in pairs if k.lower() == "from"), None)
         if price is not None:
             href, label, rest = _take_button(rest)
             cards.append(Div(Div(
@@ -2161,7 +2161,7 @@ def _render_testimonials(out, row, s, html, toc, logged_in, series):
     for h, inner, body in secs:
         img, credit, rest = _take_image(body)
         pairs, rest = facts(rest.strip())
-        role = next((v for k, v in pairs if k.lower() in ("role", "who", "from", "company")), None)
+        role = next((v for k, v in pairs if k.lower() == "role"), None)
         quote = re.sub(r"</?blockquote>", "", rest).strip()
         cards.append(Figure(
             Div(NotStr("“"), cls="text-6xl leading-[0.6] text-primary/50 font-serif h-6", aria_hidden="true"),
@@ -2460,8 +2460,8 @@ def _render_events(out, row, s, html, toc, logged_in, series):
     coming, past, data = [], [], []
     for h, inner, body in secs:
         pairs, rest = facts(body.strip())
-        when = next((v for k, v in pairs if k.lower() in ("date", "when")), "")
-        place = next((v for k, v in pairs if k.lower() in ("place", "where", "venue", "location")), "")
+        when = next((v for k, v in pairs if k.lower() == "date"), "")
+        place = next((v for k, v in pairs if k.lower() == "place"), "")
         day = event_date(text_of(when)) if when else None
         # a card each, its day on a calendar leaf - a list of lines read
         # as plain text, the dates hard to find
@@ -2474,7 +2474,7 @@ def _render_events(out, row, s, html, toc, logged_in, series):
             Div(Div(Span(NotStr(when), cls="font-medium") if when else None,
                     Span(" · ", NotStr(place), cls="text-base-content/60") if place else None, cls="text-sm"),
                 H3(NotStr(inner), cls=f"{ITEM_TITLE} mt-0.5"),
-                *_fact_rows(pairs, skip=("date", "when", "place", "where", "venue", "location")),
+                *_fact_rows(pairs, skip=("date", "place")),
                 _prose(rest, "mt-1", small=True), cls="min-w-0"),
             id=_id_of(h) or None,
             cls=f"card card-border bg-base-100 {CARD_PAD} flex-row gap-4")
@@ -2588,7 +2588,7 @@ def _contact_buttons(pairs, data):
             buttons.append(A(_icon(_PHONE_ICON), Span(value, cls="ml-1"), href="tel:" + re.sub(r"[^\d+]", "", value),
                              cls=_CONTACT_BTN))
             data["telephone"] = value
-        elif k.lower() in ("address", "where", "find us", "location"):
+        elif k.lower() == "address":
             buttons.append(A(_icon(_PIN_ICON), Span(value, cls="ml-1"),
                              href=f"https://www.openstreetmap.org/search?query={quote(value)}", target="_blank",
                              rel="noopener", cls=_CONTACT_BTN))
@@ -2779,12 +2779,12 @@ def _render_photo_story(out, row, s, html, toc, logged_in, series):
     """Pictures and words laid out like a magazine (_story_rows). Three
     options turn its arrangements off."""
     chosen = {}
-    for name in ("First paragraph", "Pictures together", "A line after a picture"):
+    for name in ("First paragraph", "Images", "Captions"):
         value, html = section_registry.take_line(html, name.lower())
         chosen[name] = section_registry.pick(name, value)
     rows = _story_rows(html, _STORY_SECTION, big=chosen["First paragraph"] != "normal",
-                       together=chosen["Pictures together"] != "stack",
-                       beside=chosen["A line after a picture"] != "under")
+                       together=chosen["Images"] != "stack",
+                       beside=chosen["Captions"] != "under")
     out["body"] = Div(*rows, cls=f"flex flex-col {_STORY_SECTION['gap']}")
 
 
@@ -2957,12 +2957,12 @@ def _render_team(out, row, s, html, toc, logged_in, series):
         if not img and not pairs:
             after.append(h + body)
             continue
-        role = next((v for k, v in pairs if k.lower() in ("role", "job", "title", "position")), None)
+        role = next((v for k, v in pairs if k.lower() == "role"), None)
         cards.append(Div(
             _pictured(img, credit, "w-full aspect-square object-cover"),
             Div(H3(NotStr(inner), cls=ITEM_TITLE),
                 Div(NotStr(role), cls="text-sm text-primary -mt-1") if role else None,
-                *_fact_rows(pairs, skip=("role", "job", "title", "position")),
+                *_fact_rows(pairs, skip=("role",)),
                 _prose(rest, "[&_p]:my-1", small=True), cls=f"card-body {CARD_PAD} gap-2"),
             id=_id_of(h) or None, cls="card card-border bg-base-100 overflow-hidden"))
     out["body"] = Div(Div(_intro(intro), cls=_col(s)),

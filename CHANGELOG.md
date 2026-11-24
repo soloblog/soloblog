@@ -34,6 +34,10 @@ versions may include breaking changes; they'll always be listed here.
   Collapsible contents, like the editor's Collapsible block
 - The admin and Help say restore where they said bring back
 - The admin and Help say select where they said tick
+- Each kind of section, Key: line and value has one name: Picture and
+  text is Image and text, Pictures together is Images, A line after a
+  picture is Captions, and second names like Stats or Timeline are only
+  search words in Insert
 
 ### Fixed
 

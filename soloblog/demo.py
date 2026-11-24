@@ -682,7 +682,7 @@ lamp - from the repair café's first year.
 
 ## What's inside
 
-Section: Picture and text
+Section: Image and text
 
 {img("tools")}
 
@@ -691,7 +691,7 @@ hour and saved something from the bin.
 
 ## Who it's for
 
-Section: Picture and text
+Section: Image and text
 
 {img("workshop")}
 
@@ -2146,7 +2146,7 @@ The same things, working - and how to fix them next time.
 
 ## A cover
 
-Section: Picture and text
+Section: Image and text
 Style: Cover
 
 {p("forest_road")}
@@ -2156,7 +2156,7 @@ A Hero, a Call to action or a Picture and text can be a cover with a
 
 ## Picture and text
 
-Section: Picture and text
+Section: Image and text
 
 A picture beside its words.
 

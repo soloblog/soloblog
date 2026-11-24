@@ -489,10 +489,13 @@ A section (a `##` with a `Section:` line, user guide > Sections) works in
 any post. Everything about a kind is one entry in `sections.REGISTRY`;
 Insert, the `/` menu, the phone's + sheet, the editor's Help and
 highlighting, the lines left out of excerpts and the page itself all read
-it. A new kind needs, in one change:
+it. Every kind, Key: line and value has one name, written one way:
+another word people might use for a kind is one of its search words,
+never a second name, and a renamed one doesn't keep its old name. A new
+kind needs, in one change:
 
-1. **Its registry entry** in `sections.py`: what people may write after
-   `Section:` (the first is its label), what it is in one line, a Lucide
+1. **Its registry entry** in `sections.py`: its one name after
+   `Section:`, what it is in one line, a Lucide
    icon (`editor_icons`), search words, its sample words (`heading`,
    `body`), the Key: lines it takes after Width, Style, Heading, Space and Appear (`options` -
    a new kind of option goes in `OPTIONS` first) and its default width.
@@ -513,7 +516,7 @@ it. A new kind needs, in one change:
 Three things a kind may add to its entry: `styles`, `Style:` values only it
 has (the Hero's `Window`) - the `/` menu lists them for that kind alone and
 the editor underlines them on any other - `cover=True`, for `Style: Cover`
-(Hero, Call to action, Picture and text: words over a picture means
+(Hero, Call to action, Image and text: words over an image means
 something there; on any other kind it is ignored and underlined, and the
 list is that one argument) - and `own_heading`, when it draws
 its `##` itself (Profile's is the person's name, big): its renderer reads

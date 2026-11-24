@@ -601,7 +601,7 @@ def test_a_landing_page_built_from_sections(admin, client):
     from soloblog import sections
     snippets = {key: sections.markdown(key) for key in sections.REGISTRY}
     body_md = ("Everything you need, in one tin.\n\n[Get it](/shop)\n\n"
-               + "\n\n".join(snippets[k] for k in ("picture_and_text", "numbers", "testimonials", "logos", "pricing",
+               + "\n\n".join(snippets[k] for k in ("image_and_text", "numbers", "testimonials", "logos", "pricing",
                                                    "products", "services", "team", "faq", "cta"))
                + "\n\n## A plain one\n\nSection: Nonsense\n\nJust words.")
     slug = save_post(admin, title="The kit", body=body_md, page_width="wide")
@@ -656,7 +656,7 @@ def test_sections_take_a_width_and_a_style_on_a_wide_page(admin, client):
     body_md = ("A line.\n\n"
                "## Narrow words\n\nSection: Features\nWidth: Column\n\n### One\n\nIcon: leaf\nA line.\n\n"
                "## Carded\n\nSection: Numbers\nStyle: Card\n\n### 12\nthings\n\n"
-               f"## Across\n\nSection: Picture and text\nStyle: Cover\n\n![A view]({pic})\n\nOver the picture.\n\n[Look](/look)\n\n"
+               f"## Across\n\nSection: Image and text\nStyle: Cover\n\n![A view]({pic})\n\nOver the picture.\n\n[Look](/look)\n\n"
                f"## A hero\n\nSection: Hero\n\n![A view]({pic})\n\nBig words.\n\n"
                "## Edge to edge\n\nSection: Features\nWidth: Full\n\n### Two\n\nA line.")
     r = client.get(f"/post/{save_post(admin, title='Sized sections', body=body_md, page_width='wide')}")
@@ -735,7 +735,7 @@ def test_a_posts_sections_take_a_style_too(admin, client):
     landing page; a gallery's pictures have the framed pictures' edge and
     shadow."""
     body_md = ("Words.\n\n## Carded\n\nSection: Numbers\nStyle: Card\n\n### 3\nthings\n\n"
-               "## Covered\n\nSection: Picture and text\nStyle: Cover\n\n![A view](/uploads/a.webp)\n\nOver it.\n\n"
+               "## Covered\n\nSection: Image and text\nStyle: Cover\n\n![A view](/uploads/a.webp)\n\nOver it.\n\n"
                "## Photos\n\nSection: Gallery\n\n```gallery\n/uploads/a.webp\n```")
     page = client.get(f"/post/{save_post(admin, title='Styled sections', body=body_md)}").text
     assert "Style:" not in page and "card border border-base-content/10 bg-base-content/4 p-6 sm:p-8" in page

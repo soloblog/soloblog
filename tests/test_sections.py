@@ -222,37 +222,34 @@ def test_hero_and_bento_and_a_sections_width(admin, client):
         settings.set_many({"heading_fold": kept})
 
 
-# What people could write after "Section:" before the registry (pages.SECTION_KINDS):
-# pinned, so a name never changes the kind it means - pages in the wild use them
-OLD_NAMES = {"features": "features", "picture and text": "picture_and_text", "picture": "picture_and_text",
-             "columns": "columns", "sign-up": "signup", "signup": "signup", "newsletter": "signup",
-             "contact form": "contact", "contact": "contact", "latest posts": "latest", "posts": "latest",
-             "compare": "compare", "comparison": "compare",
-             "steps": "steps", "how it works": "steps", "milestones": "milestones", "timeline": "milestones",
-             "events": "events", "talks": "events", "menu": "menu", "projects": "portfolio",
-             "portfolio": "portfolio", "reviews": "reviews", "books": "reviews", "uses": "uses",
-             "opening hours": "hours", "hours": "hours", "contact details": "details",
-             "hero": "hero", "bento": "bento", "bento grid": "bento",
-             "testimonials": "testimonials", "pricing": "pricing", "plans": "pricing",
-             "faq": "faq", "questions": "faq", "products": "products", "shop": "products", "services": "services",
-             "team": "team", "people": "team", "photo gallery": "gallery",
-             "numbers": "numbers", "stats": "numbers", "logos": "logos",
-             "call to action": "cta", "cta": "cta",
-             "resume": "resume", "cv": "resume", "skills": "skills", "profile": "profile", "bios": "bios",
-             "media kit": "bios", "project facts": "project_facts", "photo story": "photo_story"}
+# Every name that may follow "Section:" - one a kind, pinned so a name
+# never changes the kind it means. A second name for a kind is a search
+# word in the Insert menu, never another way to write it.
+NAMES = {"bento grid": "bento", "bios": "bios", "call to action": "cta", "columns": "columns",
+         "compare": "compare", "contact details": "details", "contact form": "contact",
+         "contents": "contents", "events": "events", "faq": "faq", "features": "features", "hero": "hero",
+         "image and text": "image_and_text", "ingredients": "ingredients", "interview": "interview",
+         "latest posts": "latest", "logos": "logos", "menu": "menu", "method": "method",
+         "milestones": "milestones", "numbers": "numbers", "opening hours": "hours",
+         "photo gallery": "gallery", "photo story": "photo_story", "portfolio": "portfolio",
+         "previous and next": "previous_next", "pricing": "pricing", "products": "products",
+         "profile": "profile", "project facts": "project_facts", "recipe facts": "recipe_facts",
+         "resume": "resume", "reviews": "reviews", "services": "services", "sign-up": "signup",
+         "skills": "skills", "steps": "steps", "story": "story", "team": "team",
+         "testimonials": "testimonials", "uses": "uses"}
+
+# the second names the kinds once had: search words now, not names
+SEARCH_ONLY = ("picture and text", "picture", "stats", "plans", "shop", "people", "questions", "cta", "signup",
+               "newsletter", "contact", "posts", "comparison", "how it works", "timeline", "talks", "projects",
+               "books", "hours", "cv", "media kit", "scroll story", "bento", "instructions", "directions", "parts")
 
 
-NEW_NAMES = {"recipe facts": "recipe_facts", "ingredients": "ingredients", "method": "method",
-             "instructions": "method", "directions": "method", "interview": "interview",
-             "contents": "contents", "parts": "contents", "previous and next": "previous_next",
-             "story": "story", "scroll story": "story"}
-
-
-def test_the_registry_is_complete_and_keeps_every_name():
+def test_the_registry_is_complete_and_each_kind_has_one_name():
     from soloblog import editor_icons, pages, sections
-    assert sections.NAMES == {**OLD_NAMES, **NEW_NAMES}
-    # no two kinds claim one name
-    assert sum(len(e["names"]) for e in sections.REGISTRY.values()) == len(sections.NAMES)
+    assert sections.NAMES == NAMES
+    assert all(len(e["names"]) == 1 for e in sections.REGISTRY.values())
+    for old in SEARCH_ONLY:
+        assert old not in sections.NAMES and any(old in e["words"] for e in sections.REGISTRY.values()), old
     assert len(sections.REGISTRY) == 41
     for key, entry in sections.REGISTRY.items():
         assert entry["label"] == entry["names"][0] and entry["about"] and entry["heading"], key
@@ -385,16 +382,17 @@ def test_the_editor_gets_the_registry(admin):
         assert o["sections"][key]["options"] == list(sections.option_names(key)) and o["sections"][key]["label"] == entry["label"]
     # the editor highlights what the registry names - and a Features item's Icon: line
     assert o["lineKeys"] == ["Width", "Style", "Heading", "Space", "Appear", "Show as", "Count", "Tag", "Series",
-                             "First paragraph", "Pictures together", "A line after a picture", "Icon"]
+                             "First paragraph", "Images", "Captions", "Icon"]
     # what the editor says under each kind of wrong value
     assert o["options"]["Style"]["note"] == "Style can be Card or Default"
     assert o["options"]["Show as"]["note"] == "Show as can be Grid, Masonry, Rows, Full screen, Sideways or Default"
     assert o["options"]["Count"]["note"] == "Count is a number from 1 to 12, or Default"
     assert {"default", "column"} <= set(o["options"]["Width"]["accepts"]) and "narrow" not in o["options"]["Width"]["accepts"]
-    assert {"default", "full screen", "screen"} <= set(o["options"]["Show as"]["accepts"])
+    assert {"default", "full screen"} <= set(o["options"]["Show as"]["accepts"])
+    assert "screen" not in o["options"]["Show as"]["accepts"]  # its label, not its key
     page = admin.get("/admin/new").text
     assert '"lineKeys": ["Width", "Style", "Heading", "Space", "Appear", "Show as", "Count", "Tag", "Series", ' \
-           '"First paragraph", "Pictures together", "A line after a picture", "Icon"]' in page
+           '"First paragraph", "Images", "Captions", "Icon"]' in page
     assert '"reserved": "Default is a reserved word"' in page
     # the highlighting reads those names, not a list of its own
     init = Path(os.path.join(os.path.dirname(js.__file__), "editor_init.js")).read_text()
@@ -460,8 +458,8 @@ def test_recipe_sections_look_like_a_recipes_parts(admin, client):
     assert "Section:" not in page.split("<main")[1]
 
 
-def test_method_has_three_names_and_ingredients_keep_the_words_around_the_list(admin, client):
-    body = ("## Directions\n\nSection: Instructions\n\n1. One.\n2. Two.\n\n"
+def test_method_and_ingredients_keep_the_words_around_the_list(admin, client):
+    body = ("## Directions\n\nSection: Method\n\n1. One.\n2. Two.\n\n"
             "## Shopping\n\nSection: Ingredients\n\nFor the soup:\n\n- Leeks\n- Stock\n\nOr use a tin.\n")
     page = client.get(f"/post/{save_post(admin, title='Names', body=body)}").text
     assert page.count("badge badge-primary badge-lg") == 2
@@ -753,12 +751,12 @@ def test_the_shared_options_are_every_sections_first():
     option = sections.OPTIONS["Heading"]
     assert [v[0] for v in sections.values("Heading")] == ["left", "centre"]
     assert [v[1] for v in sections.values("Heading")] == ["Left", "Centred"]
-    assert option["aliases"] == {"center": "centre", "centered": "centre"}
+    assert "aliases" not in option
     assert sections.SHARED == ("Width", "Style", "Heading", "Space", "Appear")
     for key in sections.REGISTRY:
         assert sections.option_names(key)[:5] == sections.SHARED, key
         assert "\nHeading: Default\nSpace: Default\nAppear: Default" in sections.markdown(key), key
-    for value, picked in (("Centred", "centre"), ("centre", "centre"), ("Center", "centre"), ("LEFT", "left"),
+    for value, picked in (("Centred", "centre"), ("centre", ""), ("Center", ""), ("LEFT", "left"),
                           ("Default", ""), ("", ""), ("Middle", "")):
         assert sections.pick("Heading", value) == picked, value
     assert sections.accepts("Heading", "Centred") and sections.accepts("Heading", "default")
@@ -996,7 +994,7 @@ def test_section_code_uses_the_named_sizes():
     assert not by_hand, by_hand
 
 
-COVER_KINDS = {"hero", "cta", "picture_and_text"}
+COVER_KINDS = {"hero", "cta", "image_and_text"}
 
 
 def test_cover_is_offered_only_by_the_sections_it_means_something_for():
@@ -1023,13 +1021,13 @@ def test_every_shared_option_value_draws_every_section_as_itself(admin, client):
     from soloblog import sections
     for kind in sections.REGISTRY:
         for name in sections.SHARED:
-            offered = [v[0] for v in sections.values(name, kind if name == "Style" else "")]
-            for value in dict.fromkeys([*offered, "cover" if name == "Style" else "default"]):
+            offered = [v[1] for v in sections.values(name, kind if name == "Style" else "")]
+            for value in dict.fromkeys([*offered, "Cover" if name == "Style" else "Default"]):
                 text = sections.markdown(kind).replace(f"{name}: Default", f"{name}: {value}")
                 page = client.get("/post/" + save_post(admin, title=f"{kind} {name} {value}", body=f"Intro.\n\n{text}"))
                 assert page.status_code == 200, (kind, name, value)
                 kinds = set(re.findall(r'data-section="([a-z_]+)"', page.text))
-                becomes_hero = kind == "hero" or (name == "Style" and value == "cover" and kind in COVER_KINDS)
+                becomes_hero = kind == "hero" or (name == "Style" and value == "Cover" and kind in COVER_KINDS)
                 assert ("hero" in kinds) is becomes_hero, (kind, name, value, kinds)
                 assert f"{name}: {value}" not in page.text and "Section:" not in page.text, (kind, name, value)
 
@@ -1115,7 +1113,7 @@ def test_a_sections_words_have_the_writings_own_styling(admin, client):
     # a section sits beside the writing, not inside it: under a not-prose
     # the text styling can't come back, and a section's links, lists and
     # paragraphs lost theirs
-    body = ("Words with [a link](/about).\n\n## Side by side\n\nSection: Picture and text\n\n"
+    body = ("Words with [a link](/about).\n\n## Side by side\n\nSection: Image and text\n\n"
             "One with [a link](/about).\n\nTwo.\n\n- a list\n\n## After\n\nMore words.\n")
     slug = save_post(admin, title="Styled words", body=body)
     html = client.get(f"/post/{slug}").text

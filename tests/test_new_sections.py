@@ -142,7 +142,7 @@ def test_photo_story_arrangements_and_each_option(admin, client):
         return _section(_page(admin, client, head.format(lines) + "\n" + story, title=title), "photo_story")
 
     plain, defaults = draw("", "Story plain"), draw(
-        "First paragraph: Default\nPictures together: Default\nA line after a picture: Default", "Story default")
+        "First paragraph: Default\nImages: Default\nCaptions: Default", "Story default")
     assert plain == defaults and ": Default" not in defaults
     # the defaults: a big first paragraph, a line beside its picture, pictures in a row, a pull quote
     assert "prose-lg @xl:prose-xl" in plain and "@3xl:grid-cols-[3fr_2fr]" in plain and "@xl:flex-row" in plain
@@ -150,10 +150,10 @@ def test_photo_story_arrangements_and_each_option(admin, client):
     # each option changes only its own part
     normal = draw("First paragraph: Normal", "Story normal")
     assert "prose-lg @xl:prose-xl" not in normal and "@3xl:grid-cols-[3fr_2fr]" in normal and "@xl:flex-row" in normal
-    stacked = draw("Pictures together: One under another", "Story stacked")
+    stacked = draw("Images: Stacked", "Story stacked")
     assert "@xl:flex-row" not in stacked and "prose-lg @xl:prose-xl" in stacked and "@3xl:grid-cols-[3fr_2fr]" in stacked
     assert stacked.count("<figure") == plain.count("<figure") and stacked.count("flex flex-col gap-4") == 0
-    under = draw("A line after a picture: Under it", "Story under")
+    under = draw("Captions: Under", "Story under")
     assert "@3xl:grid-cols-[3fr_2fr]" not in under and "A short line after it." in under
     assert "prose-lg @xl:prose-xl" in under and "@xl:flex-row" in under
     # words people may write: the label in any case, and the option lines never show
@@ -161,7 +161,7 @@ def test_photo_story_arrangements_and_each_option(admin, client):
     # a value the page doesn't know is the default
     assert draw("First paragraph: Huge", "Story unknown") == plain
     for page_part in (normal, stacked, under):
-        assert "First paragraph" not in page_part and "Pictures together" not in page_part
+        assert "First paragraph" not in page_part and "Images" not in page_part
 
 
 def test_photo_story_with_no_pictures_and_only_pictures(admin, client):
@@ -240,13 +240,13 @@ def test_the_photo_storys_options(admin):
     from soloblog import editor_config
     o = editor_config.block_options()
     assert o["sections"]["photo_story"]["options"] == ["Width", "Style", "Heading", "Space", "Appear",
-                                                      "First paragraph", "Pictures together",
-                                                      "A line after a picture"]
-    for name, default in (("First paragraph", "Big"), ("Pictures together", "Side by side"),
-                          ("A line after a picture", "Beside it")):
+                                                      "First paragraph", "Images",
+                                                      "Captions"]
+    for name, default in (("First paragraph", "Big"), ("Images", "Side by side"),
+                          ("Captions", "Beside")):
         assert o["options"][name]["default"] == default and o["options"][name]["type"] == "choice"
-    assert sections.pick("Pictures together", "One under another") == "stack"
-    assert sections.pick("Pictures together", "default") == "" and sections.pick("First paragraph", "huge") == ""
+    assert sections.pick("Images", "Stacked") == "stack"
+    assert sections.pick("Images", "default") == "" and sections.pick("First paragraph", "huge") == ""
     assert sections.REGISTRY["photo_story"]["width"] == "wide"
     # the option names fit a Key: line
     assert all(re.fullmatch(r"[A-Z][A-Za-z ]{0,24}", n) for n in sections.OPTIONS)
@@ -429,8 +429,11 @@ def test_a_story_follows_its_width_and_default_is_a_missing_line(admin, client):
     assert "data-story-card" in card and "[--story-fade:" in card and "in-data-[story-card]:via-(--story-fade)/55" in card
     plain = _section(_page(admin, client, STORY, title="Story no card"), "story")
     assert " data-story-card" not in plain and "[--story-fade:" not in plain and "via-base-200/55" in plain
-    named = _page(admin, client, STORY.replace("Section: Story", "Section: scroll story"), title="Story other name")
+    # one name: any case of it, and no other
+    named = _page(admin, client, STORY.replace("Section: Story", "Section: story"), title="Story lower case")
     assert named.count("data-story-step=") == 3
+    other = _page(admin, client, STORY.replace("Section: Story", "Section: Scroll story"), title="Story old name")
+    assert "data-story-step=" not in other
 
 
 def test_a_story_with_no_pictures_one_step_fifty_steps_or_broken_words(admin, client):

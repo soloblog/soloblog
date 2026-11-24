@@ -35,7 +35,7 @@ site. Every template has Contents off unless it says otherwise.
 | Portfolio | Portfolio | Page width wide, Contents off. Show: author and date, tags, listen, likes, related posts, series links and side panels off. |
 | Pricing | Pricing; a plain Good to know heading | As Portfolio. |
 | Profile / home | Profile, Latest posts (Count 3) | Title hidden (the Profile's own heading is the name), Contents off. Show: author and date, tags, listen, likes, related posts, about the author, series links and side panels off. |
-| Landing page | Hero (Style Window), Picture and text twice, Numbers, Testimonials, Pricing, FAQ, Call to action | Title hidden, page width wide, section spacing large, Contents off. Show as Portfolio. |
+| Landing page | Hero (Style Window), Image and text twice, Numbers, Testimonials, Pricing, FAQ, Call to action | Title hidden, page width wide, section spacing large, Contents off. Show as Portfolio. |
 | Services | Services (Width Column), Steps | Contents off. Show as Portfolio. |
 | Testimonials | Testimonials (Width Column) | Contents off. Show as Portfolio. |
 | Project | Project facts, Photo story, Previous and next | Page width wide, cover full screen, Contents off. |
@@ -72,7 +72,7 @@ Every section reads **Width** and **Style**, and writes both lines out with
   story and Bento grid Wide. A section is wider than the column only on a page of writing.
 - **Style**: Card sets the section apart on a card; Cover draws it as a Hero
   (its image across the page, its text over it) and only Hero, Call to
-  action and Picture and text take it - on any other section it is
+  action and Image and text take it - on any other section it is
   ignored. Default is no card or cover. Hero also takes Window.
 - Every other `Key:` takes `Default` too: it means "follow the site", or the
   section's own usual choice, as the `/` menu says.
@@ -84,44 +84,44 @@ Review (Reviews).
 
 | Section | Reads | Draws |
 |---|---|---|
-| Picture and text (also Picture) | The first image and the text | The image beside its text, framed. |
-| Numbers (also Stats) | Each `###` a figure, the line under it | Big figures in a row. |
+| Image and text | The first image and the text | The image beside its text, framed. |
+| Numbers | Each `###` a figure, the line under it | Big figures in a row. |
 | Testimonials | Each `###` a person, `Role:`, a quote | Quote cards with who said them. |
 | Logos | The images, each optionally a link | A row of logos. |
-| Pricing (also Plans) | Each `###` a plan; `Price:`, `Badge:`, a list, a link | Plan cards, the badged one picked out. |
-| Products (also Shop) | Each `###` a product; image, `Price:`, `Badge:`, a link | Product cards with a buy button. |
+| Pricing | Each `###` a plan; `Price:`, `Badge:`, a list, a link | Plan cards, the badged one picked out. |
+| Products | Each `###` a product; image, `Price:`, `Badge:`, a link | Product cards with a buy button. |
 | Services | Each `###` a service; `From:`, words, a link | Cards with a starting price and a button. |
-| Team (also People) | Each `###` a person; image, `Role:`, words | Cards with a photo, role and line. |
-| FAQ (also Questions) | Each `###` a question, the text under it its answer | Questions that open to their answers. |
+| Team | Each `###` a person; image, `Role:`, words | Cards with a photo, role and line. |
+| FAQ | Each `###` a question, the text under it its answer | Questions that open to their answers. |
 | Photo gallery | A `gallery` block | The site's gallery styles. |
-| Call to action (also CTA) | The words, and the last link or a Buttons line | One line and a button (or a main and a quieter one) on a card in the main colour. |
+| Call to action | The words, and the last link or a Buttons line | One line and a button (or a main and a quieter one) on a card in the main colour. |
 | Features | Each `###` a point; `Icon:`, words | Short points with an icon, side by side. |
 | Columns | Each `###` a column | Text in columns, side by side. |
-| Sign-up (also Signup, Newsletter) | The text | The newsletter sign-up box under the text. |
-| Contact form (also Contact) | The text | The contact form under the text. |
-| Latest posts (also Posts) | `Count:` (1 to 12, Default three), `Tag:` (Default any) | The newest posts as cards. |
-| Compare (also Comparison) | A table; checkmarks and crosses | A table of options with checkmarks. |
-| Steps (also How it works) | The first numbered list | Numbered steps as cards. |
-| Milestones (also Timeline) | Each `###` a dated entry, its date before a `·` | Entries on a line. |
-| Events (also Talks) | Each `###` an event; `Date:`, `Place:`, words, links | Events to come, then past ones by their date. |
+| Sign-up | The text | The newsletter sign-up box under the text. |
+| Contact form | The text | The contact form under the text. |
+| Latest posts | `Count:` (1 to 12, Default three), `Tag:` (Default any) | The newest posts as cards. |
+| Compare | A table; checkmarks and crosses | A table of options with checkmarks. |
+| Steps | The first numbered list | Numbered steps as cards. |
+| Milestones | Each `###` a dated entry, its date before a `·` | Entries on a line. |
+| Events | Each `###` an event; `Date:`, `Place:`, words, links | Events to come, then past ones by their date. |
 | Menu | Each `###` a group, a list of `Dish - about · price` | Dishes with prices, lined up. |
-| Portfolio (also Projects) | Each `###` a project; image, words, a link; `Show as:` (Grid, Masonry, Rows, Full screen, Sideways; Default follows the site), `Tag:` (adds every post with the tag) | Images of work, each leading to its page. |
-| Reviews (also Books) | Each `###` a title; `Author:`, `Rating:`, `Finished:`, words | Books or films with stars. |
+| Portfolio | Each `###` a project; image, words, a link; `Show as:` (Grid, Masonry, Rows, Full screen, Sideways; Default follows the site), `Tag:` (adds every post with the tag) | Images of work, each leading to its page. |
+| Reviews | Each `###` a title; `Author:`, `Rating:`, `Finished:`, words | Books or films with stars. |
 | Uses | Each `###` a group, a list of `**item** - what for` | Things you use, and what for. |
-| Opening hours (also Hours) | `Day: hours` lines | A table of hours. |
+| Opening hours | `Day: hours` lines | A table of hours. |
 | Contact details | `Phone:`, `Email:`, `Address:` lines | Buttons to call, write and find you on a map. |
-| Resume (also CV) | Each `###` an entry, its dates after `·`, `\|` or `—` | Entries with their dates on the right. |
+| Resume | Each `###` an entry, its dates after `·`, `\|` or `—` | Entries with their dates on the right. |
 | Skills | A list of items of 40 characters or fewer | Small badges; a longer list stays a list. |
 | Profile | The first image, the first paragraph that isn't only links, the rest, a paragraph or list of only links, and the `##` | A round photo, the `##` as the name big, the line, the bio and buttons (the first the main one), centred. The `##` is the page's name for the person. |
-| Bios (also Media kit) | Each `###` a bio; images in an item | A Copy button on each plain bio; images in a grid with Download links. |
+| Bios | Each `###` a bio; images in an item | A Copy button on each plain bio; images in a grid with Download links. |
 | Project facts | Each `Key: value` line (Client, Year, Role...) | A strip of facts, two across on a phone. |
-| Photo story | `First paragraph:` (Big or Normal), `Pictures together:` (Side by side or One under another), `A line after a picture:` (Beside it or Under it) | A magazine arrangement: a lone image wide, images in a row side by side, a short line beside its image (sides taking turns), quotes as pull quotes, a big first paragraph, each `###` beside its words. |
-| Story (also Scroll story) | Each `###` a step: its first image, its text and its last link; text before the first step | Steps whose text scrolls while the step's image is held: beside the words on a wide screen, filling the screen behind them on a phone, fading from one to the next. A step with no image keeps the one before it. A plain stack of images and words where scripts or motion are off. |
+| Photo story | `First paragraph:` (Big or Normal), `Images:` (Side by side or Stacked), `Captions:` (Beside or Under) | A magazine arrangement: a lone image wide, images in a row side by side, a short line beside its image (sides taking turns), quotes as pull quotes, a big first paragraph, each `###` beside its words. |
+| Story | Each `###` a step: its first image, its text and its last link; text before the first step | Steps whose text scrolls while the step's image is held: beside the words on a wide screen, filling the screen behind them on a phone, fading from one to the next. A step with no image keeps the one before it. A plain stack of images and words where scripts or motion are off. |
 | Hero | A `Label:` line (Window only), the first image, a paragraph of links or a Buttons line (buttons), a short list (points), the `##` | A big heading, a line and a button over its image on a dark layer. Style Window: the label, a very big heading, the line, buttons, points and the image framed as a window. |
-| Bento grid (also Bento) | Each `###` a tile, the first big | Tiles of different sizes. |
+| Bento grid | Each `###` a tile, the first big | Tiles of different sizes. |
 | Recipe facts | Each `Key: value` line (Serves, Servings, Yield or Makes; Prep; Cook or Bake; Total) | A strip of facts, side by side in a wide column and one under another in a narrow one. |
 | Ingredients | The first list | Items to check off that cross out. |
-| Method (also Instructions, Directions) | The first numbered list | Steps with big numbers. |
+| Method | The first numbered list | Steps with big numbers. |
 | Interview | Paragraphs that start with a bold speaker (`**Sam:**`) | Chat bubbles: the first speaker plain on the left, the others in the main colour on the right. |
-| Contents (also Parts) | `Series:` (Default is this page's own series) | A numbered list of the series' live parts, the current one marked; nothing for readers while it's empty, a note for the admin. |
+| Contents | `Series:` (Default is this page's own series) | A numbered list of the series' live parts, the current one marked; nothing for readers while it's empty, a note for the admin. |
 | Previous and next | The page's first tag | Two large image cards: the pages before and after this one with the same first tag; nothing when there are none. |
