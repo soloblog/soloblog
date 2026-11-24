@@ -400,6 +400,22 @@ def test_contents_nest_fold_and_link(admin, client):
         settings.set_many({"toc_fold": "auto", "heading_links": "1", "smooth_scroll": "1"})
 
 
+def test_a_page_opening_has_no_copy_link_button(admin, client):
+    # a Hero's heading (and a Style: Cover one) opens the page, centred over
+    # its picture: no copy-link button beside it, even on a phone, where it
+    # always shows. The section after it keeps its own.
+    from soloblog import settings
+    settings.set_many({"heading_links": "1"})
+    for style in ("", "Style: Window\n"):
+        body = (f"## Quiet Rooms\n\nSection: Hero\n{style}\nA line about it.\n\n[Read more](/about)\n\n"
+                "## In numbers\n\nSection: Numbers\n\n### 12\nhomes\n\n## After\n\nText.\n")
+        slug = save_post(admin, title=f"Opening {style or 'plain'}", body=body)
+        html = _body(client.get(f"/post/{slug}").text)
+        hero = re.search(r"<h2[^>]*>Quiet Rooms.*?</h2>", html, re.S).group(0)
+        assert "copyHeadingLink" not in hero, style
+        assert re.search(r'<h2[^>]*id="in-numbers"[^>]*>In numbers<button[^>]*copyHeadingLink', html), style
+
+
 def _body(html, key=None):
     """What the page has between its start and its comments."""
     return html.split("<article", 1)[1].split('id="comments"')[0]

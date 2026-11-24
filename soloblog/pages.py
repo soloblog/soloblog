@@ -319,6 +319,13 @@ _COPY_BUTTON = re.compile(r'<button type="button" aria-label="[^"]*" data-tip="[
 _HEADING = re.compile(r'<h([23])((?:\s[^>]*)?\sid="([^"]+)"[^>]*)>(.*?)</h\1>', re.S)
 
 
+# a heading that opens the page over its picture (a Hero, Style: Cover):
+# the first thing anyone sees, centred - a link to the top of the page
+# helps no one, and on a phone, where it always shows, it sat beside the
+# title and pulled it off centre
+_NO_COPY = "data-no-copy-link"
+
+
 def heading_links(html: str) -> str:
     """A small button after each ## and ### that copies the address of
     that section - shown on hover, always on a touch screen."""
@@ -326,6 +333,8 @@ def heading_links(html: str) -> str:
 
     def add(m):
         level, attrs, _, inner = m.groups()
+        if _NO_COPY in attrs:
+            return m.group(0)
         attrs = attrs.replace('class="', 'class="group/h ', 1) if "class=" in attrs else ' class="group/h"' + attrs
         return (f'<h{level}{attrs}>{inner}<button type="button" aria-label="{label}" data-tip="{label}" '
                 f'class="btn btn-ghost btn-xs btn-square tooltip {_COPY_HIDDEN}" '
@@ -1726,7 +1735,7 @@ def _render_gallery(out, row, s, html, toc, logged_in, series):
 def _render_hero(out, row, s, html, toc, logged_in, series):
     """A Hero, or any section with Style: Cover: its heading inside its
     picture or its words. Style: Window is a launch page's opening."""
-    h, full = out["heading"], out.get("full", False)
+    h, full = out["heading"].replace("<h2", f"<h2 {_NO_COPY}", 1), out.get("full", False)
     if out.get("style") == "window":
         label, html = _label_line(html)
         opening = _window_opening(_styled_heading(h, _OPENING_HEADING), label, html, s,
