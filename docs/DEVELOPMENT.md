@@ -617,6 +617,11 @@ plain means leaving out the machinery, not those words.
 | words (of a post, a caption, a block) | text |
 | the words in grey | placeholder |
 | Makes words stand out, Crosses words out | Bold, Strikethrough |
+| a second step when you log in, two-factor login | two-factor authentication (2FA) |
+| bring back | restore |
+| fold, foldable | collapse, collapsible |
+| tick (a box) | select; a tick as a symbol is a checkmark |
+| moves by itself | autoplay; sent or published automatically |
 
 "Address" stays for an email or a postal address.
 
