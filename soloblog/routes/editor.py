@@ -1137,7 +1137,13 @@ def PublishingPanel(row, pinned, pin_location):
     has_own_children = any(p["parent_slug"] == own_slug for p in all_pinned if own_slug)
 
     def parent_options(location):
+        from soloblog.ui import site_label
+        s = settings.get_all()
         opts = [Option("None (top-level page)", value="", selected=(parent_slug == ""))]
+        # the site's own pages in that menu (Home, Blog...) can have pages under them too
+        for key in posts.site_rows(s, location, True):
+            value = posts.SITE_PARENT + key
+            opts.append(Option(site_label(s, location, key), value=value, selected=(parent_slug == value)))
         for p in all_pinned:
             if p["slug"] == own_slug or p["parent_slug"] or p["pin_location"] != location:
                 continue
@@ -1949,11 +1955,20 @@ def PinnedGroup(label, tree, where=None):
         first, last = i == 0, i == len(items) - 1
         if isinstance(item, str):
             rows.append(SiteRow(item, where, first, last))
+            # the pages nested under it, indented, as a page's sub-pages
+            under = list(getattr(item, "children", ()))
+            for j, c in enumerate(under):
+                rows.append(PinRow(c, indent=True, is_first=(j == 0), is_last=(j == len(under) - 1),
+                                   prev_top_level=None, has_children_slugs=has_children_slugs))
             continue
         page, children = item
-        # a page nests under the page before it, never under a site page
+        # a page nests under the page, or the site's own page, before it
         before = items[i - 1] if i > 0 else None
-        prev_top_level = before[0] if before and not isinstance(before, str) else None
+        if isinstance(before, str):
+            from soloblog.ui import site_label
+            prev_top_level = {"title": site_label(s, where, before), "slug": posts.SITE_PARENT + before}
+        else:
+            prev_top_level = before[0] if before else None
         rows.append(PinRow(page, indent=False, is_first=first, is_last=last,
                             prev_top_level=prev_top_level, has_children_slugs=has_children_slugs))
         for j, c in enumerate(children):

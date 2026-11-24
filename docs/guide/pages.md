@@ -290,7 +290,8 @@ site, or to its footer at the bottom.
    **In the menu** or **In the footer**.
 3. To show it under another page - as a dropdown in the menu, or in the
    same column of a footer laid out in columns - choose that page as its
-   **Parent page**.
+   **Parent page**. Soloblog's own pages in that menu, like **Home** or
+   **Blog**, are offered there too.
 4. Switch **Published** on and select **Save**.
 
 The page is now in your menu or footer, at a short address like

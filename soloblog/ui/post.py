@@ -949,12 +949,17 @@ def PinnedLinkColumns(pinned_tree, s):
     on their own, and the site's own (Archive, Contact), share a column of
     their own, first. pinned_tree: posts.menu_items for the footer."""
     link = f"link link-hover text-sm text-base-content/70 {TOUCH_LINK}"
-    alone = [item for item in pinned_tree if isinstance(item, str) or not item[1]]
+    head = f"link link-hover text-sm font-semibold {TOUCH_LINK}"
+
+    def under(item):
+        # the pages under a page, or under one of the site's own (a SiteItem)
+        return getattr(item, "children", ()) if isinstance(item, str) else item[1]
+    alone = [item for item in pinned_tree if not under(item)]
     columns = [Ul(*[Li(SiteLink(s, "footer", i, cls=link) if isinstance(i, str) else PageLink(i[0], cls=link))
                     for i in alone], cls="flex flex-col gap-1.5")] if alone else []
-    columns += [Div(PageLink(page, cls=f"link link-hover text-sm font-semibold {TOUCH_LINK}"),
-                    Ul(*[Li(PageLink(c, cls=link)) for c in children], cls="flex flex-col gap-1.5 mt-2"))
-                for page, children in (i for i in pinned_tree if not isinstance(i, str)) if children]
+    columns += [Div(SiteLink(s, "footer", i, cls=head) if isinstance(i, str) else PageLink(i[0], cls=head),
+                    Ul(*[Li(PageLink(c, cls=link)) for c in under(i)], cls="flex flex-col gap-1.5 mt-2"))
+                for i in pinned_tree if under(i)]
     return Div(*columns, cls="grid grid-cols-2 sm:grid-cols-[repeat(auto-fit,minmax(9rem,1fr))] gap-x-6 gap-y-8 "
                              "flex-1 min-w-0") if columns else None
 
@@ -974,6 +979,8 @@ def PinnedLinksRow(pinned_tree, s):
     for item in pinned_tree:
         if isinstance(item, str):
             items.append(SiteLink(s, "footer", item, cls=cls))
+            # the pages nested under it follow it, as a page's sub-pages do
+            items += [PageLink(c, cls=cls) for c in getattr(item, "children", ())]
             continue
         items.append(PageLink(item[0], cls=cls))
         for c in item[1]:

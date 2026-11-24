@@ -615,8 +615,10 @@ own. Beside the editor, use the editor's own **Save**.
   to the top of the blog roll**. See
   [Make a page for the menu or footer](pages.md#make-a-page-for-the-menu-or-footer).
 - **Parent page** - For a page in the menu or the footer: put it under another one
-  (About > FAQ). In the menu it's a dropdown; in a footer laid out in columns, the
-  page and those under it are a column.
+  (About > FAQ), or under one of Soloblog's own pages in that menu (Home, Blog,
+  Archive...). In the menu it's a dropdown; in a footer laid out in columns, the
+  page and those under it are a column. A page under one of Soloblog's own pages
+  that's taken out of the menu shows on its own meanwhile.
 - **Email it to subscribers** (on/off, with the newsletter sending new posts) - Switch off before it goes out to leave this post out of the newsletter.
 - **Unlisted** (on/off) - Published, but only people with the link find it: it's left out
   of the blog roll, tags, search, feeds and search engines, and isn't sent

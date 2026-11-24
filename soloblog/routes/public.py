@@ -895,9 +895,15 @@ def post_crumbs(row, s) -> list:
         if s.get("home_page") == posts.WIKI_HOME:
             crumbs = crumbs[1:]
     elif row["pinned"]:
-        parent = posts.get_post(row["parent_slug"]) if row["parent_slug"] else None
+        key = posts.site_parent(row["parent_slug"])
+        parent = posts.get_post(row["parent_slug"]) if row["parent_slug"] and key is None else None
         if parent:
             crumbs.append((parent["title"], posts.url_for(parent)))
+        elif key in posts.SITE_PAGES and key != "home":
+            # under one of the site's own pages (Home is the first crumb already)
+            from soloblog.ui import site_label
+            where = row["pin_location"] if row["pin_location"] in posts.MENUS else "header"
+            crumbs.append((site_label(s, where, key), posts.SITE_PAGES[key][0]))
     elif mode == "auto" and row["series_name"]:
         crumbs.append((row["series_name"], f"/series/{posts.series_slug(row['series_name'])}"))
     elif mode in ("auto", "tag"):

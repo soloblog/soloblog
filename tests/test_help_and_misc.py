@@ -646,3 +646,46 @@ def test_docs_read_as_the_project_not_a_log():
         for m in re.finditer(r"\b20\d\d-[01]\d(?:-[0-3]\d)?\b|\bdone \(", text):
             found.append(f"{path.relative_to(root)}: {text[max(0, m.start() - 40):m.end() + 20]!r}")
     assert not found, found
+
+
+def test_a_page_nests_under_one_of_the_sites_own_pages(admin, client):
+    # Home, Blog... can have pages under them, in the header and the footer, as a page can
+    from soloblog import posts, settings
+    before = {k: settings.get(k) for k in ("home_page", "foot_archive_on", "footer_enabled", "footer_show_pages",
+                                           "footer_layout")}
+    try:
+        child = save_post(admin, title="Under home", pin_location="header", pinned="1")
+        assert posts.set_parent(child, "site:home")
+        html = client.get("/").text
+        submenu = html.split('id="pin-submenu-site-home-d"')[1].split("</ul>")[0]
+        assert f'href="/{child}"' in submenu
+        assert 'aria-label="Pages under Home"' in html
+        # its breadcrumbs: Home is the first one already
+        settings.set_many({"home_page": ""})
+        # the Pinned tab shows it under Home, and Post settings offer the site's pages
+        pinned = admin.get("/admin/posts?status=pinned").text
+        assert "Make top-level" in pinned
+        assert 'value="site:home"' in admin.get(f"/admin/edit/{child}").text
+        # the footer: under Archive, a column of its own in Columns
+        settings.set_many({"foot_archive_on": "1", "footer_enabled": "1", "footer_show_pages": "1",
+                           "footer_layout": "columns"})
+        foot = save_post(admin, title="Under archive", pin_location="footer", pinned="1")
+        assert posts.set_parent(foot, "site:archive")
+        page = client.get("/").text
+        footer = page[page.rindex("<footer"):]
+        assert f'href="/{foot}"' in footer and 'font-semibold' in footer.split('href="/archive"')[0][-200:] + \
+            footer.split('href="/archive"')[1][:200]
+        crumbs = client.get(f"/{foot}").text
+        assert 'href="/archive"' in crumbs
+        # a site page that isn't in that menu, junk, and a page with pages under it can't be parents
+        assert not posts.set_parent(foot, "site:contact")
+        assert not posts.set_parent(foot, "site:nothing")
+        assert not posts.set_parent(foot, "site:")
+        # one whose site page leaves the menu is a top-level page meanwhile, never lost
+        settings.set_many({"foot_archive_on": ""})
+        assert f'href="/{foot}"' in client.get("/").text
+    finally:
+        settings.set_many(before)
+        # out of the menus, so the tests after see the menu they expect
+        for slug in [s for s in ("under-home", "under-archive") if posts.get_post(s)]:
+            posts.delete_post(slug)

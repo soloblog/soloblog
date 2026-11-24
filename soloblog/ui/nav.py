@@ -8,7 +8,7 @@ from soloblog import settings
 from soloblog.themes import OWN_PREFIX, all_choices, theme_choice, theme_label
 from soloblog.ui.icons import CHEVRON_DOWN_SVG, GEAR_SVG, HAMBURGER_SVG, PALETTE_SVG, SEARCH_SVG, X_SVG
 from soloblog.ui.base import (
-    LoginButton, MARGIN_WIDTHS, MENU_SCROLLS, MoreBelowSlot, PageLink, RESULTS_CLS, SCROLLS, SiteLink, SEARCH_DIALOG_ACTION,
+    LoginButton, MARGIN_WIDTHS, MENU_SCROLLS, MoreBelowSlot, PageLink, RESULTS_CLS, SCROLLS, SiteLink, site_label, SEARCH_DIALOG_ACTION,
     SEARCH_DIALOG_BOX, SearchBox, TOUCH_BAR, TOUCH_BTN, _title_block, content_width, glass_fill,
 )
 
@@ -94,27 +94,40 @@ def PinnedNavItem(page, children, fill="bg-base-100", id_suffix=""):
     <details> list never drew its frosted-glass blur (see
     POPOVER_DROPDOWN_JS). id_suffix: Nav() renders the menu twice (the
     phone list, "-m", and the row), and each needs its own popover ids."""
+    return NavParent(lambda cls=None: PageLink(page, cls=cls), page["title"], page["slug"], children, fill, id_suffix)
+
+
+def SiteNavItem(settings, key, children, fill="bg-base-100", id_suffix=""):
+    """One of the site's own pages in the header menu (Home, Blog...) -
+    with pages nested under it, the same list as a page's sub-pages."""
+    return NavParent(lambda cls=None: SiteLink(settings, "header", key, cls=cls),
+                     site_label(settings, "header", key), f"site-{key}", children, fill, id_suffix)
+
+
+def NavParent(link, title, ident, children, fill="bg-base-100", id_suffix=""):
+    """A header menu item and the pages under it: link(cls) - its own
+    link; ident - what its list's id is made from."""
     if not children:
-        return Li(PageLink(page))
+        return Li(link())
     if id_suffix == "-m":
         # folded until its arrow is tapped - its name still opens its page
-        return Li(Details(Summary(PageLink(page)), Ul(*[Li(PageLink(c)) for c in children])))
-    menu_id = f"pin-submenu-{page['slug']}{id_suffix}"
+        return Li(Details(Summary(link()), Ul(*[Li(PageLink(c)) for c in children])))
+    menu_id = f"pin-submenu-{ident}{id_suffix}"
     # fill matches whatever the header bar itself is using (opaque or
     # glass) - a solid flyout hanging off a see-through header would
     # look like a mismatched patch instead of one consistent bar
     return Li(
         # the name and its arrow as one item, each its own target
         # (the menu's own padding is on the item, here split between them)
-        Div(PageLink(page, cls="py-1.5 ps-3 pe-1"),
+        Div(link(cls="py-1.5 ps-3 pe-1"),
             Button(CHEVRON_DOWN_SVG, type="button", popovertarget=menu_id,
-                   aria_label=i18n.t("Pages under {title}").format(title=page["title"]),
+                   aria_label=i18n.t("Pages under {title}").format(title=title),
                    cls="flex items-center self-stretch ps-1 pe-3"),
             data_nav_parent=True, cls="flex items-stretch p-0 gap-0 [[data-nav-more-list]_&]:hidden"),
         # moved under More (fitNav): folded under its name, opened by its
         # arrow, as on a phone - a list opening from inside a list covered
         # its neighbours
-        Details(Summary(PageLink(page)), Ul(*[Li(PageLink(c)) for c in children]),
+        Details(Summary(link()), Ul(*[Li(PageLink(c)) for c in children]),
                 cls="hidden [[data-nav-more-list]_&]:block"),
         Ul(
             *[Li(PageLink(c)) for c in children],
@@ -280,7 +293,10 @@ def Nav(settings, logged_in, pinned_tree=(), admin_page=False):
         for item in posts.menu_items(settings, pinned_tree):
             if isinstance(item, str):
                 if not (item == "home" and settings.get("nav_home_hidden")):
-                    links.append(Li(SiteLink(settings, "header", item)))
+                    links.append(SiteNavItem(settings, item, getattr(item, "children", ()), fill, id_suffix))
+                else:
+                    # Home left out of the menu: the pages under it still are
+                    links += [Li(PageLink(c)) for c in getattr(item, "children", ())]
             else:
                 links.append(PinnedNavItem(item[0], item[1], fill, id_suffix))
         return links

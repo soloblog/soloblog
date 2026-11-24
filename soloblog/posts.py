@@ -1185,12 +1185,43 @@ def site_order(s, where: str, key: str) -> int:
     return int(raw) if re.fullmatch(r"-?\d{1,9}", raw) else _SITE_FIRST.get(key, _SITE_LAST) if where == "header" else _SITE_LAST
 
 
+# a page nested under one of the site's own pages: its parent_slug is this
+# and the page's key (site:home, site:blog) - a slug never has a colon
+SITE_PARENT = "site:"
+
+
+class SiteItem(str):
+    """A menu's site row - its key, as a plain string - with the pages
+    nested under it (children: [page], in their order)."""
+    children = ()
+
+
+def site_parent(slug: str):
+    """The site page's key a parent_slug names, or None for a page's slug."""
+    return slug[len(SITE_PARENT):] if (slug or "").startswith(SITE_PARENT) else None
+
+
 def menu_items(s, tree, where: str = "header", unavailable=False) -> list:
-    """A menu's top-level items in order: a site row's key ("home", "wiki"...)
-    or a (page, sub-pages) pair. The site rows go first before the pages
-    are sorted, so a tie keeps them ahead of a page."""
-    items = [(site_order(s, where, k), k) for k in site_rows(s, where, unavailable)] + \
-            [(p["pin_order"] or 0, (p, c)) for p, c in tree]
+    """A menu's top-level items in order: a site row's key ("home", "wiki"...,
+    a SiteItem, with the pages nested under it) or a (page, sub-pages) pair.
+    The site rows go first before the pages are sorted, so a tie keeps them
+    ahead of a page. A page under a site page that isn't in the menu now
+    (Blog while the posts are the homepage) is a top-level page meanwhile -
+    never left out."""
+    rows = site_rows(s, where, unavailable)
+    under, pages = {}, []
+    for p, c in tree:
+        key = site_parent(p["parent_slug"])
+        if key in rows:
+            under.setdefault(key, []).append(p)
+        else:
+            pages.append((p, c))
+    sites = []
+    for k in rows:
+        item = SiteItem(k)
+        item.children = sorted(under.get(k, []), key=lambda p: p["pin_order"] or 0)
+        sites.append((site_order(s, where, k), item))
+    items = sites + [(p["pin_order"] or 0, (p, c)) for p, c in pages]
     return [item for _, item in sorted(items, key=lambda x: x[0])]
 
 
@@ -1308,10 +1339,15 @@ def set_parent(slug: str, parent_slug: str) -> bool:
     if parent_slug == slug:
         return False
     db = get_db()
-    if parent_slug:
+    if (key := site_parent(parent_slug)) is not None:
+        # under one of the site's own pages that's in this menu
+        if key not in site_rows(settings.get_all(), row["pin_location"], True):
+            return False
+    elif parent_slug:
         parent = get_post(parent_slug)
         if not parent or parent["pin_location"] != row["pin_location"] or parent["parent_slug"]:
             return False
+    if parent_slug:
         has_children = db.execute(
             "SELECT 1 FROM posts WHERE parent_slug=? LIMIT 1", (slug,)
         ).fetchone()
