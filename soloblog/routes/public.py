@@ -1966,7 +1966,8 @@ def sitemap():
     # a post kept out of search engines isn't offered to them either
     live = [p for p in posts.list_posts() if not p["noindex"]]
     lines = [entry("/"), entry("/archive"), entry("/tags")] + ([entry("/blog")] if settings.get("home_page") else [])
-    lines += [entry(posts.url_for(p), p["updated_at"] or p["created_at"]) for p in live]
+    # the homepage's own post is "/", listed above
+    lines += [entry(posts.url_for(p), p["updated_at"] or p["created_at"]) for p in live if posts.url_for(p) != "/"]
     if translate.enabled():
         offered = set(translate.targets())
         from soloblog.db import get_db

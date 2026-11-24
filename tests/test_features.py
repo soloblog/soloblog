@@ -22,7 +22,10 @@ def test_a_page_as_the_homepage(admin, client):
         assert "An ordinary post" in blog and "Hello from the front page." not in blog
         # just the page, until Settings adds things back
         assert ">Welcome home</h1>" not in home and 'id="comments"' not in home
-        assert 'id="comments"' in client.get(posts.url_for(posts.get_post(slug)), follow_redirects=True).text
+        # its one address is / - in lists and search, and its own page goes there
+        assert posts.url_for(posts.get_post(slug)) == "/"
+        own = client.get(f"/post/{slug}")
+        assert own.status_code in (301, 302, 303, 307, 308) and own.headers["location"].endswith("/")
         admin.post("/admin/settings/name", headers={"hx-request": "true"},
                    data={"home_page": slug, "home_page_shows": ["title", "comments", "bogus"],
                          "declared_fields": "home_page,home_page_shows"})
@@ -1396,3 +1399,24 @@ def test_menu_items_and_ghost_buttons_show_a_keyboard_focus_ring():
     assert "outline: 2px solid currentColor" in rule
     assert ":focus-visible {" in rule and ":focus {" not in rule
     assert "| `menu-focus` |" in doc.split("## Custom CSS", 1)[1]
+
+
+def test_the_homepage_post_is_the_homepage_not_also_a_post(admin, client):
+    # left out of the blog list, feeds and tag pages by itself - it needed
+    # Unlisted for that, which kept it out of search - and found in search at /
+    slug = save_post(admin, title="Homepage words", body="A zanzibar of words.", tags="hometag")
+    before = settings.get("home_page")
+    try:
+        settings.set_many({"home_page": slug})
+        assert "Homepage words" not in client.get("/blog").text
+        assert "Homepage words" not in client.get("/rss").text
+        assert "Homepage words" not in client.get("/tag/hometag").text
+        found = client.get("/search/results?q=zanzibar", headers={"HX-Request": "true"}).text
+        assert "Homepage words" in found and f'href="/post/{slug}"' not in found and 'href="/"' in found
+        # an Unlisted one too, as the homepage picker offers - it's open to anyone at /
+        save_post(admin, slug=slug, title="Homepage words", body="A zanzibar of words.", unlisted="1")
+        assert posts.get_post(slug)["unlisted"]
+        assert "Homepage words" in client.get("/search/results?q=zanzibar", headers={"HX-Request": "true"}).text
+        assert f"/post/{slug}" not in client.get("/sitemap.xml").text
+    finally:
+        settings.set_many({"home_page": before})

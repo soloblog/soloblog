@@ -53,6 +53,8 @@ versions may include breaking changes; they'll always be listed here.
   bucket
 - On a tall window, the section after a Story follows at its usual gap,
   instead of after a screen of empty space
+- The page chosen as the homepage stays out of the list of posts and the
+  feeds by itself, and search finds it at the homepage's address
 
 ## [1.0.0-beta] - 2026-11-17
 

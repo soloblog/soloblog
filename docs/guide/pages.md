@@ -352,7 +352,9 @@ instead.
 4. Select **Pick** and choose the page.
 
 The page is now the front of your site. Your posts move to `/blog`, and
-your menu gets a **Blog** link to them.
+your menu gets a **Blog** link to them. The page itself isn't listed
+among your posts or in your feeds, and search finds it at your
+homepage's address - unlisted or not.
 
 **Want more on the homepage than the page itself?** Under **It also
 shows**, tick what to add - its title, reactions, share buttons, a

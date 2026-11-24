@@ -40,7 +40,10 @@ HOME_EXTRAS = {"title": "Title, date and cover", "reactions": "Reactions", "shar
 
 
 def url_for(row) -> str:
-    """A post's address: /about for a page, /post/<slug> for the rest."""
+    """A post's address: / for the one that's the homepage, /about for a
+    page, /post/<slug> for the rest."""
+    if row["slug"] and row["slug"] == settings.get("home_page"):
+        return "/"
     if is_page(row) and row["slug"] not in RESERVED_PATHS:
         return f"/{row['slug']}"
     return f"/post/{row['slug']}"
@@ -898,7 +901,12 @@ def count_by_status(status: str, tag: str = "", q: str = "", access: str = "", k
 
 # the blog roll leaves out wiki notes - they live in the wiki (/wiki), as
 # pages live in the menu; tags, search, the archive and feeds keep them
-_ROLL = "published=1 AND pinned=0 AND unlisted=0 AND in_wiki=0 AND (scheduled_at='' OR scheduled_at<=?)"
+# the post chosen as the homepage (Settings > Name and homepage) is the
+# homepage, never also a post in the lists and feeds - it needed Unlisted
+# to keep out, which kept it out of search too
+NOT_HOME = "slug NOT IN (SELECT value FROM settings WHERE key='home_page')"
+_ROLL = ("published=1 AND pinned=0 AND unlisted=0 AND in_wiki=0 AND (scheduled_at='' OR scheduled_at<=?) "
+         f"AND {NOT_HOME}")
 
 
 def count_roll() -> int:
@@ -913,7 +921,7 @@ def list_roll_all(limit=None, columns="*"):
     silently drop older matches. limit - the newest that many (a feed);
     columns - just the ones needed, for a count over thousands of posts."""
     now = utcnow().isoformat()
-    q = (f"SELECT {columns} FROM posts WHERE published=1 AND pinned=0 AND unlisted=0 "  # noqa: S608 - fixed lists, values bound
+    q = (f"SELECT {columns} FROM posts WHERE published=1 AND pinned=0 AND unlisted=0 AND {NOT_HOME} "  # noqa: S608 - fixed lists, values bound
          "AND (scheduled_at='' OR scheduled_at<=?) ORDER BY created_at DESC")
     params = (now,)
     if limit:
@@ -926,7 +934,7 @@ def list_all_published():
     roll leaves pinned posts out (they're shown above it); here a tag
     used only on a pinned post would have found nothing."""
     now = utcnow().isoformat()
-    q = ("SELECT * FROM posts WHERE published=1 AND unlisted=0 "
+    q = (f"SELECT * FROM posts WHERE published=1 AND unlisted=0 AND {NOT_HOME} "  # noqa: S608 - fixed text
          "AND (scheduled_at='' OR scheduled_at<=?) ORDER BY created_at DESC")
     return get_db().execute(q, (now,)).fetchall()
 
@@ -1417,7 +1425,7 @@ def related_posts(slug: str, tags_csv: str, limit: int = 3):
     params = [f"%{t}%" for t in tags]
     q = f"""
         SELECT * FROM posts
-        WHERE slug != ? AND published=1 AND pinned=0 AND unlisted=0 AND (scheduled_at='' OR scheduled_at<=?)
+        WHERE slug != ? AND published=1 AND pinned=0 AND unlisted=0 AND (scheduled_at='' OR scheduled_at<=?) AND {NOT_HOME}
         AND ({placeholders})
         ORDER BY created_at DESC LIMIT ?
     """  # noqa: S608 - the placeholders are only "tags LIKE ?", values bound
@@ -1551,10 +1559,13 @@ def search(query: str, limit: int = 20):
     # a match in the title counts most, then the tags, then the text -
     # searching "plans" put the Plans page fourth, under pages that only
     # mentioned it (bm25's weights: slug, title, body, tags)
+    # the homepage's own post is listed, Unlisted or not: it's at / for anyone
+    # (an unlisted post is what the homepage picker offers, besides the menu's pages)
     q = """
         SELECT posts.* FROM posts_fts
         JOIN posts ON posts.slug = posts_fts.slug
-        WHERE posts_fts MATCH ? AND posts.published=1 AND posts.unlisted=0
+        WHERE posts_fts MATCH ? AND posts.published=1
+          AND (posts.unlisted=0 OR posts.slug IN (SELECT value FROM settings WHERE key='home_page'))
           AND (posts.scheduled_at='' OR posts.scheduled_at<=?)
         ORDER BY bm25(posts_fts, 0, 10.0, 1.0, 4.0) LIMIT ?
     """
