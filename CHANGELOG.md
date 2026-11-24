@@ -21,6 +21,8 @@ versions may include breaking changes; they'll always be listed here.
 
 ### Fixed
 
+- Restoring a backup made with an older passphrase brings its images back
+  too
 - A Buttons line in a Call to action or a Hero shows its buttons on the
   card, instead of repeating the last one
 - Links, lists, quotes and paragraph spacing in a section's words look as

@@ -94,7 +94,20 @@ def staged_restore():
     return {"size": st.st_size, "when": datetime.utcfromtimestamp(st.st_mtime).isoformat(timespec="seconds")}
 
 
+# the passphrase typed to open the waiting backup - for its images, which
+# may be locked with it too. Only ever in memory, gone with the backup.
+_typed = {"passphrase": ""}
+
+
+def typed_passphrase(passphrase: str = None) -> str:
+    """The passphrase that opened the waiting backup; with one, remembers it."""
+    if passphrase is not None:
+        _typed["passphrase"] = passphrase
+    return _typed["passphrase"]
+
+
 def discard_staged():
+    _typed["passphrase"] = ""
     for path in (STAGED_RESTORE_PATH, STAGED_LOCKED_PATH):
         with contextlib.suppress(FileNotFoundError):
             os.remove(path)

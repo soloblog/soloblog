@@ -465,3 +465,19 @@ def test_a_bucket_backup_from_before_the_passphrase_changed_still_restores(bucke
     # still offers the bucket's images, as any bucket backup does
     assert 'name="images_from_bucket"' in html
     backup.discard_staged()
+
+
+def test_restoring_a_locked_bucket_backup_opens_its_images_with_the_passphrase_typed(bucket, monkeypatch, admin):
+    from soloblog import backup, images
+    monkeypatch.setattr(config, "BACKUP_PASSPHRASE", "the old one")
+    name = images.save_upload(_png()).rsplit("/", 1)[1]
+    storage.wait_for_mirroring()
+    key = storage.backup_now()
+    monkeypatch.setattr(config, "BACKUP_PASSPHRASE", "the new one")
+    os.remove(os.path.join(config.uploads_dir(), name))
+    admin.post("/admin/backup/from-bucket", data={"key": key})
+    admin.post("/admin/backup/unlock", data={"passphrase": "the old one", "from_bucket": "1"})
+    admin.post("/admin/backup/restore-confirm", data={"images_from_bucket": "1"})
+    assert os.path.isfile(os.path.join(config.uploads_dir(), name))
+    assert storage._from_bucket(storage.get(f"uploads/{name}"))  # locked the new way now
+    assert backup.typed_passphrase() == ""  # gone with the backup

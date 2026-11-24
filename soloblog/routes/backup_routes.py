@@ -610,6 +610,7 @@ def _open_backup(data, source, from_bucket=False, passphrase=""):
     if any(info["present"] for info in result.values()):
         with open(backup.STAGED_RESTORE_PATH, "wb") as f:
             f.write(data)
+        backup.typed_passphrase(passphrase)
     return _backup_page(inspect_result=result, source=source, from_bucket=from_bucket)
 
 
@@ -777,13 +778,14 @@ async def restore_confirm(session, request):
         return _toast_redirect("/admin/settings?tab=backup#restore-status", "That upload expired, try again", "error")
     with open(backup.STAGED_RESTORE_PATH, "rb") as f:
         data = f.read()
+    older = backup.typed_passphrase()
     backup.discard_staged()
     counts = backup.import_backup_zip(data, include=include)
     problem = ""
     if form.get("images_from_bucket") and storage.enabled():
         # a bucket backup's images: the bucket's latest copy of each, replacing these
         try:
-            counts["images"] = storage.sync_uploads("down")["downloaded"]
+            counts["images"] = storage.sync_uploads("down", older)["downloaded"]
         except storage.StorageError as e:
             problem = ". " + _bucket_problem("The images didn't come back from your bucket", e)
     elif storage.enabled() and (counts.get("images") or counts.get("trashed_images")):
@@ -791,6 +793,8 @@ async def restore_confirm(session, request):
         # a large backup shouldn't hold this response up
         import threading
         threading.Thread(target=lambda: storage._mirror(storage.sync_uploads, "up"), daemon=True).start()
+    # restored settings may say the images are locked another way
+    storage._mirror(storage.reseal_images)
     # only the categories that actually had something restored - an
     # older backup with no trashed posts/images shouldn't read as
     # "0 trashed posts, 0 images" clutter

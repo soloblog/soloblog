@@ -328,14 +328,15 @@ def _same(data: bytes, remote: dict) -> bool:
     return remote["etag"] == hashlib.md5(data, usedforsecurity=False).hexdigest()
 
 
-def sync_uploads(way: str = "both") -> dict:
+def sync_uploads(way: str = "both", older: str = "") -> dict:
     """Images between this disk and the bucket. "up": every image here
     the bucket hasn't got as it is here copied to it; "down": every image
     in the bucket this disk hasn't got as it is there copied here. "both":
     only what's missing on each side, each way (a new server refilling
     itself). The same image is never copied again - a bucket that keeps
     every version (Backblaze, unless told not to) would keep it twice -
-    and nothing is deleted on either side."""
+    and nothing is deleted on either side. older: a passphrase to try
+    for an image the current one doesn't open (_open_image)."""
     counts = {"uploaded": 0, "downloaded": 0, "same": 0}
     for folder, prefix in ((config.uploads_dir(), "uploads/"),
                            (os.path.join(config.uploads_dir(), "_trash"), "uploads/_trash/")):
@@ -367,12 +368,14 @@ def sync_uploads(way: str = "both") -> dict:
                 if data is None:
                     continue
                 try:
-                    data = _from_bucket(data)
+                    data, again = _open_image(data, older)
                 except StorageError as e:  # one image the passphrase can't open needn't stop the rest
                     log.warning("couldn't open %s from the bucket: %s", fn, e)
                     continue
                 with open(path, "wb") as f:
                     f.write(data)
+                if again:
+                    _put_image(prefix + fn, data)
                 counts["downloaded"] += 1
     if way in ("up", "both"):
         # everything here has reached the bucket now
@@ -452,6 +455,19 @@ def _to_bucket(data: bytes) -> bytes:
 def _from_bucket(data: bytes) -> bytes:
     # an image copied before the passphrase was set is still plain
     return unseal(data, config.BACKUP_PASSPHRASE) if data.startswith(MAGIC) else data
+
+
+def _open_image(data: bytes, older: str = ""):
+    """An image from the bucket, and whether it opened only with older -
+    the passphrase a backup being restored was made with. Such an image
+    is locked again the current way, or a host without a disk could never
+    open it on its next start."""
+    try:
+        return _from_bucket(data), False
+    except StorageError:
+        if not older or older == config.BACKUP_PASSPHRASE:
+            raise
+        return unseal(data, older), True
 
 
 def _images_sealed_with() -> str:
