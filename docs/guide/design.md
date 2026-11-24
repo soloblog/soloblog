@@ -51,7 +51,7 @@ Link in bio?** These are built around a page that becomes your homepage. Choose 
 pages, or let the preset make a new one for you to fill in.
 
 **Want everything as it was when you installed Soloblog?** Select **Use
-this** on **Default**. It asks first. Your posts, pictures and pages
+this** on **Default**. It asks first. Your posts, images and pages
 stay.
 
 See also: [How a starting style fits with the rest of a site](put-together.md#the-parts-from-biggest-to-smallest)
@@ -155,7 +155,7 @@ spacing**, set **Reading column** to **Narrow**.
 **Want more or less room between a page's sections?** Under **Width and
 spacing**, choose **Small**, **Medium** or **Large** for **Space between
 sections**. It changes every page - a landing page's sections, a
-project's pictures, and the gap before comments.
+project's images, and the gap before comments.
 For one page only, open its **Post settings > Page** and choose
 **Space between sections** there. One section can say otherwise with its
 own `Space:` line. On a wide screen **Small** is about half an inch,
@@ -168,7 +168,7 @@ section sits as close as a heading would, so the reading flows on.
 **Settings > Style > Motion**, choose how for **Sections appear** - Fade,
 Rise, Zoom and more. It needs **Animations** on, and it never moves for
 a reader whose device is set to reduce motion. A section's cards or
-pictures come in one after another, a heading comes in with the section
+images come in one after another, a heading comes in with the section
 under it, and the writing between sections moves the same way. For one
 page only, choose
 **Sections appear** in its **Post settings > Page**; one section can say
@@ -177,7 +177,7 @@ otherwise with its own `Appear:` line - see
 
 **Want every section's heading in the middle?** Under **Width and
 spacing**, set **Section headings** to **Centred**. The heading and the
-words under it move; the cards and pictures stay where they are. One
+words under it move; the cards and images stay where they are. One
 section can say otherwise with its own `Heading:` line - see
 [Width, style, heading, space and appear](sections-templates.md#width-style-heading-space-and-appear).
 

@@ -120,16 +120,16 @@ in each step of a Story. It changes by itself if they turn the phone
 sideways, and a wide screen shows the usual one. The phone version counts
 as in use, so it never shows under **Unused**.
 
-**A picture with both a dark and a phone version?** A wide screen shows
+**An image with both a dark and a phone version?** A wide screen shows
 the dark one while the site is dark, and the usual one otherwise. A phone
 shows the phone version, in light and dark alike - unless the phone
 version has a dark one of its own. To give it one:
 
-1. Upload the dark phone picture to **Media**.
-2. Select the phone picture, the one you chose under **Phone version**, to
+1. Upload the dark phone image to **Media**.
+2. Select the phone image, the one you chose under **Phone version**, to
    open its details.
 3. Under **Dark mode version**, select **Pick** and choose the dark phone
-   picture, then select **Save**.
+   image, then select **Save**.
 
 A phone then shows the phone version in light and its dark one in dark,
 and it changes by itself when the theme does. It counts as in use, so it

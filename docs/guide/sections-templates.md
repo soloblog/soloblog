@@ -59,12 +59,12 @@ with the line you write:
 
 ### Section: Picture and text
 
-A picture beside its words, the picture on one side and the words on the
-other, and the words under it on a phone. Under the heading: a picture
-and a few lines. Without a picture it's just the words. Also written
+An image beside its words, the image on one side and the words on the
+other, and the words under it on a phone. Under the heading: an image
+and a few lines. Without an image it's just the words. Also written
 `Section: Picture`.
 
-`Style: Cover` puts the words over the picture, across the whole page,
+`Style: Cover` puts the words over the image, across the whole page,
 as a [Hero](#section-hero) does.
 
 ### Section: Numbers
@@ -131,7 +131,7 @@ big heading of its own, start it with one: `### Bring a friend`. Also
 written `Section: CTA`.
 
 `Style: Cover` makes it a [Hero](#section-hero): a big heading and a button
-over a picture, across the page.
+over an image, across the page.
 
 ### Section: Features
 
@@ -201,12 +201,12 @@ line each.
 
 ### Section: Portfolio
 
-Pictures of your work, each leading to its page. Each item:
-`### A project`, a picture, a line or two and a link - the picture and
+Images of your work, each leading to its page. Each item:
+`### A project`, an image, a line or two and a link - the image and
 title lead there. A link to another site opens in a new tab, and the
 title ends in ↗ so readers know it leaves your site. The link's own
 words, like `[Visit](https://…)`, show only in **Full screen**, as a
-button under each piece. A piece without a picture is a quiet tile of its own
+button under each piece. A piece without an image is a quiet tile of its own
 words. Also written `Section: Projects`. On the lines straight under
 `Section:`:
 
@@ -214,9 +214,9 @@ words. Also written `Section: Projects`. On the lines straight under
   title and summary. To let each of those pages lead on to the next one,
   give it a [Previous and next](#section-previous-and-next) section.
 - `Show as:` picks the arrangement: `Grid` (even tiles, a title under
-  each), `Masonry` (each picture at its own shape, nothing cut off),
+  each), `Masonry` (each image at its own shape, nothing cut off),
   `Rows` (edge to edge, each row the same height), `Full screen` (one
-  piece at a time, as you scroll) or `Sideways` (a row of tall pictures
+  piece at a time, as you scroll) or `Sideways` (a row of tall images
   you swipe along). With `Default` or no line, **Portfolio pages** in
   **Settings > Posts > Images** decides.
 
@@ -276,7 +276,7 @@ To show your newest writing under it, add a
 
 Bios to copy, and photos to download - for journalists and podcast
 hosts. Each item: `### Short bio`, `### Long bio` and their words; each
-plain bio gets a **Copy** button. An item that holds pictures shows them
+plain bio gets a **Copy** button. An item that holds images shows them
 in a grid, each with a **Download** link. Also written
 `Section: Media kit`.
 
@@ -288,15 +288,15 @@ phone.
 
 ### Section: Photo story
 
-Pictures and words laid out like a magazine, wide. Write the story under
-the heading and put the pictures between the paragraphs; the section
+Images and words laid out like a magazine, wide. Write the story under
+the heading and put the images between the paragraphs; the section
 places them:
 
 - The first paragraph is shown large.
-- A picture on its own runs wide. Pictures one after another sit side by
+- An image on its own runs wide. Images one after another sit side by
   side at the same height.
-- A short paragraph straight after a picture sits beside it, the
-  pictures taking turns on each side.
+- A short paragraph straight after an image sits beside it, the
+  images taking turns on each side.
 - A quote (`>`) is shown large; a last line starting with `—` is who said
   it.
 - Each `###` heading sits beside its words.
@@ -312,22 +312,22 @@ Each also takes `Default`, which is the first one in each list.
 
 ### Section: Story
 
-Pictures that change as the words scroll - a way to walk readers through
+Images that change as the words scroll - a way to walk readers through
 a tour, a process or a project, one step at a time. Under the heading,
-write each step as `### A heading`, with one picture and a few lines of
+write each step as `### A heading`, with one image and a few lines of
 words under it; a link on its own line becomes the step's button. Words
 before the first step show above the story. Also written
 `Section: Scroll story`.
 
 - **On a wide screen**, the words scroll in a column on the left while
-  the picture for the step being read stays in view on the right, whole
-  and in its own shape. The picture changes as the next step comes up,
+  the image for the step being read stays in view on the right, whole
+  and in its own shape. The image changes as the next step comes up,
   and on a computer with a mouse it tilts a little toward the pointer.
   The story's heading stays at the top while the story plays, then
   scrolls away with its end.
-- **On a phone or a tablet**, each picture sits just below the site's
+- **On a phone or a tablet**, each image sits just below the site's
   header, with rounded corners, and fades into the next one as you
-  scroll. A picture shows whole from its top, unless it's landscape: then
+  scroll. An image shows whole from its top, unless it's landscape: then
   it fills the area and its sides are cropped. The top stays clear and the bottom
   fades into the page's own colour, where the words sit in the text
   colour of the look you chose.
@@ -336,27 +336,27 @@ before the first step show above the story. Also written
   while the story fills it, the page comes to rest on a step as you
   scroll near one;
   the sections above and below it scroll as usual.
-- **Small marks beside the picture** show how many steps there are and
-  which one you're on. On a phone they sit over the picture's edge.
-- **A step without a picture** keeps the picture of the step before it.
+- **Small marks beside the image** show how many steps there are and
+  which one you're on. On a phone they sit over the image's edge.
+- **A step without an image** keeps the image of the step before it.
 - **Where there's no motion** - **Animations** switched off in
   **Settings > Style > Motion**, or a reader's device set to reduce motion, or
   their browser not running scripts - nothing is held or fades. Each
-  step shows its picture and its words, one after another.
+  step shows its image and its words, one after another.
 
-A story is as wide as the screen, so write its pictures to fill one: tall
-ones read best on a phone. For a screenshot, give the picture a phone
+A story is as wide as the screen, so write its images to fill one: tall
+ones read best on a phone. For a screenshot, give the image a phone
 version so a phone shows a phone-shaped one. `Width: Wide` or `Column`
 keeps it narrower.
 
 ### Section: Hero
 
-A big heading, a line and a button over a picture, across the whole
-screen. Under the heading: a picture, a line and a link for the button,
-or a Buttons line for two - the `##` heading is the big heading. A Call to action or a Picture and
+A big heading, a line and a button over an image, across the whole
+screen. Under the heading: an image, a line and a link for the button,
+or a Buttons line for two - the `##` heading is the big heading. A Call to action or a Image and
 text with `Style: Cover` is shown the same way.
 
-`Style: Window` is the opening of a launch or product page: the picture
+`Style: Window` is the opening of a launch or product page: the image
 is framed like an app window, with a soft glow, under a very big heading.
 It also reads:
 
@@ -371,7 +371,7 @@ It also reads:
 ### Section: Bento grid
 
 Tiles of different sizes, the first one big. Each item: `### A tile`, a
-picture if you like, a line and a link. It runs wide. Also written
+image if you like, a line and a link. It runs wide. Also written
 `Section: Bento`.
 
 ### Section: Recipe facts
@@ -422,7 +422,7 @@ its parts is published yet. Also written `Section: Parts`.
 
 ### Section: Previous and next
 
-Two large picture cards leading to the pages before and after this one -
+Two large image cards leading to the pages before and after this one -
 the others with the same first tag. It uses the page's first tag, so it
 shows nothing for a page with no tag, or the only page with it. Readers
 see nothing, not even the heading, when there's nothing to show.
@@ -503,7 +503,7 @@ side panels, or edge to edge.
   archive, author) go under it, so the section has the room.
 
 **`Style: Card` or `Cover`** - `Card` sets any section apart on a card of
-its own. `Cover` puts its words over its picture, across the page - the
+its own. `Cover` puts its words over its image, across the page - the
 same as a [Hero](#section-hero) - and only a Hero, a
 [Call to action](#section-call-to-action) and
 [Picture and text](#section-picture-and-text) can have it. On any other
@@ -545,7 +545,7 @@ differently, and `None` doesn't move it at all.
   the site's, in **Settings > Style > Motion**.
 - A section's own heading stays still while its words and items come in -
   unless it draws its own heading, as a [Hero](#section-hero) does. A
-  [Portfolio](#section-portfolio) brings its pictures in one by one.
+  [Portfolio](#section-portfolio) brings its images in one by one.
 - Where there's no motion - **Animations** switched off, or a reader's
   device set to reduce motion - nothing moves, whatever a section says.
 
@@ -566,7 +566,7 @@ template stays as it was. A page keeps no tie to the template it started
 from.
 
 A template sets only what belongs to the page: its sections and words, its
-Post settings, and a starting summary, tags and cover picture. It never
+Post settings, and a starting summary, tags and cover image. It never
 changes the site's header, footer, menu, colours or fonts, and it never sets
 whether the page is published, its date, its URL, who can read it,
 whether it's hidden from search engines, or its series.

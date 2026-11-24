@@ -254,7 +254,7 @@ DISK_ABOUT = {
     "images_trash": ("Until you empty the trash", "/admin/media?tab=trash"),
     "originals": ("So a crop or a turn can be undone", "/admin/media"),
     "sizes": ("Made as pages need them - safe to clear", None),
-    "cards": ("Pictures shown when your posts are shared - safe to clear", None),
+    "cards": ("Images shown when your posts are shared - safe to clear", None),
     "log": ("The last two weeks of problems - safe to clear", "/admin/health?tab=log"),
     "detail_log": ("Four weeks of everything your site did, to help find a problem - safe to clear",
                    "/admin/health?tab=log"),

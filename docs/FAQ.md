@@ -193,7 +193,7 @@ change to the site, too. See
 
 ### Can I show my photos, designs or artwork as a portfolio?
 
-Yes. A **Portfolio** section shows your work pictures first - as tiles,
+Yes. A **Portfolio** section shows your work images first - as tiles,
 in rows edge to edge, or a screen each - and each project can be a page
 of its own, started from the **Project** template and laid out like a
 magazine. Either works as a post or a page. See
@@ -215,19 +215,19 @@ and in readers' Colours menu. It brings its corner rounding, borders and
 shadows with it, too.
 See [Add custom colours](guide/design.md#add-custom-colours).
 
-### Can a picture look different when the site is dark?
+### Can an image look different when the site is dark?
 
 Yes. Upload a dark version of it, then choose that under **Dark mode
 version** in the light one's details, in **Media**. Readers see the one
 that matches their light or dark setting, and it switches when they do.
 See [Organise media](guide/run.md#organise-media).
 
-### Can a picture look different on a phone?
+### Can an image look different on a phone?
 
 Yes. Upload the phone version of it, such as a screenshot taken on a
 phone, then choose that under **Phone version** in the wide one's
-details, in **Media**. A phone shows it in place of the usual picture.
-To give the phone picture a dark version too, open the phone picture's
+details, in **Media**. A phone shows it in place of the usual image.
+To give the phone image a dark version too, open the phone image's
 own details and choose one under **Dark mode version**: a phone shows it
 while the site is dark. See [Organise media](guide/run.md#organise-media).
 
@@ -342,7 +342,7 @@ Much of it is built in, with nothing to set up:
 
 The code is open for anyone to read, and every version is checked
 against [well-known standards](STANDARDS.md) before it's released. The
-whole picture is in
+whole image is in
 [How your site is kept safe](guide/how-it-works.md#how-your-site-is-kept-safe).
 Found a problem? [Tell us about it privately](../SECURITY.md).
 

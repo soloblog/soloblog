@@ -39,7 +39,7 @@ recovery key. See [Keep the login safe](run.md#keep-the-login-safe).
 **Your visitors.** Visitors can read your site, comment, send you a
 message and sign up, and that's all: they can't log in to the admin,
 change your site or upload a file. A comment is plain text - anything typed as
-HTML shows as typed, with no pictures or links, so a comment can't
+HTML shows as typed, with no images or links, so a comment can't
 run anything on your page. New comments wait for your approval, and when
 email is set up the commenter confirms their address first. Forms
 are guarded against spam with a hidden field that bots fill in and
@@ -51,9 +51,9 @@ anything that changes it unless it comes from a page on your own
 address, so another website can't trick your browser into posting for
 you while you're logged in.
 
-**Files.** Pictures you upload are re-saved by Soloblog in a web
+**Files.** Images you upload are re-saved by Soloblog in a web
 format, which drops any location or camera details stored inside them,
-and a file that isn't a picture it knows is refused. Audio, video and PDF files are accepted
+and a file that isn't an image it knows is refused. Audio, video and PDF files are accepted
 only when their contents match what they say they are.
 
 **What your site sends out.** When Soloblog contacts an address for

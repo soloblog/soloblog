@@ -74,7 +74,7 @@ OPTIONS = {
               "values": _space_values, "aliases": {}},
     "Appear": {"about": "How it comes into view", "default": "Follow the page", "type": "choice",
                "values": _appear_values, "aliases": {}},
-    "Show as": {"about": "How the pictures are arranged", "default": "Follow the site", "type": "choice",
+    "Show as": {"about": "How the images are arranged", "default": "Follow the site", "type": "choice",
                 "values": _show_as_values, "aliases": {}},
     "Count": {"about": "How many posts", "default": "Three posts", "type": "number",
               "suggest": (3, 6, 9, 12), "limit": (1, 12), "unit": "posts"},
@@ -84,22 +84,22 @@ OPTIONS = {
                         "values": (("big", "Big", "Large, like a magazine's opening", "a-large-small"),
                                    ("normal", "Normal", "The same size as the rest", "pilcrow")),
                         "aliases": {}},
-    "Pictures together": {"about": "How pictures written together are placed", "default": "Side by side",
+    "Pictures together": {"about": "How images written together are placed", "default": "Side by side",
                           "type": "choice",
                           "values": (("side", "Side by side", "In a row, the same height", "columns-2"),
                                      ("stack", "One under another", "Each one across the page",
                                       "rectangle-horizontal")),
                           "aliases": {}},
-    "A line after a picture": {"about": "Where a short line straight after a picture goes", "default": "Beside it",
+    "A line after a picture": {"about": "Where a short line straight after an image goes", "default": "Beside it",
                                "type": "choice",
-                               "values": (("beside", "Beside it", "Next to the picture, sides taking turns",
+                               "values": (("beside", "Beside it", "Next to the image, sides taking turns",
                                            "layout-panel-left"),
-                                          ("under", "Under it", "Under the picture, like the rest", "image-up")),
+                                          ("under", "Under it", "Under the image, like the rest", "image-up")),
                                "aliases": {}},
 }
 
 # Style: Cover, offered only by the kinds made with cover=True
-COVER = ("cover", "Cover", "Its words over its picture, across the page", "image")
+COVER = ("cover", "Cover", "Its words over its image, across the page", "image")
 
 
 def _kind(key, names, about, icon, words, heading, body="", options=None, width="", draw=None, styles=(),
@@ -119,9 +119,9 @@ def _kind(key, names, about, icon, words, heading, body="", options=None, width=
 
 # In the order Insert lists them
 REGISTRY = {
-    "picture_and_text": _kind("picture_and_text", ("Picture and text", "Picture"), "A picture beside its words", "layout-panel-left",
+    "picture_and_text": _kind("picture_and_text", ("Picture and text", "Picture"), "An image beside its words", "layout-panel-left",
                   ("image", "photo", "side"), "A heading",
-                  "![A picture](https://)\n\nA few words about it.", cover=True),
+                  "![An image](https://)\n\nA few words about it.", cover=True),
     "numbers": _kind("numbers", ("Numbers", "Stats"), "Big figures, like 10,000 customers", "trending-up",
                      ("stats", "figures"), "In numbers",
                      "### 10,000\nhappy customers\n\n### 4.9 ★\naverage rating"),
@@ -137,7 +137,7 @@ REGISTRY = {
                      "[Choose Pro](https://)"),
     "products": _kind("products", ("Products", "Shop"), "Things for sale, each with a button", "shopping-bag",
                   ("shop", "sell"), "Shop",
-                  "### A product\n\n![A picture](https://)\n\nPrice: US$25\n\nWhat it is.\n\n[Buy](https://)"),
+                  "### A product\n\n![An image](https://)\n\nPrice: US$25\n\nWhat it is.\n\n[Buy](https://)"),
     "services": _kind("services", ("Services",), "What you offer, with a starting price", "briefcase",
                       ("offer", "hire"), "Services",
                       "### A service\n\nFrom: US$400\n\nWhat's included.\n\n[Get in touch](/contact)"),
@@ -147,7 +147,7 @@ REGISTRY = {
     "faq": _kind("faq", ("FAQ", "Questions"), "Questions that open to their answers", "message-circle-question",
                  ("questions", "answers"), "Questions",
                  "### A question?\nIts answer.\n\n### Another question?\nIts answer."),
-    "gallery": _kind("gallery", ("Photo gallery",), "A section of pictures, with its own heading", "layout-grid",
+    "gallery": _kind("gallery", ("Photo gallery",), "A section of images, with its own heading", "layout-grid",
                      ("gallery", "photos", "images", "pictures"), "Photos",
                      "```gallery\n/uploads/a-photo.webp\n/uploads/another.webp\n```"),
     "cta": _kind("cta", ("Call to action", "CTA"), "One line and a button, in a band", "megaphone",
@@ -183,9 +183,9 @@ REGISTRY = {
                     "### A talk\n\nDate: 12 March 2027\nPlace: Where it is\n\n[Details](https://)"),
     "menu": _kind("menu", ("Menu",), "Dishes with prices, lined up", "soup", ("food", "dishes", "prices"),
                   "On the menu", "### Breakfast\n\n- Porridge - oats, honey · $7\n- Toast - sourdough · $5"),
-    "portfolio": _kind("portfolio", ("Portfolio", "Projects"), "Pictures of your work, each leading to its page",
+    "portfolio": _kind("portfolio", ("Portfolio", "Projects"), "Images of your work, each leading to its page",
                       "folder-open", ("portfolio", "work"), "Recent work",
-                      "### A project\n\n![A picture](https://)\n\nWhat it is.\n\n[See the project](https://)",
+                      "### A project\n\n![An image](https://)\n\nWhat it is.\n\n[See the project](https://)",
                       options={"Show as": "", "Tag": "Adds every post with this tag"}),
     "reviews": _kind("reviews", ("Reviews", "Books"), "Books or films, with stars", "star",
                        ("books", "films", "rating"), "Read lately",
@@ -219,27 +219,27 @@ REGISTRY = {
     "project_facts": _kind("project_facts", ("Project facts",), "Client, year, role - a strip of facts", "folder-kanban",
                            ("client", "year", "role", "details"), "At a glance",
                            "Client: Their name\nYear: 2026\nRole: What you did"),
-    "photo_story": _kind("photo_story", ("Photo story",), "Pictures and words laid out like a magazine", "book-open",
+    "photo_story": _kind("photo_story", ("Photo story",), "Images and words laid out like a magazine", "book-open",
                          ("magazine", "pictures", "story", "project"), "The story",
-                         "A big opening paragraph that sets the scene.\n\n![A picture](https://)\n\n"
-                         "A short line that sits beside the picture.\n\n> A line worth pulling out.\n\n"
-                         "![A picture](https://)\n![Another picture](https://)",
+                         "A big opening paragraph that sets the scene.\n\n![An image](https://)\n\n"
+                         "A short line that sits beside the image.\n\n> A line worth pulling out.\n\n"
+                         "![An image](https://)\n![Another image](https://)",
                          options={"First paragraph": "", "Pictures together": "", "A line after a picture": ""},
                          width="wide"),
-    "story": _kind("story", ("Story", "Scroll story"), "Pictures that change as the words scroll", "gallery-vertical-end",
+    "story": _kind("story", ("Story", "Scroll story"), "Images that change as the words scroll", "gallery-vertical-end",
                    ("scroll", "scrolling", "pictures", "steps", "fullscreen", "tour"), "Take a look around",
-                   "### Start here\n\n![A picture for this step](https://)\n\n"
-                   "Readers see this picture while they read these words.\n\n"
-                   "### Then the next\n\n![A picture for the next step](https://)\n\n"
-                   "The picture changes as they scroll to these words.\n\n"
-                   "### And the last\n\n![A picture for the last step](https://)\n\n"
-                   "Add as many steps as you like - a picture and a few words each.", width="full"),
+                   "### Start here\n\n![An image for this step](https://)\n\n"
+                   "Readers see this image while they read these words.\n\n"
+                   "### Then the next\n\n![An image for the next step](https://)\n\n"
+                   "The image changes as they scroll to these words.\n\n"
+                   "### And the last\n\n![An image for the last step](https://)\n\n"
+                   "Add as many steps as you like - an image and a few words each.", width="full"),
     # wider than the column: a picture with words over it, and tiles
-    "hero": _kind("hero", ("Hero",), "A big heading and a button over a picture", "rectangle-horizontal",
+    "hero": _kind("hero", ("Hero",), "A big heading and a button over an image", "rectangle-horizontal",
                   ("banner", "big", "header", "cover"), "A big heading",
-                  "![A picture](https://)\n\nA line about it.\n\n[Find out more](https://)",
+                  "![An image](https://)\n\nA line about it.\n\n[Find out more](https://)",
                   width="full", cover=True,
-                  styles=(("window", "Window", "The picture framed like a window, as a launch page opens",
+                  styles=(("window", "Window", "The image framed like a window, as a launch page opens",
                            "panels-top-left"),)),
     "bento": _kind("bento", ("Bento grid", "Bento"), "Tiles of different sizes, the first big", "grid-2x2",
                    ("tiles", "grid", "mosaic"), "What's inside",
@@ -262,7 +262,7 @@ REGISTRY = {
                        draw="_render_interview_part"),
     "contents": _kind("contents", ("Contents", "Parts"), "A series' parts, in order, each a link", "map",
                       ("series", "parts", "guide", "index"), "In this series", options={"Series": ""}),
-    "previous_next": _kind("previous_next", ("Previous and next",), "The pages before and after this one, as pictures",
+    "previous_next": _kind("previous_next", ("Previous and next",), "The pages before and after this one, as images",
                            "refresh-cw", ("next", "previous", "more", "keep reading"), "Keep reading"),
 }
 # every name people may write after "Section:", lower case -> its kind

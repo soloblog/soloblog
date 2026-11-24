@@ -91,7 +91,7 @@ COMMANDS = [
        ("image", "photo")),
     _c("image", "Image by URL", "An image from another site's address", "Insert", "image-plus", None, "![]()",
        ("picture", "address")),
-    _c("gallery", "Gallery", "Pictures inside your writing, as a grid or slider", "Insert", "images", "Cmd-Alt-G", None,
+    _c("gallery", "Gallery", "Images inside your writing, as a grid or slider", "Insert", "images", "Cmd-Alt-G", None,
        ("photos", "images", "slider"), "toolbar"),
     _c("table", "Table", "Rows and columns", "Insert", "table", None, "|", ("grid", "columns")),
     _c("horizontal-rule", "Divider", "A line across the post", "Insert", "minus", None, "---", ("hr", "line", "rule")),

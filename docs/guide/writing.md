@@ -70,7 +70,7 @@ See also: [Use Insert and the slash menu](#use-insert-and-the-slash-menu) ·
 
 ## Add images and galleries
 
-Put a picture in a post, or several pictures together as a gallery.
+Put an image in a post, or several images together as a gallery.
 
 1. Put your cursor where the image should go.
 2. Paste or drop the image there. Or select the image button on the
@@ -170,7 +170,7 @@ anywhere in it and open **Insert** or type `/` - on a phone, select
 - **Portfolio:** how it's arranged (**Show as**) and a tag whose posts it
   adds. **Latest posts:** how many (**Count**) and which tag.
   **Contents:** which series. **Photo story:** how its first paragraph,
-  pictures and short lines are arranged. **Hero:** also **Window**.
+  images and short lines are arranged. **Hero:** also **Window**.
 - **Gallery:** its style, and for a slider, whether it moves by itself.
 - **Callout:** Note, Tip, Warning or Danger. **Collapsible:** whether it
   starts open.
@@ -269,8 +269,8 @@ nothing.
    post.
 4. Write over the sample words, then save as usual.
 
-   Some templates start with sample pictures. Until you replace one, your
-   readers see the page without it; you see a dashed box saying **Picture
+   Some templates start with sample images. Until you replace one, your
+   readers see the page without it; you see a dashed box saying **Image
    not found - replace it**, where it will go.
 
 Your post opens with the template's sections, words and settings in

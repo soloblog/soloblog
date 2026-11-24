@@ -55,7 +55,7 @@ yours, and the template stays as it was.
   posts. The page's own title is hidden.
 - **A landing page** - **Landing page**: see
   [Build a landing page](#build-a-landing-page).
-- **A project or a story in pictures** - **Project** or **Photo story**: see
+- **A project or a story in images** - **Project** or **Photo story**: see
   [Show work as a portfolio](#show-work-as-a-portfolio).
 - **A shop, studio or practice** - **Small business**: buttons to call,
   write or find you, and your opening hours. Search engines understand it
@@ -89,7 +89,7 @@ See also: [Add sections](#add-sections) ·
 
 ## Show work as a portfolio
 
-Make a portfolio: one page with your work, pictures first, and a page for
+Make a portfolio: one page with your work, images first, and a page for
 each project, laid out like a magazine. It suits anyone whose work is seen -
 a photographer, a designer, an illustrator, a maker.
 
@@ -101,7 +101,7 @@ a photographer, a designer, an illustrator, a maker.
 2. Under **At a glance**, replace the sample lines with the project's own,
    like `Client: Corner Café` and `Year: 2026`. They show at the top as
    its facts.
-3. Write the story under the heading **The story**, and put your pictures
+3. Write the story under the heading **The story**, and put your images
    between the paragraphs. The page places them for you - see
    [Photo story](sections-templates.md#section-photo-story).
 4. Give each project the same tag, such as `work` - in **Post settings >
@@ -118,8 +118,8 @@ first. Each project ends with a large link to the next one with the same
 first tag.
 
 **Want to choose what's in it and in what order?** Leave `Tag:` as
-`Default` and keep the `###` pieces instead, each with its picture, a line
-about it, and a link to its page. A piece without a link opens its picture
+`Default` and keep the `###` pieces instead, each with its image, a line
+about it, and a link to its page. A piece without a link opens its image
 bigger. With both, the pieces you wrote come first, then the tagged pages.
 
 **Want another arrangement?** Go to **Settings > Posts**, and under
@@ -128,7 +128,7 @@ bigger. With both, the pieces you wrote come first, then the tagged pages.
 arrangements are listed in
 [Portfolio](sections-templates.md#section-portfolio).
 
-**A story in pictures, not a project?** Start from **Photo story** instead:
+**A story in images, not a project?** Start from **Photo story** instead:
 the same magazine layout without the facts. Travel photos, a day out, a
 making-of.
 
@@ -146,7 +146,7 @@ then sections one after another.
 
 1. Select **New post**, then **Template**, and choose **Landing page**.
 2. Write the opening - the first section, a **Hero**. The `##` heading is
-   its big heading; under it go a picture, a line, and a link for the
+   its big heading; under it go an image, a line, and a link for the
    button. Two links on one line, like `[Try it](/demo) · [Learn more](/about)`,
    are a main button and a quieter one.
 3. Go down the sections below it and replace their sample words: two

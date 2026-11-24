@@ -767,10 +767,10 @@ def _render_faq(out, row, s, html, toc, logged_in, series):
 # how a Portfolio shows its work: the site's own choice (Settings >
 # Appearance > Images), or a page's "Show as: Rows" line
 PORTFOLIO_STYLES = {"grid": "Grid — even tiles, a title under each",
-                    "masonry": "Masonry — each picture at its own shape, nothing cut off",
+                    "masonry": "Masonry — each image at its own shape, nothing cut off",
                     "rows": "Rows — edge to edge, each row the same height",
                     "screen": "Full screen — one piece at a time, as you scroll",
-                    "sideways": "Sideways — a row of tall pictures you swipe along"}
+                    "sideways": "Sideways — a row of tall images you swipe along"}
 _SHOW_AS = {"grid": "grid", "masonry": "masonry", "rows": "rows", "full screen": "screen",
             "screen": "screen", "sideways": "sideways"}
 # how wide one picture shows in each, so the browser fetches a copy sharp enough

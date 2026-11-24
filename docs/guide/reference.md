@@ -122,7 +122,7 @@ A preset changes your whole site's look in one go. There are **Custom**, **Defau
 
 **Custom**, the first of them, keeps one look of your own: **Save current look** saves every look setting as it is now - colours, fonts, layout, header, footer - to come back to after trying others, with **Use this** like the rest. Saving again replaces it, and asks first.
 
-**Default**, beside it, puts every look setting back to how Soloblog comes, the colours too. It asks before it does, and **Undo it** brings yours back. Your words, pictures and pages stay - the banner's text and picture, your icons and footer note, which page is your homepage.
+**Default**, beside it, puts every look setting back to how Soloblog comes, the colours too. It asks before it does, and **Undo it** brings yours back. Your words, images and pages stay - the banner's text and image, your icons and footer note, which page is your homepage.
 
 A preset can change: how posts are shown in the blog roll (and what each one shows, cards in a row, grouping, the placeholder), the reading column, the fonts and text size, the header's position, layout and width, the side panels (where each goes, where it shows and their order), the table of contents, folding sections, the cover image's width, the gallery style, how portfolios are arranged, animations and what each post shows. A preset that makes a page of its own (a landing page, docs, a wiki) offers it as your homepage, or one of your pages; the others leave your homepage as it is. Never your colours, your writing or anything else.
 
@@ -163,13 +163,13 @@ Under **Advanced**. Readers who've set their device to reduce motion never see a
 
 ### Blog layout
 
-- **Posts are shown as** - How your homepage and tag pages list your posts: List (text first); Cards (a grid with pictures); Magazine (the newest large, the rest in cards); Minimal (just dates and titles); Timeline (along a line).
+- **Posts are shown as** - How your homepage and tag pages list your posts: List (text first); Cards (a grid with images); Magazine (the newest large, the rest in cards); Minimal (just dates and titles); Timeline (along a line).
 - **Timeline line** - With Timeline: on the left, centred, or on the right.
 - **Each post in the list shows** - Cover, date, reading time, summary and tags. A post can keep its own cover out of lists (**Post settings > Details**).
 - **Group posts by** - With Minimal: none, year or month.
-- **Cover position** - With List: the picture right or left of the text.
+- **Cover position** - With List: the image right or left of the text.
 - **Placeholder for posts without a cover** - With Cards and Magazine: posts without a cover image get a tile in your colours, so the cards line up.
-- **Cards in a row** - With Cards: three, two, or one. With one, each post is shown large, with its words over its picture, like Magazine shows the newest post.
+- **Cards in a row** - With Cards: three, two, or one. With one, each post is shown large, with its words over its image, like Magazine shows the newest post.
 - **Posts per page** - 6, 9, 12, 18, 24 or 48.
 
 ### Side panels
@@ -213,7 +213,7 @@ Under **Advanced**. Readers who've set their device to reduce motion never see a
 
 - **Cover image** - Full screen (the whole window, with the title over the bottom of it and an arrow down to the words), Edge to edge, Wide (out to the side panels) or as wide as the text. Full screen to start with. Each post can choose its own. A cover's caption, from **Media**, shows under it - or, on a full-screen cover, in its bottom corner.
 - **Default gallery style** - Grid, Masonry, Justified, Slider or Filmstrip. Each gallery can choose its own.
-- **Portfolio pages** - How a Portfolio section shows your work: Grid (even tiles, a title under each), Masonry (each picture at its own shape, nothing cut off), Rows (edge to edge, each row the same height), Full screen (one piece at a time, as you scroll) or Sideways (a row of tall pictures you swipe along). Each portfolio can choose its own with a `Show as:` line.
+- **Portfolio pages** - How a Portfolio section shows your work: Grid (even tiles, a title under each), Masonry (each image at its own shape, nothing cut off), Rows (edge to edge, each row the same height), Full screen (one piece at a time, as you scroll) or Sideways (a row of tall images you swipe along). Each portfolio can choose its own with a `Show as:` line.
 - **Open any image bigger with a click** (on/off) - Readers select an image in a post to see it full size. Images in a gallery always open this way.
 
 ### Milestones sections
@@ -227,7 +227,7 @@ Under **Advanced**. For Milestones sections, which show events along a line.
 ### Width and spacing
 
 - **Reading column** - How wide the column of text is: Standard, or Narrow, which is easier on the eyes for long reading.
-- **Space between sections** - Small, Medium or Large: the room between a page's sections, a project's pictures, and before comments and related posts. Medium to start with. It's for a page made of sections, like a landing page: on a page with writing of its own (a plain `##` heading anywhere), sections sit as close as headings. Each post or page can choose its own, and a section's own `Space:` line wins.
+- **Space between sections** - Small, Medium or Large: the room between a page's sections, a project's images, and before comments and related posts. Medium to start with. It's for a page made of sections, like a landing page: on a page with writing of its own (a plain `##` heading anywhere), sections sit as close as headings. Each post or page can choose its own, and a section's own `Space:` line wins.
 - **Section headings** - On the left or Centred: where every section's heading, and the words under it, sit. On the left to start with. A section's own `Heading:` line wins.
 
 ### Header
@@ -386,7 +386,7 @@ For visitors in the EU, UK and Switzerland, Google needs its own consent message
 
 ### Sharing
 
-- **Share image** - The picture shown when someone shares a link to your site, for pages without a cover image of their own. About 1200 × 630 pixels works best. Without one, a post without a cover shares a card with its title.
+- **Share image** - The image shown when someone shares a link to your site, for pages without a cover image of their own. About 1200 × 630 pixels works best. Without one, a post without a cover shares a card with its title.
 
 ### Share on Bluesky
 
@@ -682,7 +682,7 @@ when Settings leaves pages out.
 
 - **Title** - Left, centred, or hidden (screen readers still read it).
   Hide it when a Hero section opens the page with its own heading.
-- **Page width** - The site's column, or wide: sections and pictures may
+- **Page width** - The site's column, or wide: sections and images may
   run wider. A section's own `Width:` line still wins - see
   [Which setting wins](put-together.md#which-setting-wins).
 - **Contents** - This post's table of contents: the site's default, at the
@@ -772,7 +772,7 @@ style, and inserts a block like this:
 ```
 ````
 
-A picture's caption - this one, or the one saved with it in **Media** -
+An image's caption - this one, or the one saved with it in **Media** -
 shows over the bottom of it when you point at it (always on a phone), and in the
 lightbox.
 
@@ -892,15 +892,15 @@ joins the last item.
 | Ann  | Owner |
 ```
 
-### Pictures
+### Images
 
 | What | You type | You get |
 |---|---|---|
-| **Image from your library** | Nothing - choose it, then pick a picture you've uploaded, or upload one | The picture. On a line of its own, its caption and credit from **Media** show under it. |
-| **Upload image** | Nothing - choose it, then pick a picture on your device. Or paste or drop one into your writing. | The picture, added to **Media** and to the post |
-| **Image by URL** | `![Text](URL)`, with the image's URL | A picture from another site |
-| Picture description | The Text in `![Text](URL)` | A description of the picture. Screen readers read it aloud, search engines use it, and it shows if the picture can't load. Left empty, a picture from your library uses its **Alt text** from **Media**. |
-| **Gallery** | Nothing - choose it, then pick the pictures | Several pictures together, as a grid, a slider and more - see [Galleries](#galleries) |
+| **Image from your library** | Nothing - choose it, then pick an image you've uploaded, or upload one | The image. On a line of its own, its caption and credit from **Media** show under it. |
+| **Upload image** | Nothing - choose it, then pick an image on your device. Or paste or drop one into your writing. | The image, added to **Media** and to the post |
+| **Image by URL** | `![Text](URL)`, with the image's URL | An image from another site |
+| Image description (alt text) | The Text in `![Text](URL)` | A description of the image. Screen readers read it aloud, search engines use it, and it shows if the image can't load. Left empty, an image from your library uses its **Alt text** from **Media**. |
+| **Gallery** | Nothing - choose it, then pick the images | Several images together, as a grid, a slider and more - see [Galleries](#galleries) |
 
 ### Callouts, tabs and other blocks
 
@@ -953,7 +953,7 @@ Select an image in **Media** to open its details.
 - **Caption** - Shown under the image in posts.
 - **Credit** and **Credit link** - Who made the image - a photographer, an illustrator, you - shown with it as "Image by …", and their website for the name to link to. A stock photo you add from the picker is credited by itself, as "Photo by … on Pexels".
 - **Dark mode version** - Another image shown in its place while a reader's site is dark: **Pick** one you've uploaded - any image but this one. It switches with each reader's light or dark setting - see [Organise media](run.md#organise-media).
-- **Phone version** - Another image shown in its place on a phone: **Pick** one you've uploaded - any image but this one. A wide screen shows the usual image. The phone picture can have a Dark mode version of its own - see [Organise media](run.md#organise-media).
+- **Phone version** - Another image shown in its place on a phone: **Pick** one you've uploaded - any image but this one. A wide screen shows the usual image. The phone image can have a Dark mode version of its own - see [Organise media](run.md#organise-media).
 - **File name** - Rename the file. Posts that use it get the new name, and links to the old one keep working. Audio, video and PDFs have this too; the rest of this list is for images.
 
 Every post that uses the image shows a change straight away.

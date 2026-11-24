@@ -3,7 +3,7 @@
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="docs/brand/soloblog-wordmark-dark.svg">
   <img src="docs/brand/soloblog-wordmark.svg" alt="Soloblog" height="64">
-</picture>
+</image>
 
 ### Your own blog and website. Yours to keep.
 
@@ -33,7 +33,7 @@ own.
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/hero-dark.webp">
   <img src="docs/screenshots/hero.webp" alt="A Soloblog site on a wide screen and a phone: a magazine homepage with photo cards, and a book's landing page" width="900">
-</picture>
+</image>
 
 </div>
 
@@ -70,7 +70,7 @@ own.
 |---|---|
 | ![A photo blog's post with a full-screen cover photo of fog over a forest](docs/screenshots/cover.webp) | ![A studio's work page: ceramics as a grid of photo tiles](docs/screenshots/portfolio.webp) |
 | A post with a full-screen cover | A portfolio |
-| ![A notebook-style blog listing essays by year](docs/screenshots/notebook.webp) | ![A landing page for a book, with its buttons and a framed picture](docs/screenshots/launch.webp) |
+| ![A notebook-style blog listing essays by year](docs/screenshots/notebook.webp) | ![A landing page for a book, with its buttons and a framed image](docs/screenshots/launch.webp) |
 | A minimal blog, by year | A landing page |
 | ![A handbook page with its contents and steps](docs/screenshots/docs.webp) | ![A magazine article with a large serif title and a photo](docs/screenshots/magazine.webp) |
 | Docs and guides | A magazine |
@@ -135,7 +135,7 @@ and the website has
   screen or sideways), Pricing, Services, Products, Team, Testimonials,
   FAQ, Features, Numbers, Steps, Milestones, Events, Menu, Reviews, Opening
   hours, Recipe facts, Ingredients, Method, Resume, Profile, Interview,
-  Call to action, Story (pictures that change as you scroll) and more -
+  Call to action, Story (images that change as you scroll) and more -
   each as wide as you like, on a card or as a full-screen cover
 - **Post settings** for each page: its title and width, cover, contents,
   spacing and what shows around it, with a coloured line and **Reset** on
@@ -151,7 +151,7 @@ and the website has
 - WebP conversion with readable file names, and smaller copies for phones
   and cards
 - A media library with alt text, captions, credits, crop and rotate, and a
-  dark mode and phone version for any picture
+  dark mode and phone version for any image
 - Stock photos from Pixabay, Pexels and Unsplash; audio and video uploads;
   embeds (YouTube, Vimeo, Spotify, Mastodon, maps, forms) that load only
   when a reader selects them

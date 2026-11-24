@@ -47,7 +47,7 @@ def _look(**values) -> dict:
 # A stacked header - the title over its menu - never floats: two lines over
 # the page cover too much of it, so it scrolls away or stays at the top.
 PRESETS = {
-    "personal": ("Personal blog", "A list of your posts with their pictures, your tags under them, and you beside every post.",
+    "personal": ("Personal blog", "A list of your posts with their images, your tags under them, and you beside every post.",
                  # the list with its picture on the right (Substack, Medium) - more room per post
                  _look(side_tags="under", side_author="right",
                        font_headings="humanist",
@@ -64,18 +64,18 @@ PRESETS = {
                  # a masthead: the title over its menu
                  _look(roll_style="magazine", font_headings="didone", header_align="stacked", header_style="fixed",
                        side_tags="right", cover_width="full"), None),
-    "photo": ("Photo journal", "Big pictures, two to a row, covers edge to edge, galleries in rows - and few "
+    "photo": ("Photo journal", "Big images, two to a row, covers edge to edge, galleries in rows - and few "
               "words around them.",
               _look(roll_style="cards", roll_shows="cover,date", roll_placeholder="0", font_headings="geometric",
                     toc_style="off", cover_width="full", gallery_style="justified", portfolio_style="rows",
                     post_shows="byline,tags,reactions,share,series,related"), None),
-    "portfolio": ("Portfolio", "Your work first, pictures large - a portfolio as the homepage, each project "
+    "portfolio": ("Portfolio", "Your work first, images large - a portfolio as the homepage, each project "
                   "laid out like a magazine, the blog a click away.",
                   _look(roll_style="cards", font_headings="neo-grotesque", font_body="neo-grotesque",
                         gallery_style="masonry", portfolio_style="masonry",
                         post_shows="breadcrumbs,byline,tags,share,related"),
                   ("portfolio", "Work")),
-    "journal": ("Journal", "Your posts along a line by date, each with its picture - a diary, a travel log "
+    "journal": ("Journal", "Your posts along a line by date, each with its image - a diary, a travel log "
                 "or a year of making things.",
                 _look(roll_style="timeline", roll_shows="cover,date,summary", font_headings="slab",
                       body_width="narrow", toc_style="off", cover_width="column",

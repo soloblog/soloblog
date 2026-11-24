@@ -91,7 +91,7 @@ What it was."""))),
         "A line about your work - what you make, and for whom.",
         _s("portfolio", "Work", """### A project
 
-What it is, in a line. Put its picture above this line, and a link to its own page under it.
+What it is, in a line. Put its image above this line, and a link to its own page under it.
 
 ### Another project
 
@@ -142,12 +142,12 @@ A short bio: two or three sentences on where you've been and what you care about
     "landing": ("Landing page", _doc(
         _s("hero", "What it is, in a few words", """Label: New
 
-![A picture of it](/uploads/picture.webp)
+![An image of it](/uploads/picture.webp)
 
 Why it's worth someone's time, in a sentence.
 
 [Get it now](https://example.com)""", {"Style": "Window"}),
-        _s("picture_and_text", "What you'll get", "![A picture of it](/uploads/picture.webp)\n\n"
+        _s("picture_and_text", "What you'll get", "![An image of it](/uploads/picture.webp)\n\n"
                                       "The first thing it gives people, in plain words."),
         _s("picture_and_text", "Who it's for", "![Someone using it](/uploads/someone.webp)\n\n"
                                    "The people it helps most - and who it isn't for."),
@@ -215,7 +215,7 @@ What wasn't working, and why it mattered.
 
 ![The before](/uploads/before.webp)
 
-A short line about this picture sits beside it.
+A short line about this image sits beside it.
 
 ### Approach
 
@@ -428,7 +428,7 @@ the law may be removed.
 
 ## What's here
 
-The posts, pictures and other work on this site are [your name]'s unless it says otherwise. [How people may \
+The posts, images and other work on this site are [your name]'s unless it says otherwise. [How people may \
 share it - for example, "Quote a few lines with a link back."]
 
 ## Membership
@@ -533,7 +533,7 @@ Your name · where and when
 
 ## The second point
 
-A picture, a quote or a few words.
+An image, a quote or a few words.
 
 ---
 
