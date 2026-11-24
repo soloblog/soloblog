@@ -13,7 +13,7 @@ publishing it. Posts and pages are written in the same editor.
 [Choose what new posts start from](#choose-what-new-posts-start-from) ·
 [Apply a template to a page](#apply-a-template-to-a-page) ·
 [Save a page as a template](#save-a-page-as-a-template) ·
-[Bring back an earlier version](#bring-back-an-earlier-version) ·
+[Restore an earlier version](#restore-an-earlier-version) ·
 [Write on a phone](#write-on-a-phone)
 
 ## Write and format a post
@@ -381,7 +381,7 @@ that name.
 Editor > Templates**, each with a button to remove it. Pages made from it
 stay as they are.
 
-## Bring back an earlier version
+## Restore an earlier version
 
 Each time you save, Soloblog keeps the version from before. You can look
 at what a post said earlier, and bring that version back.

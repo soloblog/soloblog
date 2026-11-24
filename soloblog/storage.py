@@ -536,7 +536,7 @@ def backup_now() -> str:
     the new object's key."""
     from soloblog import backup
     if held:
-        raise StorageError("the site is waiting to be brought back from your bucket")
+        raise StorageError("the site is waiting to be restored from your bucket")
     key = f"{BACKUP_PREFIX}soloblog-{datetime.now(UTC).strftime('%Y%m%d-%H%M%S')}.zip"
     data = backup.build_backup_zip(backup_categories())
     if config.BACKUP_PASSPHRASE:

@@ -324,7 +324,7 @@ def storage_check():
     fix = keep_it()
     if storage.enabled() and config.S3_RESTORE_ON_BOOT:
         return check("kept", "storage", RECOMMENDED, "Your site is put back from your bucket on each start",
-                     "It isn't on lasting storage, so each update starts empty and brings back the last backup - "
+                     "It isn't on lasting storage, so each update starts empty and restores the last backup - "
                      f"a change from the last minute could be lost. {fix}")
     return check("kept", "storage", CRITICAL, "Your posts will be lost on the next update",
                  f"They're kept inside the app, not on lasting storage, so an update or restart starts empty. "

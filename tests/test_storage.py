@@ -556,7 +556,7 @@ def test_setup_brings_a_held_site_back_with_the_old_passphrase(bucket, monkeypat
     os.remove(os.path.join(config.uploads_dir(), name))
     try:
         page = client.get("/setup").text
-        assert "Bring your site back" in page and 'name="passphrase"' in page and f'value="{key}"' in page
+        assert "Restore your site" in page and 'name="passphrase"' in page and f'value="{key}"' in page
         assert 'action="/setup/restore"' in page and 'href="/setup?new=1"' in page
         token = auth.setup_token()
         tries = [({"token": "not it", "key": key, "passphrase": "the old one"}, "setup token isn"),
@@ -601,7 +601,7 @@ def test_a_fresh_start_over_held_backups_is_the_owners_choice(bucket, monkeypatc
     try:
         # its errors keep the fresh-start form, not the restore one
         r = client.post("/setup", data={"token": "not it", "password": "x", "confirm": "x", "new": "1"})
-        assert "Set up your site" in r.text and "Bring your site back" not in r.text
+        assert "Set up your site" in r.text and "Restore your site" not in r.text
         assert storage.held  # only setting up a new site lets it go
     finally:
         storage.release_hold()

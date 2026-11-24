@@ -570,7 +570,7 @@ A backup: a zip file of what you tick - posts and pages, images, settings, comme
 
 ### Restore
 
-**Upload** a backup to see what's in it, then tick what to bring back and select **Restore**. Posts, pages and images replace the ones with the same name; settings, comments, members, subscribers and stats are replaced as a whole. Your password and passkeys stay as they are. Before you restore: [what a restore replaces](run.md#back-up-and-restore).
+**Upload** a backup to see what's in it, then tick what to restore and select **Restore**. Posts, pages and images replace the ones with the same name; settings, comments, members, subscribers and stats are replaced as a whole. Your password and passkeys stay as they are. Before you restore: [what a restore replaces](run.md#back-up-and-restore).
 
 ### Cloud storage
 

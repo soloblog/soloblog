@@ -250,7 +250,7 @@ else slides out of the way. See [Write in Focus](guide/writing.md#write-in-focus
 Yes: each post keeps its last 50 saved versions, in **Post settings >
 History**. You can see what each one changed, and bring any of them
 back. See
-[Bring back an earlier version](guide/writing.md#bring-back-an-earlier-version).
+[Restore an earlier version](guide/writing.md#restore-an-earlier-version).
 
 ## Readers
 

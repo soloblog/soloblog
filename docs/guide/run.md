@@ -145,7 +145,7 @@ removes them for good.
 ## Back up and restore
 
 A backup is a copy of everything on your site, in one file you keep.
-If something goes wrong, you can bring it all back.
+If something goes wrong, you can restore it all.
 
 1. Open **Settings > Backup and import**.
 2. Under **Download**, tick what to include. Everything is ticked to
@@ -164,7 +164,7 @@ services you've connected. Inside are the parts you ticked:
 
 **To restore from a backup:** on the same page, under **Restore**, select
 **Upload** and choose the backup file. It shows what's inside, with a
-count for each part. Tick what to bring back and select **Restore**.
+count for each part. Tick what to restore and select **Restore**.
 It asks once more, then replaces what you ticked - read what that means
 below first.
 
@@ -223,7 +223,7 @@ three are listed with their date and size, and **Older backups** opens
 the rest. Select **Restore** (the ↺ icon; on a phone, under ⋯) beside
 the one you want. The **Restore** card above fills in and comes into
 view, saying which backup it's from. As with a file you upload, tick
-what to bring back and select **Restore**. **Images** brings back the
+what to restore and select **Restore**. **Images** restores the
 bucket's latest copy of each image, replacing your site's - the bucket
 keeps one copy of each, not one per backup.
 

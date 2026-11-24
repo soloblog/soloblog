@@ -185,7 +185,7 @@ def token_help() -> str:
 HELD_WHY = {
     "locked": "Your bucket has a backup of this site, locked with a passphrase other than the one on your "
               "host. Type the passphrase it was made with.",
-    "unreachable": "Your storage bucket didn't answer, so your site couldn't be brought back. Check the S3_ "
+    "unreachable": "Your storage bucket didn't answer, so your site couldn't be restored. Check the S3_ "
                    "settings on your host, then try again.",
     "damaged": "The newest backup in your bucket couldn't be opened. Choose an earlier one.",
 }
@@ -203,7 +203,7 @@ def BringBackCard(error="", token="", key=""):
     except storage.StorageError:
         backups, why = [], "unreachable"
     return AuthCard(
-        "Bring your site back",
+        "Restore your site",
         HELD_WHY[why],
         Alert(error, "error") if error else None,
         Form(
@@ -232,7 +232,7 @@ def setup_page(hdrs=None, error: str = "", new: str = "", token: str = "", key: 
         return RedirectResponse("/login", status_code=303)
     from soloblog import health, storage
     if storage.held and not new:
-        return _page(hdrs, "Bring your site back", "/setup", BringBackCard(error, token, key))
+        return _page(hdrs, "Restore your site", "/setup", BringBackCard(error, token, key))
     return _page(hdrs, "Set up your site", "/setup", AuthCard(
         "Set up your site",
         token_help(),

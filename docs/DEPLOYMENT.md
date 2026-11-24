@@ -763,7 +763,7 @@ restarts - but older backups still need the passphrase they were made
 with, and restoring one asks for it. On a host without a disk, the
 restart after a change can't open the newest backup, so the site asks
 for the old passphrase before anything else - see
-[Your site shows "Bring your site back"](guide/troubleshooting.md#your-site-shows-bring-your-site-back).
+[Your site shows "Restore your site"](guide/troubleshooting.md#your-site-shows-restore-your-site).
 
 ### What's in the bucket
 
@@ -791,7 +791,7 @@ private, and keep its key only on your host.
 
 **Images have no history.** Rotating or cropping an image replaces its
 copy, and an image deleted for good is gone - so restoring an old backup
-brings back its posts, but not an image deleted since. Want older
+restores its posts, but not an image deleted since. Want older
 versions kept? Some storage companies can keep them for you: Amazon S3
 calls it versioning, and Backblaze B2 keeps old versions unless you tell
 it not to. Each old version is stored, and charged, as well.

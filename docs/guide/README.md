@@ -4,7 +4,7 @@ How to do things with Soloblog, by task. In your admin, the same pages
 are under **Help**.
 
 - [Getting started](getting-started.md) - set up your site and write your first post
-- [Writing posts](writing.md) - write, format, schedule and bring back posts
+- [Writing posts](writing.md) - write, format, schedule and restore posts
 - [Creating pages](pages.md) - templates, sections, menus, your homepage
 - [Designing the site](design.md) - styles, colours, fonts, header and footer
 - [Growing an audience](grow.md) - comments, newsletter, members, sharing

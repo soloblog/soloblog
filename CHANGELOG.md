@@ -18,8 +18,8 @@ versions may include breaking changes; they'll always be listed here.
   when their name matches
 - Restoring a locked backup asks for the passphrase it was made with,
   when it isn't the one set now
-- A new server that can't open its newest backup asks to bring your site
-  back, instead of starting as an empty site
+- A new server that can't open its newest backup asks to restore your
+  site, instead of starting as an empty site
 
 ### Changed
 
@@ -32,6 +32,7 @@ versions may include breaking changes; they'll always be listed here.
 - A slider's Move by itself is called Autoplay
 - Fold headings and Fold contents are called Collapsible headings and
   Collapsible contents, like the editor's Collapsible block
+- The admin and Help say restore where they said bring back
 
 ### Fixed
 

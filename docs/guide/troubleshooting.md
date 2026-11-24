@@ -83,10 +83,10 @@ storage mounted at `/data`, or connect cloud storage, so a fresh server
 restores itself from your newest backup. See
 [Keep files in cloud storage](../DEPLOYMENT.md#keep-files-in-cloud-storage).
 
-## Your site shows "Bring your site back"
+## Your site shows "Restore your site"
 
-A new server, or a restart on a host without a disk, brings your site
-back from the newest backup in your storage bucket. When it can't, it
+A new server, or a restart on a host without a disk, restores your site
+from the newest backup in your storage bucket. When it can't, it
 shows this page instead of starting as an empty site, and makes no
 backups until you choose what to do - so your real backups are never
 replaced by empty ones.
