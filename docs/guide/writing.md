@@ -348,7 +348,7 @@ one's settings win.
 template is added, even one the page already has.
 
 **Applied the wrong one?** Select **Undo** before you change anything
-else. It puts back the words and every setting. Later, **Discard** - the
+else. It puts back the text and every setting. Later, **Discard** - the
 ✕ beside **Save** - takes the page back to how it was last saved.
 
 See also: [Start a post from a template](#start-a-post-from-a-template) ·
@@ -359,7 +359,7 @@ See also: [Start a post from a template](#start-a-post-from-a-template) ·
 Keep a page's words and settings as a template of your own, for the things
 you write in the same shape again and again.
 
-1. Open a page with the words and settings you want to reuse.
+1. Open a page with the text and settings you want to reuse.
 2. Open **Settings** - the gear icon - then **Template**.
 3. Under **Save as a template**, type a name. It starts as the page's
    title.

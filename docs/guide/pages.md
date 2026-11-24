@@ -221,7 +221,7 @@ Jump to any section of a long page without scrolling to find it.
    **Go to a section** - the same list opens where you're typing, and
    nothing is added to your writing.
 2. Choose a section. The list has one row for each, in the order they're
-   on the page - its kind, like **Columns**, then the words of its heading.
+   on the page - its kind, like **Columns**, then the text of its heading.
    The one your cursor is in has a tick.
 
 Your cursor goes to the start of that section's heading, and the text
@@ -317,9 +317,9 @@ page can also be moved under the page above it, so it shows in that
 page's dropdown. Nothing goes under a site page.
 
 **Want to call Home something else?** On its row, select **Rename**,
-type the words for the menu, and select **Save**. Every site page can be
+type the label for the menu, and select **Save**. Every site page can be
 renamed the same way. Leave it empty to go back to the page's own name,
-in your visitors' language. Your own words show as you typed them in
+in your visitors' language. Your own labels show as you typed them in
 every language.
 
 **Want Home out of the menu?** Select **Hide from menu** on its row. It
@@ -329,7 +329,7 @@ still goes to the homepage.
 **Want the same for the footer?** The **Footer** list below it works the
 same way: **Add to footer**, **Move**, **Rename** and **Remove from
 footer**. Home and Blog can go in the footer too. A page can be in the
-menu, the footer, both or neither, with its own place and words in each.
+menu, the footer, both or neither, with its own place and label in each.
 They show only while **Pinned pages** is on, under **Footer** in
 **Settings > Header and footer**. Archive, Tags and RSS in the footer's small print (the
 **Archive, Tags and RSS links** switch there) stay as they are, but a
@@ -382,7 +382,7 @@ Newsletter or the RSS feed):
    page switched on, **Contact** and **Newsletter** need to be set up.
 
 The page is added at the end, as a **Site page**. Use **Move** to put it
-elsewhere, **Rename** to change its words, and **Remove from menu** (or
+elsewhere, **Rename** to change its label, and **Remove from menu** (or
 **Remove from footer**) to take it out - it's then in the **Add** list
 again.
 
@@ -415,7 +415,7 @@ can be added with **Add to menu**; the members' pages are only a link.
 
 **Writing about someone else's page?** Start from the **Link post**
 template, put the page's URL in **Link to**, and write your thoughts.
-Your title links there, and a button under your words does too.
+Your title links there, and a button under your text does too.
 
 ## Start a series
 

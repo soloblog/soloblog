@@ -236,7 +236,7 @@ into the page**.
 **Want one post without side panels?** In that post's **Post settings >
 Page**, under **Show**, untick the side panels.
 
-**Where does About the author get its words and photo?** From
+**Where does About the author get its text and photo?** From
 **Settings > Profile and links**.
 
 ## Add a homepage banner

@@ -26,6 +26,8 @@ versions may include breaking changes; they'll always be listed here.
 - Settings > Address and search is now URL and SEO, and the admin and
   Help say URL wherever they said address
 - The admin and Help say image wherever they said picture
+- The admin and Help say text where they said words, and the editor's
+  tooltips no longer describe Bold or Italic in other words
 
 ### Fixed
 

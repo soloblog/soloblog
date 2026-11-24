@@ -59,18 +59,18 @@ with the line you write:
 
 ### Section: Picture and text
 
-An image beside its words, the image on one side and the words on the
-other, and the words under it on a phone. Under the heading: an image
-and a few lines. Without an image it's just the words. Also written
+An image beside its text, the image on one side and the text on the
+other, and the text under it on a phone. Under the heading: an image
+and a few lines. Without an image it's just the text. Also written
 `Section: Picture`.
 
-`Style: Cover` puts the words over the image, across the whole page,
+`Style: Cover` puts the text over the image, across the whole page,
 as a [Hero](#section-hero) does.
 
 ### Section: Numbers
 
 Big figures in a row, two to a row on a phone; they count up as they
-appear. Each item is `### 10,000`, with the words under it saying what
+appear. Each item is `### 10,000`, with the text under it saying what
 it counts. Also written `Section: Stats`.
 
 ### Section: Testimonials
@@ -148,7 +148,7 @@ truck.
 
 ### Section: Columns
 
-Text in columns, side by side. Each item: `### A heading` and its words.
+Text in columns, side by side. Each item: `### A heading` and its text.
 
 ### Section: Sign-up
 
@@ -275,7 +275,7 @@ To show your newest writing under it, add a
 ### Section: Bios
 
 Bios to copy, and photos to download - for journalists and podcast
-hosts. Each item: `### Short bio`, `### Long bio` and their words; each
+hosts. Each item: `### Short bio`, `### Long bio` and their text; each
 plain bio gets a **Copy** button. An item that holds images shows them
 in a grid, each with a **Download** link. Also written
 `Section: Media kit`.
@@ -288,7 +288,7 @@ phone.
 
 ### Section: Photo story
 
-Images and words laid out like a magazine, wide. Write the story under
+Images and text laid out like a magazine, wide. Write the story under
 the heading and put the images between the paragraphs; the section
 places them:
 
@@ -299,7 +299,7 @@ places them:
   images taking turns on each side.
 - A quote (`>`) is shown large; a last line starting with `—` is who said
   it.
-- Each `###` heading sits beside its words.
+- Each `###` heading sits beside its text.
 
 Three Key: lines turn those arrangements off, on the lines straight
 under `Section:`:
@@ -312,14 +312,14 @@ Each also takes `Default`, which is the first one in each list.
 
 ### Section: Story
 
-Images that change as the words scroll - a way to walk readers through
+Images that change as the text scrolls - a way to walk readers through
 a tour, a process or a project, one step at a time. Under the heading,
 write each step as `### A heading`, with one image and a few lines of
-words under it; a link on its own line becomes the step's button. Words
+text under it; a link on its own line becomes the step's button. Text
 before the first step show above the story. Also written
 `Section: Scroll story`.
 
-- **On a wide screen**, the words scroll in a column on the left while
+- **On a wide screen**, the text scrolls in a column on the left while
   the image for the step being read stays in view on the right, whole
   and in its own shape. The image changes as the next step comes up,
   and on a computer with a mouse it tilts a little toward the pointer.
@@ -329,8 +329,8 @@ before the first step show above the story. Also written
   header, with rounded corners, and fades into the next one as you
   scroll. An image shows whole from its top, unless it's landscape: then
   it fills the area and its sides are cropped. The top stays clear and the bottom
-  fades into the page's own colour, where the words sit in the text
-  colour of the look you chose.
+  fades into the page's own colour, where the text shows in your
+  palette's text colour.
 - **The words** of each step fade in as they come up, stay clear while
   you read them and fade out as they scroll away. On a touch screen,
   while the story fills it, the page comes to rest on a step as you
@@ -342,7 +342,7 @@ before the first step show above the story. Also written
 - **Where there's no motion** - **Animations** switched off in
   **Settings > Style > Motion**, or a reader's device set to reduce motion, or
   their browser not running scripts - nothing is held or fades. Each
-  step shows its image and its words, one after another.
+  step shows its image and its text, one after another.
 
 A story is as wide as the screen, so write its images to fill one: tall
 ones read best on a phone. For a screenshot, give the image a phone
@@ -385,7 +385,7 @@ heading, a line for each: `Serves:` (or `Servings:`, `Yield:`, `Makes:`),
 ### Section: Ingredients
 
 A list readers can tick off - each item crosses out when ticked. Under
-the heading: a list. Words before or after the list stay as they are.
+the heading: a list. Text before or after the list stays as it is.
 
 ### Section: Method
 
@@ -503,14 +503,14 @@ side panels, or edge to edge.
   archive, author) go under it, so the section has the room.
 
 **`Style: Card` or `Cover`** - `Card` sets any section apart on a card of
-its own. `Cover` puts its words over its image, across the page - the
+its own. `Cover` puts its text over its image, across the page - the
 same as a [Hero](#section-hero) - and only a Hero, a
 [Call to action](#section-call-to-action) and
 [Picture and text](#section-picture-and-text) can have it. On any other
 section the `Style: Cover` line does nothing, and the editor underlines it.
 
 **`Heading: Left` or `Centred`** - where the section's heading sits, and
-the words under it before its first item. `Centred` puts both in the
+the text under it before its first item. `Centred` puts both in the
 middle. Its cards, steps, photos and other items stay as they are.
 
 - With `Default` or no line, a section follows **Section headings** in
@@ -543,7 +543,7 @@ differently, and `None` doesn't move it at all.
 - With `Default` or no line, a section follows its page's **Sections
   appear** in **Post settings > Page**, and if the page doesn't choose,
   the site's, in **Settings > Style > Motion**.
-- A section's own heading stays still while its words and items come in -
+- A section's own heading stays still while its text and items come in -
   unless it draws its own heading, as a [Hero](#section-hero) does. A
   [Portfolio](#section-portfolio) brings its images in one by one.
 - Where there's no motion - **Animations** switched off, or a reader's
@@ -565,7 +565,7 @@ Once the page opens it's an ordinary page: change anything, and the
 template stays as it was. A page keeps no tie to the template it started
 from.
 
-A template sets only what belongs to the page: its sections and words, its
+A template sets only what belongs to the page: its sections and text, its
 Post settings, and a starting summary, tags and cover image. It never
 changes the site's header, footer, menu, colours or fonts, and it never sets
 whether the page is published, its date, its URL, who can read it,

@@ -449,7 +449,7 @@ def EditorHelpParts():
         _help_section(
             "focus", "Focus",
             Ul(*[Li(Span(name, cls="font-medium"), " - ", about, cls="py-1") for name, about in (
-                ("Only your words", "start typing and the bars slide away; move the mouse to bring them back"),
+                ("Only your text", "start typing and the bars slide away; move the mouse to bring them back"),
                 ("Typewriter scrolling", "the line you're writing stays in the middle of the screen"),
                 ("Fade", "the paragraph or sentence you're in stays bright, the rest steps back"),
                 ("Writing session", "the timer: 25 or 50 minutes, 500 or 1,000 words, or your own - "
@@ -508,7 +508,7 @@ def RevisionsList(slug, oob=False):
     save just kept is there without reloading the page."""
     revisions = posts.list_revisions(slug)
     if not revisions:
-        return Div(P("Earlier versions appear here each time you save a change to the words.",
+        return Div(P("Versions appear here each time you save a change to the text.",
                      cls="text-xs text-base-content/60"),
                    id="history-list", hx_swap_oob="true" if oob else None)
     now = posts.current_version(slug)
@@ -607,7 +607,7 @@ def RevisionDiff(old_title, old_body, title, body):
             rows.append(Div(Span("", cls="w-4 shrink-0"), Span(line[1:] or " ", cls="whitespace-pre-wrap break-words min-w-0"),
                             cls="flex px-2 text-base-content/70"))
     if not rows:
-        return P("No changes to the words - only the post's settings.", cls="text-sm text-base-content/60")
+        return P("No changes to the text - only the post's settings.", cls="text-sm text-base-content/60")
     return Div(*rows, cls="font-mono text-xs leading-relaxed rounded-box border-[length:var(--border)] "
                           "border-base-300 py-1")
 
@@ -684,7 +684,7 @@ def TemplateCards(card, group_cls, start_key="", apply=False):
             last = group
         names = section_names(post_templates.get(key)["body"]) if key else []
         about = "An empty post" if not key else (
-            ", ".join(names[:3]) + (f" and {len(names) - 3} more" if len(names) > 3 else "") if names else "Words only")
+            ", ".join(names[:3]) + (f" and {len(names) - 3} more" if len(names) > 3 else "") if names else "Text only")
         parts = (Span(Span(name, cls="min-w-0"),
                       Span("Custom", cls="badge badge-xs badge-ghost shrink-0") if key.startswith("mine-") else None,
                       cls="flex items-center gap-1.5 font-semibold text-sm"),
@@ -1334,7 +1334,7 @@ def TemplatePanel(title):
                              hx_post="/admin/templates/save", hx_include="closest form",
                              hx_target="#template-status", hx_swap="outerHTML"),
                       cls="join w-full"),
-                  help="Keeps the words and the Page settings, to start a post from or apply to another."),
+                  help="Keeps the text and the Page settings, to start a post from or apply to another."),
         Span(id="template-status", role="status", cls="text-xs"),
         key="template", open_=False
     )

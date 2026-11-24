@@ -198,11 +198,11 @@ def NewsletterPanel(s):
         Div(
             FormField("Heading", Input(name="newsletter_title", value=s["newsletter_title"],
                                        placeholder="Get new posts by email", cls="input input-sm w-full"),
-                      help="Empty: the words in grey.", cls=FIELD_GAP),
+                      help="Empty: the placeholder text.", cls=FIELD_GAP),
             FormField("Intro", Input(name="newsletter_intro", value=s["newsletter_intro"],
                                      placeholder="No spam - just the next post, when it's out. Unsubscribe any time.",
                                      cls="input input-sm w-full"),
-                      help="Empty: the words in grey.", cls=FIELD_GAP),
+                      help="Empty: the placeholder text.", cls=FIELD_GAP),
             # a tick in Each post shows (post_shows), here as well
             ToggleField("Show the sign-up box under each post", "newsletter_on_posts",
                         checked="newsletter" in pages.default_extras(False), cls=FIELD_GAP),
@@ -265,7 +265,7 @@ def ReaderPanels(s):
                 FormField("Message", Input(name="consent_message", value=s["consent_message"],
                                            placeholder="This site uses cookies to understand how it's read.",
                                            cls="input input-sm w-full"),
-                          help="Empty: the words in grey.", cls=FIELD_GAP),
+                          help="Empty: the placeholder text.", cls=FIELD_GAP),
                 FormField(
                     "Privacy page",
                     Div(Input(name="consent_privacy_url", id="consent_privacy_url", value=s["consent_privacy_url"],
@@ -312,7 +312,7 @@ def ReaderPanels(s):
                 FormField("Intro", Input(name="contact_intro", value=s["contact_intro"],
                                          placeholder="Send me a message - I'll reply by email.",
                                          cls="input input-sm w-full"),
-                          help="A line above the form. Empty: the words in grey.", cls=FIELD_GAP),
+                          help="A line above the form. Empty: the placeholder text.", cls=FIELD_GAP),
                 RadioGroupField(
                     "Which form", "contact_mode",
                     [("builtin", "Soloblog's own — messages arrive in Contact messages"),
@@ -627,7 +627,7 @@ def LanguagesPanel(s):
             "Posts are written in", search="Type a language…"),
             help="Helps screen readers and search engines.",
             cls=FIELD_GAP),
-        Div(FormField("Spelling", EnglishSelect(s), help="For dates and Soloblog's own words."),
+        Div(FormField("Spelling", EnglishSelect(s), help="For dates and the text Soloblog adds, like buttons."),
             data_shown_for="site_language=en", hidden=translate.site_language(s) != "en"),
         key="language-site"
     ), SettingsPanel(
@@ -891,7 +891,7 @@ def MembersTab(s):
                                                     maxlength="300",
                                                     placeholder="Members can read every members-only post. It's free.",
                                                     cls="input input-sm w-full"),
-                          help="A line on the page where readers join. Empty: the words in grey.", cls=FIELD_GAP),
+                          help="A line on the page where readers join. Empty: the placeholder text.", cls=FIELD_GAP),
                 FormField("Welcome email", Textarea(s.get("members_welcome"), name="members_welcome", rows="4",
                                                     maxlength="3000",
                                                     placeholder="e.g. Thanks for joining! Here's where to start…",
@@ -1006,7 +1006,7 @@ def BannerTab(s):
                         MediaPickerButton("banner_image_url"),
                         cls="join"
                     ),
-                    help="Behind the banner's words.", cls=FIELD_GAP
+                    help="Behind the banner's text.", cls=FIELD_GAP
                 ),
                 RadioGroupField("Width", "banner_width", list(pages.COVER_WIDTHS.items()),
                                 s["banner_width"] if s["banner_width"] in pages.COVER_WIDTHS else "column"),
@@ -1163,8 +1163,8 @@ def EditorForm(s, pinned, order):
                           help="Every post and page starts with it; each can have its own in Post settings. "
                                "Empty: none.", cls=FIELD_GAP),
                 RadioGroupField("Markdown marks", "editor_marks",
-                                [("dimmed", "Dimmed - so your words stand out"),
-                                 ("full", "Full - the same colour as your words")],
+                                [("dimmed", "Dimmed - so your text stands out"),
+                                 ("full", "Full - the same colour as your text")],
                                 "full" if s["editor_marks"] == "full" else "dimmed"),
                 key="editor-autosave"
             ),
@@ -1174,7 +1174,7 @@ def EditorForm(s, pinned, order):
                 ToggleField("Typewriter scrolling", "editor_typewriter", checked=(s["editor_typewriter"] == "1"),
                             help="The line you're writing stays in the middle of the screen.", cls=FIELD_GAP),
                 RadioGroupField("While you type", "editor_focus_toolbar",
-                                [("all", "Hide everything but your words"),
+                                [("all", "Hide everything but your text"),
                                  ("none", "Keep the toolbar")],
                                 "none" if s["editor_focus_toolbar"] == "none" else "all",
                                 help="Moving the mouse brings it back.", cls=FIELD_GAP),

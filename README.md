@@ -105,7 +105,7 @@ and the website has
 - A markdown editor with a preview that matches the published post,
   side by side, spell check, keyboard shortcuts and a toolbar you can
   rearrange
-- **Focus**: only your words once you start typing, typewriter scrolling,
+- **Focus**: only your text once you start typing, typewriter scrolling,
   writing sessions by time or word count
 - A **slash menu** for headings, tables, images, galleries, callouts, tabs,
   footnotes, math, diagrams and embeds - with a section's or gallery's own

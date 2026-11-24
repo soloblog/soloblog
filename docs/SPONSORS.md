@@ -50,7 +50,7 @@ These cost nothing, and help just as much:
   link to the project.
 - **Report problems and suggest improvements** - **Report a problem** and
   **Ideas and questions** are at the bottom of every admin page.
-- **Improve a translation** - the words visitors see on your site are in
+- **Improve a translation** - the text visitors see on your site are in
   23 languages, and a native speaker's eye helps. Suggest a better word
   under **Ideas and questions**.
 - **Star the project on GitHub**, so others find it.

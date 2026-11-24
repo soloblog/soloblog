@@ -34,7 +34,7 @@ from soloblog.ui import (
 )
 from soloblog.routes.admin_settings.base import ANALYTICS_ID_RE, ANALYTICS_PROVIDERS, VERIFICATION_RE, ar
 
-CARDS_PER_ROW = {"3": "Three", "2": "Two", "1": "One - each post large, its image behind its words"}
+CARDS_PER_ROW = {"3": "Three", "2": "Two", "1": "One - each post large, its image behind its text"}
 
 
 def _register_saves():

@@ -335,7 +335,7 @@ def OwnPreview(values):
         P("Aa", cls="text-2xl font-bold leading-none"),
         Div(Span("Primary", cls="btn btn-sm btn-primary"), Span("Secondary", cls="btn btn-sm btn-secondary"),
             Span("Accent", cls="btn btn-sm btn-accent"), cls="flex flex-wrap gap-2"),
-        Div(Span("A badge", cls="badge badge-neutral"), Span("Words on the page", cls="text-sm"),
+        Div(Span("A badge", cls="badge badge-neutral"), Span("Body text", cls="text-sm"),
             cls="flex flex-wrap items-center gap-2"),
         style=style, aria_hidden="true",
         cls="bg-base-200 text-base-content rounded-box border-[length:var(--border)] border-base-300 p-4 "
@@ -470,7 +470,7 @@ def _header_panels(s) -> list:
             RadioGroupField("Section headings", "section_heading_align", list(pages.SECTION_HEADINGS.items()),
                             s["section_heading_align"] if s["section_heading_align"] in pages.SECTION_HEADINGS
                             else "left",
-                            help="The heading and the words under it. Each section can choose its own."),
+                            help="The heading and the text under it. Each section can choose its own."),
             key="header-width"
         ),
         SettingsPanel(

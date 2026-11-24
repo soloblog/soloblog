@@ -101,8 +101,8 @@ Under **Advanced**.
 
 ### Languages
 
-- **Posts are written in** - The language you write in. Soloblog's own words on your site follow it - dates, buttons, "Comments". It doesn't translate your posts.
-- **Spelling** - For a site in English: how dates and Soloblog's own words are spelled. American (color, Sep 15, 2026), or British or Australian (colour, 15 Sep 2026). Your writing is never changed.
+- **Posts are written in** - The language you write in. The text Soloblog adds to your site follows it - dates, buttons, "Comments". It doesn't translate your posts.
+- **Spelling** - For a site in English: how dates and the text Soloblog adds are spelled. American (color, Sep 15, 2026), or British or Australian (colour, 15 Sep 2026). Your writing is never changed.
 
 ### Translation
 
@@ -169,7 +169,7 @@ Under **Advanced**. Readers who've set their device to reduce motion never see a
 - **Group posts by** - With Minimal: none, year or month.
 - **Cover position** - With List: the image right or left of the text.
 - **Placeholder for posts without a cover** - With Cards and Magazine: posts without a cover image get a tile in your colours, so the cards line up.
-- **Cards in a row** - With Cards: three, two, or one. With one, each post is shown large, with its words over its image, like Magazine shows the newest post.
+- **Cards in a row** - With Cards: three, two, or one. With one, each post is shown large, with its text over its image, like Magazine shows the newest post.
 - **Posts per page** - 6, 9, 12, 18, 24 or 48.
 
 ### Side panels
@@ -211,7 +211,7 @@ Under **Advanced**. Readers who've set their device to reduce motion never see a
 
 ### Images
 
-- **Cover image** - Full screen (the whole window, with the title over the bottom of it and an arrow down to the words), Edge to edge, Wide (out to the side panels) or as wide as the text. Full screen to start with. Each post can choose its own. A cover's caption, from **Media**, shows under it - or, on a full-screen cover, in its bottom corner.
+- **Cover image** - Full screen (the whole window, with the title over the bottom of it and an arrow down to the text), Edge to edge, Wide (out to the side panels) or as wide as the text. Full screen to start with. Each post can choose its own. A cover's caption, from **Media**, shows under it - or, on a full-screen cover, in its bottom corner.
 - **Default gallery style** - Grid, Masonry, Justified, Slider or Filmstrip. Each gallery can choose its own.
 - **Portfolio pages** - How a Portfolio section shows your work: Grid (even tiles, a title under each), Masonry (each image at its own shape, nothing cut off), Rows (edge to edge, each row the same height), Full screen (one piece at a time, as you scroll) or Sideways (a row of tall images you swipe along). Each portfolio can choose its own with a `Show as:` line.
 - **Open any image bigger with a click** (on/off) - Readers select an image in a post to see it full size. Images in a gallery always open this way.
@@ -228,7 +228,7 @@ Under **Advanced**. For Milestones sections, which show events along a line.
 
 - **Reading column** - How wide the column of text is: Standard, or Narrow, which is easier on the eyes for long reading.
 - **Space between sections** - Small, Medium or Large: the room between a page's sections, a project's images, and before comments and related posts. Medium to start with. It's for a page made of sections, like a landing page: on a page with writing of its own (a plain `##` heading anywhere), sections sit as close as headings. Each post or page can choose its own, and a section's own `Space:` line wins.
-- **Section headings** - On the left or Centred: where every section's heading, and the words under it, sit. On the left to start with. A section's own `Heading:` line wins.
+- **Section headings** - On the left or Centred: where every section's heading, and the text under it, sit. On the left to start with. A section's own `Heading:` line wins.
 
 ### Header
 
@@ -427,14 +427,14 @@ Under **Advanced**. Webmentions are how blogs tell each other they've linked to,
 - **Writing width** - Comfortable (a column that's easy to read back), or Wide (the text fills the box).
 - **Writing progress** (on/off) - Words written today, and a word goal for each post.
 - **Default word goal** - A length every new post and page aims for. Each can have its own in Post settings, or none. Empty: none.
-- **Markdown marks** - The symbols that format your writing, like `#` and `**`: Dimmed, so your words stand out; or Full, the same colour as your words.
+- **Markdown marks** - The symbols that format your writing, like `#` and `**`: Dimmed, so your text stands out; or Full, the same colour as your text.
 
 ### Focus
 
 Focus fills the screen with your writing and nothing else. See [Write in Focus](writing.md#write-in-focus).
 
 - **Typewriter scrolling** (on/off) - The line you're writing stays in the middle of the screen.
-- **While you type** - Hide everything but your words, or keep the toolbar. Moving the mouse to the top, or scrolling up on a phone, brings everything back.
+- **While you type** - Hide everything but your text, or keep the toolbar. Moving the mouse to the top, or scrolling up on a phone, brings everything back.
 - **Fade** - What fades so you can concentrate: all but the paragraph you're in, all but the sentence, or nothing.
 
 ### Markdown
@@ -725,7 +725,7 @@ when Settings leaves pages out.
   - **In the wiki** (on/off) - Listed on the wiki's front page, not in the blog.
   - **Remind me to update** (on/off) - Shows when it was last updated, and
     reminds you after three months.
-  - **Link to** - The page this post is about. For another website, the title links there, with a button under the words. For one of your own pages, visitors go straight to it.
+  - **Link to** - The page this post is about. For another website, the title links there, with a button under the text. For one of your own pages, visitors go straight to it.
 
 ### Template
 
@@ -830,11 +830,11 @@ contents, get a copy-link button, and can fold (see
 
 | What | You type | You get |
 |---|---|---|
-| **Bold** | `**words**` | Words in bold, to stand out |
+| **Bold** | `**words**` | Bold text, for strong emphasis |
 | **Italic** | `*words*` | Slanted words, for emphasis |
-| **Strikethrough** | `~~words~~` | Words crossed out |
-| **Inline code** | `` `words` `` | Words in a fixed-width font, for a bit of code or a file name in a sentence |
-| **Highlight** | `==words==` | Words marked in your palette's colour |
+| **Strikethrough** | `~~words~~` | Text with a line through it |
+| **Inline code** | `` `words` `` | Text in a fixed-width font, for a bit of code or a file name in a sentence |
+| **Highlight** | `==words==` | Text marked in your palette's colour |
 | **Superscript** | `x^2^` | Raised text: x² |
 | **Subscript** | `H~2~O` | Lowered text: H₂O |
 | **Keyboard keys** | `++ctrl+c++` | Keys drawn as keys, like Ctrl+C |
@@ -847,7 +847,7 @@ contents, get a copy-link button, and can fold (see
 | What | You type | You get |
 |---|---|---|
 | **Link** | `[words](https://example.com)` | The text, linking to that URL |
-| **Link to a post or page** | Nothing - choose it, then pick a post or page from the list | A link to one of your own posts or pages, with its title as the words |
+| **Link to a post or page** | Nothing - choose it, then pick a post or page from the list | A link to one of your own posts or pages, with its title as the link text |
 | **Link by title** | `[[Another post]]`, or `[[its-url|some text]]` for other words. Type `[[` and a few letters of the title for suggestions. | A link to another of your posts, by its title or its address. Until that post exists, the link shows red for you and as plain text for visitors. |
 | URL | `<https://example.com>` | The URL itself, as a link. A URL without `<` and `>` around it stays plain text. |
 
@@ -868,7 +868,7 @@ joins the last item.
 
 | What | You type | You get |
 |---|---|---|
-| **Quote** | `>` and a space at the start of each line | Someone else's words, set apart from yours. A line with only `>` starts a new paragraph inside the quote. |
+| **Quote** | `>` and a space at the start of each line | A quotation, set apart from your text. A line with only `>` starts a new paragraph inside the quote. |
 | **Pull quote** | `Pull quote: A line worth repeating.` on a line of its own, with an empty line above and below | A sentence from the post shown big, with a line beside it |
 
 ### Code

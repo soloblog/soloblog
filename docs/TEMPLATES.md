@@ -71,7 +71,7 @@ Every section reads **Width** and **Style**, and writes both lines out with
   on a column page, Wide on a wide page; Hero and Story are Full, Photo
   story and Bento grid Wide. A section is wider than the column only on a page of writing.
 - **Style**: Card sets the section apart on a card; Cover draws it as a Hero
-  (its image across the page, its words over it) and only Hero, Call to
+  (its image across the page, its text over it) and only Hero, Call to
   action and Picture and text take it - on any other section it is
   ignored. Default is no card or cover. Hero also takes Window.
 - Every other `Key:` takes `Default` too: it means "follow the site", or the
@@ -84,7 +84,7 @@ Review (Reviews).
 
 | Section | Reads | Draws |
 |---|---|---|
-| Picture and text (also Picture) | The first image and the words | The image beside its words, framed. |
+| Picture and text (also Picture) | The first image and the text | The image beside its text, framed. |
 | Numbers (also Stats) | Each `###` a figure, the line under it | Big figures in a row. |
 | Testimonials | Each `###` a person, `Role:`, a quote | Quote cards with who said them. |
 | Logos | The images, each optionally a link | A row of logos. |
@@ -92,13 +92,13 @@ Review (Reviews).
 | Products (also Shop) | Each `###` a product; image, `Price:`, `Badge:`, a link | Product cards with a buy button. |
 | Services | Each `###` a service; `From:`, words, a link | Cards with a starting price and a button. |
 | Team (also People) | Each `###` a person; image, `Role:`, words | Cards with a photo, role and line. |
-| FAQ (also Questions) | Each `###` a question, the words under it its answer | Questions that open to their answers. |
+| FAQ (also Questions) | Each `###` a question, the text under it its answer | Questions that open to their answers. |
 | Photo gallery | A `gallery` block | The site's gallery styles. |
 | Call to action (also CTA) | The words, and the last link or a Buttons line | One line and a button (or a main and a quieter one) on a card in the main colour. |
 | Features | Each `###` a point; `Icon:`, words | Short points with an icon, side by side. |
 | Columns | Each `###` a column | Text in columns, side by side. |
-| Sign-up (also Signup, Newsletter) | The words | The newsletter sign-up box under the words. |
-| Contact form (also Contact) | The words | The contact form under the words. |
+| Sign-up (also Signup, Newsletter) | The text | The newsletter sign-up box under the text. |
+| Contact form (also Contact) | The text | The contact form under the text. |
 | Latest posts (also Posts) | `Count:` (1 to 12, Default three), `Tag:` (Default any) | The newest posts as cards. |
 | Compare (also Comparison) | A table; ticks and crosses | A table of options with ticks. |
 | Steps (also How it works) | The first numbered list | Numbered steps as cards. |
@@ -116,7 +116,7 @@ Review (Reviews).
 | Bios (also Media kit) | Each `###` a bio; images in an item | A Copy button on each plain bio; images in a grid with Download links. |
 | Project facts | Each `Key: value` line (Client, Year, Role...) | A strip of facts, two across on a phone. |
 | Photo story | `First paragraph:` (Big or Normal), `Pictures together:` (Side by side or One under another), `A line after a picture:` (Beside it or Under it) | A magazine arrangement: a lone image wide, images in a row side by side, a short line beside its image (sides taking turns), quotes as pull quotes, a big first paragraph, each `###` beside its words. |
-| Story (also Scroll story) | Each `###` a step: its first image, its words and its last link; words before the first step | Steps whose words scroll while the step's image is held: beside the words on a wide screen, filling the screen behind them on a phone, fading from one to the next. A step with no image keeps the one before it. A plain stack of images and words where scripts or motion are off. |
+| Story (also Scroll story) | Each `###` a step: its first image, its text and its last link; text before the first step | Steps whose text scrolls while the step's image is held: beside the words on a wide screen, filling the screen behind them on a phone, fading from one to the next. A step with no image keeps the one before it. A plain stack of images and words where scripts or motion are off. |
 | Hero | A `Label:` line (Window only), the first image, a paragraph of links or a Buttons line (buttons), a short list (points), the `##` | A big heading, a line and a button over its image on a dark layer. Style Window: the label, a very big heading, the line, buttons, points and the image framed as a window. |
 | Bento grid (also Bento) | Each `###` a tile, the first big | Tiles of different sizes. |
 | Recipe facts | Each `Key: value` line (Serves, Servings, Yield or Makes; Prep; Cook or Bake; Total) | A strip of facts, side by side in a wide column and one under another in a narrow one. |

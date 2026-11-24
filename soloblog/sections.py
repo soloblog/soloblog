@@ -68,7 +68,7 @@ OPTIONS = {
               "aliases": {}},
     "Heading": {"about": "Where its heading sits", "default": "Follow the site", "type": "choice",
                 "values": (("left", "Left", "On the left, with the text", "align-left"),
-                           ("centre", "Centred", "In the middle, with its first words", "align-center")),
+                           ("centre", "Centred", "In the middle, over the text", "align-center")),
                 "aliases": {"center": "centre", "centered": "centre"}},
     "Space": {"about": "How much room is around it", "default": "Follow the page", "type": "choice",
               "values": _space_values, "aliases": {}},
@@ -99,7 +99,7 @@ OPTIONS = {
 }
 
 # Style: Cover, offered only by the kinds made with cover=True
-COVER = ("cover", "Cover", "Its words over its image, across the page", "image")
+COVER = ("cover", "Cover", "Its text over its image, across the page", "image")
 
 
 def _kind(key, names, about, icon, words, heading, body="", options=None, width="", draw=None, styles=(),
@@ -119,13 +119,13 @@ def _kind(key, names, about, icon, words, heading, body="", options=None, width=
 
 # In the order Insert lists them
 REGISTRY = {
-    "picture_and_text": _kind("picture_and_text", ("Picture and text", "Picture"), "An image beside its words", "layout-panel-left",
+    "picture_and_text": _kind("picture_and_text", ("Picture and text", "Picture"), "An image beside its text", "layout-panel-left",
                   ("image", "photo", "side"), "A heading",
                   "![An image](https://)\n\nA few words about it.", cover=True),
     "numbers": _kind("numbers", ("Numbers", "Stats"), "Big figures, like 10,000 customers", "trending-up",
                      ("stats", "figures"), "In numbers",
                      "### 10,000\nhappy customers\n\n### 4.9 ★\naverage rating"),
-    "testimonials": _kind("testimonials", ("Testimonials",), "Kind words, with who said them",
+    "testimonials": _kind("testimonials", ("Testimonials",), "Quotes from people, with who said them",
                           "message-square-quote", ("reviews", "quotes"), "What people say",
                           "### Their name\n\nRole: What they do\n\n> What they said."),
     "logos": _kind("logos", ("Logos",), "A row of logos - as seen in, trusted by", "award",
@@ -219,14 +219,14 @@ REGISTRY = {
     "project_facts": _kind("project_facts", ("Project facts",), "Client, year, role - a strip of facts", "folder-kanban",
                            ("client", "year", "role", "details"), "At a glance",
                            "Client: Their name\nYear: 2026\nRole: What you did"),
-    "photo_story": _kind("photo_story", ("Photo story",), "Images and words laid out like a magazine", "book-open",
+    "photo_story": _kind("photo_story", ("Photo story",), "Images and text laid out like a magazine", "book-open",
                          ("magazine", "pictures", "story", "project"), "The story",
                          "A big opening paragraph that sets the scene.\n\n![An image](https://)\n\n"
                          "A short line that sits beside the image.\n\n> A line worth pulling out.\n\n"
                          "![An image](https://)\n![Another image](https://)",
                          options={"First paragraph": "", "Pictures together": "", "A line after a picture": ""},
                          width="wide"),
-    "story": _kind("story", ("Story", "Scroll story"), "Images that change as the words scroll", "gallery-vertical-end",
+    "story": _kind("story", ("Story", "Scroll story"), "Images that change as the text scrolls", "gallery-vertical-end",
                    ("scroll", "scrolling", "pictures", "steps", "fullscreen", "tour"), "Take a look around",
                    "### Start here\n\n![An image for this step](https://)\n\n"
                    "Readers see this image while they read these words.\n\n"
