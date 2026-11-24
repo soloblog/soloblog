@@ -12,6 +12,8 @@ versions may include breaking changes; they'll always be listed here.
 - Sync images asks which way: this site to your bucket, or your bucket to
   this site - and copies only what's missing or different
 - Restoring a bucket backup can bring back the bucket's images too
+- Search lists Soloblog's own pages in your menu, like Blog or Archive,
+  when their name matches
 
 ### Fixed
 

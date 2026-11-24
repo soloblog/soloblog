@@ -1420,3 +1420,21 @@ def test_the_homepage_post_is_the_homepage_not_also_a_post(admin, client):
         assert f"/post/{slug}" not in client.get("/sitemap.xml").text
     finally:
         settings.set_many({"home_page": before})
+
+
+def test_search_finds_the_sites_own_pages_in_the_menu(admin, client):
+    # Blog, Archive... aren't posts or pages: a search that a word of their
+    # menu name starts lists them first, with their address
+    keys = ("home_page", "nav_archive_on")
+    before = {k: settings.get(k) for k in keys}
+    try:
+        settings.set_many({"nav_archive_on": "1"})
+        found = client.get("/search/results?q=arch", headers={"HX-Request": "true"}).text
+        assert 'href="/archive"' in found and ">Archive<" in found
+        page = client.get("/search?q=archive").text
+        assert 'href="/archive" class="btn btn-sm"' in page
+        # one that's not in the menu isn't offered
+        settings.set_many({"nav_archive_on": ""})
+        assert 'href="/archive"' not in client.get("/search/results?q=arch", headers={"HX-Request": "true"}).text
+    finally:
+        settings.set_many(before)

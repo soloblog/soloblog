@@ -657,6 +657,24 @@ def links_page(session, hdrs):
     )
 
 
+def site_pages_found(q: str, s) -> list:
+    """[(what the menu calls it, its address)] of the site's own pages in
+    the header or footer (Blog, Archive, Contact...) whose name a word of
+    the search starts - search looks through posts and pages, and these
+    aren't either."""
+    from soloblog.ui import site_label
+    terms = re.findall(r"\w+", q.lower())
+    found, seen = [], set()
+    for where in ("header", "footer"):
+        for key in posts.site_rows(s, where):
+            label = site_label(s, where, key)
+            if key in seen or not any(w.startswith(t) for t in terms for w in re.findall(r"\w+", label.lower())):
+                continue
+            seen.add(key)
+            found.append((label, posts.SITE_PAGES[key][0]))
+    return found
+
+
 @ar.get("/search")
 def search_page(session, hdrs, q: str = ""):
     s = settings.get_all()
@@ -667,8 +685,14 @@ def search_page(session, hdrs, q: str = ""):
 
     if q:
         results = posts.search(q)
-        body = PostRoll(results, relative, s.get("roll_style", "list"), i18n.t('Nothing found for "{q}"', q=q), "🔍", s.get("body_width"),
-                        grouped=False)
+        sites = site_pages_found(q, s)
+        body = Div(
+            # the site's own pages it matches, as the menu names them, before the posts
+            Div(*[A(label, href=href, cls="btn btn-sm") for label, href in sites], cls="flex flex-wrap gap-2")
+            if sites else None,
+            PostRoll(results, relative, s.get("roll_style", "list"), i18n.t('Nothing found for "{q}"', q=q), "🔍",
+                     s.get("body_width"), grouped=False) if results or not sites else None,
+            cls=pages.PARTS)
     else:
         body = EmptyState(i18n.t("Type something to search the posts."), "🔎")
 
@@ -698,10 +722,14 @@ def search_results(q: str = ""):
     s = settings.get_all()
     relative = s.get("relative_dates") == "1"
     results = posts.search(q)
-    if not results:
+    sites = site_pages_found(q, s)
+    if not results and not sites:
         return P(i18n.t('Nothing found for "{q}"', q=q), cls=RESULT_EMPTY)
-    # each result one link, the whole row - as the link picker's (ui.RESULT_ROW)
-    return (P(i18n.t("Results: {n}", n=len(results)), cls="text-xs text-base-content/50 px-1 pb-1"),) + tuple(
+    # each result one link, the whole row - as the link picker's (ui.RESULT_ROW); the
+    # site's own pages it matches first, with their address
+    return (P(i18n.t("Results: {n}", n=len(results) + len(sites)), cls="text-xs text-base-content/50 px-1 pb-1"),) + tuple(
+        A(Span(label, cls=RESULT_TITLE), Span(href, cls=RESULT_ABOUT), href=href, cls=RESULT_ROW) for label, href in sites
+    ) + tuple(
         A(
             Span(p["title"], cls=RESULT_TITLE),
             Span(teaser, cls=RESULT_ABOUT) if (teaser := posts.teaser(p, 140)) else None,
