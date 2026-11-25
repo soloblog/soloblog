@@ -119,7 +119,7 @@ Review (Reviews).
 | Story | Each `###` a step: its first image, its text and its last link; text before the first step | Steps whose text scrolls while the step's image is held: beside the words on a wide screen, filling the screen behind them on a phone, fading from one to the next. A step with no image keeps the one before it. A plain stack of images and words where scripts or motion are off. |
 | Hero | A `Label:` line (Window only), the first image, a paragraph of links or a Buttons line (buttons), a short list (points), the `##` | A big heading, a line and a button over its image on a dark layer. Style Window: the label, a very big heading, the line, buttons, points and the image framed as a window. |
 | Bento grid | Each `###` a tile, the first big | Tiles of different sizes. |
-| Recipe facts | Each `Key: value` line (Serves, Servings, Yield or Makes; Prep; Cook or Bake; Total) | A strip of facts, side by side in a wide column and one under another in a narrow one. |
+| Recipe facts | Each `Key: value` line (Serves, Prep, Cook, Total) | A strip of facts, side by side in a wide column and one under another in a narrow one. |
 | Ingredients | The first list | Items to check off that cross out. |
 | Method | The first numbered list | Steps with big numbers. |
 | Interview | Paragraphs that start with a bold speaker (`**Sam:**`) | Chat bubbles: the first speaker plain on the left, the others in the main colour on the right. |
