@@ -50,6 +50,8 @@ versions may include breaking changes; they'll always be listed here.
 - Insert's Call to action, Hero, Testimonials, Bento grid, Story,
   Services and Reviews start with every part they can show - a second
   button, a photo, a cover, a button on a tile or step, how it works
+- A sample's buttons show as buttons before their URL is filled in, and
+  its images as a dashed box for you, left out for readers
 - What an action did shows right beside its button - Save, Discard,
   Security, your own palette, replies, the contact and comment forms
 

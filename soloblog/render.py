@@ -509,6 +509,20 @@ def render_post(body: str):
     return result
 
 
+_NO_HREF = re.compile(r"<a(?![^>]*\bhref=)((?:\s[^>]*)?)>")
+_NO_SRC = re.compile(r"<img(?![^>]*\bsrc=)((?:\s[^>]*)?)>")
+
+
+def _samples(html: str) -> str:
+    """A sample's link and image with nothing after https:// yet - nh3
+    drops a URL that's only that. The link still goes somewhere, so it's
+    drawn as the button it will be; the image counts as one of ours
+    that's missing (images.without_missing), as a template's unreplaced
+    picture does."""
+    html = _NO_HREF.sub(r'<a href="#"\1>', html)
+    return _NO_SRC.sub(r'<img src="/uploads/"\1>', html)
+
+
 def _render_post(body: str):
     """Same rendering as render_markdown, but also hands back a table
     of contents. Needs markdown's object API instead of the markdown()
@@ -521,7 +535,7 @@ def _render_post(body: str):
     md = markdown.Markdown(extensions=POST_EXTENSIONS,
                            extension_configs={"footnotes": {"BACKLINK_TEXT": "\u21a9\ufe0e"}, **EXTRAS_CONFIG})
     html = nh3.clean(md.convert(body), tags=ALLOWED_TAGS, attributes=ALLOWED_ATTRS)
-    html = images.with_other_versions(_restore(_finish(_enrich_images(html)), saved))
+    html = images.with_other_versions(_restore(_finish(_enrich_images(_samples(html))), saved))
     # only bother with a toc when there's enough structure to justify one.
     # toc_tokens nest - each ### is among its ##'s children
     def walk(tokens):

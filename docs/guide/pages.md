@@ -186,7 +186,12 @@ sections to any post or page.
    **Sections** group. Or type `/` and the section's name, like
    `/pricing` or `/team`.
 3. Fill in what it adds. Each item in a section is a `###` heading with a
-   few lines under it.
+   few lines under it. A sample button or image ends in `(https://)` -
+   put its URL there.
+
+   Until you do, a button shows but goes nowhere. An image doesn't show
+   to your readers; you see a dashed box saying **Image not found -
+   replace it**, where it will go.
 4. Select **Preview** to see how it looks, then **Save**.
 
 In your writing, a section starts with a `##` heading, with a line under

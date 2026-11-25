@@ -1742,3 +1742,28 @@ def test_insert_samples_show_what_each_section_can_do(admin, client):
     assert 'alt="Their photo"' in html and 'alt="Its cover"' in html
     # two services as cards, and how it works as steps
     assert html.count("Get in touch") >= 2 and "You get a plan and a price." in html
+
+
+def test_a_samples_empty_buttons_and_images_look_like_what_theyll_be(admin, client, real_pictures):
+    """Nothing after a sample's https:// drew its buttons as plain words
+    and its images as broken pictures."""
+    from soloblog import sections
+    kinds = ("cta", "hero", "story", "testimonials", "reviews", "team")
+    body = "Intro.\n\n" + "\n\n".join(sections.markdown(k) for k in kinds)
+    slug = save_post(admin, title="Samples to fill", body=body)
+    seen = client.get(f"/post/{slug}").text
+    # its buttons are buttons until their URL is filled in
+    for words in ("Get started", "Learn more", "Find out more", "Watch the video", "Start yours"):
+        tag = re.search(r"<a ([^>]*)>\s*" + re.escape(words) + r"\s*</a>", seen)
+        assert tag and 'href="#"' in tag.group(1) and "btn" in tag.group(1), (words, tag)
+    # its images are left out for a visitor, and boxed for the admin, as a
+    # template's missing picture is
+    for alt in ("Their photo", "Its cover", "An image"):
+        assert f'alt="{alt}"' not in seen, alt
+    assert "Image not found" not in seen
+    assert not [i for i in re.findall(r"<img\b[^>]*>", seen) if "src=" not in i and "lightbox-img" not in i]
+    mine = admin.get(f"/post/{slug}").text
+    assert mine.count("Image not found - replace it") >= 3
+    # a filled-in one is left as it is
+    seen = client.get(f"/post/{save_post(admin, title='Filled', body='[Go](/about)')}").text
+    assert re.search(r'<a href="/about"[^>]*>Go', seen)
