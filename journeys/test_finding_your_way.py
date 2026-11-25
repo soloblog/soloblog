@@ -101,3 +101,24 @@ def test_the_homepage_is_listed_as_a_page(owner):
         assert w.page.get_by_text(re.compile(r"^\d+ pages?$")).first.is_visible()
     finally:
         _set_homepage(w, "")
+
+
+def test_a_list_keeps_its_filters_until_cleared(owner):
+    w = owner
+    publish(w, "A post among pages", "Words.")
+    w.go("/admin/posts?status=all")
+    w.page.locator("button[popovertarget='filter-kind']").click()
+    w.page.locator("#filter-kind").get_by_role("link", name="Pages", exact=True).click()
+    w.page.wait_for_url("**kind=pages*")
+    # away and back, by the admin's own menu
+    w.page.locator("nav").get_by_role("link", name="Media", exact=True).first.click()
+    w.page.wait_for_url("**/admin/media*")
+    w.page.locator("nav").get_by_role("link", name="Posts and pages", exact=True).first.click()
+    w.page.wait_for_url("**kind=pages*")
+    assert "Pages" in w.page.locator("button[popovertarget='filter-kind']").inner_text()
+    # Clear puts it back, and that's remembered too
+    w.page.get_by_role("link", name="Clear", exact=True).click()
+    w.page.wait_for_load_state("networkidle")
+    w.go("/admin/posts")
+    assert "kind=pages" not in w.page.url, w.page.url
+    assert "All" in w.page.locator("button[popovertarget='filter-kind']").inner_text()

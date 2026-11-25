@@ -21,7 +21,8 @@ versions may include breaking changes; they'll always be listed here.
 - A new server that can't open its newest backup asks to restore your
   site, instead of starting as an empty site
 - A post on your site has a button back to Posts and pages, beside Edit
-- Admin pages open the tab you were on last, in this browser
+- Admin lists open the tab you were on last, with the filters and sort
+  you chose, in this browser
 
 ### Changed
 

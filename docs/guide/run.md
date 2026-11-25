@@ -55,10 +55,11 @@ open the **Trash** tab later and restore it.
 buttons sit beside its title: **Posts and pages** brings you back to this
 list, and **Edit** and **Edit in Focus** open the post.
 
-**Back on the tab you left.** A page with tabs - **Posts and pages**,
-**Media**, **Comments**, **Settings** and the others - opens the tab you
-were on last, in this browser. A link to a particular tab still opens
-that one.
+**Back where you left it.** A list - **Posts and pages**, **Media**,
+**Comments** and the others - opens on the tab you were on last, with
+the filters and sort you chose (**Type**, **Tag**, **Sort**...), in this
+browser. A search isn't kept. **Clear**, beside the count, puts the
+filters back, and a link to a particular tab still opens that one.
 
 **Want to see more rows at once, or fewer?** Below the list, beside the
 page buttons, choose **10**, **20** or **50** next to **Per page**. It

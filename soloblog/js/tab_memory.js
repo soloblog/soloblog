@@ -1,7 +1,9 @@
-// An admin page's tabs (Media's Unused, Posts' Drafts, a Settings page...)
-// are remembered in this browser: coming back to the page from the menu,
-// or any address without a tab in it, opens the tab you were on. An
-// address that names a tab keeps it.
+// An admin page's tabs (Media's Unused, Posts' Drafts...) and its list's
+// filters and sort (Type: Pages, Tag, Sort: Oldest - ui.FilterSelect) are
+// remembered in this browser: coming back to the page from the menu, or
+// any address without them in it, opens it as you left it. A search
+// isn't kept - it's a one-off question. An address that names a tab or
+// a filter keeps it.
 (function () {
   var path = location.pathname;
   if (path.indexOf('/admin') !== 0) return;
@@ -17,12 +19,15 @@
     });
     if (query.length) { location.replace(path + '?' + query.join('&') + location.hash); return; }
   }
-  // the tab a row of tabs has open: the one setting its links change
+  // what a row of tabs or a filter's menu has chosen: the one setting its
+  // links change, as its chosen link has it
+  var CHOICES = [['[data-fit-tabs]', 'a.tab[href]', 'a.tab.tab-active, a.tab[aria-current="page"]'],
+                 ['[popover][id^="filter-"]', 'a[href]', 'a[aria-current="true"]']];
   function remember() {
     var last = read(LAST), first = read(FIRST), plain = !location.search;
-    document.querySelectorAll('[data-fit-tabs]').forEach(function (row) {
-      var links = [].slice.call(row.querySelectorAll('a.tab[href]')), values = {};
-      var open = row.querySelector('a.tab.tab-active, a.tab[aria-current="page"]');
+    CHOICES.forEach(function (c) { document.querySelectorAll(c[0]).forEach(function (row) {
+      var links = [].slice.call(row.querySelectorAll(c[1])), values = {};
+      var open = row.querySelector(c[2]);
       if (!open || links.length < 2) return;
       links.forEach(function (a) {
         new URL(a.href, location.href).searchParams.forEach(function (v, k) { (values[k] = values[k] || {})[v] = 1; });
@@ -33,7 +38,7 @@
         last[k] = url.searchParams.get(k);
         if (plain) first[k] = last[k];
       });
-    });
+    }); });
     try {
       localStorage.setItem(LAST, JSON.stringify(last));
       localStorage.setItem(FIRST, JSON.stringify(first));
