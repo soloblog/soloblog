@@ -40,6 +40,8 @@ versions may include breaking changes; they'll always be listed here.
   text is Image and text, Pictures together is Images, A line after a
   picture is Captions, and second names like Stats or Timeline are only
   search words in Insert
+- What an action did shows right beside its button - Save, Discard,
+  Security, your own palette, replies, the contact and comment forms
 
 ### Fixed
 

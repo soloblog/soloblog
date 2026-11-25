@@ -7,7 +7,7 @@ from soloblog.ui.icons import (
     TRASH_SVG,
     X_SVG,
 )
-from soloblog.ui.base import CancelButton, IconAction, SCROLLS, SCROLLS_X, glass_fill
+from soloblog.ui.base import CancelButton, IconAction, SCROLLS, STATUS_BESIDE, STATUS_ROW, SCROLLS_X, glass_fill
 
 
 def EditPostLink(slug: str):
@@ -50,7 +50,7 @@ def PageNav(groups, current, base, id, name):
 
 def SaveStatus(message: str = "", kind: str = "success"):
     """What an htmx-submitted form's save-status span gets swapped to
-    after a save - the confirmation itself, shown inline left of the
+    after a save - the confirmation itself, shown inline against the
     form's own buttons (every Settings tab's SaveBar, the post editor's
     action row), never a toast. Its class is also what htmx:afterSwap
     (SAVE_STATUS_CLEAR_JS, app.py) checks to decide whether to
@@ -59,7 +59,7 @@ def SaveStatus(message: str = "", kind: str = "success"):
     # (SAVE_STATUS_CLEAR_JS), with this message carried across it
     reload = "1" if kind == "success" and settings.frame_changed() else None
     return Span(message, id="save-status", role="status", data_reload=reload,
-                cls=f"text-xs {'text-success' if kind == 'success' else 'text-error'}")
+                cls=f"text-xs {STATUS_BESIDE} {'text-success' if kind == 'success' else 'text-error'}")
 
 
 def PageHeader(title, action=None):
@@ -259,10 +259,8 @@ def RowCheck(form_id, name, value, label, cls="", state=None):
 
 
 def SaveBar(save_label: str = "Save", status: str = ""):
-    """Status span on the left, Discard then Save on the right - same
-    shape as the post editor's own action row (status text at the
-    start of the row, the button cluster pushed to the end via
-    ml-auto, Save right-most since it's the primary action). Pair
+    """Discard then Save on the right, Save right-most since it's the
+    primary action, and the status just left of them (STATUS_BESIDE). Pair
     with hx_post/hx_target="#save-status"/hx_swap on the <Form> itself;
     the route returns SaveStatus(message) instead of redirecting or
     toasting - Cancel needs no such wiring, it never leaves the client
@@ -272,12 +270,12 @@ def SaveBar(save_label: str = "Save", status: str = ""):
     # the screen's foot - only while there's something unsaved
     return Div(
         Span(status, id="save-status", role="status",
-             cls=f"text-xs {'text-success' if status else 'text-base-content/50'} self-center"),
+             cls=f"text-xs {STATUS_BESIDE} {'text-success' if status else 'text-base-content/50'} self-center"),
         Div(
             CancelButton(),
             Button(CHECK_SVG, Span(save_label, cls="ml-1"), type="submit", cls="btn btn-primary btn-sm"),
-            cls="hidden in-data-dirty:flex items-center gap-2 ml-auto"
+            cls="hidden in-data-dirty:flex items-center gap-2"
         ),
-        cls="flex items-center gap-2 min-h-8 in-data-dirty:sticky in-data-dirty:bottom-0 in-data-dirty:z-20 "
+        cls=f"{STATUS_ROW} min-h-8 in-data-dirty:sticky in-data-dirty:bottom-0 in-data-dirty:z-20 "
             "in-data-dirty:bg-base-200 in-data-dirty:py-2"
     )

@@ -16,6 +16,13 @@ from soloblog.ui.icons import (
 SECTION_GAP = "mb-6"
 FIELD_GAP = "mb-3"
 PAGE_PAD = "px-4 py-8"
+# a status in a row of buttons ("Saved", "Copied 8 images..."): it takes
+# the row's free space and its words end against the buttons, beside
+# what was pressed. Its row wraps (STATUS_ROW): one too long to sit
+# beside them takes its own line above them, rather than a column a word
+# wide on a phone. A save's answer that replaces it keeps it too.
+STATUS_BESIDE = "grow text-end"
+STATUS_ROW = "flex flex-wrap items-center justify-end gap-2"
 
 # The reading column's width (Settings > body_width). There's no full
 # width: lines that long are hard to read. WIDE_WIDTH is what "wide"

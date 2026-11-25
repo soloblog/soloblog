@@ -11,7 +11,7 @@ from soloblog import gallery
 from soloblog import pages
 from soloblog.themes import OWN_LIMIT, THEME_MODES, delete_own, own_themes, parse_theme, save_own
 from soloblog import i18n
-from soloblog.ui import Tabs, TABS_CLS, side_where, SIDE_WHERE, SIDE_KEYS, PLUS_SVG, GoLink
+from soloblog.ui import Tabs, TABS_CLS, STATUS_BESIDE, STATUS_ROW, side_where, SIDE_WHERE, SIDE_KEYS, PLUS_SVG, GoLink
 from soloblog.ui import PageField, PictureChoiceField
 from soloblog.ui import FontCombobox
 from soloblog.ui import IconAction, EDIT_SVG
@@ -373,12 +373,12 @@ def OwnThemeDialog(t=None, error="", pasted=None, name=None):
             FormField("Name", Input(name="name", value=name if name is not None else (t["name"] if t else ""),
                                     maxlength="40", placeholder="The theme's own name", cls="input input-sm w-full")),
             Div(Span(error, id=f"own-status-{key}", data_status_slot=True, role="status",
-                     cls=f"text-xs {'text-error' if error else 'text-base-content/50'}"),
+                     cls=f"text-xs {STATUS_BESIDE} {'text-error' if error else 'text-base-content/50'}"),
                 Div(Button(X_SVG, Span("Cancel", cls="ml-1"), type="button", cls="btn btn-sm",
                            data_close_dialog=f"own-theme-{key}"),
                     Button(CHECK_SVG, Span("Save", cls="ml-1"), type="submit", cls="btn btn-sm btn-primary"),
-                    cls="flex gap-2 ml-auto"),
-                cls="flex items-center gap-2 mt-4"),
+                    cls="flex gap-2"),
+                cls=f"{STATUS_ROW} mt-4"),
             hx_post="/admin/themes/save", hx_target=f"#own-theme-{key}", hx_swap="outerHTML",
             cls="modal-box max-w-lg"),
         Form(Button(cls="cursor-default", aria_label="Close"), method="dialog", cls="modal-backdrop"),

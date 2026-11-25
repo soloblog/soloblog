@@ -94,5 +94,5 @@ function discardForm(btn) {
   // replaces whatever "Unsaved changes" warning was showing (markDirty,
   // EDITOR_INIT_JS) - inline, in the same spot Save confirms in
   var status = document.getElementById('save-status');
-  if (status) { status.textContent = 'Discarded'; status.className = 'text-xs text-base-content/60'; }
+  if (status) { status.textContent = 'Discarded'; paintStatus(status, 'text-base-content/60'); }
 }

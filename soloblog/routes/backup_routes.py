@@ -16,7 +16,7 @@ from soloblog import storage
 from datetime import datetime
 from soloblog.tz import utcnow
 from soloblog.render import format_date
-from soloblog.ui import IconAction
+from soloblog.ui import IconAction, STATUS_BESIDE, STATUS_ROW
 from soloblog.ui import RowActions
 from soloblog.ui import SCROLLS
 from soloblog.ui import CHEVRON_DOWN_SVG, glass_fill
@@ -45,9 +45,9 @@ def _button_row(*buttons, status=""):
     """Actions sit right, primary rightmost - same as every SaveBar - and
     with status (an id) their result left of them: a redirect to
     #that-id puts it there (showStatus), not in the page's header."""
-    slot = Span(id=status, data_status_slot=True, role="status", cls="text-xs flex-1 min-w-0 text-end") \
+    slot = Span(id=status, data_status_slot=True, role="status", cls=f"text-xs {STATUS_BESIDE}") \
         if status else None
-    return Div(slot, *buttons, cls="flex items-center justify-end gap-2 mt-3")
+    return Div(slot, *buttons, cls=f"{STATUS_ROW} mt-3")
 
 
 def SyncMenu():

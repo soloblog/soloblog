@@ -114,7 +114,7 @@ function syncSettingsDirty(form) {
   if (!status) return;
   if (dirty) {
     status.textContent = 'Unsaved changes';
-    status.className = 'text-xs text-warning self-center';
+    paintStatus(status, 'text-warning');
   } else if (status.textContent === 'Unsaved changes') {
     status.textContent = '';
   }

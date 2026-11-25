@@ -75,7 +75,7 @@ function insertGallery() {
 // Upload) - uploads and stock imports both report here, no toast
 function pickerStatus(text, cls) {
   var s = document.getElementById('media-picker-status');
-  if (s) { s.textContent = text; s.className = 'text-xs ' + cls; }
+  if (s) { s.textContent = text; paintStatus(s, cls); }
 }
 // event delegation, not a per-thumbnail onclick="pickMedia('...')" with
 // the url interpolated straight into a JS string literal - a filename

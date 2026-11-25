@@ -15,7 +15,7 @@ from soloblog import posts
 from soloblog import ratelimit
 from soloblog import settings
 from soloblog.render import format_date, embed_url
-from soloblog.ui import IconAction, TITLE_CLS, Tabs, TABS_CLS
+from soloblog.ui import IconAction, STATUS_BESIDE, STATUS_ROW, TITLE_CLS, Tabs, TABS_CLS
 from soloblog.ui import RowActions
 from soloblog.ui import (ListHeader, BulkButton, list_summary, ListToolbar, SearchField, FilterSelect, OffNotice, RowCheck, TICK_ROW, TICK_ROW_CLS, Layout, PageHeader, EmptyState, ErrorPage, FormField, Pagination, rows_per_page, FIELD_GAP, TRASH_SVG,
                 REPLY_SVG, SEND_SVG, RESTORE_SVG, CHECK_SVG, MAIL_SVG)
@@ -74,9 +74,10 @@ def ContactForm(s):
                 Input(name="website", cls="hidden", tabindex="-1", autocomplete="off"),
                 captcha.Widget(s, cls="mt-3"),
                 Div(
-                    Span(id="contact-status", data_status_slot=True, role="status", cls="text-xs text-base-content/50"),
-                    Button(SEND_SVG, Span(i18n.t("Send"), cls="ml-1"), type="submit", cls="btn btn-primary btn-sm ml-auto"),
-                    cls="flex items-center gap-2 mt-3"
+                    Span(id="contact-status", data_status_slot=True, role="status",
+                         cls=f"text-xs {STATUS_BESIDE} text-base-content/50"),
+                    Button(SEND_SVG, Span(i18n.t("Send"), cls="ml-1"), type="submit", cls="btn btn-primary btn-sm"),
+                    cls=f"{STATUS_ROW} mt-3"
                 ),
                 hx_post="/contact", hx_target="#contact-status", hx_swap="outerHTML show:none focus-scroll:false",
                 id="contact-form"
@@ -92,7 +93,7 @@ def send_message(req, name: str = "", email: str = "", body: str = "", website: 
                  captcha_token: str = ""):
     def status(message, ok=True):
         return Span(message, id="contact-status", data_status_slot=True, role="status",
-                    cls=f"text-xs {'text-success' if ok else 'text-error'}")
+                    cls=f"text-xs {STATUS_BESIDE} {'text-success' if ok else 'text-error'}")
 
     sent = status(i18n.t("Sent - thank you!"))
     if settings.get("contact_enabled") != "1":

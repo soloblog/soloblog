@@ -574,9 +574,9 @@ def SecretPanels(s):
                 ),
                 SmtpFields(s, hidden=provider != "smtp"),
                 # a long reason takes its own line on a phone, not a squeezed column beside the button
-                Div(Span(id="email-test-status", data_status_slot=True, role="status", cls="text-xs flex-1 min-w-48"),
+                Div(Span(id="email-test-status", data_status_slot=True, role="status", cls="text-xs flex-1 min-w-48 text-end"),
                     # it saves what's above first - a test of what's on screen
-                    Button(SEND_SVG, Span("Send a test email", cls="ml-1"), type="button", cls="btn btn-sm ml-auto",
+                    Button(SEND_SVG, Span("Send a test email", cls="ml-1"), type="button", cls="btn btn-sm",
                            hx_post="/admin/email/test", hx_include="closest form", hx_target="#email-test-status",
                            hx_swap="outerHTML"),
                     cls="flex flex-wrap items-center gap-2 mt-4")

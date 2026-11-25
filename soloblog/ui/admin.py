@@ -5,7 +5,7 @@ from soloblog import i18n
 from soloblog.actions import on, EL
 from soloblog import settings
 from soloblog.ui.icons import CHECK_SVG, CHEVRON_DOWN_SVG, CHEVRON_UP_SVG, REPLY_SVG, SEARCH_SVG, X_SVG
-from soloblog.ui.base import IconAction, SCROLLS, SearchBox, _request, _title_block
+from soloblog.ui.base import IconAction, SCROLLS, STATUS_BESIDE, STATUS_ROW, SearchBox, _request, _title_block
 from soloblog.ui.nav import AdminMenu, AdminMenuButton, VisitorThemeSwitcher, _health_dot
 
 # the admin menu: the size the rest of the app's text is (14px rows of
@@ -88,12 +88,12 @@ def ReplyBox(action, comment_id, *fields, redirect_to=None):
         Textarea(name="body", placeholder=i18n.t("Write a reply..."), required=True, aria_label=i18n.t("Reply"),
                  cls="textarea textarea-sm w-full mb-2", rows="3"),
         Div(
-            Span(data_status_slot=True, role="status", cls="text-xs text-base-content/50"),
+            Span(data_status_slot=True, role="status", cls=f"text-xs {STATUS_BESIDE} text-base-content/50"),
             Div(Button(CHECK_SVG, Span(i18n.t("Post"), cls="ml-1"), type="submit", cls="btn btn-xs join-item"),
                 Button(X_SVG, Span(i18n.t("Discard"), cls="ml-1"), type="button", cls="btn btn-xs join-item",
                        **on("click", "closeReply", EL)),
-                cls="join ml-auto"),
-            cls="flex items-center gap-2 w-full"
+                cls="join"),
+            cls=f"{STATUS_ROW} w-full"
         ),
         action=action, method="post", id=f"reply-{comment_id}", hidden=True, data_reply_box=True,
         cls="flex flex-col items-end mt-2 mb-2"

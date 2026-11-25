@@ -13,7 +13,7 @@ function restoreRevision(btn) {
       var status = document.getElementById('save-status');
       if (status) {
         status.textContent = 'Loaded the version from ' + btn.dataset.when + ' - Save to keep it';
-        status.className = 'text-xs text-warning';
+        paintStatus(status, 'text-warning');
       }
     })
     .catch(function () { showStatus("Couldn't load that version", 'error'); });

@@ -37,7 +37,7 @@ document.addEventListener('invalid', function (e) {
   var name = field.validity.valueMissing && _fieldName(field);
   slot.textContent = name ? _t('{field} is required').replace('{field}', name)
                           : field.validationMessage.replace(/[.。]$/, '');
-  slot.className = 'text-xs text-error';
+  paintStatus(slot, 'text-error');
 }, true);
 
 // onSave: a third button, the main one, for when there's something to

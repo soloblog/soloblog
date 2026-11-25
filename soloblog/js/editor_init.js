@@ -751,7 +751,7 @@ document.addEventListener('DOMContentLoaded', function () {
     dirty = true;
     saveFailed = false;
     var status = document.getElementById('save-status');
-    if (status) { status.textContent = 'Unsaved'; status.className = 'text-xs text-warning'; }
+    if (status) { status.textContent = 'Unsaved'; paintStatus(status, 'text-warning'); }
     updateStatus();
   }
   mde.codemirror.on('change', markDirty);

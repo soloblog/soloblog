@@ -54,15 +54,21 @@ function showStatus(message, type, undo, waited) {
   window._statusAt = '';
   if (slot) {
     slot.textContent = message;
-    // only its colour changes: a slot's own place in its row (ms-auto, flex-1) stays
-    [].slice.call(slot.classList).forEach(function (c) {
-      if (c === 'text-error' || c === 'text-success' || c.indexOf('text-base-content') === 0) slot.classList.remove(c);
-    });
-    slot.classList.add('text-xs', type === 'error' ? 'text-error' : 'text-success');
+    paintStatus(slot, type === 'error' ? 'text-error' : 'text-success');
     if (_isUndoPath(undo)) slot.append(' ', _undoButton(undo));
     return;
   }
   showToast(message, type);
+}
+// a status's colour (text-success, text-error, text-warning, a muted
+// text-base-content/60), changed alone: its place in its row - against
+// the buttons (STATUS_BESIDE, ui) - is the page's, and stays
+function paintStatus(el, colour) {
+  [].slice.call(el.classList).forEach(function (c) {
+    if (c === 'text-error' || c === 'text-success' || c === 'text-warning' || c.indexOf('text-base-content') === 0) el.classList.remove(c);
+  });
+  el.classList.add('text-xs');
+  if (colour) el.classList.add(colour);
 }
 // the same rule as is_local_path (guards.py): "/x", never "//x" or "/\x"
 function _isLocalPath(p) {

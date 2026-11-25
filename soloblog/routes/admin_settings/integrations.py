@@ -237,7 +237,7 @@ async def send_test_email(request, session):
     # data-saved: the form's fields are now its saved values, whatever the email did (SAVE_STATUS_CLEAR_JS)
     status = lambda text, kind="": Span(text, id="email-test-status", data_status_slot=True, role="status",  # noqa: E731
                                          data_saved=saved or None,
-                                         cls="text-xs flex-1 min-w-48 " + ("text-error" if kind == "error" else "text-success"))
+                                         cls="text-xs flex-1 min-w-48 text-end " + ("text-error" if kind == "error" else "text-success"))
     if problem:
         return status(problem, "error")
     if not mail.can_send():

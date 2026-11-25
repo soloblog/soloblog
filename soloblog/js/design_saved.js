@@ -10,5 +10,5 @@ window.addEventListener('load', function () {
   if (y === null) return;
   window.scrollTo(0, Number(y) || 0);
   var status = document.getElementById('save-status');
-  if (status) { status.textContent = 'Saved'; status.className = 'text-xs text-success'; }
+  if (status) { status.textContent = 'Saved'; paintStatus(status, 'text-success'); }
 });

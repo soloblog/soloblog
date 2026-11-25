@@ -66,7 +66,7 @@ def WizardCard(index, title, intro, *fields):
                     A("Back", href=prev_href, cls="btn btn-sm btn-ghost") if prev_href else None,
                     # where a field that isn't right says so, beside the buttons - in a
                     # box of its own: a message restyles the span, never the row
-                    Div(Span(data_status_slot=True, role="status", cls="text-xs"), cls="flex-1 min-w-0"),
+                    Div(Span(data_status_slot=True, role="status", cls="text-xs"), cls="flex-1 min-w-0 text-end"),
                     Button(ARROW_SVG, Span("Continue", cls="ml-1"), type="submit", cls="btn btn-primary btn-sm"),
                     cls="flex items-center justify-end gap-2 mt-6"
                 ),

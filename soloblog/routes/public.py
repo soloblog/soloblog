@@ -31,7 +31,7 @@ from soloblog import translate
 from soloblog import tz
 from soloblog.render import new_tab_links, render_post, render_comment, reading_time, excerpt, format_date, local_datetime, \
     short_date, web_url
-from soloblog.ui import (TITLE_CLS, LIST_TITLE_CLS, CHEVRON_DOWN_SVG, content_width, RESULT_ROW, RESULT_TITLE, RESULT_ABOUT, RESULT_EMPTY, ROLL_PARTS, Breakout, timeline_cls, timeline_side, timeline_stagger, TagCloud, ArchiveLinks, month_counts, SidePanels, side_places, toc_panel, Layout, TagBadge, ReactionBar, Alert, TagList, AuthorBio, EmptyState, ErrorPage, ListenButton, ReadingProgress, PostScripts, SupportButtons, SoundButton, Breadcrumbs, SocialLinks, parse_link_lines, TableOfContents, RelatedPosts, SearchBox,
+from soloblog.ui import (STATUS_BESIDE, STATUS_ROW, TITLE_CLS, LIST_TITLE_CLS, CHEVRON_DOWN_SVG, content_width, RESULT_ROW, RESULT_TITLE, RESULT_ABOUT, RESULT_EMPTY, ROLL_PARTS, Breakout, timeline_cls, timeline_side, timeline_stagger, TagCloud, ArchiveLinks, month_counts, SidePanels, side_places, toc_panel, Layout, TagBadge, ReactionBar, Alert, TagList, AuthorBio, EmptyState, ErrorPage, ListenButton, ReadingProgress, PostScripts, SupportButtons, SoundButton, Breadcrumbs, SocialLinks, parse_link_lines, TableOfContents, RelatedPosts, SearchBox,
                  SeriesNav, ShareButtons, ReactAndShare, EditPostLink, LikeButton, Pagination, CommentsSection,
                  HeroSection, tag_url, RSS_SVG, TRASH_SVG, REPLY_SVG, CHECK_SVG, ReplyBox, ReplyButton, IconAction)
 from soloblog.seo import page_meta, article_data
@@ -1237,10 +1237,11 @@ def PostComments(row, s, slug, lang, own, member, logged_in, relative, shown):
             Div(
                 # data-status-slot - also where a redirect back to
                 # #comments confirms ("Reply posted", "Comment confirmed")
-                Span(id="comment-status", data_status_slot=True, role="status", cls="text-xs text-base-content/50"),
+                Span(id="comment-status", data_status_slot=True, role="status",
+                     cls=f"text-xs {STATUS_BESIDE} text-base-content/50"),
                 Div(ReplyEmailsCheckbox(), Button(i18n.t("Post comment"), type="submit", cls="btn btn-primary btn-sm"),
-                    cls="flex items-center gap-3 ml-auto"),
-                cls="flex items-center gap-2"
+                    cls="flex items-center gap-3"),
+                cls=STATUS_ROW
             ),
             hx_post=f"/post/{slug}/comment", hx_target="#comment-status", hx_swap="outerHTML show:none focus-scroll:false",
             id="comment-form", cls="mt-3"
@@ -1540,7 +1541,7 @@ def submit_comment(req, slug: str, body: str, author_name: str = "", email: str 
     def respond(message, kind="success"):
         if is_htmx:
             return Span(message, id="comment-status", role="status",
-                        cls=f"text-xs {'text-success' if kind == 'success' else 'text-error'}")
+                        cls=f"text-xs {STATUS_BESIDE} {'text-success' if kind == 'success' else 'text-error'}")
         return RedirectResponse(
             f"{posts.url_for_slug(slug)}?toast={quote(message)}&toast_type={kind}#comments", status_code=303
         )

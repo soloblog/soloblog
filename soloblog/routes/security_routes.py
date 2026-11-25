@@ -11,7 +11,7 @@ from soloblog import totp
 from soloblog import passkeys
 from soloblog.actions import on
 from soloblog.render import format_date, format_when
-from soloblog.ui import IconAction
+from soloblog.ui import IconAction, STATUS_BESIDE, STATUS_ROW
 from soloblog.ui import RowActions
 from soloblog.ui import (FIELD_GAP, FormField, SettingsPanel,
                 SaveStatus,
@@ -23,12 +23,12 @@ ar = APIRouter()
 
 
 def _action_row(*buttons, status="", status_id="twofactor-status"):
-    """Status text left, buttons right - the SaveBar row shape, for a
-    panel with its own actions instead of the tab's Save."""
+    """Buttons right, their status just left of them - the SaveBar row
+    shape, for a panel with its own actions instead of the tab's Save."""
     return Div(
-        Span(status, id=status_id, role="status", cls="text-xs text-error" if status else "text-xs"),
-        Div(*buttons, cls="flex items-center gap-2 ml-auto"),
-        cls="flex items-center gap-2 mt-3"
+        Span(status, id=status_id, role="status", cls=f"text-xs {STATUS_BESIDE}" + (" text-error" if status else "")),
+        Div(*buttons, cls="flex items-center gap-2"),
+        cls=f"{STATUS_ROW} mt-3"
     )
 
 
@@ -134,10 +134,10 @@ def PasskeysPanel():
                   help="So you can tell your passkeys apart later."),
         Div(
             # removing one reports here too (a redirect to #passkey-status)
-            Span(id="passkey-status", data_status_slot=True, role="status", cls="text-xs"),
-            Button(KEY_SVG, Span("Add a passkey", cls="ml-1"), type="button", cls="btn btn-sm ml-auto",
+            Span(id="passkey-status", data_status_slot=True, role="status", cls=f"text-xs {STATUS_BESIDE}"),
+            Button(KEY_SVG, Span("Add a passkey", cls="ml-1"), type="button", cls="btn btn-sm",
                    **on("click", "addPasskey")),
-            cls="flex items-center gap-2 mt-3"
+            cls=f"{STATUS_ROW} mt-3"
         ),
         key="security-passkeys"
     )
@@ -189,10 +189,10 @@ def SessionsPanel():
         P(f"With Keep me signed in selected, you stay logged in for {config.SESSION_DAYS} days on each browser. "
           "Changing your password logs out the others.", cls="text-sm text-base-content/70"),
         Form(
-            Div(Span(id="sessions-status", data_status_slot=True, role="status", cls="text-xs"),
+            Div(Span(id="sessions-status", data_status_slot=True, role="status", cls=f"text-xs {STATUS_BESIDE}"),
                 Button(X_SVG, Span("Log out other devices", cls="ml-1"), type="button", cls="btn btn-sm",
                        data_confirm="Log out every other browser and device? This one stays logged in."),
-                cls="flex items-center justify-end gap-2 mt-3"),
+                cls=f"{STATUS_ROW} mt-3"),
             action="/admin/sessions/end-others", method="post"
         ),
         key="security-sessions"

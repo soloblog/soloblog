@@ -326,9 +326,13 @@ The admin follows a small, deliberate set of rules. Keep new UI inside them.
   ignored - and the last choice is kept per list in a `per_<list>`
   cookie, not a setting. A list's own default is used if it is one of the
   three, else 20. `tests/test_rows_per_page.py` covers every list.
-- **Confirmations are inline, never popups.** Status text sits on the
-  left of a row, buttons on the right, with the primary action (Save)
-  rightmost:
+- **Confirmations are inline, never popups.** Buttons sit on the right,
+  the primary action (Save) rightmost, and the status just left of them:
+  the row is `ui.STATUS_ROW`, the status `ui.STATUS_BESIDE`, which takes
+  the free space and ends its words against the buttons - one too long
+  takes its own line above them instead of a squeezed column on a phone.
+  A script that writes into a slot changes only its colour
+  (`paintStatus`, toast.js), so the slot keeps its place:
   - form saves return `SaveStatus(message)` into `#save-status`;
   - list actions redirect with `?toast=` and `showStatus()` (app.py)
     writes the message into the page's `[data-status-slot]`, which

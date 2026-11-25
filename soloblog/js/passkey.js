@@ -14,7 +14,7 @@ function _bufToB64u(buf) {
 }
 function _passkeyStatus(id, text) {
   var el = document.getElementById(id);
-  if (el) { el.textContent = text; el.className = 'text-xs text-error'; }
+  if (el) { el.textContent = text; paintStatus(el, 'text-error'); }
 }
 function passkeysSupported() { return !!(window.PublicKeyCredential && navigator.credentials); }
 async function addPasskey() {

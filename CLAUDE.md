@@ -264,9 +264,11 @@ desktop - in the same change, not just where it was first asked for.
   `primary` is for the one most important action on a page. The
   contrast of text colours per theme is generated
   (`tools/theme_contrast.py`) and tested.
-- **Feedback beside the action:** no pop-up toasts. A save's result shows
-  in the status slot left of the buttons; lists update in place with
-  Undo. Trash and delete ask first (above). One exception: on a phone,
+- **Feedback beside the action:** no pop-up toasts. What an action did
+  shows on its button's line, right against it, on a phone too; only
+  words too long to fit there take their own line just above it. A row
+  that goes away (trash, approve) says so in the page header, beside
+  its button, and lists update in place with Undo. Trash and delete ask first (above). One exception: on a phone,
   where there's no room beside Save, Apply a template's "applied · Undo"
   floats as a bar at the bottom of the screen.
 - **Scripts** live in `soloblog/js/`, one file each, read by a `FOO_JS`
