@@ -87,6 +87,7 @@
     var note = ref && document.querySelector('.sidenote[data-for="' + CSS.escape(decodeURIComponent(ref.hash.slice(1))) + '"]');
     if (!note) return;
     e.preventDefault();
+    e.sbStay = true;
     note.classList.add('text-base-content');
     setTimeout(function () { note.classList.remove('text-base-content'); }, 1200);
   });

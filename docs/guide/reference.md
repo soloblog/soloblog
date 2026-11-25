@@ -824,7 +824,9 @@ Two things to know as you type:
 Your post's title is its biggest heading, so headings in the writing
 start at `##`. Headings (`##` and `###`) build the post's table of
 contents, get a copy-link button, and can collapse (see
-[Contents and sections](#contents-and-sections)).
+[Contents and sections](#contents-and-sections)). Following a link to a heading
+on the same page doesn't add a step to the browser's Back: Back leaves
+the page.
 
 ### Text styles
 

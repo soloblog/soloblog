@@ -283,9 +283,22 @@ function openFoldsTo(id) {
   }
   return opened ? el : null;
 }
+// A link to a heading on the same page (the contents, a heading's own
+// link, a footnote) moves there without adding a step to the browser's
+// history: Back leaves the page, rather than going back through every
+// heading. location.replace is still a jump to the heading - the focus
+// moves there too, as a link's own does.
 document.addEventListener('click', function (e) {
   var a = e.target.closest && e.target.closest('a[href^="#"]');
-  if (a) openFoldsTo(decodeURIComponent(a.getAttribute('href').slice(1)));
+  if (!a) return;
+  var href = a.getAttribute('href'), id = decodeURIComponent(href.slice(1));
+  openFoldsTo(id);
+  if (!id || e.defaultPrevented || e.button || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey ||
+      !document.getElementById(id)) return;
+  e.preventDefault();
+  // after the other click handlers: a footnote shown beside the text
+  // lights up there instead (sidenotes.js)
+  setTimeout(function () { if (!e.sbStay) location.replace(href); });
 });
 document.addEventListener('DOMContentLoaded', function () {
   var el = openFoldsTo(decodeURIComponent(location.hash.slice(1)));

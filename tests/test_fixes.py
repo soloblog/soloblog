@@ -1608,3 +1608,10 @@ def test_the_admin_remembers_each_pages_tab(admin):
     # tab kept in this browser, and opened before the page draws
     js = admin.get("/admin.js").text
     assert "soloblog-tabs:" in js and "location.replace(path + '?'" in js
+
+
+def test_heading_links_keep_back_for_leaving_the_page(admin):
+    # a link to a heading replaces the address instead of adding a step to
+    # Back (test_finding_your_way), and a footnote beside the text stays put
+    app_js = admin.get("/app.js").text
+    assert "location.replace(href)" in app_js and "e.sbStay = true" in app_js

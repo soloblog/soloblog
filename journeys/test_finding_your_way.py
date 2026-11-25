@@ -29,6 +29,26 @@ def test_an_admin_page_opens_the_tab_you_were_on(owner):
     assert w.page.url.endswith("?tab=all"), w.page.url
 
 
+def test_back_after_the_contents_leaves_the_page(owner, site):
+    w = owner
+    text = "".join(f"\n\n## Part {n}\n\nSome words about part {n}." for n in range(1, 6))
+    path = publish(w, "Many parts", text.strip())
+    w.go("/")
+    w.go(path)
+    links = w.page.locator("[data-toc] a[href^='#']")
+    assert links.count() >= 4
+    before = w.page.evaluate("history.length")
+    links.nth(1).click()
+    w.page.wait_for_timeout(300)
+    links.nth(3).click()
+    w.page.wait_for_timeout(300)
+    assert w.page.url.endswith("#part-4"), w.page.url
+    assert w.page.evaluate("history.length") == before
+    w.page.go_back()
+    w.page.wait_for_load_state("networkidle")
+    assert w.page.url.rstrip("/") == site["base"], w.page.url
+
+
 def test_marks_that_are_never_closed_stay_plain(owner):
     w = owner
     w.go("/admin/new")
