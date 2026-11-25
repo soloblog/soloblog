@@ -1,6 +1,16 @@
 """Finding your way: back to the list from a post, the tab you were on,
 Back after following the contents, and the editor showing marks as they
 are until they're closed."""
+from conftest import publish
+
+
+def test_a_post_links_back_to_posts_and_pages(owner):
+    w = owner
+    path = publish(w, "Way back", "A post to come back from.")
+    w.go(path)
+    w.page.locator("a[aria-label='Posts and pages'][href='/admin/posts']").first.click()
+    w.page.wait_for_load_state("networkidle")
+    assert w.page.url.endswith("/admin/posts"), w.page.url
 
 
 def test_marks_that_are_never_closed_stay_plain(owner):

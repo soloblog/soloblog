@@ -3,7 +3,8 @@ from fasthtml.common import *
 from soloblog.actions import on, EL
 from soloblog import settings
 from soloblog.ui.icons import (
-    CHECK_SVG, CHEVRON_DOWN_SVG, DOWNLOAD_SVG, EDIT_SVG, FOCUS_SVG, PLUS_SVG, RESTORE_SVG, SEND_SVG, TRASH_SVG,
+    CHECK_SVG, CHEVRON_DOWN_SVG, DOWNLOAD_SVG, EDIT_SVG, FOCUS_SVG, PLUS_SVG, POSTS_SVG, RESTORE_SVG, SEND_SVG,
+    TRASH_SVG,
     X_SVG,
 )
 from soloblog.ui.base import CancelButton, IconAction, SCROLLS, SCROLLS_X, glass_fill
@@ -15,7 +16,9 @@ def EditPostLink(slug: str):
     should be one click from there."""
     # icons, named by their tooltips, so they always fit beside the title -
     # a post's and a pinned page's alike
-    return Div(IconAction(EDIT_SVG, "Edit", href=f"/admin/edit/{slug}", menu_label=False, size="sm",
+    return Div(IconAction(POSTS_SVG, "Posts and pages", href="/admin/posts", menu_label=False, size="sm",
+                          tip="tooltip-bottom"),
+               IconAction(EDIT_SVG, "Edit", href=f"/admin/edit/{slug}", menu_label=False, size="sm",
                           tip="tooltip-bottom"),
                IconAction(FOCUS_SVG, "Edit in Focus", href=f"/admin/edit/{slug}?focus=1", menu_label=False,
                           size="sm", tip="tooltip-bottom"),

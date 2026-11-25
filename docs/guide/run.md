@@ -50,6 +50,10 @@ settings. On a phone, select **Filter** beside the search box first.
 **Moved one to the trash by mistake?** Select **Undo** straight away, or
 open the **Trash** tab later and restore it.
 
+**Reading one of your posts on the site?** While you're logged in, three
+buttons sit beside its title: **Posts and pages** brings you back to this
+list, and **Edit** and **Edit in Focus** open the post.
+
 **Want to see more rows at once, or fewer?** Below the list, beside the
 page buttons, choose **10**, **20** or **50** next to **Per page**. It
 appears once a list has more than 10 rows. Soloblog remembers your choice

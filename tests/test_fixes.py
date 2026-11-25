@@ -1591,3 +1591,13 @@ def test_a_result_goes_to_the_slot_beside_its_action(admin):
             assert at, (page, slot)
             # the slot itself, or a box with one inside
             assert "data-status-slot" in at.group(0) or "data-status-slot" in html[at.end():at.end() + 20000], (page, slot)
+
+
+def test_a_post_has_a_way_back_to_posts_and_pages(admin, client):
+    # beside Edit and Edit in Focus, for the owner only
+    slug = save_post(admin, title="Way back")
+    html = admin.get(f"/post/{slug}").text
+    edit = html.index(f'href="/admin/edit/{slug}"')
+    back = html.rfind('aria-label="Posts and pages"', 0, edit)
+    assert back > 0 and 'href="/admin/posts"' in html[back - 400:edit]
+    assert 'aria-label="Posts and pages"' not in client.get(f"/post/{slug}").text
