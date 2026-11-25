@@ -491,8 +491,7 @@ Insert, the `/` menu, the phone's + sheet, the editor's Help and
 highlighting, the lines left out of excerpts and the page itself all read
 it. Every kind, Key: line and value has one name, written one way:
 another word people might use for a kind is one of its search words,
-never a second name, and a renamed one doesn't keep its old name. A new
-kind needs, in one change:
+never a second name. A new kind needs, in one change:
 
 1. **Its registry entry** in `sections.py`: its one name after
    `Section:`, what it is in one line, a Lucide
