@@ -722,9 +722,9 @@ To set it up:
    | Variable | What to put |
    |---|---|
    | `S3_BUCKET` | Your bucket's name, exactly as your storage company shows it - capital letters too. For a bucket called `My-Blog-Backups`, that's `My-Blog-Backups`. |
-   | `S3_ENDPOINT` | Your bucket's S3 endpoint URL, copied from your storage company - it's different for each account and region, so don't copy the examples. Backblaze shows it as **Endpoint** on the bucket's page, like `s3.us-west-004.backblazeb2.com` (with or without `https://`). Cloudflare R2 shows it on the bucket's settings, like `https://<account-id>.r2.cloudflarestorage.com`. Amazon S3: leave it out. |
-   | `S3_REGION` | The bucket's region. Backblaze: the middle of its endpoint - `us-west-004` in the example above. Cloudflare R2: `auto`. Amazon S3: the region you chose, like `eu-west-1`. |
-   | `S3_ACCESS_KEY_ID` | The ID of an access key for this bucket. Backblaze calls it **keyID**. |
+   | `S3_ENDPOINT` | Your bucket's S3 endpoint URL, copied from your storage company - it's different for each account and region, so don't copy the examples. Backblaze shows it as **Endpoint** on the bucket's page, like `s3.us-west-004.backblazeb2.com` (with or without `https://`). Cloudflare R2 shows it on the bucket's settings, like `https://<account-id>.r2.cloudflarestorage.com`. DigitalOcean Spaces: the region's address, like `https://nyc3.digitaloceanspaces.com` - not the bucket's own, which starts with its name. Amazon S3: leave it out. |
+   | `S3_REGION` | The bucket's region. Backblaze: the middle of its endpoint - `us-west-004` in the example above. Cloudflare R2: `auto`. DigitalOcean Spaces: the region in its endpoint, like `nyc3`. Amazon S3: the region you chose, like `eu-west-1`. |
+   | `S3_ACCESS_KEY_ID` | The ID of an access key for this bucket. Backblaze calls it **keyID**; DigitalOcean, the **Access Key**. |
    | `S3_SECRET_ACCESS_KEY` | That key's secret. Backblaze calls it **applicationKey**, and shows it only once, when the key is made - copy it then. |
 
    **These are optional** - leave them out for what each one does by
