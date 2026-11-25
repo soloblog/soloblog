@@ -206,7 +206,7 @@ def NewsletterPanel(s):
             # a tick in Each post shows (post_shows), here as well
             ToggleField("Show the sign-up box under each post", "newsletter_on_posts",
                         checked="newsletter" in pages.default_extras(False), cls=FIELD_GAP),
-            ToggleField("Show it on the homepage too", "newsletter_on_home", checked=(s["newsletter_on_home"] == "1"),
+            ToggleField("Show it on the blog roll too", "newsletter_on_home", checked=(s["newsletter_on_home"] == "1"),
                         help=Span("Readers can always sign up at ",
                                   A("/newsletter", href="/newsletter", target="_blank", cls="link"), ".")),
             data_shown_for="newsletter_mode!=", hidden=not m

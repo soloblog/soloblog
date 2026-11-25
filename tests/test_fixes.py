@@ -1656,3 +1656,17 @@ def test_a_newsletter_site_keeps_its_sign_up_box_on_update(monkeypatch):
     assert updated({"newsletter_mode": ""}) == ""
     assert updated({}) == ""
 
+
+def test_the_blog_roll_sign_up_box_follows_the_list_of_posts(admin, client):
+    settings.set_many({"newsletter_mode": "builtin", "email_provider": "smtp", "newsletter_on_home": "1",
+                       "post_shows": ""})
+    try:
+        assert 'id="newsletter-status"' in client.get("/").text
+        # a page as the homepage: the list of posts, and its box, move to /blog
+        slug = save_post(admin, title="Welcome home", body="Hello.")
+        settings.set_many({"home_page": slug})
+        assert 'id="newsletter-status"' in client.get("/blog").text
+        assert 'id="newsletter-status"' not in client.get("/").text
+        assert "Show it on the blog roll too" in admin.get("/admin/settings?tab=newsletter").text
+    finally:
+        settings.set_many({"home_page": "", "newsletter_mode": "", "email_provider": ""})

@@ -345,7 +345,7 @@ Spam protection is in [Security](#spam-protection).
 - **Username** (Buttondown), **Form ID** (Kit), **Form action URL** (Mailchimp) or **Publication** (Substack) - With another service: where to send people who sign up. Each service shows it in its own settings.
 - **Heading** and **Intro** - What the sign-up box says.
 - **Show the sign-up box under each post** (on/off) - Off at first.
-- **Show it on the homepage too** (on/off) - Readers can always sign up at `/newsletter`.
+- **Show it on the blog roll too** (on/off) - Under the list of your posts: your homepage, or `/blog` when your homepage is a page. Readers can always sign up at `/newsletter`.
 
 ## Members
 
