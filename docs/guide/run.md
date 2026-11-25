@@ -33,7 +33,8 @@ the list, then select **Select all**. It picks every post that matches
 your search and filters.
 
 **Want only posts, or only pages?** Above the list, set **Type** to
-**Posts** or **Pages**. **In a series** shows the posts that belong to
+**Posts** or **Pages**. Pages are the ones in your menu or footer, and
+the one that's your homepage. **In a series** shows the posts that belong to
 one. On a phone, select **Filter** beside the search box first. The tabs
 above that show what state they're in: **Published**, **Scheduled**,
 **Drafts** or **Trash**.

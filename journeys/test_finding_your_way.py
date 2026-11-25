@@ -1,6 +1,8 @@
 """Finding your way: back to the list from a post, the tab you were on,
 Back after following the contents, and the editor showing marks as they
 are until they're closed."""
+import re
+
 from conftest import publish
 
 
@@ -75,3 +77,27 @@ def test_marks_that_are_never_closed_stay_plain(owner):
     assert "strikethrough" in dict(struck)["struck"] and "open" not in dict(struck), struck
     # bold over two lines of one paragraph is bold on both
     assert "strong" in dict(over)["over"] and "strong" in dict(lines)["two lines"], (over, lines)
+
+
+def test_the_homepage_is_listed_as_a_page(owner):
+    from test_site_menu import _set_homepage
+    w = owner
+    home = publish(w, "Front door", "Welcome in.")
+    publish(w, "An ordinary post", "Words.")
+    w.go("/admin/settings?tab=name")
+    assert _set_homepage(w, home.rstrip("/").rsplit("/", 1)[-1]) == 200
+    try:
+        w.go("/admin/posts")
+        row = w.page.locator("li", has=w.page.get_by_role("link", name="Front door", exact=True)).first
+        assert row.get_by_text("Page", exact=True).is_visible()
+        # the count names both kinds
+        assert w.page.get_by_text(re.compile(r"^\d+ posts? and \d+ pages?$")).first.is_visible()
+        # Type: Pages lists it, with the count of pages alone
+        w.page.locator("button[popovertarget='filter-kind']").click()
+        w.page.locator("#filter-kind").get_by_role("link", name="Pages", exact=True).click()
+        w.page.wait_for_url("**kind=pages*")
+        assert w.page.get_by_role("link", name="Front door", exact=True).is_visible()
+        assert w.page.get_by_role("link", name="An ordinary post", exact=True).count() == 0
+        assert w.page.get_by_text(re.compile(r"^\d+ pages?$")).first.is_visible()
+    finally:
+        _set_homepage(w, "")

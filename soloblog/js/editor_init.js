@@ -895,7 +895,8 @@ document.addEventListener('DOMContentLoaded', function () {
       var f = form.elements, where = f.pin_location ? f.pin_location.value : '';
       var access = f.visibility ? f.visibility.value : 'public';
       var kind = document.querySelector('[data-post-kind]');
-      if (kind) kind.textContent = (where === 'header' || where === 'footer' ? 'Page' : 'Post') + ':';
+      // the homepage stays a page, in the menu or not
+      if (kind) kind.textContent = (kind.hasAttribute('data-home') || where === 'header' || where === 'footer' ? 'Page' : 'Post') + ':';
       var out = [];
       var start = pillsEl.querySelector('[data-template-name]');
       if (start) out.push(start.closest('.tooltip'));

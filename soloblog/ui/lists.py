@@ -145,9 +145,11 @@ def FilterSelect(label, name, options, selected, go):
     )
 
 
-def list_summary(n: int, noun: str, q: str = "", *filters) -> str:
-    """"12 posts", or "3 posts matching “coffee” · tagged garden"."""
-    text = f"{n} {noun}{'' if n == 1 else 's'}"
+def list_summary(n: int, noun: str, q: str = "", *filters, count: str | None = None) -> str:
+    """"12 posts", or "3 posts matching “coffee” · tagged garden". count:
+    the number in words of its own, for a list of two kinds ("12 posts and
+    4 pages")."""
+    text = count or f"{n} {noun}{'' if n == 1 else 's'}"
     parts = ([f"matching “{q}”"] if q else []) + [f for f in filters if f]
     return text + (" " + " · ".join(parts) if parts else "")
 

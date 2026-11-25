@@ -1670,3 +1670,30 @@ def test_the_blog_roll_sign_up_box_follows_the_list_of_posts(admin, client):
         assert "Show it on the blog roll too" in admin.get("/admin/settings?tab=newsletter").text
     finally:
         settings.set_many({"home_page": "", "newsletter_mode": "", "email_provider": ""})
+
+
+def test_the_homepage_is_a_page_in_posts_and_pages(admin):
+    slug = save_post(admin, title="Our homepage", body="Hello.")
+    other = save_post(admin, title="Just a post", body="Hi.")
+    settings.set_many({"home_page": slug})
+    try:
+        def row(html, title):
+            # a row's pills, from its title on
+            return html[html.index(f">{title}<"):][:2000]
+        listed = admin.get("/admin/posts").text
+        assert ">Page<" in row(listed, "Our homepage") and ">Post<" in row(listed, "Just a post")
+        pages_only = admin.get("/admin/posts?kind=pages").text
+        assert "Our homepage" in pages_only and "Just a post" not in pages_only
+        posts_only = admin.get("/admin/posts?kind=posts").text
+        assert "Our homepage" not in posts_only and "Just a post" in posts_only
+        # the count says how many of each
+        n_pages = posts.count_by_status("all", kind="pages")
+        n_posts = posts.count_by_status("all", kind="posts")
+        assert f"{n_posts} posts and {n_pages} page{'s' if n_pages != 1 else ''}" in listed
+        assert f"{n_pages} page" in pages_only and " and " not in re.search(r"\d+ pages?[^<]*", pages_only).group(0)
+        # and the editor says so over it
+        assert re.search(r"data-post-kind[^>]*>Page:", admin.get(f"/admin/edit/{slug}").text)
+        assert re.search(r"data-post-kind[^>]*>Post:", admin.get(f"/admin/edit/{other}").text)
+    finally:
+        settings.set_many({"home_page": ""})
+

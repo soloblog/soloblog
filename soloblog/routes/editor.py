@@ -1054,9 +1054,10 @@ def EditorHeading(row, start, pinned, pin_location):
     """Over the editor: which post this is, its state and what's set on it."""
     # "Post: …" or "Page: …" - which it is, kept up to date as it's put
     # in the menu or taken out (syncPills, EDITOR_INIT_JS)
-    kind = "Page" if pinned and pin_location in ("header", "footer") else "Post"
-    heading = (Span(f"{kind}:", data_post_kind=True, cls="font-normal text-base-content/60"), " ", row["title"]) \
-        if row else ("New post",)
+    home = bool(row and row["slug"] == settings.get("home_page"))
+    kind = "Page" if home or (pinned and pin_location in ("header", "footer")) else "Post"
+    heading = (Span(f"{kind}:", data_post_kind=True, data_home=home or None, cls="font-normal text-base-content/60"),
+               " ", row["title"]) if row else ("New post",)
 
     # the page's heading; the buttons are in editor_bar, over the text.
     # the post's state beside its heading - kept up to date as Post
@@ -1765,10 +1766,12 @@ def PostPills(p):
     look = STATE_LOOK[state]
     pill = lambda text, cls: Span(text, cls=f"badge badge-xs {cls} whitespace-nowrap")  # noqa: E731
     access = posts.clean_visibility(p["visibility"])
+    # the homepage is a page too, in the menu or not
+    page = pages.counts_as_page(p, settings.get_all())
     return Div(
         pill(state, f"{look} badge-soft"),
-        pill("Page" if posts.is_page(p) else "Post", "badge-outline"),
-        pill("Pinned", "badge-outline") if p["pinned"] and not posts.is_page(p) else None,
+        pill("Page" if page else "Post", "badge-outline"),
+        pill("Pinned", "badge-outline") if p["pinned"] and not page else None,
         pill("Paid members", "badge-primary") if access == "paid" else
         pill("Members", "badge-primary badge-soft") if access == "members" else None,
         pill("Password", "badge-outline") if posts.is_protected(p) else None,
@@ -2054,10 +2057,12 @@ def _posts_tabs(status, query=""):
 
 def _posts_csv(rows):
     from soloblog.backup import csv_download
+    s = settings.get_all()
     return csv_download("posts.csv", ["title", "address", "type", "status", "created", "updated", "tags", "series",
                                       "views"],
                         [(r["title"], config.BASE_URL + posts.url_for_slug(r["slug"]),
-                          "page" if posts.is_page(r) else "post", posts.post_status(r).lower(), r["created_at"],
+                          "page" if pages.counts_as_page(r, s) else "post", posts.post_status(r).lower(),
+                          r["created_at"],
                           r["updated_at"], r["tags"], r["series_name"], r["views"])
                          for r in rows])
 
@@ -2212,9 +2217,15 @@ def manage_posts(session, status: str = "all", sort: str = "newest", tag: str = 
                                  {"status": status, "sort": sort, "tag": tag, "access": access, "kind": kind})
         total = posts.count_by_status(status, tag, q, access, kind)
         noun = {"posts": "post", "pages": "page", "series": "post"}.get(kind, "post")
+        # both kinds listed: how many of each, "12 posts and 4 pages"
+        both = None
+        if not kind and total:
+            n_pages = posts.count_by_status(status, tag, q, access, "pages")
+            both = " and ".join(f"{n} {word}{'' if n == 1 else 's'}"
+                                for n, word in ((total - n_pages, "post"), (n_pages, "page")) if n)
         header = ListHeader(
             list_summary(total, noun, q, "in a series" if kind == "series" else "", f"tagged {tag}" if tag else "",
-                         f"for {dict(ACCESS_OPTIONS)[access].lower()}" if access else ""),
+                         f"for {dict(ACCESS_OPTIONS)[access].lower()}" if access else "", count=both),
             clear=f"/admin/posts?status={status}&sort={sort}" if q or tag or access or kind else None,
             form_id="bulk-form" if items else None, action="/admin/posts/bulk", return_to=base_path,
             total=total, scope={"in_status": status, "in_tag": tag, "in_q": q, "in_access": access, "in_kind": kind},

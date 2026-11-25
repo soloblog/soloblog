@@ -836,15 +836,19 @@ def _status_where(status: str):
     return KINDS.get(status, "1=1"), []
 
 
-KINDS = {"posts": "NOT (pinned=1 AND pin_location IN ('header', 'footer'))",
-         "pages": "pinned=1 AND pin_location IN ('header', 'footer')",
+# a page: in the menu or the footer (is_page), or the homepage
+# (pages.counts_as_page)
+PAGE_SQL = ("((pinned=1 AND pin_location IN ('header', 'footer')) "
+            "OR slug IN (SELECT value FROM settings WHERE key='home_page'))")
+KINDS = {"posts": f"NOT {PAGE_SQL}",
+         "pages": PAGE_SQL,
          "series": "series_name!=''"}
 
 
 def _filter(where: str, params: list, tag: str, q: str, access: str = "", kind: str = ""):
     """The admin list's filters and search box: a word in the title,
     summary or tags, or anywhere in the post's text. access: who can
-    read it - public, members or paid. kind: posts, pages (is_page) or
+    read it - public, members or paid. kind: posts, pages (PAGE_SQL) or
     series (those in one)."""
     if kind in KINDS:
         where += f" AND {KINDS[kind]}"
