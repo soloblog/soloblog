@@ -1723,3 +1723,22 @@ def test_numbers_grow_with_their_section(admin):
     # four to a row stop a size smaller, so each still fits its share
     four = to_xml(pages._numbers(render.render_markdown("\n\n".join(f"## {n}\nthings" for n in (1, 2, 3, 4)))))
     assert "@4xl:text-6xl" in four and "text-7xl" not in four
+
+
+def test_insert_samples_show_what_each_section_can_do(admin, client):
+    from soloblog import sections
+    kinds = ("cta", "hero", "testimonials", "bento", "story", "services", "reviews")
+    body = "Intro.\n\n" + "\n\n".join(sections.markdown(k) for k in kinds)
+    html = client.get(f"/post/{save_post(admin, title='Every sample', body=body)}").text
+
+    def button(words):
+        # a link to fill in - its address is the sample's https://
+        return re.search(r"<a [^>]*>\s*" + re.escape(words) + r"\s*</a>", html)
+    # a main button and a quieter one: a call to action's and a hero's
+    for words in ("Get started", "Learn more", "Find out more", "Watch the video", "Start yours"):
+        assert button(words), words
+    assert "A headline of its own" in html
+    # a person's photo, a book's cover
+    assert 'alt="Their photo"' in html and 'alt="Its cover"' in html
+    # two services as cards, and how it works as steps
+    assert html.count("Get in touch") >= 2 and "You get a plan and a price." in html

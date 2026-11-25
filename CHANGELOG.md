@@ -47,6 +47,9 @@ versions may include breaking changes; they'll always be listed here.
   roll too" - it shows with the list of your posts, wherever that is
 - The Numbers section's figures grow with the space they have, up to a
   launch page's size, and the words under them are easier to read
+- Insert's Call to action, Hero, Testimonials, Bento grid, Story,
+  Services and Reviews start with every part they can show - a second
+  button, a photo, a cover, a button on a tile or step, how it works
 - What an action did shows right beside its button - Save, Discard,
   Security, your own palette, replies, the contact and comment forms
 

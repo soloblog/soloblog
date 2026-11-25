@@ -119,7 +119,7 @@ REGISTRY = {
                      "### 10,000\nhappy customers\n\n### 4.9 ★\naverage rating"),
     "testimonials": _kind("testimonials", ("Testimonials",), "Quotes from people, with who said them",
                           "message-square-quote", ("reviews", "quotes"), "What people say",
-                          "### Their name\n\nRole: What they do\n\n> What they said."),
+                          "### Their name\n\n![Their photo](https://)\n\nRole: What they do\n\n> What they said."),
     "logos": _kind("logos", ("Logos",), "A row of logos - as seen in, trusted by", "award",
                    ("brands", "press"), "As seen in", "![A name](https://)\n![Another](https://)"),
     "pricing": _kind("pricing", ("Pricing",), "Plans as cards, one picked out", "badge-dollar-sign",
@@ -132,7 +132,9 @@ REGISTRY = {
                   "### A product\n\n![An image](https://)\n\nPrice: US$25\n\nWhat it is.\n\n[Buy](https://)"),
     "services": _kind("services", ("Services",), "What you offer, with a starting price", "briefcase",
                       ("offer", "hire"), "Services",
-                      "### A service\n\nFrom: US$400\n\nWhat's included.\n\n[Get in touch](/contact)"),
+                      "### A service\n\nFrom: US$400\n\nWhat's included.\n\n[Get in touch](/contact)\n\n"
+                      "### Another service\n\nFrom: US$900\n\nWhat's included.\n\n[Get in touch](/contact)\n\n"
+                      "### How it works\n\n1. We talk it through.\n2. You get a plan and a price.\n3. The work begins."),
     "team": _kind("team", ("Team",), "The people, with a photo and a line", "users",
                   ("people", "staff"), "The team",
                   "### A name\n\n![Their photo](https://)\n\nRole: What they do\n\nA line about them."),
@@ -144,7 +146,8 @@ REGISTRY = {
                      "```gallery\n/uploads/a-photo.webp\n/uploads/another.webp\n```"),
     "cta": _kind("cta", ("Call to action",), "One line and a button, in a band", "megaphone",
                  ("button", "call to action", "cta"), "Ready to start?",
-                 "One line about why.\n\n[Get started](https://)", cover=True),
+                 "### A headline of its own\n\nOne line about why.\n\n[Get started](https://) [Learn more](https://)",
+                 cover=True),
     "features": _kind("features", ("Features",), "Short points with an icon, side by side", "sparkles",
                       ("benefits", "icons", "grid"), "Why it's good",
                       "### Real bread\n\nIcon: leaf\nA line about it.\n\n"
@@ -181,7 +184,7 @@ REGISTRY = {
                       options={"Show as": "", "Tag": "Adds every post with this tag"}),
     "reviews": _kind("reviews", ("Reviews",), "Books or films, with stars", "star",
                        ("books", "films", "rating"), "Read lately",
-                       "### A book\n\nAuthor: Their name\nRating: 4/5\n\nA line about it."),
+                       "### A book\n\n![Its cover](https://)\n\nAuthor: Their name\nRating: 4/5\n\nA line about it."),
     "uses": _kind("uses", ("Uses",), "Things you use, and what for", "hammer", ("tools", "gear", "setup"),
                   "What I use", "### At the desk\n\n- **A thing** - what it's for\n- **Another** - what it's for"),
     "hours": _kind("hours", ("Opening hours",), "When you're open, as a table", "clock-3",
@@ -225,17 +228,19 @@ REGISTRY = {
                    "### Then the next\n\n![An image for the next step](https://)\n\n"
                    "The image changes as they scroll to these words.\n\n"
                    "### And the last\n\n![An image for the last step](https://)\n\n"
-                   "Add as many steps as you like - an image and a few words each.", width="full"),
+                   "Add as many steps as you like - an image and a few words each.\n\n[Start yours](https://)",
+                   width="full"),
     # wider than the column: a picture with words over it, and tiles
     "hero": _kind("hero", ("Hero",), "A big heading and a button over an image", "rectangle-horizontal",
                   ("banner", "big", "header", "cover"), "A big heading",
-                  "![An image](https://)\n\nA line about it.\n\n[Find out more](https://)",
+                  "![An image](https://)\n\nA line about it.\n\n[Find out more](https://) [Watch the video](https://)",
                   width="full", cover=True,
                   styles=(("window", "Window", "The image framed like a window, as a launch page opens",
                            "panels-top-left"),)),
     "bento": _kind("bento", ("Bento grid",), "Tiles of different sizes, the first big", "grid-2x2",
                    ("tiles", "grid", "mosaic", "bento"), "What's inside",
-                   "### The main thing\n\n![An image](https://)\n\nA line about it.\n\n### Another\n\nA line.\n\n"
+                   "### The main thing\n\n![An image](https://)\n\nA line about it.\n\n[Find out more](https://)\n\n"
+                   "### Another\n\nA line.\n\n"
                    "### And another\n\nA line.\n\n### One more\n\nA line.\n\n### The last\n\nA line.",
                    width="wide"),
     "recipe_facts": _kind("recipe_facts", ("Recipe facts",), "Serves, prep and cook time, side by side", "clock",
