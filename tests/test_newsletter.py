@@ -1,5 +1,7 @@
 import re
 
+import pytest
+
 from soloblog import mail
 from soloblog import newsletter
 from soloblog import publishing
@@ -10,6 +12,18 @@ from soloblog.db import get_db
 ON = {"newsletter_mode": "builtin", "email_provider": "smtp", "newsletter_auto": "1", "newsletter_on_posts": "1",
       "newsletter_on_home": "1"}
 OFF = {"newsletter_mode": "", "email_provider": "", "newsletter_kit": ""}
+
+
+@pytest.fixture(autouse=True)
+def no_subscribers():
+    """Each test starts with no subscribers and leaves none - other files
+    add their own, and these count them."""
+    def clear():
+        get_db().execute("DELETE FROM subscribers")
+        get_db().commit()
+    clear()
+    yield
+    clear()
 
 
 def _outbox(monkeypatch):
@@ -51,8 +65,6 @@ def test_subscribe_confirm_unsubscribe(client, monkeypatch):
         assert "doesn't look like" in client.post("/newsletter/subscribe", data={"email": "nope"}).text
     finally:
         settings.set_many(OFF)
-        get_db().execute("DELETE FROM subscribers")
-        get_db().commit()
 
 
 def test_new_posts_are_emailed_once(admin, client, monkeypatch):
@@ -82,8 +94,6 @@ def test_new_posts_are_emailed_once(admin, client, monkeypatch):
         assert old
     finally:
         settings.set_many(OFF)
-        get_db().execute("DELETE FROM subscribers")
-        get_db().commit()
 
 
 def test_another_service_signs_readers_up(client):
@@ -112,24 +122,18 @@ def test_admin_subscribers_page(admin, client, monkeypatch):
         assert client.get("/admin/newsletter").status_code == 303
     finally:
         settings.set_many(OFF)
-        get_db().execute("DELETE FROM subscribers")
-        get_db().commit()
 
 
 def test_import_subscribers_from_another_service(admin):
     csv = "﻿Email,Name,Subscribed\nann@example.com,Ann,2024-01-01\nnot-an-email,x,y\nbob@example.com,Bob,2024-02-01\n"
-    try:
-        r = admin.post("/admin/newsletter/import", files={"csv": ("subs.csv", csv.encode(), "text/csv")})
-        assert r.status_code == 303 and "Imported+2" in r.headers["location"] and "skipped+1" in r.headers["location"]
-        assert newsletter.count() == 2
-        # again: all already here
-        added, skipped = newsletter.import_csv(csv)
-        assert added == 0 and skipped == 3
-        # no header row: the first column with an @
-        assert newsletter.import_csv("x,carol@example.com\n") == (1, 0)
-    finally:
-        get_db().execute("DELETE FROM subscribers")
-        get_db().commit()
+    r = admin.post("/admin/newsletter/import", files={"csv": ("subs.csv", csv.encode(), "text/csv")})
+    assert r.status_code == 303 and "Imported+2" in r.headers["location"] and "skipped+1" in r.headers["location"]
+    assert newsletter.count() == 2
+    # again: all already here
+    added, skipped = newsletter.import_csv(csv)
+    assert added == 0 and skipped == 3
+    # no header row: the first column with an @
+    assert newsletter.import_csv("x,carol@example.com\n") == (1, 0)
 
 
 def test_ticking_subscribers(admin, client, monkeypatch):
@@ -158,8 +162,6 @@ def test_ticking_subscribers(admin, client, monkeypatch):
         assert admin.get("/admin/newsletter/export").status_code in (404, 405)
     finally:
         settings.set_many(OFF)
-        get_db().execute("DELETE FROM subscribers")
-        get_db().commit()
 
 
 def test_a_post_kept_out_of_the_newsletter(admin, monkeypatch):
@@ -184,8 +186,6 @@ def test_a_post_kept_out_of_the_newsletter(admin, monkeypatch):
         assert "Emailed to subscribers" in admin.get(f"/admin/edit/{slug}").text
     finally:
         settings.set_many(OFF)
-        get_db().execute("DELETE FROM subscribers")
-        get_db().commit()
 
 
 def test_a_weekly_email_with_the_weeks_posts(admin, monkeypatch):
@@ -223,8 +223,6 @@ def test_a_weekly_email_with_the_weeks_posts(admin, monkeypatch):
         assert not newsletter.digest_due(settings.get_all(), datetime(2026, 12, 2, 9))
     finally:
         settings.set_many({**OFF, "newsletter_digest": ""})
-        get_db().execute("DELETE FROM subscribers")
-        get_db().commit()
 
 
 def test_the_designed_email_and_a_test_to_yourself(admin, monkeypatch):
@@ -317,5 +315,3 @@ def test_a_newsletter_cut_off_by_the_daily_limit_finishes_the_next_day(admin, mo
         assert len(sent) == 4 and len({subject for _, subject in sent}) == 1 and newsletter.held() == []
     finally:
         settings.set_many({**OFF, "newsletter_held": ""})
-        get_db().execute("DELETE FROM subscribers")
-        get_db().commit()
