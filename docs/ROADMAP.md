@@ -79,6 +79,27 @@ out, are in [DECISIONS.md](DECISIONS.md). An idea of your own starts in
      step - personal data, so its own key permission and the abuse-case
      tests.
   4. **A Soloblog step for n8n** (a community node), only if people ask.
+- **AI that helps you build your site.** The AI writes what a person
+  would - pages of sections, settings, answers from the guide - and it's
+  saved and checked like anything typed. The admin and the visitor's
+  pages stay the same every time: an admin that rearranges itself can't
+  be learned or described in Help, and a page made fresh for every
+  visitor can't be cached, found by search engines or checked. It's
+  optional and uses the owner's own AI account and key; a site works
+  the same without it. In order:
+  1. **"Make me a page for…"** Describe the page you need ("my pottery
+     classes, with prices and a booking button") and get sections, their
+     `Key:` lines and sample text, made only from the kinds and values
+     Soloblog has (`sections.py` as the description an AI follows). It
+     opens as a preview to change before saving - a template made to
+     order, with no tie to it afterwards.
+  2. **Your own AI assistant runs your site** - Claude, ChatGPT or
+     another - through an MCP server built on the API's keys
+     ([API.md](API.md)): draft a post, add a section, find out why the
+     newsletter didn't send. Each key's permissions still apply, with
+     tests for the abuse case.
+  3. **Help that answers questions** in the admin, from the guide's own
+     pages, each answer linking to the setting or page it's about.
 - **Faster pages, lighter downloads.** Measured on the sample blog with
   `tools/measure.py`: about 45 pages a second on one core, 20 ms a page.
   Biggest win first:
