@@ -40,4 +40,6 @@
     } catch (e) {}
   }
   document.addEventListener('DOMContentLoaded', remember);
+  // a list's tabs open in place, without loading the page (live.js)
+  document.addEventListener('live:swapped', remember);
 })();

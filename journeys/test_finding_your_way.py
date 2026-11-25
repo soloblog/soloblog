@@ -15,8 +15,13 @@ def test_a_post_links_back_to_posts_and_pages(owner):
 
 def test_an_admin_page_opens_the_tab_you_were_on(owner):
     w = owner
-    w.go("/admin/media?tab=unused")
-    w.go("/admin/posts?status=draft")
+    # a list's tabs open in place, without loading the page
+    w.go("/admin/media")
+    w.page.locator("[data-fit-tabs] a.tab[href*='tab=unused']").click()
+    w.page.wait_for_url("**/admin/media?tab=unused*")
+    w.go("/admin/posts")
+    w.page.locator("[data-fit-tabs] a.tab[href*='status=draft']").click()
+    w.page.wait_for_url("**/admin/posts?status=draft*")
     # from the menu: the address names no tab
     w.go("/admin/media")
     assert w.page.url.endswith("/admin/media?tab=unused"), w.page.url
@@ -25,8 +30,10 @@ def test_an_admin_page_opens_the_tab_you_were_on(owner):
     # an address that names a tab keeps it, and is remembered in turn
     w.go("/admin/media?tab=all")
     assert w.page.url.endswith("?tab=all"), w.page.url
+    # All is the page's own first tab: the plain address is enough
     w.go("/admin/media")
-    assert w.page.url.endswith("?tab=all"), w.page.url
+    assert w.page.url.endswith("/admin/media"), w.page.url
+    assert "tab-active" in w.page.locator("a.tab[href*='tab=all']").get_attribute("class")
 
 
 def test_back_after_the_contents_leaves_the_page(owner, site):

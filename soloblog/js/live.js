@@ -57,6 +57,8 @@ function liveGo(url, push, stale) {
     }
     _liveSwap(res.html);
     if (push !== false) history.pushState({live: 1}, '', landed.pathname + landed.search);
+    // for what follows the address: the tab you're on (tab_memory.js)
+    document.dispatchEvent(new Event('live:swapped'));
   }).catch(function () { location.href = target.href; });
 }
 document.addEventListener('click', function (e) {
