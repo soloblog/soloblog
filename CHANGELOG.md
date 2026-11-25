@@ -57,6 +57,8 @@ versions may include breaking changes; they'll always be listed here.
 
 ### Fixed
 
+- Pictures in a wide or full section, a gallery and a full-screen cover
+  are sharp - they loaded a copy sized for the column and looked soft
 - A Story with pictures finishes loading - its pictures kept being
   picked again, so the page never settled
 - The banner shows above the list of your posts at /blog when your

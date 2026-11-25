@@ -93,8 +93,13 @@ PAUSE_SVG = ('<svg data-icon="pause" xmlns="http://www.w3.org/2000/svg" width="1
              'height="14" rx="1"/></svg>')
 PLAY_SVG = ('<svg data-icon="play" class="hidden" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" '
             'aria-hidden="true"><path d="M8 5.5v13a1 1 0 0 0 1.5.86l11-6.5a1 1 0 0 0 0-1.72l-11-6.5A1 1 0 0 0 8 5.5Z"/></svg>')
-# how wide a slider shows in a post; a landing page shows it wider (pages.py)
+# how wide a gallery's pictures show in the column - a wide or full
+# section gives them its own width (pages._wider_sizes)
 SLIDER_SIZES = "(min-width: 768px) 48rem, 100vw"
+TILE_SIZES = "(min-width: 640px) 16rem, 50vw"
+# a justified row's pictures grow to fill it, a phone's one to a row - the
+# browsers that can measure a lazy picture (auto) do, the rest go by the width
+JUSTIFIED_SIZES = "auto, (min-width: 640px) 24rem, 100vw"
 
 
 def render(style: str, items: list, gallery_id: str, auto: bool = False) -> str:
@@ -108,8 +113,7 @@ def render(style: str, items: list, gallery_id: str, auto: bool = False) -> str:
     from soloblog import i18n, images
     # how wide one image shows, per style - the browser picks the
     # smallest copy (images.srcset) that's still sharp at that width
-    shown = {"grid": "(min-width: 640px) 16rem, 50vw", "masonry": "(min-width: 640px) 16rem, 50vw",
-             "justified": "(min-width: 640px) 20rem, 50vw", "filmstrip": "24rem",
+    shown = {"grid": TILE_SIZES, "masonry": TILE_SIZES, "justified": JUSTIFIED_SIZES, "filmstrip": "24rem",
              "slider": SLIDER_SIZES}[style]
 
     def title(src, caption):

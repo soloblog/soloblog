@@ -194,6 +194,12 @@ docs/*.md                      the guide, FAQ, deployment, development and spons
   `_sizes/` (400 and 800 px copies, made on demand) and `_originals/` (an
   image's untouched original once it's rotated or cropped). A renamed
   upload's old name forwards to the new one (the `upload_renames` setting).
+- **A picture's `sizes` says how wide it really shows**, so the browser
+  picks a copy that's sharp there and no bigger (`images.srcset`). Words
+  and galleries write the column's (`render.BODY_SIZES`,
+  `gallery.SLIDER_SIZES`...); a Wide or Full section swaps them for its
+  own (`pages._wider_sizes`). Something drawn another way - cropped to
+  fill a tall screen, three across - writes its own.
 - **Read the folders through `config.data_dir()`, `posts_dir()`,
   `uploads_dir()` and `db_path()`**, never `config.DATA_DIR` and the
   others directly: in the demo each visitor who changes anything gets a

@@ -127,3 +127,37 @@ def test_visitor_scripts_never_call_the_admins_unguarded():
             if f"typeof {name} === 'function'" not in before and not before.rstrip().endswith("function"):
                 bare.append(name)
     assert not bare, bare
+
+
+def test_a_wide_or_full_section_asks_for_pictures_its_own_width(admin, client):
+    """A slider in a wide section asked the browser for a copy as wide as
+    the column, and showed it stretched - soft on the website's homepage."""
+    import re
+    from conftest import save_post
+    url = _upload("perf-wide-section.webp", (2400, 1600))
+
+    def gallery(style):
+        return f"```gallery {style}\n{url}\n{url}\n{url}\n```"
+    body = "Intro.\n\n" + "\n\n".join(
+        f"## {width} {style}\n\nSection: Photo gallery\nWidth: {width}\n\n{gallery(style)}"
+        for width in ("Column", "Wide", "Full") for style in ("slider", "grid", "justified")) + (
+        f"\n\n## Full hero\n\nSection: Hero\nWidth: Full\n\n![A photo]({url})\n\nWords.")
+    page = client.get(f"/post/{save_post(admin, title='Wide pictures', body=body)}").text
+
+    def sizes(heading):
+        part = page.split(f'id="{heading.lower().replace(" ", "-")}"', 1)[1]
+        return re.search(r'<img [^>]*\bsizes="([^"]*)"', part).group(1)
+    # in the column, the column's width
+    assert sizes("Column slider") == "(min-width: 768px) 48rem, 100vw"
+    # wide: out to the side panels; full: the whole screen
+    assert sizes("Wide slider") == "(min-width: 81rem) 79rem, calc(100vw - 2rem)"
+    assert sizes("Full slider") == "100vw"
+    # a grid is three across, at the section's width
+    assert sizes("Wide grid").startswith("(min-width: 81rem) 26.3rem") and "33vw" in sizes("Full grid")
+    # a justified row's pictures are measured by the browsers that can, and a phone's fill the screen
+    assert sizes("Column justified").startswith("auto, ") and sizes("Column justified").endswith("100vw")
+    assert sizes("Full justified") == "auto, (min-width: 640px) 50vw, 100vw"
+    # a full hero's picture is the whole screen's
+    hero = re.search(r'<img [^>]*alt="A photo"[^>]*>', page).group(0)
+    assert 'sizes="100vw"' in hero
+    images.delete_upload("perf-wide-section.webp")

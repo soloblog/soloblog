@@ -916,7 +916,9 @@ def _render_portfolio(out, row, s, html, toc, logged_in, series):
                 id=hid, style=f"flex: {ratio:.3f} 1 {ratio * 16:.1f}rem", cls=f"group relative {_REVEAL}"))
         elif style == "screen":
             tiles.append(Div(Breakout(Div(
-                NotStr(_with_class(re.sub(r'\bsizes="[^"]*"', 'sizes="100vw"', item["img"]),
+                # filling a tall phone screen, a photo is cropped at the sides: as wide
+                # as the screen is tall and a half, as a 3:2 photo is
+                NotStr(_with_class(re.sub(r'\bsizes="[^"]*"', 'sizes="max(100vw, 150vh)"', item["img"]),
                                    "absolute inset-0 w-full h-full object-cover")
                        .replace(' loading="lazy"', "" if n == 0 else ' loading="lazy"')),
                 Div(cls="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent"),
@@ -1883,8 +1885,29 @@ _IN_COLUMN_BESIDE = ("[html[data-side-beside]_&]:w-auto "
                      "[html[data-side-beside]_&]:px-0")
 
 
+def _wider_sizes(width, s):
+    """{a picture's sizes in the column: its sizes at this Width} - the
+    pictures a section's words and galleries bring say how wide they show
+    in the column, and the browser picks a copy for that: stretched over a
+    wide or full section, it looked soft."""
+    from soloblog import gallery, render
+    from soloblog.ui.base import MARGIN_WIDTHS
+    if width == "full":
+        across, third, half = "100vw", "(min-width: 640px) 33vw, 50vw", "(min-width: 640px) 50vw, 100vw"
+    else:
+        # out to the side panels (Breakout), 1rem in from each edge until then
+        most = int(re.search(r"\d+", MARGIN_WIDTHS.get(s.get("body_width"), MARGIN_WIDTHS["standard"])).group())
+        across = f"(min-width: {most + 2}rem) {most}rem, calc(100vw - 2rem)"
+        third = f"(min-width: {most + 2}rem) {most / 3:.1f}rem, (min-width: 640px) 33vw, 50vw"
+        half = f"(min-width: {most + 2}rem) {most / 2:.1f}rem, (min-width: 640px) 50vw, 100vw"
+    return {render.BODY_SIZES: across, gallery.SLIDER_SIZES: across,
+            gallery.TILE_SIZES: third, gallery.JUSTIFIED_SIZES: f"auto, {half}"}
+
+
 def _wider(html, width, s):
     from soloblog.ui import Breakout
+    wider = _wider_sizes(width, s)
+    html = re.sub(r'\bsizes="([^"]*)"', lambda m: f'sizes="{wider.get(m.group(1), m.group(1))}"', html)
     return to_xml(Breakout(NotStr(html), width, s)).replace('class="w-screen', f'class="{_IN_COLUMN_BESIDE} w-screen', 1)
 
 

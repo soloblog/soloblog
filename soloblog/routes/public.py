@@ -1130,7 +1130,9 @@ def ScreenCover(row, s, hides, crumbs, title, edit, byline, caption):
             "[&_a:not(.btn)]:text-white [&_.breadcrumbs_*]:text-white/80 [&_.badge]:bg-black/40 "
             "[&_.badge]:text-white [&_.badge]:border-white/20")
     return Div(Breakout(Div(
-        Img(**images.responsive(row["cover_image"], "100vw"), alt=images.alt_text_for_url(row["cover_image"]),
+        # filling a tall phone screen, a photo is cropped at the sides: as wide
+        # as the screen is tall and a half, as a 3:2 photo is
+        Img(**images.responsive(row["cover_image"], "max(100vw, 150vh)"), alt=images.alt_text_for_url(row["cover_image"]),
             cls="absolute inset-0 w-full h-full object-cover"),
         Div(cls="absolute inset-0 bg-gradient-to-t from-black/85 via-black/35 to-black/10"),
         words,

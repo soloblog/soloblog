@@ -448,6 +448,11 @@ _IMG_SRC = re.compile(r'<img [^>]*src="(/uploads/[^"]+|https://images\.unsplash\
 _LONE_IMG = re.compile(r'<p>(<img [^>]*src="(?:/uploads/|https://images\.unsplash\.com/)[^"]+"[^>]*>)</p>')
 
 
+# how wide a picture in a post's words shows: its column, 48rem at most (a
+# wide or full section gives it its own width - pages._wider_sizes)
+BODY_SIZES = "(min-width: 768px) 48rem, 100vw"
+
+
 def _enrich_images(html: str) -> str:
     """Body images from the media library get what the library knows
     about them: saved alt text when the markdown left it blank, and an
@@ -468,7 +473,7 @@ def _enrich_images(html: str) -> str:
         # smaller copies for narrow screens - a post's column is 48rem at most
         options = images.srcset(m.group(1))
         if options and "srcset=" not in tag:
-            tag = tag.replace("<img ", f'<img srcset="{escape(options)}" sizes="(min-width: 768px) 48rem, 100vw" ', 1)
+            tag = tag.replace("<img ", f'<img srcset="{escape(options)}" sizes="{BODY_SIZES}" ', 1)
         return tag
 
     def to_figure(m):
