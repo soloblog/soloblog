@@ -560,11 +560,50 @@ document.addEventListener('DOMContentLoaded', function () {
         KEYS && SETTING.test(line) ? 'line-sb-setting' + (UNCHANGED.test(line) ? ' line-sb-default' : '') :
         BLOCK.test(line) ? 'line-sb-block' : '';
     }
+    // **, *, _ and ~~ that are never closed are only characters (the
+    // preview shows them as typed), but CodeMirror styles everything
+    // after an opening one as bold, italic or struck through to the end of
+    // the paragraph. Styled only where its closing mark follows, on this
+    // line or a later one in the same paragraph.
+    function closes(stream, from, mark) {
+      if (stream.string.indexOf(mark, from) >= 0) return true;
+      for (var n = 1; n <= 40; n++) {
+        var next = stream.lookAhead(n);
+        if (next == null || !/\S/.test(next) || /^\s*([-+*]|\d+[.)]|#{1,6})\s/.test(next)) return false;
+        if (next.indexOf(mark) >= 0) return true;
+      }
+      return false;
+    }
+    var MARKS = [['strong', function (s) { return s.strong ? s.strong + s.strong : ''; }],
+                 ['em', function (s) { return s.em || ''; }],
+                 ['strikethrough', function (s) { return s.strikethrough ? '~~' : ''; }]];
+    function unclosed(stream, before, state, style) {
+      MARKS.forEach(function (m) {
+        var name = m[0], was = m[1](before), now = m[1](state), mark = was || now;
+        if (!mark || !style || style.indexOf(name) < 0) return;
+        // an opening mark looks for its partner after itself; text inside,
+        // or the closing mark, from where it starts
+        if (closes(stream, was ? stream.start : stream.pos, mark)) return;
+        style = style.replace(new RegExp('(^|\\s)(formatting-)?' + name + '(?=\\s|$)', 'g'), ' ');
+        // the mark itself then reads as the characters it is
+        if (!/formatting-/.test(style)) style = style.replace(/(^|\s)formatting(?=\s|$)/g, ' ');
+        style = style.replace(/\s+/g, ' ').trim() || null;
+      });
+      return style;
+    }
     var mode = {};
     for (var key in base) mode[key] = base[key];
     mode.token = function (stream, state) {
       var kind = stream.sol() ? lineKind(stream.string) : '';
-      var style = base.token(stream, state);
+      // the markdown's own state, under the overlay EasyMDE adds
+      var md = state.base || state;
+      var before = { strong: md.strong, em: md.em, strikethrough: md.strikethrough };
+      var style = unclosed(stream, before, md, base.token(stream, state));
+      // a footnote's text ([^1]: The note.) reads like a link reference's
+      // address to CodeMirror, which styled its first word as one
+      if (style && /(^|\s)url(\s|$)/.test(style) && /^\s*\[\^[^\]]+\]:/.test(stream.string)) {
+        style = style.replace(/(^|\s)(string|url)(?=\s|$)/g, ' ').trim() || null;
+      }
       if (style && /(^|\s)link(\s|$)/.test(style) && !goesSomewhere(stream.string, stream.start)) {
         style = style.replace(/(^|\s)(formatting-)?link(?=\s|$)/g, ' ').trim() || null;
       }

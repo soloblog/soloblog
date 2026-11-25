@@ -41,6 +41,9 @@ versions may include breaking changes; they'll always be listed here.
 
 ### Fixed
 
+- Bold, italic or a line through text isn't shown in the editor until
+  its closing mark is typed, as the preview shows it
+- A footnote's text no longer looks like a URL in the editor
 - A Hero's heading has no copy-link button beside it, so it stays centred
   on a phone
 - Typing in Chinese, Japanese or Korean, Enter confirms the word in the
