@@ -387,7 +387,7 @@ elsewhere, **Rename** to change its label, and **Remove from menu** (or
 again.
 
 **A page you added stopped working?** If you remove the last wiki note,
-or switch the links page off, the page leaves the menu by itself. Its row
+or switch the links page off, the page leaves the menu automatically. Its row
 stays in **Pinned**, greyed out, and says why - for example **No wiki
 notes yet**. It comes back when the page does.
 

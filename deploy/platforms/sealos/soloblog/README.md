@@ -6,7 +6,7 @@ Soloblog is a free, open source blog and website for one person, run on your own
 
 ## About Hosting Soloblog
 
-Soloblog keeps its posts as markdown files, its SQLite database, pictures and settings in one folder, mounted here at `/data`. There's no database server to run. It runs as a single copy, so the template keeps one replica.
+Soloblog keeps its posts as markdown files, its SQLite database, images and settings in one folder, mounted here at `/data`. There's no database server to run. It runs as a single copy, so the template keeps one replica.
 
 ## Common Use Cases
 
@@ -22,7 +22,7 @@ Open the app's address. First-time setup asks for a setup token: open the app's 
 ## Dependencies for Soloblog Hosting
 
 - **Soloblog**: `ghcr.io/soloblog/soloblog`
-- **Persistent storage**: `/data` for posts, pictures, the database and settings
+- **Persistent storage**: `/data` for posts, images, the database and settings
 - **Network entry**: Service, HTTPS Ingress and the Sealos App resource
 
 ### Deployment Dependencies

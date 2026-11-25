@@ -269,7 +269,7 @@ The admin follows a small, deliberate set of rules. Keep new UI inside them.
   things from a list.
 - **A Post setting that follows a site setting is marked when a page
   sets it differently.** Its field carries the site's value
-  (`data-site-value`: a choice's value, or "1"/"0" for a tick or switch)
+  (`data-site-value`: a choice's value, or "1"/"0" for a checkbox or switch)
   and sits in a `data-custom-field` that gets `data-changed` while it
   differs, which turns on its left-edge bar (`ui.CHANGED_BAR`, a border
   that's always there, clear, so nothing moves) and its `ui.ResetButton`
@@ -284,7 +284,7 @@ The admin follows a small, deliberate set of rules. Keep new UI inside them.
   value gets the same - no "Custom" word, no "On/Off by default" label.
 - **The settings pages mark what's changed the same way:**
   `SettingsForm` (and the forms `autosaving()` makes) runs
-  `_mark_changed`, which gives every switch, choice and tick list with a
+  `_mark_changed`, which gives every switch, choice and checkbox list with a
   default its `data-default-value` - `presets.baseline()`: the starting
   style chosen last over `settings.DEFAULTS` - and a Reset. So a style
   just picked marks nothing; what's changed after it does. Reset puts the
@@ -296,7 +296,7 @@ The admin follows a small, deliberate set of rules. Keep new UI inside them.
   links, the editor toolbar).
 - **Admin lists** share `SearchField` (filters as you type), `FilterSelect`
   (named in its own box, applies on change) and `ListHeader`: how many are
-  shown and what they match, with Clear, and - once rows are ticked with
+  shown and what they match, with Clear, and - once rows are selected with
   `RowCheck` - "N selected" with `BulkButton`s in its place.
 - **Every admin page is one column wide.** Lists and forms share the
   column the editor writes in (`max-w-3xl`, beside the menu), so nothing
@@ -548,13 +548,13 @@ apart, so a test fails on one.
 | Between tiles or rows that read as one block | `TIGHT_GAP` | 16px |
 | A gallery's tiles | `GALLERY_GAP` | as cards, with room under each for its title |
 | A card at rest | `SHADOW_REST` | a small shadow |
-| A picture or card that stands off the page | `SHADOW_RAISED` | a large one |
+| An image or card that stands off the page | `SHADOW_RAISED` | a large one |
 
 - **Headings:** a section's title is the only `<h2>` in it. Everything
   under it is an `<h3>` - `pages._items_as_h3` sees to it, so a screen
   reader's outline is the same on every page. No `<h4>`.
 - **The smallest text is `text-xs`** (12px): a credit, a label, a date.
-- **Pictures** take their shape from the section (`aspect-[4/3]` for a
+- **Images** take their shape from the section (`aspect-[4/3]` for a
   card's, `aspect-square` for a face), never from the file.
 - The sign-up box and the contact form are the site's own, the same here
   as on their own pages.
@@ -644,7 +644,7 @@ plain means leaving out the machinery, not those words.
   follows the site names what the site gives *this* post or page - "Off
   (default)" where Settings leaves its kind out - never the site's value
   regardless. Whatever Settings turns off for it (comments for the whole
-  site, a tick under Show that needs setting up) says so beside it, with
+  site, a checkbox under Show that needs setting up) says so beside it, with
   a link to that setting (`editor.SiteTurnsOff`), only while it's so.
 - **A dropdown lists each choice once.** The site's is the "(default)"
   entry, which follows the site, and isn't listed again on its own -
@@ -658,8 +658,8 @@ plain means leaving out the machinery, not those words.
 
 ### Options
 
-- **A name, then a few words:** "Cards - a grid with pictures". If a
-  choice is visual, show it (a picture, the font itself) instead of
+- **A name, then a few words:** "Cards - each post with its image". If a
+  choice is visual, show it (an image, the font itself) instead of
   describing it.
 - **"(recommended)" only where getting it wrong would hurt.** Otherwise
   the default already is the recommendation.
@@ -700,7 +700,7 @@ no full stop: "Saved", "Copied".
   alike, whether it saves as it changes or with Save.
 - **More than about a dozen choices is a picker, not a dropdown:** the post
   picker for a post or page, the media picker for a file, a searchable box
-  for long lists (time zone, language, currency), a gallery with pictures
+  for long lists (time zone, language, currency), a gallery with images
   for templates, starting styles and fonts. Never a long `<select>` of posts.
 - **Dropdowns look alike.** A short `<select class="select">` is fine to
   write: SELECT_JS (app.py) gives it the same styled list as a
@@ -726,7 +726,7 @@ no full stop: "Saved", "Copied".
    field table in `routes/admin_settings/saves.py` (`DESIGN_FIELDS`,
    `GENERAL_FIELDS`, `SITE_FIELDS`, `PROFILE_FIELDS`, `SECRETS_FIELDS`)
    saying how a form's value is cleaned - `flag` for a switch, `one_of`
-   for a choice, `some_of` for ticked boxes, `text`, or a stricter one.
+   for a choice, `some_of` for selected checkboxes, `text`, or a stricter one.
    Anything not allowed is saved as the default. Saving, the Design
    preview and the Default tag all follow from that line; a test fails
    if a page shows a setting its table doesn't have.
@@ -786,7 +786,7 @@ See also: [Write and format a post](#write-and-format-a-post)
 ```
 
 - **Title:** a verb and the goal, in the reader's words - "Add images
-  and galleries", "Bring back an earlier version". Never a feature name
+  and galleries", "Restore an earlier version". Never a feature name
   alone ("History"), never a question.
 - **First line:** what you'll get, in one sentence. No "This section
   explains".
@@ -889,7 +889,7 @@ and the tags disagree.
   its row here, run `daisyft build`, and check the page it was for - the
   last column says what comes back.
 
-| Name | The rule | Why | Reverting brings back |
+| Name | The rule | Why | Reverting restores |
 |---|---|---|---|
 | `menu-focus` | `.menu` items (`li > a`, `li > button`, `li > summary`) on `:focus-visible`: `outline: 2px solid currentColor`, `outline-offset: -2px` (inside the row); `.btn-ghost:focus-visible`: the same, `outline-offset: 2px` | With the keyboard, daisyUI shows focus on a menu item or a ghost button only as a faint tint, about 1.1:1 - WCAG 2.4.7 (Focus Visible) fails. A ring in the text colour, never on a mouse click; a menu row's sits inside it so a scroll box doesn't clip it | Focus shown only as a faint tint on menu items and ghost buttons |
 | `tooltip-on-top` | `.tooltip` while pointed at or focused, and its bubble (`.tooltip-content`, `::before`, `::after`): `z-index: 100` | daisyUI puts a tooltip's bubble one layer up (z-index 1), so a sticky bar, a card, a join's focused button or the editor beside it covered the words. Lifted above the page, below an open menu (999) and dialogs | Tooltips hidden under what's beside them |

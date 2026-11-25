@@ -45,7 +45,7 @@ you share it:
 - **Write your first post**.
 
 Select one to open the **Settings** page where it's done. Each is checked
-off by itself once it is - there's nothing to mark.
+off automatically once it is - there's nothing to mark.
 
 The same list stays in **Getting started**, at the bottom of the admin
 menu, and opens from any page. The number beside it shows how far you've

@@ -2086,7 +2086,7 @@ The ones with valves too.
 
 Section: Story
 
-Pictures that change as you scroll the words - on a phone, each one fills the screen.
+Images that change as you scroll the text - on a phone, each one fills the screen.
 
 ### Bring it in
 
@@ -2151,14 +2151,14 @@ Style: Cover
 
 {p("forest_road")}
 
-A Hero, a Call to action or a Picture and text can be a cover with a
-`Style: Cover` line - its words over its picture, across the page.
+A Hero, a Call to action or an Image and text can be a cover with a
+`Style: Cover` line - its text over its image, across the page.
 
-## Picture and text
+## Image and text
 
 Section: Image and text
 
-A picture beside its words.
+An image beside its text.
 
 {p("workshop")}
 
@@ -2344,7 +2344,7 @@ Anything with a gas pipe, and most printers.
 
 Section: Photo gallery
 
-Pictures with their captions - here, a slider that moves along by itself
+Images with their captions - here, a slider with autoplay
 (` ```gallery slider auto `).
 
 ```gallery slider auto
@@ -2357,7 +2357,7 @@ Pictures with their captions - here, a slider that moves along by itself
 
 Section: Compare
 
-A table that compares options, with ticks and crosses.
+A table that compares options, with checkmarks and crosses.
 
 | | Saturday | Wednesday evening |
 |---|---|---|
@@ -2393,7 +2393,7 @@ Thirty-one volunteers and a waiting list for bicycles.
 
 Section: Events
 
-Dates coming up - `Date:` and `Place:` lines. Past ones fold away.
+Dates coming up - `Date:` and `Place:` lines. Past ones collapse.
 
 ### Fixing lamps, a workshop
 
@@ -2422,7 +2422,7 @@ Dishes and their prices.
 
 Section: Portfolio
 
-Pictures of your work, each leading to its page. Or a `Tag: work` line for
+Images of your work, each leading to its page. Or a `Tag: work` line for
 everything with that tag, and `Show as: Rows` for another arrangement.
 
 ### A lamp from a bicycle
@@ -2548,7 +2548,7 @@ Cook: 45 min
 
 Section: Ingredients
 
-A list readers can tick off as they shop.
+A list readers can check off as they shop.
 
 - 200 g flour
 - 150 g sugar

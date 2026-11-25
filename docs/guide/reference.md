@@ -124,7 +124,7 @@ A preset changes your whole site's look in one go. There are **Custom**, **Defau
 
 **Default**, beside it, puts every look setting back to how Soloblog comes, the colours too. It asks before it does, and **Undo it** brings yours back. Your words, images and pages stay - the banner's text and image, your icons and footer note, which page is your homepage.
 
-A preset can change: how posts are shown in the blog roll (and what each one shows, cards in a row, grouping, the placeholder), the reading column, the fonts and text size, the header's position, layout and width, the side panels (where each goes, where it shows and their order), the table of contents, folding sections, the cover image's width, the gallery style, how portfolios are arranged, animations and what each post shows. A preset that makes a page of its own (a landing page, docs, a wiki) offers it as your homepage, or one of your pages; the others leave your homepage as it is. Never your colours, your writing or anything else.
+A preset can change: how posts are shown in the blog roll (and what each one shows, cards in a row, grouping, the placeholder), the reading column, the fonts and text size, the header's position, layout and width, the side panels (where each goes, where it shows and their order), the table of contents, collapsible headings, the cover image's width, the gallery style, how portfolios are arranged, animations and what each post shows. A preset that makes a page of its own (a landing page, docs, a wiki) offers it as your homepage, or one of your pages; the others leave your homepage as it is. Never your colours, your writing or anything else.
 
 ### Colours
 
@@ -452,7 +452,7 @@ Footnotes, checklists, callouts, galleries and embedded videos always work. Thes
 
 ### Toolbar order
 
-The order of the buttons on the toolbar. Drag them into order, or use the arrows. **Reset to default** brings back the standard set.
+The order of the buttons on the toolbar. Drag them into order, or use the arrows. **Reset to default** restores the standard set.
 
 ### Templates
 
@@ -579,7 +579,7 @@ Keep your images and backups in online storage of your own - an Amazon S3, Cloud
 - **How often** - A minute after changes, or once a day or once a week if anything changed.
 - **Backups to keep** - How many stay in the bucket; older ones are deleted as new ones are made.
 - **What the backups include** - Posts and pages, settings, comments and messages, members, subscribers and followers, stats and reactions. Images are kept in the bucket separately.
-- **Recent backups** - The newest three, with **Older backups** folded under them, each with **Restore**, which shows what's in it first - and **Images**, the bucket's latest copy of each.
+- **Recent backups** - The newest three, with **Older backups** collapsed under them, each with **Restore**, which shows what's in it first - and **Images**, the bucket's latest copy of each.
 - **Sync images** - All your images at once, the way you choose: this site to your bucket, or your bucket to this site. Copies what's missing or different on the other side; leaves what's the same, and deletes nothing. When an image fails to reach the bucket, this panel says so.
 - **Back up now** - Makes a backup straight away.
 
@@ -656,8 +656,8 @@ own. Beside the editor, use the editor's own **Save**.
 ### Page
 
 The heading counts what this page changes from the site: **Page · 2
-changed**. Each setting that follows a site setting (Contents, Fold
-sections, Cover image, Space between sections, Sections appear, the side panels, Page
+changed**. Each setting that follows a site setting (Contents,
+Collapsible headings, Cover image, Space between sections, Sections appear, the side panels, Page
 width and a checkbox under Show; **Allow comments on this post** and **Email
 it to subscribers** under Publishing; **Hide the cover in post lists** and
 **Word goal** under Details; **Hide this post from search engines** under
@@ -719,7 +719,7 @@ when Settings leaves pages out.
   A post starts with what **Settings > Posts > Each post shows** has selected; a
   page in the menu or footer starts with only its title and content.
   Comments have their own switch, **Allow comments**.
-- **More** - Folded, and open by itself while the page uses one of these.
+- **More** - Collapsed, and open automatically while the page uses one of these.
   They work on any post or page:
   - **Show as slides** (on/off) - Each part between `---` lines is a slide.
   - **In the wiki** (on/off) - Listed on the wiki's front page, not in the blog.
@@ -823,7 +823,7 @@ Two things to know as you type:
 
 Your post's title is its biggest heading, so headings in the writing
 start at `##`. Headings (`##` and `###`) build the post's table of
-contents, get a copy-link button, and can fold (see
+contents, get a copy-link button, and can collapse (see
 [Contents and sections](#contents-and-sections)).
 
 ### Text styles
@@ -848,7 +848,7 @@ contents, get a copy-link button, and can fold (see
 |---|---|---|
 | **Link** | `[words](https://example.com)` | The text, linking to that URL |
 | **Link to a post or page** | Nothing - choose it, then pick a post or page from the list | A link to one of your own posts or pages, with its title as the link text |
-| **Link by title** | `[[Another post]]`, or `[[its-url|some text]]` for other words. Type `[[` and a few letters of the title for suggestions. | A link to another of your posts, by its title or its address. Until that post exists, the link shows red for you and as plain text for visitors. |
+| **Link by title** | `[[Another post]]`, or `[[its-url|some text]]` for other words. Type `[[` and a few letters of the title for suggestions. | A link to another of your posts, by its title or its URL. Until that post exists, the link shows red for you and as plain text for visitors. |
 | URL | `<https://example.com>` | The URL itself, as a link. A URL without `<` and `>` around it stays plain text. |
 
 ### Lists
@@ -951,7 +951,7 @@ Select an image in **Media** to open its details.
 - **Crop to** and **Keep** - Crop it to a shape - Wide 16:9, Photo 3:2, 4:3, Square or Portrait 4:5 - keeping its centre, top, bottom, left or right, then select **Crop**. **Restore original** undoes any rotating or cropping.
 - **Alt text** - Describes the image for people who can't see it. Leave it empty if it's only decoration.
 - **Caption** - Shown under the image in posts.
-- **Credit** and **Credit link** - Who made the image - a photographer, an illustrator, you - shown with it as "Image by …", and their website for the name to link to. A stock photo you add from the picker is credited by itself, as "Photo by … on Pexels".
+- **Credit** and **Credit link** - Who made the image - a photographer, an illustrator, you - shown with it as "Image by …", and their website for the name to link to. A stock photo you add from the picker is credited automatically, as "Photo by … on Pexels".
 - **Dark mode version** - Another image shown in its place while a reader's site is dark: **Pick** one you've uploaded - any image but this one. It switches with each reader's light or dark setting - see [Organise media](run.md#organise-media).
 - **Phone version** - Another image shown in its place on a phone: **Pick** one you've uploaded - any image but this one. A wide screen shows the usual image. The phone image can have a Dark mode version of its own - see [Organise media](run.md#organise-media).
 - **File name** - Rename the file. Posts that use it get the new name, and links to the old one keep working. Audio, video and PDFs have this too; the rest of this list is for images.

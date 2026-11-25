@@ -159,7 +159,7 @@ is explained in its section's own entry in
 [Sections and templates](sections-templates.md).
 
 **Not Key: values, but settings:** a post's cover width, contents,
-folding and side panels are in its **Post settings**
+collapsible headings and side panels are in its **Post settings**
 ([Page](reference.md#page)). The defaults for galleries, portfolios,
 covers and contents are in **Settings > Posts**, and how sections come
 into view is under **Settings > Style > Motion**.

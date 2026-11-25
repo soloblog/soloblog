@@ -552,11 +552,11 @@ def test_a_missing_picture_is_left_out_for_a_visitor_and_boxed_for_the_admin(cli
         "Hello.\n\n![](/uploads/nowhere.webp)\n\n![](/uploads/here.png)\n\n![](https://example.com/far.jpg)\n\n"
         "```gallery grid\n/uploads/gone1.webp | A\n/uploads/here.png | B\n```\n")
     seen = client.get(f"/post/{slug}").text
-    assert "nowhere.webp" not in seen and "gone1.webp" not in seen and "Picture not found" not in seen
+    assert "nowhere.webp" not in seen and "gone1.webp" not in seen and "Image not found" not in seen
     assert 'src="/uploads/here.png' in seen and 'src="https://example.com/far.jpg"' in seen
     assert seen.count("gallery-item") == 1
     mine = admin.get(f"/post/{slug}").text
-    assert "nowhere.webp" not in mine and mine.count("Picture not found - replace it") == 2
+    assert "nowhere.webp" not in mine and mine.count("Image not found - replace it") == 2
     assert "border-dashed" in mine and 'src="/uploads/here.png' in mine
 
 

@@ -19,14 +19,14 @@ out, are in [DECISIONS.md](DECISIONS.md). An idea of your own starts in
 - **Export and import of custom templates.** A custom template as one
   file - markdown with its settings at the top, readable like a post -
   exported and imported in **Settings > Editor > Custom templates**.
-  Pictures become placeholders on export (a picture's address points to
+  Images become placeholders on export (an image's URL points to
   its own site's uploads); the template still shows where each goes. An
   import is cleaned like anything typed into a post, so a shared file
   can't put a script on a site - with a test for the abuse case. Later,
   if people use it: a gallery of templates on the Soloblog website.
-- **A picture's size, chosen in the editor.** Small, Medium or Large for
-  a picture in a post - three sizes only, no dragging and no numbers, so
-  pictures line up from post to post and still fit a phone.
+- **An image's size, chosen in the editor.** Small, Medium or Large for
+  an image in a post - three sizes only, no dragging and no numbers, so
+  images line up from post to post and still fit a phone.
 - **A note for sample words left in.** Applying a template adds its
   sample words ("The first step."), which can reach a live page.
   Publishing a page that still has them says so, gently.
@@ -40,7 +40,7 @@ out, are in [DECISIONS.md](DECISIONS.md). An idea of your own starts in
   left on pages and on the right on posts, say - instead of one place and
   a **Shows on**. Each post or page can still choose its own. A site's
   Shows on carries over, so nothing changes on update.
-- **Restoring a backup brings back the images it saw.** Each version of
+- **Restoring a backup restores the images it saw.** Each version of
   an image is kept once in the bucket, named by a fingerprint of what's
   in it, and each backup lists which version every image had. Restoring
   an old backup puts back those versions - an image edited or deleted
@@ -48,10 +48,10 @@ out, are in [DECISIONS.md](DECISIONS.md). An idea of your own starts in
   an unchanged one is never kept twice. A version no kept backup or page
   uses goes with the last backup that did. It works the same with every
   storage company, and locked with a passphrase too; an existing bucket
-  is changed over once, by itself.
+  is changed over once, automatically.
 - **Screenshots in Help, if people get lost.** The guide is written to
-  work without pictures (every step names the button and where it is);
-  pictures would add to every install and need retaking when the look
+  work without screenshots (every step names the button and where it is);
+  screenshots would add to every install and need retaking when the look
   changes. Add a few for the hardest steps if people say they need them.
 - **More email services over HTTPS.** Today email goes out by SMTP,
   with Resend's API for hosts that block SMTP. Add the APIs of other
@@ -99,7 +99,7 @@ out, are in [DECISIONS.md](DECISIONS.md). An idea of your own starts in
     not a fixed time.
 
   Meanwhile, Cloudflare in front ([DEPLOYMENT.md](DEPLOYMENT.md)) caches
-  pictures and assets near readers, with no code.
+  images and assets near readers, with no code.
 
 ## Later
 

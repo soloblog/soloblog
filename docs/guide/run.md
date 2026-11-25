@@ -102,7 +102,7 @@ Give it a dark version:
 
 Use the light one in your posts as usual. Each reader sees the version
 that matches their light or dark setting - their device's, or the
-palette they choose in the theme switcher - and it changes by itself if
+palette they choose in the theme switcher - and it changes automatically if
 they switch while reading, in galleries and the lightbox too. The dark
 one counts as in use, so it never shows under **Unused**.
 
@@ -116,7 +116,7 @@ version, such as a screenshot taken on a phone:
 
 Use the wide one in your posts as usual. On a phone, readers see the
 phone version in its place, including in galleries, in the lightbox and
-in each step of a Story. It changes by itself if they turn the phone
+in each step of a Story. It changes automatically if they turn the phone
 sideways, and a wide screen shows the usual one. The phone version counts
 as in use, so it never shows under **Unused**.
 
@@ -132,7 +132,7 @@ version has a dark one of its own. To give it one:
    image, then select **Save**.
 
 A phone then shows the phone version in light and its dark one in dark,
-and it changes by itself when the theme does. It counts as in use, so it
+and it changes automatically when the theme does. It counts as in use, so it
 never shows under **Unused**.
 
 **Images with names like IMG_4032?** Select them and choose **Name from alt
@@ -186,7 +186,7 @@ It doesn't ask about each post or image, and it doesn't show which ones
 will change - the checkboxes and the counts are what you choose by.
 
 **Before you restore, keep a copy of today.** Select **Back up now**, or
-**Download** a backup, first. If the restore brings back less than you
+**Download** a backup, first. If the restore gives back less than you
 hoped, restoring that copy puts your site back as it was this minute.
 
 **Want backups made for you?** Connect cloud storage - a bucket at

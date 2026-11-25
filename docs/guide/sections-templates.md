@@ -181,7 +181,7 @@ Dated entries on a line - a history, a year in review. Each item:
 
 Talks, workshops and readings. Each item: `### A talk`,
 `Date: 12 March 2027`, `Place: …` and links to the slides or video. Events to come are listed first,
-soonest first; past ones fold away by themselves. Search engines
+soonest first; past ones collapse automatically. Search engines
 understand each one as an event.
 
 ### Section: Menu

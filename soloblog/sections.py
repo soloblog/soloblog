@@ -235,7 +235,7 @@ REGISTRY = {
                            "panels-top-left"),)),
     "bento": _kind("bento", ("Bento grid",), "Tiles of different sizes, the first big", "grid-2x2",
                    ("tiles", "grid", "mosaic", "bento"), "What's inside",
-                   "### The main thing\n\n![A picture](https://)\n\nA line about it.\n\n### Another\n\nA line.\n\n"
+                   "### The main thing\n\n![An image](https://)\n\nA line about it.\n\n### Another\n\nA line.\n\n"
                    "### And another\n\nA line.\n\n### One more\n\nA line.\n\n### The last\n\nA line.",
                    width="wide"),
     "recipe_facts": _kind("recipe_facts", ("Recipe facts",), "Serves, prep and cook time, side by side", "clock",

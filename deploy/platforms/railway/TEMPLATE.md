@@ -47,7 +47,7 @@ members-only posts can be free or paid.
 ## About Hosting Soloblog
 
 Soloblog is one container with one folder of data: posts as markdown files,
-a SQLite database, pictures and settings, all on the volume at `/data`.
+a SQLite database, images and settings, all on the volume at `/data`.
 There's no database server to run, and backups to a zip or an
 S3-compatible bucket are built in.
 

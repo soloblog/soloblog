@@ -437,7 +437,7 @@ _WRAPPER_OPEN = re.compile(r"<(a|p|figure|picture|div)\b[^>]*>\s*$")
 _CAPTIONS = r"(?:<span\b[^>]*>[^<]*</span>|<figcaption\b[^>]*>.*?</figcaption>)*"
 _MISSING_BOX = ('<div class="flex items-center justify-center border border-dashed border-base-content/30 '
                 'rounded-box p-4 text-center text-sm text-base-content/60 {shape}">'
-                'Picture not found - replace it</div>')
+                'Image not found - replace it</div>')
 _KEEP_SHAPE = re.compile(r"^(?:aspect-\S+|w-full|h-\S+|min-h-\S+|absolute|inset-\S+)$")
 
 
