@@ -52,7 +52,7 @@ DEFAULTS = {
     "preset_undo": "",            # what it changed, for Undo
     "custom_preset": "",          # your own look, saved as the Custom preset (presets.save_custom)
     "own_themes": "",             # your own colours, from daisyUI's theme generator (themes.own_themes)
-    "post_shows": "",             # what a post shows around its text (pages.EXTRAS); "" - all but Print
+    "post_shows": "",             # what a post shows around its text (pages.EXTRAS); "" - all but Print and the newsletter sign-up
     "cards_per_row": "2",          # Cards: 1, 2 or 3 in a row (3 is 2 in the narrow column); 1 is Magazine's first, each
     # IANA name - what "Publish at" is typed in, and what dates on the
     # site are shown in. Everything is still stored as UTC (see tz.py).

@@ -128,9 +128,11 @@ Email your new posts to readers who sign up for them.
    email a week or a month with all the posts from that time.
 5. Choose whether to **Send the whole post**, or only its summary and a
    link to read the rest.
+6. To put a sign-up box under each post, switch on **Show the sign-up
+   box under each post**.
 
-A sign-up box now shows under each post, and on its own page at
-`/newsletter`. New subscribers confirm their address before they get
+Readers can sign up on the newsletter's own page, at `/newsletter`, and
+in the sign-up box wherever you've put it. New subscribers confirm their address before they get
 anything else. Each email shows the post the way it looks on your site,
 with a plain-text copy for email apps that want one, and a link to
 unsubscribe.

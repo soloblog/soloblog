@@ -106,8 +106,9 @@ EXTRAS = {"breadcrumbs": "Breadcrumbs", "progress": "Reading progress bar", "byl
           "sides": "Side panels"}
 # what a page shows of them, unless it says otherwise - when the posts do
 PAGE_EXTRAS = {"breadcrumbs", "progress", "series", "sides"}
-# off until it's chosen in Each post shows
-OFF_BY_DEFAULT = {"print"}
+# off until it's chosen in Each post shows (or, for the sign-up box, with
+# the newsletter's own switch)
+OFF_BY_DEFAULT = {"print", "newsletter"}
 
 
 def default_extras(page: bool) -> set:

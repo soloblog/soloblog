@@ -1615,3 +1615,44 @@ def test_heading_links_keep_back_for_leaving_the_page(admin):
     # Back (test_finding_your_way), and a footnote beside the text stays put
     app_js = admin.get("/app.js").text
     assert "location.replace(href)" in app_js and "e.sbStay = true" in app_js
+
+
+def test_the_sign_up_box_under_posts_is_off_until_chosen(admin):
+    from soloblog import pages
+    settings.set_many({"newsletter_mode": "builtin", "post_shows": ""})
+    assert "newsletter" not in pages.default_extras(False)
+    assert "print" not in pages.default_extras(False) and "tags" in pages.default_extras(False)
+    page = admin.get("/admin/settings?tab=newsletter").text
+    switch = re.search(r'<input[^>]*name="newsletter_on_posts"[^>]*>', page).group(0)
+    assert "checked" not in switch
+    # its switch turns it on, and the rest of what posts show stays as it was
+    pages.show_on_posts("newsletter", True)
+    assert "newsletter" in pages.default_extras(False) and "tags" in pages.default_extras(False)
+
+
+def test_a_newsletter_site_keeps_its_sign_up_box_on_update(monkeypatch):
+    import sqlite3
+    from soloblog import db, pages
+    here = os.path.join(os.path.dirname(db.__file__), "migrations")
+
+    def updated(rows):
+        # a site as it was before 019, with these settings
+        conn = sqlite3.connect(":memory:")
+        conn.row_factory = sqlite3.Row
+        monkeypatch.setattr(db._local, "conn", conn, raising=False)
+        conn.execute("CREATE TABLE schema_migrations (filename TEXT PRIMARY KEY, applied_at TEXT)")
+        conn.executescript(Path(here, "001_schema.sql").read_text())
+        conn.executemany("INSERT INTO schema_migrations (filename) VALUES (?)",
+                         [("001_schema.sql",)] + [(f"0{n:02d}_x.sql",) for n in range(2, 19)])
+        conn.executemany("INSERT INTO settings (key, value) VALUES (?, ?)", rows.items())
+        db.run_migrations()
+        return {r["key"]: r["value"] for r in conn.execute("SELECT key, value FROM settings")}.get("post_shows", "")
+
+    kept = updated({"newsletter_mode": "builtin"})
+    # what it showed before: all but Print, the sign-up box included
+    assert set(kept.split(",")) == set(pages.EXTRAS) - {"print"}
+    # a choice of its own stays; without a newsletter there's nothing to keep
+    assert updated({"newsletter_mode": "builtin", "post_shows": "tags,byline"}) == "tags,byline"
+    assert updated({"newsletter_mode": ""}) == ""
+    assert updated({}) == ""
+
