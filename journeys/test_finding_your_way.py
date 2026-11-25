@@ -13,6 +13,22 @@ def test_a_post_links_back_to_posts_and_pages(owner):
     assert w.page.url.endswith("/admin/posts"), w.page.url
 
 
+def test_an_admin_page_opens_the_tab_you_were_on(owner):
+    w = owner
+    w.go("/admin/media?tab=unused")
+    w.go("/admin/posts?status=draft")
+    # from the menu: the address names no tab
+    w.go("/admin/media")
+    assert w.page.url.endswith("/admin/media?tab=unused"), w.page.url
+    w.go("/admin/posts")
+    assert w.page.url.endswith("/admin/posts?status=draft"), w.page.url
+    # an address that names a tab keeps it, and is remembered in turn
+    w.go("/admin/media?tab=all")
+    assert w.page.url.endswith("?tab=all"), w.page.url
+    w.go("/admin/media")
+    assert w.page.url.endswith("?tab=all"), w.page.url
+
+
 def test_marks_that_are_never_closed_stay_plain(owner):
     w = owner
     w.go("/admin/new")

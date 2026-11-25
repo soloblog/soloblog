@@ -1601,3 +1601,10 @@ def test_a_post_has_a_way_back_to_posts_and_pages(admin, client):
     back = html.rfind('aria-label="Posts and pages"', 0, edit)
     assert back > 0 and 'href="/admin/posts"' in html[back - 400:edit]
     assert 'aria-label="Posts and pages"' not in client.get(f"/post/{slug}").text
+
+
+def test_the_admin_remembers_each_pages_tab(admin):
+    # the script the journey runs (test_finding_your_way): an admin page's
+    # tab kept in this browser, and opened before the page draws
+    js = admin.get("/admin.js").text
+    assert "soloblog-tabs:" in js and "location.replace(path + '?'" in js

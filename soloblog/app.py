@@ -782,6 +782,7 @@ INDEX_SEARCH_JS = js.read("index_search.js")
 # a setting's bar and Reset while it differs from its default - Post
 # settings and the settings pages alike
 CUSTOM_TAGS_JS = js.read("custom_tags.js")
+TAB_MEMORY_JS = js.read("tab_memory.js")
 
 
 SHARED_SCRIPTS = [ACTIONS_JS, PAGE_HELPERS_JS, CODE_COPY_JS, MASTODON_SHARE_JS, PANEL_STATE_JS, LIKE_JS, SCROLL_TOP_JS, TOAST_JS, COMMENTER_NAME_JS, CONFIRM_JS, POPOVER_DROPDOWN_JS, NAV_HOVER_JS, COUNTDOWN_JS, SELECT_JS, FOOTER_CLEARANCE_JS, CHROME_OFFSETS_JS, SAVE_STATUS_CLEAR_JS, LIVE_JS, SCROLL_RESTORE_JS, READING_JS, SIDENOTES_JS, ROW_LINKS_JS, ads.CONSENT_JS, captcha.CAPTCHA_JS, extcomments.EXT_COMMENTS_JS, LIGHTBOX_JS, MOTION_JS, TIMELINE_JS, PASSKEY_JS, BUSY_JS, SLIDES_JS]
@@ -791,7 +792,8 @@ APP_JS_VERSION = hashlib.sha256(APP_JS.encode("utf-8")).hexdigest()[:12]
 # What only the admin's pages use (pickers, autosave, the unsaved-changes
 # warning, the settings search), loaded after app.js on every /admin page
 # and on any page while the admin is signed in. Visitors never download it.
-ADMIN_SCRIPTS = [MEDIA_PICKER_JS, LINK_PICKER_JS, AUTOSAVE_JS, SORTABLE_JS, INDEX_SEARCH_JS, CUSTOM_TAGS_JS]
+ADMIN_SCRIPTS = [MEDIA_PICKER_JS, LINK_PICKER_JS, AUTOSAVE_JS, SORTABLE_JS, INDEX_SEARCH_JS, CUSTOM_TAGS_JS,
+                 TAB_MEMORY_JS]
 ADMIN_JS = "\n".join(script.strip() + "\n;" for script in ADMIN_SCRIPTS)
 ADMIN_JS_VERSION = hashlib.sha256(ADMIN_JS.encode("utf-8")).hexdigest()[:12]
 
