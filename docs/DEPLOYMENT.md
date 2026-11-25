@@ -961,21 +961,25 @@ are set.
 
 Your site sends email - password resets, sign-in alerts, comment
 confirmations, the newsletter. You can set it up in **Settings > Email**
-after setup, or here on your host, so it works from the first start.
+after setup, or with settings on your host, so it works from the first
+start. There are two ways:
 
-**What we recommend:** SMTP - the standard way any email provider
-accepts email to send. It works with an email account you already have
-(Gmail, iCloud, Fastmail, Yahoo, Proton - with an app password) or with
-a sending service (Brevo, Mailgun, Postmark, Amazon SES, or Resend's own
-SMTP), so nothing ties you to one company. Set `SMTP_HOST`, `SMTP_PORT`,
-`SMTP_USER`, `SMTP_PASSWORD` and `SMTP_FROM` - see
-[Settings on the host](#settings-on-the-host).
+- **Resend** - an email service that sends over HTTPS, so it works on
+  every host, even one that blocks email ports. It needs a domain of
+  your own. Set `RESEND_API_KEY` and `RESEND_FROM`. The admin recommends
+  it for that reason.
+- **SMTP** - the standard way email apps send. It works with an email
+  account you already have (Gmail, iCloud, Fastmail, Yahoo, Proton -
+  with an app password) or a sending service (Brevo, Mailgun, Postmark,
+  Amazon SES, or Resend's own SMTP), so nothing ties you to one company.
+  Set `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASSWORD` and
+  `SMTP_FROM`.
 
-**If your host blocks SMTP:** many hosts turn off SMTP's ports (25, 465
-and 587) to stop spam, and then email to SMTP never leaves. Resend sends
-over HTTPS instead, which no host blocks. Set `RESEND_API_KEY` and
-`RESEND_FROM` - on their own, or as well as SMTP, so Resend takes over
-whenever SMTP fails. Resend needs a domain of your own.
+Both are in [Settings on the host](#settings-on-the-host). Set both, and
+Resend takes over whenever SMTP fails.
+
+**Hosts and SMTP:** many hosts close SMTP's ports (25, 465 and 587) to
+stop spam, and email sent that way never leaves. Where each one stands:
 
 | Host | SMTP |
 |---|---|
