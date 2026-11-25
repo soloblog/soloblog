@@ -44,6 +44,8 @@ versions may include breaking changes; they'll always be listed here.
   it on; a site that already shows it keeps it
 - The newsletter's "Show it on the homepage too" is "Show it on the blog
   roll too" - it shows with the list of your posts, wherever that is
+- The Numbers section's figures grow with the space they have, up to a
+  launch page's size, and the words under them are easier to read
 - What an action did shows right beside its button - Save, Discard,
   Security, your own palette, replies, the contact and comment forms
 

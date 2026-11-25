@@ -1711,3 +1711,15 @@ def test_the_banner_goes_with_the_list_of_posts(admin, client):
         assert client.get("/blog").text.count("<h1") == 1
     finally:
         settings.set_many({"banner_enabled": "", "banner_heading": "", "home_page": ""})
+
+
+def test_numbers_grow_with_their_section(admin):
+    from fasthtml.common import to_xml
+    from soloblog import pages, render
+    three = to_xml(pages._numbers(render.render_markdown("## 12\npresets\n\n## 41\nsections\n\n## 35\npalettes")))
+    # sized by the section's own width, up to a launch page's on a wide one
+    assert "@container" in three and "@5xl:text-7xl" in three and "text-4xl" in three
+    assert "text-base" in three and "text-sm" not in three
+    # four to a row stop a size smaller, so each still fits its share
+    four = to_xml(pages._numbers(render.render_markdown("\n\n".join(f"## {n}\nthings" for n in (1, 2, 3, 4)))))
+    assert "@4xl:text-6xl" in four and "text-7xl" not in four

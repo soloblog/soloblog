@@ -1553,14 +1553,20 @@ def _numbers(body):
     width = {1: "w-full", 2: "w-[calc(50%-0.75rem)]",
              4: "w-[calc(50%-0.75rem)] sm:w-[calc(25%-1.125rem)]"}.get(
         n, "w-[calc(50%-0.75rem)] sm:w-[calc(33.333%-1rem)]")
+    # the figures as big as the section's own width allows (@container), so
+    # "10,000" still fits its share in the text column, four to a row, or
+    # two on a phone - up to a launch page's size on a wide one
+    size = ("text-4xl @2xl:text-5xl @4xl:text-6xl" if n == 4 else
+            "text-4xl @xl:text-5xl @3xl:text-6xl @5xl:text-7xl")
     return Div(_prose(intro, "mb-6 text-center"),
-               Div(*[Div(Div(NotStr(inner), cls="text-4xl sm:text-5xl font-extrabold tracking-tighter text-primary "
+               Div(*[Div(Div(NotStr(inner), cls=f"{size} font-extrabold tracking-tighter text-primary "
                                                  "tabular-nums leading-none", data_count_up=True),
                          Div(NotStr(re.sub(r"</?p>", "", text).strip()),
-                             cls="text-sm text-base-content/70 mt-3 text-balance"),
+                             cls="text-base @3xl:text-lg text-base-content/80 mt-3 text-balance"),
                          cls=f"text-center min-w-0 {width}")
                      for _, inner, text in items],
-                   cls="flex flex-wrap justify-center gap-x-6 gap-y-10") if items else None)
+                   cls="flex flex-wrap justify-center gap-x-6 gap-y-10") if items else None,
+               cls="@container")
 
 
 _LOGO = re.compile(r'(?:<a href="([^"]+)"[^>]*>\s*)?(<img\b[^>]*>)(?:\s*</a>)?', re.S)
