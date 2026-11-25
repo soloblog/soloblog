@@ -587,8 +587,10 @@ def blog_roll(req, session, hdrs, page: int, base: str):
     intro = P(s["tagline"], cls=f"text-base-content/70 mb-6 {'text-center' if centered else ''}".strip()) \
         if s["tagline"] and not banner else None
 
-    # a page's one h1 is its heading for a screen reader, drawn or not
-    hero = HeroSection(s) if base == "/" else None
+    # a page's one h1 is its heading for a screen reader, drawn or not.
+    # The banner goes with the list of posts: at /blog when the homepage is
+    # a page, which has a Hero section of its own for that
+    hero = HeroSection(s)
     return Layout(
         intro if base == "/" else None,
         hero or H1(s["site_title"] if base == "/" else i18n.t("Blog"), cls="sr-only"),

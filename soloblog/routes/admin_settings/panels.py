@@ -962,7 +962,7 @@ def BannerTab(s):
                 "Content",
                 ToggleField(
                     "Show a banner above your posts", "banner_enabled", checked=(s["banner_enabled"] == "1"),
-                    help="A big welcome at the top of your homepage.",
+                    help="A big welcome above the list of your posts.",
                     cls=FIELD_GAP
                 ),
                 FormField("Heading", Input(name="banner_heading", value=s["banner_heading"],

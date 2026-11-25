@@ -724,7 +724,8 @@ def FooterBio(settings):
 
 
 def HeroSection(settings):
-    """Optional banner above the blog roll - a heading, an optional
+    """Optional banner above the blog roll, wherever it is (the homepage,
+    or /blog when the homepage is a page) - a heading, an optional
     subheading, and a call-to-action button. Renders the same way
     regardless of which roll layout is chosen, since it's just
     prepended content above whatever PostRoll draws.

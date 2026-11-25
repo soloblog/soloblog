@@ -1697,3 +1697,17 @@ def test_the_homepage_is_a_page_in_posts_and_pages(admin):
     finally:
         settings.set_many({"home_page": ""})
 
+
+def test_the_banner_goes_with_the_list_of_posts(admin, client):
+    settings.set_many({"banner_enabled": "1", "banner_heading": "Hello there, reader"})
+    try:
+        assert "Hello there, reader" in client.get("/").text
+        # a page as the homepage: the list of posts, and its banner, at /blog
+        slug = save_post(admin, title="A front page", body="Hi.")
+        settings.set_many({"home_page": slug})
+        assert "Hello there, reader" in client.get("/blog").text
+        assert "Hello there, reader" not in client.get("/").text
+        # the blog's page has one h1: the banner's, not a hidden "Blog" as well
+        assert client.get("/blog").text.count("<h1") == 1
+    finally:
+        settings.set_many({"banner_enabled": "", "banner_heading": "", "home_page": ""})

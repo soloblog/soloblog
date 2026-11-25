@@ -49,6 +49,8 @@ versions may include breaking changes; they'll always be listed here.
 
 ### Fixed
 
+- The banner shows above the list of your posts at /blog when your
+  homepage is a page, instead of nowhere
 - The page that's your homepage is listed as a page in Posts and pages,
   and the list's count says how many posts and how many pages it has
 - Bold, italic or a line through text isn't shown in the editor until

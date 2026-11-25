@@ -21,7 +21,7 @@ smaller screen, Preview mode opens your site in a tab of its own.
 [Arrange the header and footer](#arrange-the-header-and-footer) ·
 [Choose how posts are listed](#choose-how-posts-are-listed) ·
 [Place the side panels](#place-the-side-panels) ·
-[Add a homepage banner](#add-a-homepage-banner) ·
+[Add a banner above your posts](#add-a-banner-above-your-posts) ·
 [Add a logo and icons](#add-a-logo-and-icons)
 
 ## Pick a starting style
@@ -239,10 +239,11 @@ Page**, under **Show**, untick the side panels.
 **Where does About the author get its text and photo?** From
 **Settings > Profile and links**.
 
-## Add a homepage banner
+## Add a banner above your posts
 
-A banner is a big welcome at the top of your homepage - a heading, a line
-under it, and a button if you want one.
+A banner is a big welcome above the list of your posts - a heading, a
+line under it, and a button if you want one. It shows on your homepage,
+or on `/blog` when your homepage is one of your pages.
 
 1. Open **Settings > Banner**.
 2. Switch on **Show a banner above your posts**.

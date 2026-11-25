@@ -183,3 +183,32 @@ def test_the_owner_adds_built_in_pages_to_the_menu_and_the_footer(owner, browser
     owner.page.evaluate("async (slug) => { await fetch('/admin/delete', {method: 'POST', body: new URLSearchParams({slug})}); }", slug)
     wide.close()
     phone.close()
+
+
+def test_the_banner_shows_over_the_posts_at_blog(owner, browser, site):
+    slug = _menu_page(owner, "Journey banner front")
+    owner.go("/admin/settings?tab=name")
+    assert _set_homepage(owner, slug) == 200
+    try:
+        # the owner turns the banner on and gives it a heading
+        owner.go("/admin/settings?tab=banner")
+        switch = owner.page.locator("input[name=banner_enabled]")
+        if not switch.is_checked():
+            switch.locator("xpath=ancestor::label[1]").click()
+        owner.page.locator("input[name=banner_heading]").fill("Fresh from the oven")
+        owner.page.get_by_role("button", name="Save", exact=True).click()
+        owner.page.locator("#save-status.text-success").wait_for()
+        # a visitor finds it over the posts, where the menu's Blog goes (its
+        # name is the owner's to change)
+        visitor = Window(browser, site["base"])
+        visitor.go("/")
+        assert visitor.page.get_by_text("Fresh from the oven").count() == 0
+        visitor.page.locator("header a[href='/blog']:visible").first.click()
+        visitor.page.wait_for_url("**/blog")
+        assert visitor.page.get_by_role("heading", name="Fresh from the oven").is_visible()
+        visitor.close()
+    finally:
+        _set_homepage(owner, "")
+        owner.page.evaluate("""() => fetch('/admin/settings/banner', {method: 'POST', headers: {'hx-request': 'true'},
+            body: new URLSearchParams({banner_enabled: '', banner_heading: '',
+                                       declared_fields: 'banner_enabled,banner_heading'})})""")
