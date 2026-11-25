@@ -22,7 +22,21 @@ def _scroll_to_step(w, n):
     w.page.wait_for_timeout(1100)
 
 
-def _story_post(owner):
+def _story_post(owner, tmp_path):
+    # three pictures of its own in Media, to put in place of the sample's
+    from PIL import Image
+    paths = []
+    for n in range(3):
+        path = tmp_path / f"story-step-{n}.png"
+        Image.new("RGB", (1200, 800), (60 * n + 40, 90, 200 - 50 * n)).save(path)
+        paths.append(str(path))
+    owner.go("/admin/media")
+    owner.page.set_input_files("input[name=image]", paths)
+    owner.page.wait_for_load_state("networkidle")
+    for n in range(3):
+        owner.page.locator(f"span.link:text-matches('^story-step-{n}')").first.wait_for()
+    names = sorted(n for n in owner.page.evaluate(
+        "() => [...document.querySelectorAll('span.link')].map(s => s.textContent.trim())") if n.startswith("story-step-"))
     owner.go("/admin/new")
     owner.page.locator("[placeholder=Title], input.text-2xl").first.fill("Story journey")
     owner.page.locator(".CodeMirror").first.click()
@@ -35,6 +49,11 @@ def _story_post(owner):
     owner.page.wait_for_timeout(400)
     text = owner.page.evaluate("() => window._activeEasyMDE.value()")
     assert "Section: Story" in text and text.count("### ") == 3
+    # each step's sample image given its picture, as the owner fills them in
+    for name in names:
+        text = re.sub(r"(!\[[^\]]*\])\(https://\)", rf"\1(/uploads/{name})", text, count=1)
+    assert "](https://)" not in text.split("[Start yours]")[0], text
+    owner.page.evaluate("(t) => window._activeEasyMDE.value(t)", text)
     owner.page.evaluate("() => { togglePostSettings(true); document.querySelectorAll('#post-settings-panel "
                         "details[data-panel]').forEach(d => d.open = true); }")
     owner.page.locator("#post-settings-panel input[name=published]").check()
@@ -45,8 +64,8 @@ def _story_post(owner):
     return owner.page.url.rstrip("/").rsplit("/", 1)[-1]
 
 
-def test_a_story_changes_its_picture_as_the_words_scroll(owner, browser, site):
-    slug = _story_post(owner)
+def test_a_story_changes_its_picture_as_the_words_scroll(owner, browser, site, tmp_path):
+    slug = _story_post(owner, tmp_path)
 
     # a phone: each picture fills the screen under the header, a fade on it that stays still, the words scrolling over it
     phone = Window(browser, site["base"], 375, 812, phone=True)
@@ -169,13 +188,18 @@ def test_a_story_changes_its_picture_as_the_words_scroll(owner, browser, site):
     gap = rest["pic"] - rest["head_bottom"]
     assert 8 < gap < 120 and rest["head"] > header + 1, (rest, header)
     total = wide.page.evaluate("() => document.querySelector('[data-story-wrap]').getBoundingClientRect().height")
-    # while it plays: always the same gap, the heading at the header's foot, never over the picture
+    # while it plays: always the same gap, the heading under the header - lower by as much as
+    # centres a picture shorter than the window, with its heading - never over the picture
+    shift = wide.page.evaluate("() => parseFloat(document.querySelector('[data-story-wrap]').style"
+                               ".getPropertyValue('--story-shift')) || 0")
     for by in (200, total * 0.2, total * 0.35, total * 0.5):
         scroll_story(by)
         now = places()
         assert abs(now["pic"] - now["head_bottom"] - gap) <= 2, (by, now, gap)
-        assert abs(now["head"] - header) <= 1 and now["head_bottom"] <= now["pic"], (by, now, header)
-    # the heading's place doesn't change as the words scroll past
+        assert abs(now["head"] - header - shift) <= 1 and now["head_bottom"] <= now["pic"], (by, now, header, shift)
+    # the heading's place doesn't change as the words scroll past - well before the end, where a
+    # picture shorter than the window lets go sooner
+    scroll_story(total * 0.25)
     before = places()
     wide.page.evaluate("() => scrollBy(0, 120)")
     wide.page.wait_for_timeout(300)

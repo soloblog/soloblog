@@ -55,6 +55,8 @@ versions may include breaking changes; they'll always be listed here.
 
 ### Fixed
 
+- A Story with pictures finishes loading - its pictures kept being
+  picked again, so the page never settled
 - The banner shows above the list of your posts at /blog when your
   homepage is a page, instead of nowhere
 - The page that's your homepage is listed as a page in Posts and pages,

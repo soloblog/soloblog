@@ -290,8 +290,11 @@
           if (!img.naturalWidth) return;
           var cover = img.naturalWidth > img.naturalHeight && !(held && getComputedStyle(held).display === 'flex');
           if (cover) frame.setAttribute('data-fit', 'cover'); else frame.removeAttribute('data-fit');
-          if (!cover) img.setAttribute('sizes', sizes);
-          else img.setAttribute('sizes', Math.ceil(frame.clientHeight * img.naturalWidth / img.naturalHeight) + 'px');
+          // set only when it changes: setting sizes, even to the same value,
+          // makes the browser pick the picture again and fire load again -
+          // which came back here, round and round, and the page never loaded
+          var want = cover ? Math.ceil(frame.clientHeight * img.naturalWidth / img.naturalHeight) + 'px' : sizes;
+          if (img.getAttribute('sizes') !== want) img.setAttribute('sizes', want);
         }
         img.addEventListener('load', function () { fit(); level(story); });
         window.addEventListener('resize', function () { requestAnimationFrame(function () { fit(); level(story); }); });
