@@ -345,12 +345,10 @@ platform such as PikaPods, Cloudron or Elestio:
 
 ### Hosts without a disk
 
-These two work too, but they can't keep files: every update or restart
-would start your site empty. So besides the host, you make a storage
-bucket - online storage you rent - and Soloblog keeps
-everything there and restores itself from it each time it starts. That's
-an extra account, an extra bill and more to set up. Choose one of the
-hosts above instead, unless you already use one of these.
+These two keep your files in a storage bucket - online storage you
+rent - rather than on a disk. Soloblog keeps everything there and
+restores itself from it each time it starts, so you make a bucket
+alongside the app.
 
 #### DigitalOcean App Platform
 
@@ -360,7 +358,7 @@ hosts above instead, unless you already use one of these.
 bucket, each monthly. App Platform's free tier runs only static sites,
 which Soloblog isn't.
 
-App Platform has no disk, so Soloblog keeps everything in a bucket and
+On App Platform, Soloblog keeps everything in a Spaces bucket and
 restores itself from it on each deploy.
 
 1. In [DigitalOcean](https://www.awin1.com/cread.php?awinmid=123996&awinaffid=3158224),
@@ -372,7 +370,7 @@ restores itself from it on each deploy.
    and 64 random characters for `SESSION_SECRET`. With no disk, that
    keeps you logged in across deploys.
 
-**Email:** DigitalOcean blocks SMTP by default - use Resend. See
+**Email:** send through Resend - see
 [Send email from your host](#send-email-from-your-host).
 
 #### Heroku
@@ -406,7 +404,7 @@ Debian, then follow [With Docker Compose](#with-docker-compose).
 | Provider | Worth knowing |
 |---|---|
 | [Hetzner](https://www.hetzner.com/cloud) | Very good value; data centres in Germany, Finland, the US and Singapore. |
-| [DigitalOcean](https://www.awin1.com/cread.php?awinmid=123996&awinaffid=3158224) | Simple dashboard and excellent tutorials; Droplets in many regions. Blocks SMTP by default - [use Resend for email](#send-email-from-your-host). |
+| [DigitalOcean](https://www.awin1.com/cread.php?awinmid=123996&awinaffid=3158224) | Simple dashboard and excellent tutorials; Droplets in many regions. Email goes through [Resend](#send-email-from-your-host). |
 | [Vultr](https://www.vultr.com/?ref=9936472-9J) | Many locations worldwide, hourly billing. |
 | [Linode (Akamai)](https://www.linode.com) | Long-running, straightforward pricing, good support. |
 | [Hostinger VPS](https://www.hostinger.com/vps-hosting) | Budget plans with a friendly panel; also sells domains. |
@@ -984,7 +982,7 @@ whenever SMTP fails. Resend needs a domain of your own.
 | Render | Blocked on free instances since September 2025. Soloblog needs a paid instance anyway, which can use SMTP; if email doesn't arrive, use Resend. |
 | Railway | Only on the Pro plan and up. On Hobby or a trial, use Resend. |
 | Fly.io | Works on port 587. Some email providers refuse email from Fly's shared addresses; a sending service, or Resend, avoids that. |
-| DigitalOcean (App Platform and Droplets) | Blocked by default. Use Resend, or ask DigitalOcean's support to unblock it - they decide case by case. |
+| DigitalOcean (App Platform and Droplets) | Closed by default, to keep spam off its network. Use Resend, or ask DigitalOcean's support to open it for your account. |
 | Your own server elsewhere | Usually works on 587 or 465; port 25 is often blocked, and Soloblog doesn't use it. |
 
 **Check it works:** in **Settings > Email**, select **Send a test email**.
