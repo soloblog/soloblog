@@ -652,6 +652,16 @@ plain means leaving out the machinery, not those words.
 
 - **One line, and only when the label isn't enough.** Most switches need
   none. Don't restate the label.
+- **A whole sentence that names what it's about.** Say "the post", "the
+  passphrase", "your backups" - not "it", "they" or "then" leaning on
+  the label beside it, and not shorthand like "Off, it's a draft" or
+  "When it's published". A line is read on its own - by a screen
+  reader, in the guide's reference, by someone who skipped the label -
+  and two pronouns together are a puzzle: "Without it they can't be
+  restored". Write "When off, the post is a draft only you can see",
+  "Only people with the link can find the post". A pronoun is fine once
+  its noun is in the same line: "The post goes live at the time you
+  set, and is dated then".
 - **What it does for them or their readers - not how it works.** No
   caches, scripts, requests, storage, "loads", "renders", "fetches".
 - **No reassurance about things people already expect.** Not "Nothing is

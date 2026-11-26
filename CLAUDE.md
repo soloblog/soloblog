@@ -225,8 +225,10 @@ desktop - in the same change, not just where it was first asked for.
   two-factor authentication), never a home-made paraphrase of it, and one
   term for one thing everywhere; short, the wording the app already has
   for the same action; no full stop on a status message or a
-  tooltip. Long choices are pickers, set-once groups are summaries that
-  open, a page fits in about three screens.
+  tooltip; every help line, option and guide entry a whole sentence that
+  names what it's about - "the post", not an "it" or "they" that leans
+  on the label beside it. Long choices are pickers, set-once groups are
+  summaries that open, a page fits in about three screens.
 - **Soloblog is described in its official words** - the tagline, the one
   line or the paragraph in docs/brand/README.md > The words, never a new
   wording. A test checks the places that use them.
