@@ -88,6 +88,7 @@ DEFAULTS = {
     "backup_last_at": "",           # the last backup made to the bucket
     "backup_last_error": "",        # why the last automatic backup failed, until one works
     "images_not_in_bucket": "",     # images whose copy to the bucket failed, a line each, until they reach it
+    "bucket_deletes_left": "",      # images deleted here whose delete in the bucket failed, a line each, until it goes
     "backup_verified_at": "",       # Verify a backup: when, and "ok" or what was wrong
     "backup_verified_result": "",
     "mail_last_ok_at": "",          # the last email that went out, and the last that didn't

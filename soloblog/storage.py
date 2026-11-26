@@ -251,6 +251,8 @@ def _mirror_worker():
             log.exception("copying to the bucket failed")
             if action is _put_image:
                 _set_unsynced(unsynced() | {args[0]})
+            elif action is _delete_image:
+                _set_deletes_left(deletes_left() | {args[0]})
         finally:
             _mirror_queue.task_done()
 
@@ -297,16 +299,25 @@ def _put_image(key: str, data: bytes):
     put(key, _to_bucket(data), content_type)
     if key in (missing := unsynced()):
         _set_unsynced(missing - {key})
+    # back here (restored, untrashed): no longer one to delete
+    if key in (left := deletes_left()):
+        _set_deletes_left(left - {key})
+
+
+def _delete_image(key: str):
+    delete(key)
+    if key in (left := deletes_left()):
+        _set_deletes_left(left - {key})
 
 
 def mirror_move(filename: str, to_trash: bool):
     """An image moved into (or out of) trash locally - same move in the bucket."""
     mirror_upload(filename, trash=to_trash)
-    _mirror(delete, f"uploads/{filename}" if to_trash else f"uploads/_trash/{filename}")
+    _mirror(_delete_image, f"uploads/{filename}" if to_trash else f"uploads/_trash/{filename}")
 
 
 def mirror_delete(filename: str, trash: bool = False):
-    _mirror(delete, f"uploads/_trash/{filename}" if trash else f"uploads/{filename}")
+    _mirror(_delete_image, f"uploads/_trash/{filename}" if trash else f"uploads/{filename}")
 
 
 def fetch_upload(filename: str) -> bool:
@@ -347,6 +358,8 @@ def sync_uploads(way: str = "both", older: str = "") -> dict:
     and nothing is deleted on either side. older: a passphrase to try
     for an image the current one doesn't open (_open_image)."""
     counts = {"uploaded": 0, "downloaded": 0, "same": 0}
+    retry_deletes()
+    left = deletes_left()
     for folder, prefix in ((config.uploads_dir(), "uploads/"),
                            (os.path.join(config.uploads_dir(), "_trash"), "uploads/_trash/")):
         os.makedirs(folder, exist_ok=True)
@@ -365,6 +378,8 @@ def sync_uploads(way: str = "both", older: str = "") -> dict:
                 counts["uploaded"] += 1
         if way in ("down", "both"):
             for fn in sorted(remote):
+                if prefix + fn in left:
+                    continue
                 path = os.path.join(folder, fn)
                 if fn in local:
                     if way == "both":
@@ -406,6 +421,45 @@ def _set_unsynced(keys: set):
     value = "\n".join(sorted(keys)[:1000])
     if (settings.get("images_not_in_bucket") or "") != value:
         settings.set_many({"images_not_in_bucket": value})
+
+
+# ---- images deleted here whose delete in the bucket failed (it couldn't
+# be reached): remembered across restarts and tried again with the next
+# backup or sync, so the bucket ends up holding only what the site does -
+# and a refilling server never brings a deleted image back
+
+def deletes_left() -> set:
+    from soloblog import settings
+    return {k for k in (settings.get("bucket_deletes_left") or "").split("\n") if k}
+
+
+def _set_deletes_left(keys: set):
+    from soloblog import settings
+    value = "\n".join(sorted(keys)[:1000])
+    if (settings.get("bucket_deletes_left") or "") != value:
+        settings.set_many({"bucket_deletes_left": value})
+
+
+def _local_path(key: str) -> str:
+    return os.path.join(config.uploads_dir(), *key[len("uploads/"):].split("/"))
+
+
+def retry_deletes():
+    """Deletes each image still waiting to go from the bucket - unless
+    it's back here since (restored, say), when it stays. One that fails
+    again waits for the next try."""
+    left = deletes_left()
+    for key in sorted(left):
+        if os.path.isfile(_local_path(key)):
+            left.discard(key)
+            continue
+        try:
+            delete(key)
+            left.discard(key)
+        except StorageError as e:
+            log.warning("couldn't delete %s from the bucket yet: %s", key, e)
+            break
+    _set_deletes_left(left)
 
 
 # ---- backups: posts + comments/settings, a zip per change burst
@@ -547,6 +601,7 @@ def backup_now() -> str:
     backups = list_backups()
     for old in backups[keep_count():]:
         delete(old["key"])
+    retry_deletes()
     _state["last_result"], _state["last_at"] = "", datetime.now(UTC).isoformat()
     # kept across restarts, for Site health
     from soloblog import settings

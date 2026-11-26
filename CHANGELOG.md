@@ -59,6 +59,8 @@ versions may include breaking changes; they'll always be listed here.
 
 ### Fixed
 
+- An image deleted while cloud storage can't be reached is deleted from
+  the bucket later, and no longer comes back with Sync images
 - Pictures in a wide or full section, a gallery and a full-screen cover
   are sharp - they loaded a copy sized for the column and looked soft
 - A Story with pictures finishes loading - its pictures kept being

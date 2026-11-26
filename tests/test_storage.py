@@ -392,6 +392,41 @@ def test_an_image_that_didnt_reach_the_bucket_is_said_until_it_does(bucket, monk
     assert storage.unsynced() == set() and health.bucket_images_check() is None
 
 
+def test_an_image_deleted_while_the_bucket_was_unreachable_goes_from_it_later(bucket, monkeypatch, admin):
+    """Deleting an image deletes it from the bucket; if the bucket can't
+    be reached then, the next sync does it - and never brings it back."""
+    from soloblog import images
+    name = images.save_upload(_png()).rsplit("/", 1)[1]
+    storage.wait_for_mirroring()
+    assert storage.get(f"uploads/{name}") is not None
+    working = config.S3_ENDPOINT
+    monkeypatch.setattr(config, "S3_ENDPOINT", "http://127.0.0.1:9")  # nothing listening
+    admin.post("/admin/media/trash", data={"filename": name})
+    admin.post("/admin/media/empty-trash")
+    storage.wait_for_mirroring()
+    assert not os.path.isfile(os.path.join(config.uploads_dir(), name))
+    monkeypatch.setattr(config, "S3_ENDPOINT", working)
+    # still in the bucket, as it was when the delete failed
+    assert storage.get(f"uploads/{name}") is not None
+    assert f"uploads/{name}" in storage.deletes_left()
+    admin.post("/admin/backup/sync", data={"way": "down"})
+    assert storage.get(f"uploads/{name}") is None
+    assert not os.path.isfile(os.path.join(config.uploads_dir(), name))
+    assert storage.deletes_left() == set()
+
+
+def test_a_delete_waiting_for_the_bucket_spares_an_image_thats_back(bucket, monkeypatch):
+    from soloblog import images
+    name = images.save_upload(_png()).rsplit("/", 1)[1]
+    storage.wait_for_mirroring()
+    storage._set_deletes_left({f"uploads/{name}"})
+    storage.retry_deletes()
+    assert storage.get(f"uploads/{name}") is not None
+    assert storage.deletes_left() == set()
+    images.delete_upload(name)
+    storage.wait_for_mirroring()
+
+
 def test_a_bucket_restore_leaves_images_as_they_are_when_unticked(bucket, admin):
     from soloblog import backup
     storage.put("uploads/from-bucket.png", b"bucket copy")
