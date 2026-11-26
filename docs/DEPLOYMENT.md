@@ -350,6 +350,12 @@ rent - rather than on a disk. Soloblog keeps everything there and
 restores itself from it each time it starts, so you make a bucket
 alongside the app.
 
+**Set `SESSION_SECRET` too:** 64 random characters, such as a password
+manager makes. It keeps you logged in. Soloblog makes one on its first
+start and keeps it on the disk - so without a disk, every deploy makes a
+new one, and you have to log in again each time. The same goes for any
+other host without a disk.
+
 #### DigitalOcean App Platform
 
 [![Deploy to DigitalOcean](https://www.deploytodo.com/do-btn-blue.svg)](https://cloud.digitalocean.com/apps/new?repo=https://github.com/soloblog/soloblog/tree/master)
@@ -367,8 +373,8 @@ restores itself from it on each deploy.
 2. Select the button above.
 3. Fill in the `S3_*` values it asks for - the bucket's details, see
    [Keep files in cloud storage](#keep-files-in-cloud-storage) -
-   and 64 random characters for `SESSION_SECRET`. With no disk, that
-   keeps you logged in across deploys.
+   and 64 random characters for `SESSION_SECRET` - see
+   [why](#hosts-without-a-disk).
 
 **Email:** send through Resend - see
 [Send email from your host](#send-email-from-your-host).
@@ -703,7 +709,8 @@ With it on:
   [Back up and restore](guide/run.md#back-up-and-restore).
 - **An empty disk restores itself** from the newest backup when Soloblog
   starts - your login, settings and images too - so hosts without a disk
-  work. A change in the last minute before a crash can be lost; a normal
+  work. On one, set `SESSION_SECRET` too, or every deploy logs you out -
+  see [Hosts without a disk](#hosts-without-a-disk). A change in the last minute before a crash can be lost; a normal
   restart saves it first.
 - **Settings > Backup and import > Cloud storage** shows the last backup,
   lists recent ones to restore, and has **Back up now** and **Sync
