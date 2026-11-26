@@ -26,6 +26,7 @@ versions may include breaking changes; they'll always be listed here.
 
 ### Changed
 
+- The posts list's Who can read filter is called Readers
 - Words on an image - the banner, a Hero, a full-screen cover, a large
   post card, a project - sit in a frosted box in your site's colours,
   so they read on any image

@@ -437,7 +437,7 @@ def test_posts_list_pills_and_who_can_read_filter(admin, on):
     paid = save_post(admin, title="Only for the paying few", body=BODY, visibility="paid")
     page = admin.get("/admin/posts?access=paid").text
     assert "Only for the paying few" in page and "Open to all of them" not in page
-    assert "Who can read" in page and "for paid members" in page
+    assert ">Readers" in page and "for paid members" in page
     assert ">Paid members</span>" in page and ">Published</span>" in page and ">Post</span>" in page
     page = admin.get("/admin/posts?access=public").text
     assert "Open to all of them" in page and "Only for the paying few" not in page

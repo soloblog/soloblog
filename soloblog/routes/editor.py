@@ -2206,7 +2206,7 @@ def manage_posts(session, status: str = "all", sort: str = "newest", tag: str = 
         sort_picker = FilterSelect("Sort", "sort", SORT_OPTIONS, sort, without("sort") + "&sort=")
         kind_filter = FilterSelect("Type", "kind", KIND_OPTIONS, kind, without("kind") + "&kind=")
         # who can read it - once there's a choice (members on, or a members post already)
-        access_filter = FilterSelect("Who can read", "access", ACCESS_OPTIONS, access, without("access") + "&access=") \
+        access_filter = FilterSelect("Readers", "access", ACCESS_OPTIONS, access, without("access") + "&access=") \
             if members.enabled() or access or posts.count_by_status("all", access="members") \
             or posts.count_by_status("all", access="paid") else None
         # the 40 most used (every tag is under Tags)

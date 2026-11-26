@@ -39,6 +39,10 @@ one. On a phone, select **Filter** beside the search box first. The tabs
 above that show what state they're in: **Published**, **Scheduled**,
 **Drafts** or **Trash**.
 
+**Want only your members-only posts?** With members on, set **Readers**
+to **Members** or **Paid members** - or **Everyone** for the posts anyone
+can read. It's the post's **Who can read it** setting.
+
 **Looking for the post you worked on last?** Set **Sort** to **Last
 edited**. It puts the posts you saved most recently first. Views, likes
 and comments don't count - only saving the post or changing its
