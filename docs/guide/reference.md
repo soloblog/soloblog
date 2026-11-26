@@ -579,7 +579,7 @@ Keep your images and backups in online storage of your own - an Amazon S3, Cloud
 - **How often** - A minute after changes, or once a day or once a week if anything changed.
 - **Backups to keep** - How many stay in the bucket; older ones are deleted as new ones are made.
 - **What the backups include** - Posts and pages, settings, comments and messages, members, subscribers and followers, stats and reactions. Images are kept in the bucket separately.
-- **Recent backups** - The newest three, with **Older backups** collapsed under them, each with **Restore**, which shows what's in it first - and **Images**, the bucket's latest copy of each.
+- **Recent backups** - The newest three, with **Older backups** collapsed under them, each with **Restore**, which shows what's in it first - and **Images**, the bucket's latest copy of each - unselect it to keep your site's images.
 - **Sync images** - All your images at once, the way you choose: this site to your bucket, or your bucket to this site. Copies what's missing or different on the other side; leaves what's the same, and deletes nothing. When an image fails to reach the bucket, this panel says so.
 - **Back up now** - Makes a backup straight away.
 

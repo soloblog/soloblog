@@ -392,6 +392,15 @@ def test_an_image_that_didnt_reach_the_bucket_is_said_until_it_does(bucket, monk
     assert storage.unsynced() == set() and health.bucket_images_check() is None
 
 
+def test_a_bucket_restore_leaves_images_as_they_are_when_unticked(bucket, admin):
+    from soloblog import backup
+    storage.put("uploads/from-bucket.png", b"bucket copy")
+    storage.put("backups/soloblog-20261119-162700.zip", backup.build_backup_zip({"posts", "settings"}))
+    admin.post("/admin/backup/from-bucket", data={"key": "backups/soloblog-20261119-162700.zip"})
+    admin.post("/admin/backup/restore-confirm", data={"settings": "1"})
+    assert not os.path.isfile(os.path.join(config.uploads_dir(), "from-bucket.png"))
+
+
 def test_a_bucket_restore_brings_images_back_when_ticked(bucket, admin):
     from soloblog import backup
     storage.put("uploads/from-bucket.png", b"bucket copy")

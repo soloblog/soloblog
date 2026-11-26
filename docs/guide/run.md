@@ -236,7 +236,8 @@ the one you want. The **Restore** card above fills in and comes into
 view, saying which backup it's from. As with a file you upload, select
 what to restore and select **Restore**. **Images** restores the
 bucket's latest copy of each image, replacing your site's - the bucket
-keeps one copy of each, not one per backup.
+keeps one copy of each, not one per backup. Unselect it to keep your
+site's images as they are.
 
 **A backup asks for a passphrase?** It's locked with a passphrase other
 than the one on your host now - it was made before you changed
