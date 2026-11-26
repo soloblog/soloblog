@@ -262,7 +262,7 @@ The admin follows a small, deliberate set of rules. Keep new UI inside them.
   - *Row and card actions* are icons (`ui.IconAction`), below.
 - **Touch screens get bigger targets, from one rule** (`touch-size` in
   input.css, on daisyUI's own size variables): every button, field,
-  picker and tab 44px (Apple), menu rows 44px at 16px, checkboxes, radios
+  picker and tab 44px (the usual touch target), menu rows 44px at 16px, checkboxes, radios
   and switches 24px, tag pills 32px with a 44px tap area, a link on its own in a list, cell or
   line 44px; fields' text 16px, or an iPhone zooms
   in when one is tapped. New daisyUI controls follow by themselves - don't
@@ -284,7 +284,7 @@ The admin follows a small, deliberate set of rules. Keep new UI inside them.
   `CUSTOM_TAGS_JS` keeps them up as the field changes and
   `SettingsPanel(custom=n)` counts them in the heading ("Page · 2
   changed"). A choice is changed when it's set and isn't the site's
-  value; Reset empties it. Reset is an icon (VS Code's way, its tooltip
+  value; Reset empties it. Reset is an icon (its tooltip
   "Reset to default (On)"), on the label's line for a choice and before
   the switch for a switch - one line. A new Post setting with a site-wide
   value gets the same - no "Custom" word, no "On/Off by default" label.
@@ -588,8 +588,8 @@ that what Insert writes shows nothing but the section.
 
 Every label, heading and line of help in the admin - Settings, Post
 settings, Media - follows these rules, and so does every new feature's
-settings. They come from how Ghost, Notion and Atlassian design for people
-who aren't developers.
+settings. They follow how well-made writing and publishing apps design for
+people who aren't developers.
 
 ### Who we write for
 
@@ -621,8 +621,8 @@ plain means leaving out the machinery, not those words.
   ("address", "Makes words stand out", "the words in grey", "a second
   step when you log in") - it makes people work out what we mean, and
   they can't search for it.
-- **The test:** would Ghost, WordPress, Notion or Google Docs say it, or
-  would someone type it into a search? Then it's a term, not jargon.
+- **The test:** would other blogging, writing and document apps say it,
+  or would someone type it into a search? Then it's a term, not jargon.
 - **Common abbreviations stay short:** URL, RSS, HTML, CSS, DNS, HTTPS,
   API, SEO. A less common term gets a few words or a link once, where
   it first comes up: "Webmentions - replies and mentions from other sites".
@@ -717,7 +717,7 @@ no full stop: "Saved", "Copied".
   changed part under **Advanced** at the foot.
 - **Simple settings are rows:** the label and one line on the left, the
   control on the right (`ToggleField` for switches).
-- **Things set up once are a summary that opens** (Ghost's pattern): one
+- **Things set up once are a summary that opens** (a common settings pattern): one
   row with the name, the current state ("Off", "Plausible · your-site.com",
   "Stripe · test mode") and Edit, which opens its fields in place with
   Cancel and Save. Sending email, analytics, ads, paid members (Stripe),
@@ -764,8 +764,8 @@ no full stop: "Saved", "Copied".
 
 ### The user guide
 
-The guide is written by task, the way Ghost's Help Center and Apple's
-user guides are: people come to Help with something to do ("schedule a
+The guide is written by task, the way good help centres and user guides
+are: people come to Help with something to do ("schedule a
 post"), not to learn a feature. [Writing posts](guide/writing.md) is the model -
 read it before writing a page.
 
@@ -925,7 +925,7 @@ and the tags disagree.
 | `menu-focus` | `.menu` items (`li > a`, `li > button`, `li > summary`) on `:focus-visible`: `outline: 2px solid currentColor`, `outline-offset: -2px` (inside the row); `.btn-ghost:focus-visible`: the same, `outline-offset: 2px` | With the keyboard, daisyUI shows focus on a menu item or a ghost button only as a faint tint, about 1.1:1 - WCAG 2.4.7 (Focus Visible) fails. A ring in the text colour, never on a mouse click; a menu row's sits inside it so a scroll box doesn't clip it | Focus shown only as a faint tint on menu items and ghost buttons |
 | `tooltip-on-top` | `.tooltip` while pointed at or focused, and its bubble (`.tooltip-content`, `::before`, `::after`): `z-index: 100` | daisyUI puts a tooltip's bubble one layer up (z-index 1), so a sticky bar, a card, a join's focused button or the editor beside it covered the words. Lifted above the page, below an open menu (999) and dialogs | Tooltips hidden under what's beside them |
 | `editor-blocks` | `.CodeMirror-line.sb-section`, `.sb-setting`, `.sb-block` in the editor: a tinted background and a 3px coloured left edge; `.sb-default`: a setting left at Default, its words at 0.6 opacity | The editor only colours words, so a `Section:` line, its settings and the one-line blocks (Buttons:, Pull quote:, folds, galleries) looked like any other text. Main colour for a section, a fainter one for its settings, grey for blocks | Sections and blocks written as plain lines in the editor |
-| `touch-size` | `@media (pointer: coarse)`: daisyUI's `.btn` (not `-lg`/`-xl`) `--size` 44px (a setting's Reset, `[data-custom-reset]`, with `margin: -0.625rem`, so its 44px reach past the 24px it takes in its row), `-xs`/`-sm` text 14px; `.input`/`.select` 44px; `.input`/`.select`/`.textarea` text at least 16px; `.tabs` 44px; `.menu` rows at least 44px at 16px; `.checkbox`/`.radio`/`.toggle` 24px; a `.badge` that's a link or button 32px to look at and 44px to hit (its tap area reaches 6px above and below, and a 6px margin keeps the next row's clear; one marked `data-tap-area`, among pills you only read, keeps their size and reaches 44px past its edges); what opens a fold (`summary.collapse-title`, `summary.link`) and a link on its own in a list item, table cell or paragraph 44px; a row's ⋯ menu items 44px at 16px | Measured on a phone, most controls were under the 44px touch target (Apple; WCAG 2.5.5): 24-36px buttons and fields, 25-33px menu rows, 16-20px choices - in pages, panels, dialogs and menus alike. Fields' 14px text made an iPhone zoom in on every tap. One rule on daisyUI's own size variables, so everything follows - a mouse keeps the denser sizes | daisyUI's sizes on a touch screen |
+| `touch-size` | `@media (pointer: coarse)`: daisyUI's `.btn` (not `-lg`/`-xl`) `--size` 44px (a setting's Reset, `[data-custom-reset]`, with `margin: -0.625rem`, so its 44px reach past the 24px it takes in its row), `-xs`/`-sm` text 14px; `.input`/`.select` 44px; `.input`/`.select`/`.textarea` text at least 16px; `.tabs` 44px; `.menu` rows at least 44px at 16px; `.checkbox`/`.radio`/`.toggle` 24px; a `.badge` that's a link or button 32px to look at and 44px to hit (its tap area reaches 6px above and below, and a 6px margin keeps the next row's clear; one marked `data-tap-area`, among pills you only read, keeps their size and reaches 44px past its edges); what opens a fold (`summary.collapse-title`, `summary.link`) and a link on its own in a list item, table cell or paragraph 44px; a row's ⋯ menu items 44px at 16px | Measured on a phone, most controls were under the usual 44px touch target (WCAG 2.5.5): 24-36px buttons and fields, 25-33px menu rows, 16-20px choices - in pages, panels, dialogs and menus alike. Fields' 14px text made an iPhone zoom in on every tap. One rule on daisyUI's own size variables, so everything follows - a mouse keeps the denser sizes | daisyUI's sizes on a touch screen |
 | `story-scroll` | `@keyframes story-words` and `story-words-phone`, and where `animation-timeline: view()` is supported, a view timeline per Story step (`[data-story-step]`) driving its words (`[data-story-words]`) - opacity and a 32px drift, with stops for a phone's step and a wide one - for a Story that MOTION_JS has marked live (`[data-live]`); without it, `[data-active]` steps show their words and the others' fade (a transition); `html[data-story-snap]` (MOTION_JS, only while a live story fills the window from top to bottom, so the sections around it scroll freely - and only under a finger, `@media (pointer: coarse)`: a mouse wheel's turn that stopped short of halfway was pulled back) `scroll-snap-type: y proximity`, each live step `scroll-snap-align: center` - the page settles on a step near one; the picture going shrinks as it fades, by Tailwind classes | Words faded from a script lagged a frame behind Chrome's own scrolling - it felt rough. The browser ties them to the scroll itself. Nothing but a keyframe can fade a picture in from a hair larger without the one leaving doing it too. | The words of a Story all showing at once, and the picture changing with no settle |
 | `section-reveal` | `@keyframes reveal-*`, `[data-reveal]` (on `<html>` for the site's, on a section's wrapper for the page's or its own `Appear:`) setting `--reveal`, and `.reveal-item` hidden until MOTION_JS marks it `data-revealed` | Sections appear (Settings > Style > Motion, a page's Post settings, a section's `Appear:`): Rise, Zoom, Slide left, Slide right, Slide both ways (even sections from the right), Focus and Tilt need keyframes of their own. `--reveal` is inherited, so the nearest `data-reveal` wins - one rule per value instead of one per level. Played once as a section scrolls in - tied to the scroll bar, only Chrome showed them. MOTION_JS also marks the pieces (`pieces()`): a section that's a grid of cards hands `reveal-item` to each card, so they arrive in turn (90ms apart, seven at most); plain writing between sections is marked block by block; and a heading shows with the section under it. Hidden first only while the script runs (`html.js-reveal`); each keyframe has only a "from", so nothing stays transformed once a section is in place. | Sections that all just fade in |
 | `animations-off` | `html:not([data-animate]) :is(*, *::before, *::after):not(.loading)` - transitions and animations end at once | Settings > Style > Animations off left most motion on: only the scripts written to check it (folding, the side panels) stopped - drawers, menus, fades and the editor's sheet still moved. One rule covers every one, and any added later. | Animations that keep moving with Animations off |

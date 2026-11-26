@@ -930,8 +930,7 @@ DESIGN_BODY = ("[html[data-design-open]_&]:fixed [html[data-design-open]_&]:inse
 
 
 def DesignPreview(tab):
-    """A Design page's preview, full screen beside its settings (Ghost's
-    design view): the homepage, a post or a page, at a computer's width
+    """A Design page's preview, full screen beside its settings: the homepage, a post or a page, at a computer's width
     or a phone's. Hidden until Preview (DesignPreviewButton) opens it;
     the frame loads only then."""
     from soloblog.ui import EXTERNAL_SVG

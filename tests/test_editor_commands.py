@@ -506,7 +506,7 @@ def test_focus_is_one_bar_at_every_width_folding_what_doesnt_fit():
     # in a browser from 320 to 1280 px: never overflowing, the counts last)
     js = editor.EDITOR_INIT_JS
     assert "wideEnough" not in js and "var want = PREFS.focusBars === 'one' && mde.isFullscreenActive() && !!bar" in js
-    fit = js[js.index("var fitFocusBar = function"):js.index("// Focus mode, as iA Writer") if "// Focus mode, as iA Writer" in js else None]
+    fit = js[js.index("var fitFocusBar = function"):js.index("// Focus mode, as writing apps") if "// Focus mode, as writing apps" in js else None]
     order = [fit.index(part) for part in ("focusMiddle.setAttribute('data-flow'", "toolFolds.forEach",
                                            "tabsBox.setAttribute('data-icons'", "focusWords.setAttribute('data-short'",
                                            "focusMiddle.hidden = true")]

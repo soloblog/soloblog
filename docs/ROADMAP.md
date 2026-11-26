@@ -95,9 +95,9 @@ out, are in [DECISIONS.md](DECISIONS.md). An idea of your own starts in
   webhooks and the API ([API.md](API.md)); this makes them easy. In order
   of value for the work:
   1. **An "Automate your site" guide page** with three or four workflows
-     to import - share a new post to Bluesky, Mastodon or LinkedIn; a
-     comment alert to Telegram or email; a draft from Notion; posts
-     copied to Google Drive. No new code.
+     to import - share a new post to social networks; a comment alert
+     by chat message or email; a draft from a notes app; posts copied
+     to cloud storage. No new code.
   2. **More webhook events** (two today: a post goes live, a comment
      arrives): a post changed or unpublished, a new member, a new
      newsletter subscriber, a contact message, a member who paid, a
@@ -160,7 +160,7 @@ Ideas, with no date.
 - **An editor that shows the page as it looks**, beside today's markdown
   one - for writers who've never used markdown. The post stays a markdown
   file underneath.
-- **Plugins for other apps** (an Obsidian or VS Code "publish" button)
+- **Plugins for other apps** (a "publish" button in a notes app or a code editor)
   are for anyone to build on the API - Soloblog itself doesn't sync.
 
 ## Soloblog on the desktop

@@ -97,7 +97,7 @@ def thumb(name):
 
 # What a post shows around its text, each switched on or off per post
 # (Post settings > Page > Show). A post shows them all; a page in the menu or
-# footer just its title and content, like pages on WordPress or Ghost.
+# footer just its title and content, as a page usually has.
 # Comments keep their own switch, "Allow comments".
 EXTRAS = {"breadcrumbs": "Breadcrumbs", "progress": "Reading progress bar", "byline": "Author and date",
           "tags": "Tags", "listen": "Listen button", "reactions": "Likes", "share": "Share buttons",

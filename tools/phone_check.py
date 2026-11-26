@@ -143,7 +143,7 @@ CHECK_JS = r"""
         img.naturalWidth && !(img.hasAttribute('width') && img.hasAttribute('height')))
       found.push('picture without width and height: ' + describe(img));
   });
-  // a target a finger can hit: on a touch screen 44 by 44 px (Apple; WCAG
+  // a target a finger can hit: on a touch screen 44 by 44 px (the usual touch target; WCAG
   // 2.5.5) - a pill's with its reach - and 24 for a checkbox, radio or switch
   // (touch-size, input.css);
   // with a mouse WCAG 2.2's minimum, 24 (links inside text are exempt) - less

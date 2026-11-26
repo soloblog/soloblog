@@ -284,7 +284,7 @@ def Nav(settings, logged_in, pinned_tree=(), admin_page=False):
     # function: the menu is drawn twice, the phone list and the row, and
     # each copy needs its own popover ids (id_suffix).
     # the header's menus at 14px (daisyUI's menu, not menu-sm): the main way
-    # around a site, Ghost's own is about 15px
+    # around a site, about the size most sites use
     def build_page_links(id_suffix):
         links = []
         # Home, Blog and the built-in pages sit among the pages where Posts and pages > Pinned put

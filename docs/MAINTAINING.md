@@ -34,7 +34,7 @@ decision.
 
 **Keeping it small, and nobody left wondering** (DECISIONS: Community):
 
-- **One place.** No chat server (Discord, Slack) and no forum of our own:
+- **One place.** No chat server and no forum of our own:
   Discussions is the forum. An answer given twice goes into the
   [FAQ](FAQ.md).
 - **Say what to expect.** [SUPPORT.md](../SUPPORT.md) - GitHub shows it

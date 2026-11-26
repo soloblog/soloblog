@@ -1,6 +1,5 @@
 """Site health (Admin > Site health): whether anything about the site
-needs the admin, before it becomes a problem - like WordPress's Site
-Health. Each check is critical, recommended or good, says why it
+needs the admin, before it becomes a problem. Each check is critical, recommended or good, says why it
 matters in plain words, and where to fix it. The quick ones run when the
 page opens; the ones that ask other servers are in remote_checks(),
 run once a day in the background (health_remote.py)."""

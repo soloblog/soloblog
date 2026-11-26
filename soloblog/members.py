@@ -1,7 +1,7 @@
 """Members: readers who sign in by email to read members-only posts - free,
 or paid (stripe_members.py). Never writers: there's still one admin.
 
-Sign-in is the usual passwordless pattern (Ghost, Substack, Medium): an
+Sign-in is the usual passwordless pattern: an
 emailed link, with a 6-digit code beside it for when the email is open on
 another device. Both are kept only as keyed hashes, work once and for 15
 minutes; a code allows five guesses. A signed-in browser holds a random

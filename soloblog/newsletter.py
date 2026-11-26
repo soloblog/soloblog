@@ -562,7 +562,7 @@ def Box(s, page=False):
     """Under posts, on the homepage and at /newsletter - or nothing when
     the newsletter's off. page: /newsletter itself, its heading the page's
     and the card the same as Join's and Sign in's. With members on, a
-    visitor joins here - members and subscribers one list, as Ghost has it."""
+    visitor joins here - members and subscribers one list."""
     from soloblog import members
     m = mode(s)
     member = members.current() if members.enabled(s) else None

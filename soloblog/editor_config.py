@@ -180,8 +180,8 @@ GROUP_OF = {c["id"]: c["group"] for c in COMMANDS}
 
 # the toolbar's out-of-the-box order: the buttons a blogger reaches for
 # most - headings, bold, italic and Clear formatting | lists and quote |
-# links, images and Insert | undo and redo - shown, as Google Docs, Word
-# and WordPress do, for anyone who doesn't know Ctrl+Z. Preview, focus mode and help are on
+# links, images and Insert | undo and redo - shown, as most editors do,
+# for anyone who doesn't know Ctrl+Z. Preview, focus mode and help are on
 # the bar over it (side by side is a tab in focus mode, where there's
 # room for it); a button that doesn't fit the row goes under ⋯. The rest
 # are a click away in Insert (strikethrough, checklist, code, table).

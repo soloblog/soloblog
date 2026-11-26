@@ -349,7 +349,7 @@ def test_phone_header_and_footer_are_sized_for_a_finger(client):
     # 28 px footer icons touching, 13-16 px tall footer links. Now on a touch
     # screen: Material's 56 px bar and 48 px buttons (40 px under 360 px,
     # where four at 48 left the site's name a letter), 48 px footer icons
-    # 8 px apart (web.dev), 44 px footer links at 14 px (Apple) - checked in
+    # 8 px apart (web.dev), 44 px footer links at 14 px (the usual touch target) - checked in
     # a browser at 320, 360, 375 and 1440 px, the name whole at each
     from soloblog import settings, ui
     assert ui.TOUCH_BAR == "pointer-coarse:min-h-14 pointer-coarse:py-1"

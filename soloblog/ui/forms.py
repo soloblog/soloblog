@@ -255,7 +255,7 @@ def _changed_attrs(changed):
 
 
 def ResetButton(shown=False, cls="", default_label=""):
-    """Reset: an icon beside a changed setting (VS Code's way) that puts it
+    """Reset: an icon beside a changed setting that puts it
     back to the default - in Post settings following the site again (a
     choice empties, so it keeps following later changes), on the settings
     pages the starting style's value. Shown only while the setting differs;

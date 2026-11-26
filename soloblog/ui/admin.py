@@ -9,7 +9,7 @@ from soloblog.ui.base import IconAction, SCROLLS, STATUS_BESIDE, STATUS_ROW, Sea
 from soloblog.ui.nav import AdminMenu, AdminMenuButton, VisitorThemeSwitcher, _health_dot
 
 # the admin menu: the size the rest of the app's text is (14px rows of
-# about 36px, as Linear's, Notion's and Ghost's menus are), its headings
+# about 36px, as app menus usually are), its headings
 # small and quiet with room above, so each group reads as one
 MENU_HEADING = "menu-title text-xs font-semibold text-base-content/50 pt-4 pb-1"
 
@@ -37,8 +37,8 @@ _ICONS = {
     "logout": "M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15m3 0 3-3m0 0-3-3m3 3H9",
 }
 
-# Settings' pages, under small headings, one page at a time - as Notion
-# and Ghost group theirs (docs/DEVELOPMENT.md > Writing and settings).
+# Settings' pages, under small headings, one page at a time (docs/DEVELOPMENT.md
+# > Writing and settings).
 # The keys are in addresses (?tab=) - rename the labels only.
 SETTINGS_GROUPS = [
     ("Site", [("name", "Name and homepage"), ("url", "URL and SEO"), ("language", "Language and time")]),
@@ -283,7 +283,7 @@ def AdminSidebar(settings, in_margin=False, rail=False):
 
 def AdminTopBar(settings):
     """The admin's own thin bar at every width, in place of the site's
-    header and footer, as Ghost's and WordPress's are: the menu button
+    header and footer: the menu button
     (where the rail doesn't show), the site's name (it opens the site)
     and the colours - over the rail on a wide screen, at its edge."""
     return Header(

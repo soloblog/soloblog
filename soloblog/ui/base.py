@@ -132,7 +132,7 @@ TABS_CLS = "tabs tabs-border flex-nowrap overflow-x-auto [scrollbar-width:none]"
 def Tabs(*tabs, id, cls=TABS_CLS):
     """A row of tabs that always shows them all: where they don't fit
     (a phone), the ones that do stay - the current one always - and the
-    rest go under More at the end (fitTabs, app.py), as GitHub and Gmail
+    rest go under More at the end (fitTabs, app.py), as most apps
     do. Without scripts, the row scrolls sideways instead."""
     return Div(
         *tabs,
@@ -262,7 +262,7 @@ MENU_SCROLLS = "flex-nowrap overflow-y-auto [scrollbar-width:thin]"
 # button there is (touch-size, input.css) - in Material's 56 px bar
 TOUCH_BTN = "pointer-coarse:btn-square"
 TOUCH_BAR = "pointer-coarse:min-h-14 pointer-coarse:py-1"
-# the footer's links on a touch screen: 44 px tall (Apple's touch target),
+# the footer's links on a touch screen: 44 px tall (the usual touch target),
 # at 14 px - its 12 px small print was hard to read and to hit
 TOUCH_LINK = "inline-flex items-center pointer-coarse:min-h-11 pointer-coarse:text-sm"
 

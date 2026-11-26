@@ -162,8 +162,8 @@ def _meta(p, relative_dates, show, reading=True):
 def PostCardList(p, relative_dates=False, show=None):
     # list-col-grow: one full-width column (list-row's two assume an
     # avatar); the lines between rows are the list's own.
-    # The text first and the picture on its right, the way Medium and
-    # Substack list posts: every title starts at the same edge, cover or
+    # The text first and the picture on its right, as newsletter and
+    # blogging sites list posts: every title starts at the same edge, cover or
     # not (a picture ahead of the text made the titles zig-zag), and the
     # picture can be a real size - 176x128 on a wide screen, 96 square on
     # a phone - instead of a stamp. No cover, no picture: in a list an
@@ -1154,8 +1154,8 @@ def PostHeader(row, s, hides, *, crumbs, title, edit, byline, updated, languages
     full_cover = cover_width == "full"
     return Div(
         # an edge-to-edge cover opens the page, straight under the header;
-        # a narrower one follows the title, byline and tags - the order
-        # Ghost, Medium and Substack use
+        # a narrower one follows the title, byline and tags - the usual
+        # order on blogs
         PostCover(row, s, cover_width, caption, first=True) if full_cover else None,
         crumbs,
         Div(

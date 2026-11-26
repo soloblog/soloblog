@@ -134,7 +134,7 @@ _READ_ONLY = {"integrations-env"}
 
 
 def _setup(panel, state):
-    """Something set up once (Ghost's pattern): closed, one row - its
+    """Something set up once: closed, one row - its
     name, how it's set up now, and Edit; open, its fields, saved
     together with Save."""
     _with_state(panel, state, _open_link())

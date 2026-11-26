@@ -260,8 +260,8 @@ function fitBulk(form) {
 }
 window.addEventListener('resize', function () { document.querySelectorAll('form[data-bulk]').forEach(fitBulk); });
 // On a touch screen a row's box is out of sight until something's
-// ticked: pressing and holding a row (ui.TICK_ROW) ticks it, as in Gmail
-// and Google Photos - without the tap the finger's lifting makes, and
+// ticked: pressing and holding a row (ui.TICK_ROW) ticks it, as in mail
+// and photo apps - without the tap the finger's lifting makes, and
 // without the browser's own menu for the link under it
 var _hold = null, _held = false, _liftedAt = 0;
 document.addEventListener('touchstart', function (e) {

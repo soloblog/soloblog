@@ -13,7 +13,7 @@ function syncReadingProgress() {
     var bar = document.getElementById('reading-progress');
     var article = document.querySelector('article');
     if (!bar || !article) return;
-    // how far down the page, as Ghost's themes measure it - by the post
+    // how far down the post, measured by its own text - by the post
     // alone, a short one fit the screen and showed full before a word was read
     var total = document.documentElement.scrollHeight - window.innerHeight;
     bar.value = (total > 0 ? Math.min(Math.max(window.scrollY / total, 0), 1) : 1) * 100;

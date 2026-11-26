@@ -1127,7 +1127,7 @@ document.addEventListener('DOMContentLoaded', function () {
   window.addEventListener('scroll', markStuck, { passive: true });
   markStuck();
   // One row: the buttons that don't fit fold into ⋯, which is only there
-  // when some don't - as Google Docs does - whatever the width
+  // when some don't - as document editors do - whatever the width
   function fitToolbar() {
     var more = toolbar && [].filter.call(toolbar.children, function (el) { return el.classList.contains('more'); })[0];
     if (!more || !toolbar.offsetWidth) return;
@@ -1174,7 +1174,7 @@ document.addEventListener('DOMContentLoaded', function () {
   // Focus mode - EasyMDE's full screen with a bar of its own: a way out,
   // the post's title, its words, and the browser's own full screen. The
   // formatting toolbar fades while you type (Save stays) and comes back
-  // when the mouse moves or text is selected, as in iA Writer.
+  // when the mouse moves or text is selected, as in writing apps.
   if (toolbar) {
     var box = toolbar.parentNode, icons = PREFS.icons || {};
     // Focus mode's "typing": on the box and on the form (input.css hides
@@ -1443,7 +1443,7 @@ document.addEventListener('DOMContentLoaded', function () {
       setTyping(false);
       if (document.fullscreenElement) document.exitFullscreen();
     }).observe(toolbar, { attributes: true, attributeFilter: ['class'] });
-    // Focus mode, as iA Writer has it (Settings > Editor > Writing):
+    // Focus mode, as writing apps have it (Settings > Editor > Writing):
     // typewriter scrolling keeps the line you're on in the middle of the
     // screen (not on a phone, where the keyboard has the bottom half), and
     // the paragraph you're in - the lines between blank ones - stays at

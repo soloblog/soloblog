@@ -510,7 +510,7 @@ def test_keep_me_signed_in(app, on):
 
 
 def test_with_members_on_the_newsletter_box_joins(app, admin, client, on):
-    """One list, as Ghost has it: a visitor's box under a post joins them,
+    """One list: a visitor's box under a post joins them,
     ticking new posts by email; a member already getting them sees none."""
     from soloblog import newsletter
     before = settings.get("newsletter_mode")

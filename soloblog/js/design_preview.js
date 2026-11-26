@@ -1,6 +1,6 @@
 // A Design page's live preview (DesignPreview): Preview opens it full
 // screen, the page's settings on the left and the site on the right
-// (Ghost's design view) - or, where there's no room for both, the site
+// - or, where there's no room for both, the site
 // in a new tab. The form as it stands is kept under a token
 // (/admin/design/preview) and shown in the frame - after a pause in the
 // changes, so typing doesn't reload it at every letter.

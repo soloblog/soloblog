@@ -456,7 +456,7 @@ def test_admin_sidebar(admin, client):
     appearance = admin.get("/admin/settings?tab=style").text
     assert 'href="/admin/settings?tab=style"' in active(appearance)[0]
     assert "[html[data-admin-beside]_&amp;]:hidden" in appearance and "Settings: Style" in appearance
-    # under their headings, as Notion's are
+    # under their headings
     assert '<li class="menu-title text-xs font-normal pt-3 pb-1">Design</li>' in appearance
     assert '<li class="menu-title text-xs font-normal pt-3 pb-1">Readers</li>' in appearance
     # the menu's own headings aren't the same words as Settings' ones
@@ -1806,7 +1806,7 @@ def _started_days_ago(slug, days=5):
 
 
 def test_a_post_is_dated_the_day_its_first_published(admin, client):
-    """As on Ghost and WordPress: the day a post goes out, not the day
+    """As on most blogs: the day a post goes out, not the day
     its draft was started - and publishing it again keeps that day."""
     from soloblog import tz
     from soloblog.db import get_db

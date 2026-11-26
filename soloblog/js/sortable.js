@@ -127,7 +127,7 @@ function syncSettingsDirty(form) {
 });
 // Leaving with unsaved changes (a settings form, or the editor's
 // window.editorDirty). A link inside the site asks in the app's own
-// dialog, the way Ghost and Google Docs do; closing the tab or going to
+// dialog; closing the tab or going to
 // another site gets the browser's warning - which no page can style or
 // word, on purpose.
 function unsavedChanges() {

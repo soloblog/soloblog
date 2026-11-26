@@ -250,7 +250,7 @@ def RowCheck(form_id, name, value, label, cls="", state=None):
     (published, draft...), for actions that only fit some (BulkButton).
     Out of sight, its space kept so nothing moves, until its row
     (TICK_ROW) is pointed at, it has the keyboard, or anything in the list
-    is ticked (data-ticking, syncBulk) - as Linear's and Google Photos' do.
+    is ticked (data-ticking, syncBulk) - as lists in most apps do.
     On a touch screen it can't be tapped by accident while it's unseen."""
     return Input(type="checkbox", name=name, value=value, form=form_id, aria_label=f"Select {label}",
                  data_state=state,

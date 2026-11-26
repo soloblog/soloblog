@@ -23,7 +23,7 @@ log = logging.getLogger(__name__)
 IMAGE_ERRORS = (OSError, ValueError, Image.DecompressionBombError)
 
 # as big as a wide screen at twice the density needs (a 1280px band on a
-# laptop's sharp screen) - 1600 showed soft there. WordPress's limit too.
+# laptop's sharp screen) - 1600 showed soft there.
 MAX_DIMENSION = 2560
 # what an upload may be - not every format Pillow can read (EPS, PSD...)
 FORMATS = ("JPEG", "PNG", "GIF", "WEBP", "BMP", "TIFF")

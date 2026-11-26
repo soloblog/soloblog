@@ -15,7 +15,7 @@ ERROR_PAGES = {
 # The admin's controls and small print a size up from daisyUI's -sm and
 # Tailwind's text-xs: 36px buttons and fields with 14px text, 14px
 # choices, 13px help and details, 12px pills - the size its menu is, as
-# Ghost's, Linear's and Notion's are. Only inside the admin; the site's
+# in most apps. Only inside the admin; the site's
 # own pages keep theirs. A text-xs with its own size at a breakpoint
 # (sm:text-sm) keeps that.
 ADMIN_SCALE = (
@@ -53,8 +53,7 @@ def ErrorPage(code: int, settings, logged_in=False, pinned_tree=()):
 def AdminFooter(s):
     """The quiet line at the foot of every admin page: the version (and a
     newer one, with how to get it), Help, where to report a problem or
-    ask, and how to support the project - as WordPress has on every
-    screen of its admin."""
+    ask, and how to support the project - on every screen of the admin."""
     from soloblog import config, updates
     return P(f"Soloblog {config.VERSION} · ",
              *([A(f"{newer[0]} is out", href=newer[1], target="_blank", rel="noopener",

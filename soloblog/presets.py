@@ -48,7 +48,7 @@ def _look(**values) -> dict:
 # the page cover too much of it, so it scrolls away or stays at the top.
 PRESETS = {
     "personal": ("Personal blog", "A list of your posts with their images, your tags under them, and you beside every post.",
-                 # the list with its picture on the right (Substack, Medium) - more room per post
+                 # the list with its picture on the right - more room per post
                  _look(side_tags="under", side_author="right",
                        font_headings="humanist",
                        post_shows="byline,tags,reactions,share,support,series,related,author,newsletter,sides"), None),
