@@ -18,7 +18,11 @@
   if (!form || !frame) return;
   // a preset's Preview, clicked here, shows it in the frame - until a change
   var preset = '';
-  function path() { return pathPick ? pathPick.value : '/'; }
+  // the page the frame is on: the one picked above it, or one reached by
+  // following a link inside it - a change to a setting reloads that page,
+  // not the one the preview opened on
+  var here = '';
+  function path() { return here || (pathPick ? pathPick.value : '/'); }
   function address() {
     var extra = preset ? 'preset_preview=' + encodeURIComponent(preset) : token ? 'design_preview=' + token : '';
     return path() + (extra ? (path().indexOf('?') < 0 ? '?' : '&') + extra : '');
@@ -68,7 +72,38 @@
   });
   form.addEventListener('input', later);
   form.addEventListener('change', later);
-  if (pathPick) pathPick.addEventListener('change', load);
+  if (pathPick) pathPick.addEventListener('change', function () {
+    if (pathPick.value === here) return;  // only the menu catching up with the frame (below)
+    here = '';
+    load();
+  });
+  frame.addEventListener('load', function () {
+    var at;
+    try { at = frame.contentWindow.location; } catch (e) { return; }
+    if (!at || at.origin !== location.origin || at.pathname.indexOf('/admin') === 0) return;
+    var query = new URLSearchParams(at.search);
+    query.delete('design_preview');
+    query.delete('preset_preview');
+    var left = query.toString();
+    here = at.pathname + (left ? '?' + left : '');
+    // the page menu says where it is: one of its own, or that page by its title
+    if (!pathPick || pathPick.value === here) return;
+    var own = [].some.call(pathPick.options, function (o) { return o.value === here && !o.hasAttribute('data-followed'); });
+    var followed = pathPick.querySelector('option[data-followed]');
+    if (own) { if (followed) followed.remove(); } else {
+      if (!followed) {
+        followed = document.createElement('option');
+        followed.setAttribute('data-followed', '');
+        pathPick.appendChild(followed);
+      }
+      var title = '';
+      try { title = (frame.contentDocument.title || '').split(' \u2014 ')[0].trim(); } catch (e) {}
+      followed.value = here;
+      followed.textContent = title || here;
+    }
+    pathPick.value = here;
+    pathPick.dispatchEvent(new Event('change'));
+  });
   document.querySelectorAll('[data-preview-show]').forEach(function (b) { b.addEventListener('click', open); });
   document.querySelectorAll('[data-preview-close]').forEach(function (b) { b.addEventListener('click', close); });
   document.addEventListener('keydown', function (e) {

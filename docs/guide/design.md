@@ -10,8 +10,9 @@ These settings are on the **Design** pages in Settings: **Style**,
 **See each change before you save it:** on a Design page, select
 **Preview mode**. Your site fills the screen, with the page's settings
 down the left, and your site changes as you change each setting. Choose
-whether to look at the homepage, a post or a page, and how it looks on a
-**Computer** or a **Phone**. **Close** (or **Esc**) takes you back. On a
+whether to look at the homepage, a post or a page - or select a link in
+the preview to go to any other page, which then stays in view as you
+change settings - and how it looks on a **Computer** or a **Phone**. **Close** (or **Esc**) takes you back. On a
 smaller screen, Preview mode opens your site in a tab of its own.
 
 **Contents:** [Pick a starting style](#pick-a-starting-style) ·

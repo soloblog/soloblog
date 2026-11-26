@@ -67,6 +67,8 @@ versions may include breaking changes; they'll always be listed here.
 
 ### Fixed
 
+- Preview mode stays on the page you went to in it when you change a
+  setting, instead of going back to the one it opened on
 - A post is dated the day it's first published, not the day its draft was
   started
 - A large post card, and Magazine's smaller ones, open from anywhere on

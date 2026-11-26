@@ -159,3 +159,28 @@ def test_a_picture_card_opens_from_anywhere_on_it(owner, browser, site):
     owner.go("/admin/settings?tab=blog&panel=blog-layout")
     owner.page.locator("label:has(input[name=roll_style][value=list])").click()
     _save_space(owner)
+
+
+def test_the_preview_stays_on_the_page_you_went_to(owner, site):
+    """Preview mode: follow a link in the preview to another page, change
+    a setting, and the preview shows that page with the change - not the
+    page it opened on."""
+    post = publish(owner, "Somewhere to go", "A post to open in the preview.")
+    publish(owner, "Newer than that", "The menu's own A post is this one.")
+    owner.page.set_viewport_size({"width": 1400, "height": 900})
+    owner.go("/admin/settings?tab=style&panel=style-colours")
+    owner.page.get_by_role("button", name="Preview mode").click()
+    frame = owner.page.frame_locator("iframe[data-preview-frame]")
+    frame.locator(f"a[href='{post}']").first.click()
+    owner.page.wait_for_timeout(1500)
+    url = owner.page.locator("iframe[data-preview-frame]").evaluate("f => f.contentWindow.location.pathname")
+    assert url == post
+    # a change to a setting: the preview reloads, on the same post
+    owner.page.locator("label:has(input[name=theme][value=emerald])").click()
+    owner.page.wait_for_timeout(2500)
+    shown = owner.page.locator("iframe[data-preview-frame]")
+    assert shown.evaluate("f => f.contentWindow.location.pathname") == post
+    assert "design_preview=" in shown.evaluate("f => f.contentWindow.location.search")
+    assert shown.evaluate("f => f.contentDocument.documentElement.dataset.theme") == "emerald"
+    # and the menu above it names that page
+    assert "Somewhere to go" in owner.page.locator("[data-preview-path] + button").inner_text()
