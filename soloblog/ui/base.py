@@ -327,6 +327,17 @@ def glass_fill(settings, base: str = "bg-base-100") -> str:
     return f"glass-fill {tone}glass-blur [will-change:backdrop-filter]"
 
 
+def on_picture(s=None) -> str:
+    """The box words sit in over a picture - a card's cover, a hero, a
+    full-screen cover: the theme's page colour and text, frosted when
+    Glass is on. A dark fade alone let a light picture, or one with words
+    of its own, show through the title; the blur smooths out whatever's
+    behind, and the theme's own text on its own page colour always reads.
+    85%, as a menu's glass: behind it is any picture at all."""
+    return (f"{glass_fill(s or settings.get_all())} "
+            "[--glass-opacity:85%] text-base-content rounded-box")
+
+
 def CancelButton(compact=False, label="Discard"):
     """Discard: the form back to what was last saved, in place (the
     browser's form.reset() - no reload, no jump), saying "Discarded"

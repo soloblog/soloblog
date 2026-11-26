@@ -26,6 +26,9 @@ versions may include breaking changes; they'll always be listed here.
 
 ### Changed
 
+- Words on an image - the banner, a Hero, a full-screen cover, a large
+  post card, a project - sit in a frosted box in your site's colours,
+  so they read on any image
 - Settings > Email asks for your password only once you change the
   admin email
 - Settings > Address and search is now URL and SEO, and the admin and

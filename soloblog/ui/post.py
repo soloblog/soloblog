@@ -16,7 +16,7 @@ from soloblog.ui.icons import (
     ordered_social_platforms,
 )
 from soloblog.ui.base import (
-    Breakout, MARGIN_WIDTHS, PageLink, SCROLLS, SettingsPanel, SiteLink, TOUCH_LINK, content_width, glass_fill, safe_url,
+    Breakout, MARGIN_WIDTHS, PageLink, SCROLLS, SettingsPanel, SiteLink, TOUCH_LINK, content_width, glass_fill, on_picture, safe_url,
     tag_url,
 )
 
@@ -730,9 +730,9 @@ def HeroSection(settings):
     regardless of which roll layout is chosen, since it's just
     prepended content above whatever PostRoll draws.
 
-    Uses DaisyUI's actual hero/hero-content/hero-overlay component
-    structure rather than a hand-rolled bordered box - this is
-    literally what that component exists for."""
+    Uses DaisyUI's hero/hero-content component structure rather than a
+    hand-rolled bordered box - this is literally what that component
+    exists for."""
     if settings.get("banner_enabled") != "1":
         return None
     heading = settings.get("banner_heading")
@@ -746,29 +746,26 @@ def HeroSection(settings):
     cta_url = settings.get("banner_button_url")
 
     hero_box = Div(
-        Div(cls="hero-overlay") if image else None,
         Div(
             Div(
                 H1(heading, cls="text-4xl md:text-5xl font-bold"),
                 # without one of its own, the site's tagline
                 P(subheading, cls="py-4 text-lg") if subheading else None,
                 A(cta_text, href=cta_url or "#", cls="btn btn-primary") if cta_text and cta_url else None,
-                cls="max-w-lg"
+                # on a picture, in the box words sit in over one (on_picture)
+                cls="max-w-lg" + (f" {on_picture(settings)} p-6 sm:p-8" if image else "")
             ),
             # below a floating header (--flush-top): the room is the content's,
             # not the banner's - daisyUI's hero is a grid, and its overlay
             # only covers the grid's area, so padding on the banner left a
             # strip of photo above the overlay, lighter, with a line under it
-            cls=f"hero-content text-center pt-[calc(1rem+var(--flush-top,0px))] {'text-neutral-content' if image else ''}"
+            cls="hero-content text-center pt-[calc(1rem+var(--flush-top,0px))]"
         ),
         style=f"background-image: url({image});" if image else None,
         # rounded-box, not a fixed rounded-lg - follows the theme's own
         # --radius-box token (0 on cyberpunk, 2rem on silk, etc) instead
         # of a hardcoded 0.5rem that only happens to look right on some
-        # themes. overflow-hidden matters here, not just decorative -
-        # hero-overlay is a plain square 100%x100% box stacked in the
-        # same grid cell as the background image, so without it the
-        # overlay's sharp corners poke past the parent's rounded ones.
+        # themes.
         # its height is what makes it read as a banner rather than a tall
         # alert box - and behind a floating header (--flush-top,
         # flushEdges) it's taller by the header, so what's under it keeps

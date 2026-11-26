@@ -885,8 +885,10 @@ def test_what_opens_the_page_is_drawn_at_the_top_from_the_start(admin, client):
         page = admin.get(f"/post/{slug}").text
         assert 'data-flush="open"' in page
         # Edit's buttons over the photo keep the theme's own colours - a dark
-        # fill of their own was custom, unlike every other button
-        assert "_.btn]:bg-black" not in page and "a:not(.btn)]:text-white" in page
+        # fill of their own was custom, unlike every other button - in the
+        # box words sit in over a picture, in the theme's own colours
+        assert "_.btn]:bg-black" not in page and "a:not(.btn)]:text-white" not in page
+        assert "[--glass-opacity:85%]" in page
     finally:
         settings.set_many(keep)
 
@@ -1767,3 +1769,25 @@ def test_a_samples_empty_buttons_and_images_look_like_what_theyll_be(admin, clie
     # a filled-in one is left as it is
     seen = client.get(f"/post/{save_post(admin, title='Filled', body='[Go](/about)')}").text
     assert re.search(r'<a href="/about"[^>]*>Go', seen)
+
+
+def test_words_on_a_picture_sit_in_the_themes_frosted_box(admin, client):
+    """A post's picture card - Magazine's first, or one card a row - and
+    a full-screen cover put their words in a box of the theme's own page
+    colour, frosted: a dark fade let a light picture's own words show
+    through the title."""
+    keep = {k: settings.get(k) for k in ("roll_style", "cards_per_row", "cover_width")}
+    try:
+        slug = save_post(admin, title="On a picture", cover_image="/uploads/top.webp")
+        for style in ({"roll_style": "magazine"}, {"roll_style": "cards", "cards_per_row": "1"}):
+            settings.set_many(style)
+            home = client.get("/").text
+            at = home.index(">On a picture<")
+            card = home[home.rindex("background-image", 0, at):at]
+            assert "[--glass-opacity:85%]" in card and "text-base-content" in card, style
+            assert "from-black" not in home and "text-white" not in card, style
+        settings.set_many({"cover_width": "screen"})
+        page = client.get(f"/post/{slug}").text
+        assert "[--glass-opacity:85%]" in page and "from-black/85" not in page
+    finally:
+        settings.set_many(keep)

@@ -33,7 +33,7 @@ from soloblog.render import new_tab_links, render_post, render_comment, reading_
     short_date, web_url
 from soloblog.ui import (STATUS_BESIDE, STATUS_ROW, TITLE_CLS, LIST_TITLE_CLS, CHEVRON_DOWN_SVG, content_width, RESULT_ROW, RESULT_TITLE, RESULT_ABOUT, RESULT_EMPTY, ROLL_PARTS, Breakout, timeline_cls, timeline_side, timeline_stagger, TagCloud, ArchiveLinks, month_counts, SidePanels, side_places, toc_panel, Layout, TagBadge, ReactionBar, Alert, TagList, AuthorBio, EmptyState, ErrorPage, ListenButton, ReadingProgress, PostScripts, SupportButtons, SoundButton, Breadcrumbs, SocialLinks, parse_link_lines, TableOfContents, RelatedPosts, SearchBox,
                  SeriesNav, ShareButtons, ReactAndShare, EditPostLink, LikeButton, Pagination, CommentsSection,
-                 HeroSection, tag_url, RSS_SVG, TRASH_SVG, REPLY_SVG, CHECK_SVG, ReplyBox, ReplyButton, IconAction)
+                 HeroSection, on_picture, tag_url, RSS_SVG, TRASH_SVG, REPLY_SVG, CHECK_SVG, ReplyBox, ReplyButton, IconAction)
 from soloblog.seo import page_meta, article_data
 from soloblog.guards import require_login, is_local_path
 
@@ -344,38 +344,33 @@ def PostCardTimeline(p, relative_dates, is_first, is_last, index, show=None, ali
 
 
 def MagazineFeatured(p, relative_dates=False, show=None):
-    """The newest post, given real weight - title and summary sit
-    directly on the cover image behind a bottom gradient scrim, the
-    same image-behind-text idea HeroSection uses, just anchored
-    bottom-left like a magazine cover credit block instead of
-    HeroSection's own centered treatment - so this reads as the
-    homepage's focal point instead of an oversized PostCardGrid card.
-    No image falls back to a tint in the theme's colours, with plain
-    base-content text over it."""
+    """The newest post, given real weight - its title and summary on its
+    cover image, anchored bottom-left like a magazine cover's credit
+    block, in the box words always sit in over a picture (ui.on_picture),
+    so this reads as the homepage's focal point instead of an oversized
+    PostCardGrid card. No image falls back to a tint in the theme's
+    colours, with the words straight on it."""
     show = roll_shows() if show is None else show
     image = list_cover(p, show)
     meta = _meta(p, relative_dates, show)
     return Div(
-        # dark enough behind the whole text block - a long title reaches up
-        # into the lighter top of the photo on a phone
-        Div(cls="absolute inset-0 bg-gradient-to-t from-black/90 via-black/60 to-black/20") if image else None,
         Div(
             Div(
                 H2(A(p["title"], href=posts.url_for(p),
-                     cls=f"link link-hover card-title text-xl sm:text-2xl md:text-3xl break-words "
-                         f"{'text-white' if image else ''}")),
+                     cls="link link-hover card-title text-xl sm:text-2xl md:text-3xl break-words")),
                 PinnedIcon() if p["pinned"] else None,
                 cls="flex items-start justify-between gap-2 min-w-0"
             ),
-            Div(meta, cls=f"text-xs {'text-white/70' if image else 'text-base-content/50'}") if meta else None,
+            Div(meta, cls="text-xs text-base-content/60") if meta else None,
             (teaser := posts.teaser(p)) and ("summary" in show or None)
-            and P(teaser, cls="line-clamp-3 flex-none " + ("text-white/90" if image else "text-base-content/70")),
+            and P(teaser, cls="line-clamp-3 flex-none text-base-content/80"),
             TagList(p["tags"], small=True) if "tags" in show else None,
-            cls="relative z-10 min-w-0 flex flex-col gap-1.5"
+            cls="relative min-w-0 flex flex-col gap-1.5" + (f" {on_picture()} p-4 sm:p-6" if image else "")
         ),
         style=f"background-image: url({image}); background-size: cover; background-position: center;" if image else None,
-        cls="relative rounded-box overflow-hidden min-h-64 sm:min-h-80 flex flex-col justify-end gap-1 p-5 sm:p-8 mb-10"
-             + ("" if image else " bg-gradient-to-br from-primary/30 to-secondary/30")
+        cls="relative rounded-box overflow-hidden min-h-64 sm:min-h-80 flex flex-col justify-end gap-1 mb-10 "
+            # on a phone the box is most of the card: room above it for the picture
+            + ("p-3 pt-40 sm:p-6" if image else "p-5 sm:p-8 bg-gradient-to-br from-primary/30 to-secondary/30")
     )
 
 
@@ -1114,31 +1109,28 @@ def PostCover(row, s, cover_width, caption, first):
 def ScreenCover(row, s, hides, crumbs, title, edit, byline, caption):
     """The whole screen: the cover edge to edge and as tall as the
     window (behind a floating header), the title, byline and tags over
-    its foot, and an arrow down to the words."""
-    words = Div(
+    its foot in the box words sit in over a picture (on_picture), and an
+    arrow down to the words."""
+    words = Div(Div(
         crumbs,
         # on a phone the admin's buttons sit above the title, so it keeps the whole width
         Div(Div(title, cls="min-w-0 flex-1 break-words"),
             Div(edit, cls="flex justify-end shrink-0") if edit is not None else None,
             cls="flex flex-col-reverse gap-1 sm:flex-row sm:items-start sm:justify-between sm:gap-3"),
-        None if "byline" in hides else Div(byline, cls="text-sm text-white/80 mt-3"),
+        None if "byline" in hides else Div(byline, cls="text-sm text-base-content/70 mt-3"),
         Div(TagList(row["tags"]), cls="mt-4") if "tags" not in hides and row["tags"] else None,
-        # light on the photo's dark foot, whatever the palette: the
-        # breadcrumbs and the tags' badges. Edit's buttons keep the
-        # theme's own colours, as everywhere else
-        cls=f"{content_width(s)} mx-auto w-full px-4 pb-16 sm:pb-20 relative z-10 text-white "
-            "[&_a:not(.btn)]:text-white [&_.breadcrumbs_*]:text-white/80 [&_.badge]:bg-black/40 "
-            "[&_.badge]:text-white [&_.badge]:border-white/20")
+        cls=f"p-5 sm:p-8 {on_picture(s)}"),
+        cls=f"{content_width(s)} mx-auto w-full px-4 pb-16 sm:pb-20 relative z-10")
     return Div(Breakout(Div(
         # filling a tall phone screen, a photo is cropped at the sides: as wide
         # as the screen is tall and a half, as a 3:2 photo is
         Img(**images.responsive(row["cover_image"], "max(100vw, 150vh)"), alt=images.alt_text_for_url(row["cover_image"]),
             cls="absolute inset-0 w-full h-full object-cover"),
-        Div(cls="absolute inset-0 bg-gradient-to-t from-black/85 via-black/35 to-black/10"),
         words,
         Div(NotStr(caption), cls=images.CAPTION_OVER_CLS) if caption else None,
         A(CHEVRON_DOWN_SVG, href="#read-on", aria_label=i18n.t("Continue"),
-          cls="btn btn-circle btn-ghost btn-sm absolute bottom-4 left-1/2 -translate-x-1/2 z-10 text-white"),
+          cls=f"btn btn-circle btn-ghost btn-sm absolute bottom-4 left-1/2 -translate-x-1/2 z-10 {on_picture(s)} "
+              "rounded-full"),
         # the arrow lands with all of the cover above the screen - none
         # of it left in the gap over a floating header
         Span(id="read-on", cls="absolute bottom-0 left-0 scroll-mt-[calc(-1*var(--header-h,0px)_-_1rem)]"),

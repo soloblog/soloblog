@@ -868,7 +868,7 @@ def _render_portfolio(out, row, s, html, toc, logged_in, series):
     edge, a screen each or a row you swipe along (PORTFOLIO_STYLES). A
     piece with no picture is a quiet tile of its own words."""
     from soloblog.gallery import CHEVRON_LEFT, CHEVRON_RIGHT
-    from soloblog.ui import Breakout
+    from soloblog.ui import Breakout, on_picture
     intro, show, items = portfolio_items(row, html)
     style = show or s.get("portfolio_style") or "grid"
     style = style if style in PORTFOLIO_STYLES else "grid"
@@ -921,19 +921,20 @@ def _render_portfolio(out, row, s, html, toc, logged_in, series):
                 NotStr(_with_class(re.sub(r'\bsizes="[^"]*"', 'sizes="max(100vw, 150vh)"', item["img"]),
                                    "absolute inset-0 w-full h-full object-cover")
                        .replace(' loading="lazy"', "" if n == 0 else ' loading="lazy"')),
-                Div(cls="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent"),
-                Div(_portfolio_title(item, "text-4xl sm:text-6xl font-extrabold tracking-tighter leading-[1.05] "
-                                           "text-balance m-0 [&_a]:text-white [&_a]:no-underline"),
-                    Div(NotStr(item["words"]), cls="text-lg sm:text-xl text-white/85 max-w-2xl [&_p]:m-0 "
-                                                   "[&_a]:text-white [&_a]:underline")
-                    if text_of(item["words"]) else None,
-                    A(NotStr(item["label"] or escape(i18n.t("View"))),
-                      NotStr(f' <span aria-hidden="true">{"↗" if _portfolio_away(item) else "→"}</span>'),
-                      href=item["href"], target="_blank" if _portfolio_away(item) else None,
-                      rel="noopener" if _portfolio_away(item) else None, cls="btn self-start mt-2")
-                    if item["href"] else None,
-                    cls=f"relative z-10 flex flex-col gap-4 {_col(s).replace('max-w-3xl', 'max-w-5xl')} "
-                        "px-4 sm:px-8 pb-14 sm:pb-20 text-white"),
+                # the box words sit in over a picture (ui.on_picture)
+                Div(Div(_portfolio_title(item, "text-4xl sm:text-6xl font-extrabold tracking-tighter leading-[1.05] "
+                                               "text-balance m-0 [&_a]:no-underline"),
+                        Div(NotStr(item["words"]), cls="text-lg sm:text-xl text-base-content/80 max-w-2xl [&_p]:m-0 "
+                                                       "[&_a]:underline")
+                        if text_of(item["words"]) else None,
+                        A(NotStr(item["label"] or escape(i18n.t("View"))),
+                          NotStr(f' <span aria-hidden="true">{"↗" if _portfolio_away(item) else "→"}</span>'),
+                          href=item["href"], target="_blank" if _portfolio_away(item) else None,
+                          rel="noopener" if _portfolio_away(item) else None, cls="btn self-start mt-2")
+                        if item["href"] else None,
+                        cls=f"flex flex-col gap-4 {PANEL_PAD} w-fit max-w-full {on_picture(s)}"),
+                    cls=f"relative z-10 {_col(s).replace('max-w-3xl', 'max-w-5xl')} "
+                        "px-4 sm:px-8 pb-14 sm:pb-20"),
                 Div(NotStr(item["credit"]), cls=images.CAPTION_OVER_CLS) if item["credit"] else None,
                 cls="relative flex items-end overflow-hidden min-h-[calc(100svh-var(--header-h,0px))]"), "full", s),
                 id=hid, cls=_REVEAL))
@@ -1414,13 +1415,11 @@ GROUP_SPACE = "mb-8 sm:mb-12"      # an intro or heading, before its items
 CTA_CARD = (f"card bg-primary text-primary-content {SHADOW_RAISED} px-6 py-14 sm:py-20 text-center items-center "
             "overflow-hidden")
 ON_PRIMARY = "text-primary-content/85 [&_a]:text-primary-content [&_strong]:text-primary-content"
-# a quieter second button on the main colour, or over a photo's dark layer:
-# daisyUI's outline button takes the page's text colour, which can vanish
-# there, so its own colour variables are set to the card's text colour (white
-# on a photo) - filled with it on hover
+# a quieter second button on the main colour: daisyUI's outline button
+# takes the page's text colour, which can vanish there, so its own colour
+# variables are set to the card's text colour - filled with it on hover
 BTN_ON_PRIMARY = ("btn btn-outline [--btn-color:var(--color-primary-content)] "
                   "[--btn-border:var(--color-primary-content)] [--btn-fg:var(--color-primary)]")
-BTN_ON_PHOTO = "btn btn-outline [--btn-color:var(--color-white)] [--btn-border:var(--color-white)] [--btn-fg:var(--color-black)]"
 # a card you act on (it has a button) rises a little under the pointer - not
 # one you only read, which would look clickable when it isn't
 LIFT = ("transition duration-200 hover:-translate-y-1 hover:shadow-lg motion-reduce:transition-none "
@@ -1824,26 +1823,24 @@ def _label_line(text):
 
 
 def _hero(h, text, s, full):
-    """A big heading, a line and a button over a picture - on a dark layer,
-    so white words read on any photo (WCAG 1.4.3), as a full-screen cover's
-    do. Without a picture, the same on the page's quieter tone."""
+    """A big heading, a line and a button over a picture - in the box words
+    always sit in over one (ui.on_picture), as a full-screen cover's do.
+    Without a picture, the same on the page's quieter tone."""
+    from soloblog.ui import on_picture
     img, credit, rest = _take_image(text)
     buttons, rest = _take_buttons(rest)
     heading = re.sub(r"^<h2", '<h2 class="text-3xl sm:text-5xl font-bold leading-tight text-balance m-0"', h.strip(), count=1)
-    # over a photo, the words white whatever the theme (daisyUI sets prose's colours)
-    line = Div(NotStr(rest), cls=f"text-lg sm:text-xl [&_p]:m-0 [&_p+p]:mt-2 "
-                                 f"{'text-white/90 [&_a]:text-white [&_a]:underline' if img else 'text-base-content/80'}")
-    words = Div(NotStr(heading), line if text_of(rest) else None,
-                Div(*[A(NotStr(label), href=href,
-                        cls="btn btn-primary" if i == 0 else BTN_ON_PHOTO if img else "btn btn-outline")
-                      for i, (href, label) in enumerate(buttons)],
-                    cls="mt-1 flex flex-wrap gap-2") if buttons else None,
-                cls=f"relative z-10 flex flex-col gap-3 py-10 sm:py-14 px-6 sm:px-10 {_col(s) if full else ''} "
-                    f"{'text-white' if img else ''}")
+    line = Div(NotStr(rest), cls="text-lg sm:text-xl [&_p]:m-0 [&_p+p]:mt-2 text-base-content/80")
+    content = (NotStr(heading), line if text_of(rest) else None,
+               Div(*[A(NotStr(label), href=href, cls="btn btn-primary" if i == 0 else "btn btn-outline")
+                     for i, (href, label) in enumerate(buttons)],
+                   cls="mt-1 flex flex-wrap gap-2") if buttons else None)
     if not img:
+        words = Div(*content, cls=f"flex flex-col gap-3 py-10 sm:py-14 px-6 sm:px-10 {_col(s) if full else ''}")
         return Div(words, cls=f"bg-base-content/5 flex items-center min-h-[18rem] {'' if full else 'rounded-box'}")
+    words = Div(Div(*content, cls=f"flex flex-col gap-3 {PANEL_PAD} max-w-2xl {on_picture(s)}"),
+                cls=f"relative z-10 w-full p-4 sm:p-8 {_col(s) if full else ''}")
     return Div(NotStr(_with_class(img, "absolute inset-0 w-full h-full object-cover")),
-               Div(cls="absolute inset-0 bg-gradient-to-t from-black/85 via-black/45 to-black/15"),
                words,
                Div(NotStr(credit), cls=images.CAPTION_OVER_CLS) if credit else None,
                # full width it's square-cornered - but rounded again in the column beside a side panel
@@ -2439,17 +2436,19 @@ def _live_post(href):
 
 
 def _project_card(label, href, last=False, big=False):
-    """A project to go on to: its picture, with what it is and its title over it."""
+    """A project to go on to: its picture, with what it is and its title
+    over it, in the box words sit in over a picture (ui.on_picture)."""
+    from soloblog.ui import on_picture
     found = _live_post(href)
     cover = found["cover_image"]
-    words = Div(Div(label, cls="text-xs uppercase tracking-widest opacity-80"),
+    words = Div(Div(label, cls="text-xs uppercase tracking-widest opacity-70"),
                 Div(found["title"], cls="mt-2 font-extrabold tracking-tighter text-balance "
                     + ("text-3xl sm:text-5xl" if big else "text-2xl sm:text-4xl")),
-                cls=f"relative z-10 p-6 sm:p-10 {'text-white' if cover else ''} {'sm:text-end' if last else ''}")
+                cls=f"relative z-10 {'sm:text-end' if last else ''} "
+                    + (f"m-4 sm:m-8 {CARD_PAD} max-w-[calc(100%-2rem)] {on_picture()}" if cover else "p-6 sm:p-10"))
     tall = "min-h-[20rem] sm:min-h-[28rem]" if big else "min-h-[16rem] sm:min-h-[22rem]"
     return A(Img(**images.responsive(cover, "(min-width: 72rem) 72rem, 100vw" if big else "(min-width: 40rem) 36rem, 100vw"),
                  alt="", loading="lazy", cls=f"absolute inset-0 w-full h-full object-cover {_ZOOM}") if cover else None,
-             Div(cls="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent") if cover else None,
              words, href=href,
              cls=f"group relative overflow-hidden rounded-box flex items-end no-underline "
                  f"{'sm:justify-end' if last else ''} {tall if cover else 'bg-base-content/5 min-h-48'}")

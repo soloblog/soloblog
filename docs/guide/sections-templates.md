@@ -342,7 +342,8 @@ keeps it narrower.
 A big heading, a line and a button over an image, across the whole
 screen. Under the heading: an image, a line and a link for the button,
 or a Buttons line for two - the `##` heading is the big heading. A Call to action or a Image and
-text with `Style: Cover` is shown the same way.
+text with `Style: Cover` is shown the same way. Over the image, the words
+sit in a box in your site's colours, so they read on any image.
 
 `Style: Window` is the opening of a launch or product page: the image
 is framed like an app window, with a soft glow, under a very big heading.

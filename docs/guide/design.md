@@ -78,7 +78,7 @@ pick other colours**. A Colours menu appears in your site's header, and
 what a reader picks changes the colours for them only.
 
 **Want the page to show faintly through the header and menus?** Switch
-on **Frosted glass**.
+on **Frosted glass**. The box behind words on an image is frosted too.
 
 **A screenshot or diagram too bright on the dark palette?** Give it a dark
 mode version in **Media** - see
@@ -207,6 +207,8 @@ or Magazine, switch on **Placeholder for posts without a cover**. Those
 posts get a tile in your site's colours instead.
 
 **Want fewer, bigger cards?** Set **Cards in a row** to two, or one.
+With one, each post's title and summary sit on its cover image, in a box
+in your site's colours, as Magazine's newest post does.
 
 **Want your posts grouped by year?** Choose **Minimal**, then choose how
 to **Group posts by**.
@@ -251,7 +253,8 @@ or on `/blog` when your homepage is one of your pages.
 4. For a button, type its **Button text**, and set where it goes in
    **Button link**. **Pick** lists your posts and built-in pages to
    choose from.
-5. Choose a **Background image** and a **Width**.
+5. Choose a **Background image** and a **Width**. Over an image, the
+   words sit in a box in your site's colours, so they read on any image.
 
 **Don't want a button?** Leave **Button text** and **Button link** empty.
 

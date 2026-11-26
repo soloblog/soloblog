@@ -370,6 +370,12 @@ The admin follows a small, deliberate set of rules. Keep new UI inside them.
   `app.PresetPreview` shows it - only to the logged-in admin.
 - **One place decides glass.** `glass_fill(settings)` returns the
   background classes for every header, footer, drawer, dropdown and dialog.
+- **Words on a picture sit in `on_picture(settings)`'s box** - the
+  theme's page colour and text, frosted with the same glass at 85%, as
+  the homepage banner, a Hero, a full-screen cover, a picture card and
+  a project card do. No dark fade with white words: a light picture, or
+  one with words of its own, showed through them. A credit in a
+  picture's corner keeps its own small dark chip (`images.CAPTION_OVER_CLS`).
 - **Pickers attach to any field.** `MediaPickerButton(input_id)` and
   `LinkPickerButton(input_id)` fill a plain input. The post editor's own
   toolbar passes the EasyMDE instance instead, and the picker inserts

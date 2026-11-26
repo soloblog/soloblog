@@ -210,7 +210,7 @@ def test_hero_and_bento_and_a_sections_width(admin, client):
         page = client.get(f"/post/{slug}").text
         hero = page[page.index('data-section="hero"'):]
         hero = hero[:hero.index("data-section=\"bento\"")]
-        assert 'id="fix-it"' in hero and "Come along" in hero and "from-black/85" in hero and "text-white/90" in hero
+        assert 'id="fix-it"' in hero and "Come along" in hero and "[--glass-opacity:85%]" in hero
         # not inside the fold of the heading before it
         before = page[page.index('id="before"'):page.index('data-section="hero"')]
         assert "</details>" in before  # the fold before it ends before it

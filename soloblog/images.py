@@ -893,7 +893,10 @@ def credit_html(meta: dict) -> str:
 # how that line looks: under a picture, or over the corner of one that
 # fills the screen with words on it
 CAPTION_CLS = "text-xs text-base-content/60 text-center"
-CAPTION_OVER_CLS = "absolute bottom-2 end-3 z-10 text-xs text-white/70 [&_a]:text-white/80"
+# on its own dark chip, as a gallery tile's credit (pages.CREDIT_OVER): the
+# picture behind is any colour
+CAPTION_OVER_CLS = ("absolute bottom-2 end-3 z-10 rounded-field bg-black/45 px-1.5 py-0.5 text-xs text-white/85 "
+                    "[&_a]:text-white")
 
 
 def figcaption_html(meta: dict) -> str:

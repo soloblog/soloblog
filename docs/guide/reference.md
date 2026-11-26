@@ -132,7 +132,7 @@ A preset can change: how posts are shown in the blog roll (and what each one sho
 - **Light palette** and **Dark palette** - The set of colours your site uses in light mode, and in dark mode. There are 21 light palettes and 14 dark ones, with your own first. Select one to see it.
 - **Visitors see** - The palette that matches each visitor's device (the dark one when their device is set to dark mode); always the light one; or always the dark one.
 - **Let readers pick other colours** (on/off) - Adds a Colours menu to your header, where readers choose colours for themselves only. **Default**, in that menu, takes them back to yours.
-- **Frosted glass** (on/off) - The header, menus and popups let the page show through, blurred.
+- **Frosted glass** (on/off) - The header, menus and popups let the page show through, blurred - and so does the box behind words on an image.
 
 The colours save together, with **Save**.
 

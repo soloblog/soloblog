@@ -190,8 +190,8 @@ def test_hero_window_style(admin, client):
     assert part.count("text-primary") >= 2 and "No account" in part
     assert "rounded-box border border-base-content/10 shadow-xl" in part and "blur-3xl" in part and "data-tilt" in part
     assert 'fetchpriority="high"' in part
-    # not the dark cover, and its lines never show
-    assert "from-black/85" not in part and "Style:" not in part and "Label:" not in part
+    # not the cover's box over a picture, and its lines never show
+    assert "[--glass-opacity:85%]" not in part and "Style:" not in part and "Label:" not in part
     # no picture, no label
     bare = _section(_page(admin, client, "## Hello\n\nSection: Hero\nStyle: Window\n\nA line.\n\n[Go](/go)\n",
                           title="Window bare"), "hero")
@@ -206,10 +206,10 @@ def test_hero_window_label_in_its_own_paragraph_and_other_styles_unchanged(admin
     assert 'mb-6">New' in _section(_page(admin, client, body, title="Window label below"), "hero")
     cover = _section(_page(admin, client, "## H\n\nSection: Hero\nStyle: Cover\n\n![P](/uploads/a.webp)\n\nWords.\n",
                            title="Cover still"), "hero")
-    assert "from-black/85" in cover and "badge" not in cover
+    assert "[--glass-opacity:85%]" in cover and "badge" not in cover
     plain = _section(_page(admin, client, "## H\n\nSection: Hero\n\n![P](/uploads/a.webp)\n\nWords.\n",
                            title="Hero still"), "hero")
-    assert "from-black/85" in plain
+    assert "[--glass-opacity:85%]" in plain
     # Window means nothing to another section
     pricing = _page(admin, client, "## Plans\n\nSection: Pricing\nStyle: Window\n\n### Basic\n\nPrice: $1\n", title="No window")
     assert 'data-section="pricing"' in pricing and "shadow-xl" not in pricing
