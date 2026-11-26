@@ -376,6 +376,11 @@ The admin follows a small, deliberate set of rules. Keep new UI inside them.
   a project card do. No dark fade with white words: a light picture, or
   one with words of its own, showed through them. A credit in a
   picture's corner keeps its own small dark chip (`images.CAPTION_OVER_CLS`).
+- **A card or row that stands for a post opens from anywhere on it.**
+  Its list carries `data-click-rows`; each list item, `.card`, or
+  element marked `data-click-row` opens its first link, its title's,
+  on a click (`row_links.js`) - a middle click or Ctrl/Cmd in a new tab,
+  and a link of its own (a tag) still goes where it says.
 - **Pickers attach to any field.** `MediaPickerButton(input_id)` and
   `LinkPickerButton(input_id)` fill a plain input. The post editor's own
   toolbar passes the EasyMDE instance instead, and the picker inserts

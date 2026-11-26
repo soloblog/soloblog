@@ -62,6 +62,9 @@ versions may include breaking changes; they'll always be listed here.
 
 ### Fixed
 
+- A large post card, and Magazine's smaller ones, open from anywhere on
+  them, not only the title, and a middle click opens any post card in
+  a new tab
 - An image deleted while cloud storage can't be reached is deleted from
   the bucket later, and no longer comes back with Sync images
 - Pictures in a wide or full section, a gallery and a full-screen cover

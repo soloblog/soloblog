@@ -202,6 +202,9 @@ Choose how your homepage and tag pages show the list of your posts.
    - its cover image, date, reading time, summary and tags.
 4. Choose how many **Posts per page**.
 
+Readers open a post by selecting anywhere on its card or row, not only
+its title.
+
 **Posts without a cover image leaving gaps among the cards?** With Cards
 or Magazine, switch on **Placeholder for posts without a cover**. Those
 posts get a tile in your site's colours instead.

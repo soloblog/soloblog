@@ -349,7 +349,8 @@ def MagazineFeatured(p, relative_dates=False, show=None):
     block, in the box words always sit in over a picture (ui.on_picture),
     so this reads as the homepage's focal point instead of an oversized
     PostCardGrid card. No image falls back to a tint in the theme's
-    colours, with the words straight on it."""
+    colours, with the words straight on it. Opens from anywhere on it
+    (data-click-row, ROW_LINKS_JS)."""
     show = roll_shows() if show is None else show
     image = list_cover(p, show)
     meta = _meta(p, relative_dates, show)
@@ -368,6 +369,7 @@ def MagazineFeatured(p, relative_dates=False, show=None):
             cls="relative min-w-0 flex flex-col gap-1.5" + (f" {on_picture()} p-4 sm:p-6" if image else "")
         ),
         style=f"background-image: url({image}); background-size: cover; background-position: center;" if image else None,
+        data_click_row=True,
         cls="relative rounded-box overflow-hidden min-h-64 sm:min-h-80 flex flex-col justify-end gap-1 mb-10 "
             # on a phone the box is most of the card: room above it for the picture
             + ("p-3 pt-40 sm:p-6" if image else "p-5 sm:p-8 bg-gradient-to-br from-primary/30 to-secondary/30")
@@ -378,7 +380,8 @@ def MagazineRestCard(p, relative_dates=False, show=None):
     """A lighter sibling to PostCardGrid, used only for magazine's
     'rest' grid below the featured post - no border/bg box, so these
     read as secondary items supporting the featured post above rather
-    than competing with it as equally-weighted cards."""
+    than competing with it as equally-weighted cards. Opens from
+    anywhere on it (data-click-row)."""
     show = roll_shows() if show is None else show
     meta = _meta(p, relative_dates, show)
     cover = list_cover(p, show)
@@ -399,6 +402,7 @@ def MagazineRestCard(p, relative_dates=False, show=None):
         (teaser := posts.teaser(p)) and ("summary" in show or None)
         and P(teaser, cls="text-sm text-base-content/70 line-clamp-2 mt-1 flex-none"),
         TagList(p["tags"], small=True) if "tags" in show else None,
+        data_click_row=True,
         cls="min-w-0"
     )
 
@@ -436,7 +440,8 @@ def page_size(s) -> int:
 
 # a post in a list opens on a click anywhere on it, not only its title
 # (ROW_LINKS_JS) - on a phone a title was a 20 px line to hit
-CLICK_ROWS = dict(data_click_rows=True, cls="[&_li]:cursor-pointer [&_.card]:cursor-pointer")
+CLICK_ROWS = dict(data_click_rows=True,
+                  cls="[&_li]:cursor-pointer [&_.card]:cursor-pointer [&_[data-click-row]]:cursor-pointer")
 
 
 def PostRoll(posts_list, relative_dates, roll_style, empty_message, empty_icon="📭", body_width="standard",

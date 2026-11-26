@@ -137,3 +137,25 @@ def test_space_between_sections_is_as_big_as_it_says(owner, browser, site):
     assert abs(gaps[1400][-1] - 288) <= 8 and abs(gaps[375][-1] - 144) <= 8, gaps
     assert all(abs(g - 288) > 100 for g in gaps[1400][:-1]), gaps
     reader.close()
+
+
+def test_a_picture_card_opens_from_anywhere_on_it(owner, browser, site):
+    """In the blog list, a post opens from anywhere on its card - its
+    summary, not only its title - as on most blogs. Magazine's big card
+    first, then its smaller ones."""
+    first = publish(owner, "The older one", "A summary to click on, below the title.")
+    newest = publish(owner, "The newest one", "The big card's summary, below the title.")
+    owner.go("/admin/settings?tab=blog&panel=blog-layout")
+    owner.page.locator("label:has(input[name=roll_style][value=magazine])").click()
+    _save_space(owner)
+    reader = Window(browser, site["base"])
+    reader.go("/")
+    reader.page.get_by_text("The big card's summary").first.click()
+    reader.page.wait_for_url(f"**{newest}")
+    reader.go("/")
+    reader.page.get_by_text("A summary to click on").first.click()
+    reader.page.wait_for_url(f"**{first}")
+    reader.close()
+    owner.go("/admin/settings?tab=blog&panel=blog-layout")
+    owner.page.locator("label:has(input[name=roll_style][value=list])").click()
+    _save_space(owner)

@@ -208,6 +208,8 @@ desktop - in the same change, not just where it was first asked for.
   scrollbar and a fade at its foot while there's more below.
 - **Words on a picture** sit in `ui.on_picture`'s frosted box, in the
   theme's own colours - never white words on a dark fade.
+- **A card that stands for a post opens from anywhere on it**, not only
+  its title (`data-click-rows`).
 - **Tooltips are daisyUI's** (`tooltip` + `data-tip`), never the browser's
   `title=`. (`title` on a text field is the browser's hint for its
   pattern, and stays.)
