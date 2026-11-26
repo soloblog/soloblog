@@ -169,6 +169,11 @@ tense: what is true and why. It isn't a record of how it got that way.
   repository.
 - **Nothing about the people or tools behind a change** - who asked,
   what was discussed, which assistant wrote it.
+- **No other product named as an inspiration or a comparison** - in a
+  plan, a design note, a doc or a code comment. Say what it is in
+  general terms ("a common settings pattern", "as writing apps do").
+  A product's name appears only where a feature works with it: an
+  import or export, an integration, a service to sign up with.
 - **When the direction changes,** edit the page it's on (DECISIONS.md,
   ROADMAP.md...) so it reads as if it had always been so. History and
   the changelog keep the trail.
