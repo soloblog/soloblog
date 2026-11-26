@@ -45,12 +45,10 @@ def pytest_collection_modifyitems(items):
     items.sort(key=lambda item: os.path.basename(str(item.fspath)) != "test_first_run.py")
 
 
-@pytest.fixture(scope="session")
-def site(request):
-    """A fresh site on its own port: {"base", "data", "outbox"} - set up
-    by the first-run journey (setup_done), as its owner would."""
-    if sync_playwright is None:
-        pytest.skip("needs Playwright (requirements-dev.txt)")
+def start_server():
+    """A Soloblog server on an empty disk of its own: (the process,
+    {"base", "data", "outbox"}). The site fixture's - and a new host's,
+    for moving a site to it."""
     data = tempfile.mkdtemp(prefix="journey-")
     outbox = os.path.join(data, "outbox")
     port = _free_port()
@@ -68,9 +66,20 @@ def site(request):
     else:
         server.terminate()
         pytest.fail("the server didn't start - see " + log.name)
-    yield {"base": base, "data": data, "outbox": outbox}
+    return server, {"base": base, "data": data, "outbox": outbox}
+
+
+@pytest.fixture(scope="session")
+def site(request):
+    """A fresh site on its own port: {"base", "data", "outbox"} - set up
+    by the first-run journey (setup_done), as its owner would."""
+    if sync_playwright is None:
+        pytest.skip("needs Playwright (requirements-dev.txt)")
+    server, found = start_server()
+    yield found
     server.terminate()
     server.wait(timeout=10)
+    data = found["data"]
     # kept when a journey failed, for its server.log; otherwise gone
     if not request.session.testsfailed:
         shutil.rmtree(data, ignore_errors=True)

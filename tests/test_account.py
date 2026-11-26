@@ -269,3 +269,94 @@ def test_a_new_site_starts_with_a_welcome_draft(admin, client):
     assert "/admin/help?tab=sponsor" in body and "/discussions" in body and "trash" in body
     assert client.get("/post/welcome-to-your-new-site").status_code == 404
     assert "Welcome to your new site" not in client.get("/").text
+
+
+def _without_admin():
+    from soloblog.db import get_db
+    row = get_db().execute("SELECT * FROM admin WHERE id=1").fetchone()
+    get_db().execute("DELETE FROM admin")
+    get_db().commit()
+    return row
+
+
+def _put_admin_back(row):
+    from soloblog.db import get_db
+    if not auth.admin_exists():
+        get_db().execute("INSERT INTO admin VALUES (?, ?, ?, ?, ?, ?)", tuple(row))
+        get_db().commit()
+
+
+def test_setup_restores_a_downloaded_backup_with_its_login(admin, client):
+    """Moving host with a downloaded backup: setup takes it, with the
+    token, and the whole site comes back - posts, images and the login,
+    so there's no new account to make."""
+    import io
+    import os
+    import zipfile
+    from conftest import save_post
+    from soloblog import backup, images, posts
+    save_post(admin, title="Moved with me")
+    name = images.save_upload(_png()).rsplit("/", 1)[1]
+    whole = backup.build_backup_zip(None)
+    row = _without_admin()
+    os.remove(os.path.join(config.posts_dir(), "moved-with-me.md"))
+    os.remove(os.path.join(config.uploads_dir(), name))
+    try:
+        assert 'href="/setup?restore=1"' in client.get("/setup").text
+        page = client.get("/setup?restore=1").text
+        assert "Restore a backup" in page and 'action="/setup/upload"' in page and 'name="backup_zip"' in page
+        token = auth.setup_token()
+        # a file that only pretends: names that climb out of the folders, no database
+        sly = io.BytesIO()
+        with zipfile.ZipFile(sly, "w") as zf:
+            zf.writestr("posts/../../escaped.md", "x")
+            zf.writestr("uploads/../../escaped.png", "x")
+        tries = [({"token": "not it"}, whole, "setup token isn"),
+                 ({"token": token}, b"not a zip at all", "isn't a whole Soloblog backup"),
+                 ({"token": token}, sly.getvalue(), "isn't a whole Soloblog backup"),
+                 ({"token": token}, storage_seal(whole, "a passphrase"), "That backup is locked"),
+                 ({"token": token, "passphrase": "not it"}, storage_seal(whole, "a passphrase"), "Wrong passphrase"),
+                 ({"token": token, "passphrase": "x" * 5000}, whole, "too big")]
+        for fields, data, said in tries:
+            r = client.post("/setup/upload", data=fields, files={"backup_zip": ("site.zip", data, "application/zip")})
+            text = r.text.replace("&#x27;", "'")
+            assert r.status_code == 200 and said in text, said
+            assert not auth.admin_exists() and not os.path.isfile(os.path.join(config.posts_dir(), "moved-with-me.md"))
+        assert not os.path.exists(os.path.join(config.data_dir(), "..", "escaped.md"))
+        r = client.post("/setup/upload", data={"token": token, "passphrase": "a passphrase"},
+                        files={"backup_zip": ("site.zip.enc", storage_seal(whole, "a passphrase"), "application/octet-stream")})
+        assert r.status_code == 303 and r.headers["location"] == "/login?back=1"
+        assert "Your site is back" in client.get("/login?back=1").text
+        assert auth.admin_exists() and auth.verify_password(PASSWORD)
+        assert posts.get_post("moved-with-me") and os.path.isfile(os.path.join(config.posts_dir(), "moved-with-me.md"))
+        assert os.path.isfile(os.path.join(config.uploads_dir(), name))
+        # once there's an admin, it's closed: nothing restores over a site
+        r = client.post("/setup/upload", data={"token": token}, files={"backup_zip": ("site.zip", whole, "application/zip")})
+        assert r.status_code == 303 and r.headers["location"] == "/login"
+    finally:
+        _put_admin_back(row)
+
+
+def test_setup_takes_a_whole_backup_only_before_there_is_an_admin(admin, client):
+    big = b"x" * (17 * 1024 * 1024)  # more than anyone not logged in may send
+    files = {"backup_zip": ("site.zip", big, "application/zip")}
+    assert client.post("/setup/upload", data={"token": "t"}, files=files).status_code == 413
+    row = _without_admin()
+    try:
+        r = client.post("/setup/upload", data={"token": "not it"}, files=files)
+        assert r.status_code == 200 and "setup token isn" in r.text
+    finally:
+        _put_admin_back(row)
+
+
+def storage_seal(data, passphrase):
+    from soloblog import storage
+    return storage.seal(data, passphrase)
+
+
+def _png():
+    import io
+    from PIL import Image
+    buf = io.BytesIO()
+    Image.new("RGB", (4, 4), "blue").save(buf, "PNG")
+    return buf.getvalue()

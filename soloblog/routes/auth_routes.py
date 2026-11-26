@@ -226,13 +226,94 @@ def BringBackCard(error="", token="", key=""):
     )
 
 
+def RestoreFileCard(error="", token=""):
+    """Setup's other way in: a backup downloaded from the old site,
+    restored whole - its login too - so moving needs no new account."""
+    return AuthCard(
+        "Restore a backup",
+        "A backup you downloaded from your old site, in Settings > Backup and import. Everything in it comes "
+        "back, and you log in with your old password.",
+        Alert(error, "error") if error else None,
+        Form(
+            FormField("Setup token", Input(type="text", name="token", required=True, autocomplete="off",
+                                           value=token, cls="input input-sm w-full font-mono"), help=token_help(),
+                      cls=FIELD_GAP),
+            FormField("Backup", Input(type="file", name="backup_zip", required=True, accept=".zip,.enc",
+                                      cls="file-input file-input-sm w-full"), cls=FIELD_GAP),
+            FormField("Passphrase", Input(type="password", name="passphrase", autocomplete="off",
+                                          maxlength=str(PASSPHRASE_MAX), cls="input input-sm w-full"),
+                      help="Only for a backup locked with one", cls=FIELD_GAP),
+            Span(data_status_slot=True, role="status", cls="text-xs block mt-2"),
+            _submit("Restore", RESTORE_SVG),
+            action="/setup/upload", method="post", enctype="multipart/form-data"
+        ),
+        A("Start a new site instead", href="/setup",
+          cls="link link-hover text-xs text-base-content/60 mt-3 self-center"),
+    )
+
+
+# a whole site's backup, images and all, before anyone can log in -
+# app.BodyLimit lets /setup/upload this much while there's no admin yet
+SETUP_UPLOAD_MAX = 1024 * 1024 * 1024
+
+
+@ar.post("/setup/upload")
+async def setup_upload(req):
+    """A downloaded backup restored at setup: checked as the bucket's
+    are, unpacked whole (its database with the login, its posts) and
+    its images put back. Only before there's an admin, with the token."""
+    import zipfile
+    from soloblog import backup, cache, storage
+    from soloblog.db import run_migrations
+    if auth.admin_exists():
+        return RedirectResponse("/login", status_code=303)
+    form = await req.form()
+    token = str(form.get("token") or "")
+    passphrase = str(form.get("passphrase") or "")
+    if not ratelimit.hit(f"ip:{ratelimit.client_ip(req)}", "setup", limit=10, window_minutes=15):
+        return setup_page(restore="1", error="Too many attempts. Try again in a few minutes.")
+    if not secrets.compare_digest(token.strip(), auth.setup_token()):
+        return setup_page(restore="1", error="That setup token isn't right - check it and try again.")
+    file = form.get("backup_zip")
+    if not file or isinstance(file, str):
+        return setup_page(restore="1", token=token, error="Choose the backup to restore")
+    data = await file.read(SETUP_UPLOAD_MAX + 1)
+    if len(data) > SETUP_UPLOAD_MAX or len(passphrase) > PASSPHRASE_MAX:
+        return setup_page(restore="1", token=token, error="That file is too big to be a backup")
+    try:
+        data = storage.open_backup(data, passphrase)
+    except storage.StorageError:
+        return setup_page(restore="1", token=token, error="Wrong passphrase, try again" if passphrase
+                          else "That backup is locked. Type the passphrase it was made with")
+    try:
+        storage.unpack_backup(data, live=True)
+    except (storage.StorageError, zipfile.BadZipFile):
+        return setup_page(restore="1", token=token,
+                          error="That file isn't a whole Soloblog backup. Download one with everything selected")
+    backup.import_backup_zip(data, include={"images"})
+    run_migrations()
+    posts.reindex_from_disk()
+    settings.use_site_url()
+    cache.bump()
+    if storage.enabled():
+        # the restored images belong in the bucket too
+        storage._mirror(storage.sync_uploads, "up")
+    if not auth.admin_exists():
+        # a backup without its settings: the posts are back, the account is still to make
+        return RedirectResponse("/setup", status_code=303)
+    auth.forget_setup_token()
+    return RedirectResponse("/login?back=1", status_code=303)
+
+
 @ar.get("/setup")
-def setup_page(hdrs=None, error: str = "", new: str = "", token: str = "", key: str = ""):
+def setup_page(hdrs=None, error: str = "", new: str = "", token: str = "", key: str = "", restore: str = ""):
     if auth.admin_exists():
         return RedirectResponse("/login", status_code=303)
     from soloblog import health, storage
     if storage.held and not new:
         return _page(hdrs, "Restore your site", "/setup", BringBackCard(error, token, key))
+    if restore:
+        return _page(hdrs, "Restore a backup", "/setup", RestoreFileCard(error, token))
     return _page(hdrs, "Set up your site", "/setup", AuthCard(
         "Set up your site",
         token_help(),
@@ -255,6 +336,8 @@ def setup_page(hdrs=None, error: str = "", new: str = "", token: str = "", key: 
             Input(type="hidden", name="new", value="1") if storage.held else None,
             action="/setup", method="post"
         ),
+        A("Moving your site? Restore a backup", href="/setup?restore=1",
+          cls="link link-hover text-xs text-base-content/60 mt-3 self-center"),
     ))
 
 

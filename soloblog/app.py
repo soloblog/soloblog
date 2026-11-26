@@ -562,8 +562,9 @@ class BodyLimit:
     kilobytes, so anyone else is held to 16 MB - FastHTML reads a form
     before a route can say "log in first", and a multi-gigabyte upload to
     an admin address would fill the disk before being refused. An API key
-    may send a media file; the logged-in admin, a whole backup to restore.
-    Sits inside the session middleware, to know who's logged in."""
+    may send a media file; the logged-in admin, a whole backup to restore,
+    and so may setup before there's an admin (with its token, checked
+    once it's read). Sits inside the session middleware, to know who's logged in."""
     ANYONE = 16 * 1024 * 1024
 
     def __init__(self, app):
@@ -574,6 +575,10 @@ class BodyLimit:
             return await self.app(scope, receive, send)
         headers = dict(scope.get("headers", []))
         limit = (config.MAX_MEDIA_MB + 10) * 1024 * 1024 if b"authorization" in headers else self.ANYONE
+        if scope.get("path") == "/setup/upload" and not auth.admin_exists():
+            # a whole backup, before there's anyone to log in (auth_routes.setup_upload)
+            from soloblog.routes.auth_routes import SETUP_UPLOAD_MAX
+            limit = SETUP_UPLOAD_MAX + 1024 * 1024
         try:
             declared = int(headers.get(b"content-length", b"0"))
         except ValueError:

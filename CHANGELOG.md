@@ -9,6 +9,8 @@ versions may include breaking changes; they'll always be listed here.
 
 ### Added
 
+- Moving host with a downloaded backup: setup can restore it, and you
+  log in with your old password
 - Sync images asks which way: this site to your bucket, or your bucket to
   this site - and copies only what's missing or different
 - Restoring a bucket backup can bring back the bucket's images too

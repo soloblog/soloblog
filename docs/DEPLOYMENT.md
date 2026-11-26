@@ -890,12 +890,17 @@ start empty, set `S3_RESTORE_ON_BOOT` to `0` on the new host.
 
 **With a downloaded backup:**
 
-1. In **Settings > Backup and import**, select **Download** with
-   everything selected - or copy the whole `/data` folder.
-2. Start Soloblog on the new server and create an account, then
-   **Restore** the zip in **Settings > Backup and import**. You keep the
-   password you just made. Or start it with the old `/data` folder, and
-   skip setup.
+1. On the old site, open **Settings > Backup and import** and select
+   **Download** with everything selected.
+2. Start Soloblog on the new server and open `/setup` there. Select
+   **Moving your site? Restore a backup**.
+3. Enter the **Setup token**, choose the backup under **Backup**, and
+   type its **Passphrase** if it's locked with one. Select **Restore**.
+4. Everything in the backup comes back - posts, images, settings and
+   your login. Log in with your old password.
+
+**Copying the whole `/data` folder instead?** Start the new server with
+it, and skip setup.
 
 **Domain changing too?** Change the URL in **Settings > URL and SEO**
 (or `BASE_URL`, if you set it on your host).

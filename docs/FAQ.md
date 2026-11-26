@@ -141,7 +141,8 @@ comments and settings. See [Where posts are kept](guide/how-it-works.md#where-po
 With cloud storage connected, start Soloblog on the new host with the
 same `S3_` settings: it restores itself from the newest backup in your
 bucket, images and login included. Without it, download a backup with
-everything selected and restore it on the new site. Both are in
+everything selected, and on the new site's setup page select **Moving
+your site? Restore a backup**. Both are in
 [Move to a new server or domain](DEPLOYMENT.md#move-to-a-new-server-or-domain).
 
 ### Can I move my blog from WordPress, Ghost, Medium or Substack?

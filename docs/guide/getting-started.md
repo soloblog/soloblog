@@ -86,6 +86,10 @@ the next time your site is updated. The warning says how to fix it on
 your host. See also
 [Open setup the first time](../DEPLOYMENT.md#open-setup-the-first-time).
 
+**Moving a site you already have?** On the setup page, select **Moving
+your site? Restore a backup** instead of creating an account - see
+[Move to a new server or domain](../DEPLOYMENT.md#move-to-a-new-server-or-domain).
+
 **Lost the setup token?** See
 [I lost the setup token](../FAQ.md#i-lost-the-setup-token-or-forgot-my-password).
 
