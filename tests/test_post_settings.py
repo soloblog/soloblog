@@ -309,7 +309,7 @@ def test_a_cover_hidden_from_lists_that_show_covers_is_changed(admin, site_setti
     html = _editor(admin, hidden)
     block = _block(html, "hide_list_cover")
     assert 'data-site-value="0"' in block and _changed(block) and _shown(block, "custom-reset")
-    assert block.index("It still shows on the post") < block.index("data-custom-reset")
+    assert block.index("The cover still shows on the post") < block.index("data-custom-reset")
     assert _count(html, "details") == "Details · 1 changed"
     shown = _editor(admin, save_post(admin, title="Cover shown here"))
     assert not _changed(_block(shown, "hide_list_cover")) and " changed" not in _count(shown, "details")

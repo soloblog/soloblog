@@ -65,13 +65,13 @@ The choice each setting starts with on a new Soloblog site is tagged
 ### Homepage
 
 - **Your homepage shows** - What people see first when they visit: your latest posts; your wiki's front page; or one of your pages - **Pick** one that's in your menu or footer, or an unlisted post to keep it out of the menu. With a page or the wiki as your homepage, your posts move to `/blog`, and a Blog link is added to the menu.
-- **It also shows** - When a page is your homepage: select what else it shows - the title (with the date and cover), reactions, share buttons, related posts, About the author, the newsletter sign-up, comments.
+- **The homepage also shows** - When a page is your homepage: select what else the homepage shows - the title (with the date and cover), reactions, share buttons, related posts, About the author, the newsletter sign-up, comments.
 
 ## URL and SEO
 
 ### Site URL
 
-- **URL** - Your site's URL, like `https://example.com`. It starts as the URL you first set up Soloblog at. Change it when you move to a new domain. If the field can't be changed, your host sets the URL (as `BASE_URL`): change it there instead.
+- **URL** - Your site's URL, like `https://example.com`. The URL starts as the one you first set up Soloblog at. Change it when you move to a new domain. If the field can't be changed, your host sets the URL (as `BASE_URL`): change it there instead.
 
 ### Search engines
 
@@ -112,7 +112,7 @@ Your posts, translated for you into other languages by a service you choose. A r
 - **API key** - The key the service gives you, so your site can use it: DeepL's from deepl.com/pro-api, Google's from Google Cloud, under Cloud Translation. LibreTranslate: only if your server asks for one.
 - **LibreTranslate server** - Your own LibreTranslate server's URL, if you run one. Empty: libretranslate.com, which needs a key.
 - **Offer posts in** - The languages to translate into. Each post gets a page in each one, like `/es/post/your-post`. Every language is another translation of every post, so check the service's prices.
-- **Translate every post now** - Translates the posts you wrote before turning it on. New posts are translated automatically.
+- **Translate every post now** - Translates the posts you wrote before turning translation on. New posts are translated automatically.
 
 ## Style
 
@@ -131,7 +131,7 @@ A preset can change: how posts are shown in the blog roll (and what each one sho
 - **Matching pairs** - A light palette and a dark one that go together, set in one go.
 - **Light palette** and **Dark palette** - The set of colours your site uses in light mode, and in dark mode. There are 21 light palettes and 14 dark ones, with your own first. Select one to see it.
 - **Visitors see** - The palette that matches each visitor's device (the dark one when their device is set to dark mode); always the light one; or always the dark one.
-- **Let readers pick other colours** (on/off) - Adds a Colours menu to your header, where readers choose colours for themselves only. **Default**, in that menu, takes them back to yours.
+- **Let readers pick other colours** (on/off) - Adds a Colours menu to your header. What a reader picks changes the colours for them only. **Default**, in that menu, takes them back to yours.
 - **Frosted glass** (on/off) - The header, menus and popups let the page show through, blurred - and so does the box behind words on an image.
 
 The colours save together, with **Save**.
@@ -141,7 +141,7 @@ The colours save together, with **Save**.
 Palettes you make yourself, on daisyUI's website, and paste in - see [Add custom colours](design.md#add-custom-colours). Besides colours, each sets the corner rounding, border width, sizes, shadow depth and grain texture it was made with.
 
 - **Add colours** - Paste the CSS from [daisyUI's theme generator](https://daisyui.com/theme-generator/), and give it a name. A preview shows it as you paste. It's added first to **Light palette** or **Dark palette**, and to readers' Colours menu. Share images and comments use it too.
-- **Change** - Paste a new version, or rename it.
+- **Change** - Paste a new version of the palette, or rename it.
 - **Delete** - Asks first. If your site was using it, it goes back to the default palette.
 
 Up to 10. Like the palettes that come with Soloblog, their text colours are adjusted just enough to be easy to read.
@@ -330,7 +330,7 @@ Shown while comments or the contact form is on.
 
 Shown while comments or the contact form is on.
 
-- **Email me about new comments** (on/off) - When one is waiting for your approval. With Soloblog's own comments. Needs email set up.
+- **Email me about new comments** (on/off) - An email when a comment is waiting for your approval. With Soloblog's own comments. Needs email set up.
 - **Also email messages to** - Your address, to get each message by email as well. Replying to the email answers the visitor. With Soloblog's own contact form. Needs email set up.
 - **Send new comments and messages to** - To get a message in Slack or Discord when a comment or contact message arrives. Paste a webhook URL - a link Slack or Discord makes for posting into one of your channels.
 
@@ -339,9 +339,9 @@ Spam protection is in [Security](#spam-protection).
 ## Newsletter
 
 - **Readers subscribe with** - Nothing; Soloblog's own (your new posts, emailed to subscribers - needs email set up); or Buttondown, Kit, Mailchimp or Substack, where your account on that service sends the emails.
-- **Email new posts to subscribers** (on/off) - Off, you send the ones you choose, from Newsletter.
+- **Email new posts to subscribers** (on/off) - When off, you choose which posts to send, from Newsletter.
 - **How often** - Each post, as it's published; or once a week (Monday morning) or once a month (the 1st), with that time's posts in one email. A week or month with no new posts sends nothing.
-- **Send the whole post** (on/off) - Off, the email has the post's summary and a link to read the rest.
+- **Send the whole post** (on/off) - When off, the email has the post's summary and a link to read the rest.
 - **Username** (Buttondown), **Form ID** (Kit), **Form action URL** (Mailchimp) or **Publication** (Substack) - With another service: where to send people who sign up. Each service shows it in its own settings.
 - **Heading** and **Intro** - What the sign-up box says.
 - **Show the sign-up box under each post** (on/off) - Off at first.
@@ -406,22 +406,22 @@ The fediverse is a network of social sites - Mastodon, Threads and others - wher
 
 - **Let people follow this blog** (on/off) - Needs your site at a public `https://` URL.
 - The settings below appear once **Let people follow this blog** is on.
-- **Username** - Letters, numbers and _. Changing it later loses your followers.
+- **Username** - Letters, numbers and _. Changing the username later loses your followers.
 
 ### Webmentions
 
 Under **Advanced**. Webmentions are how blogs tell each other they've linked to, liked or replied to a post.
 
-- **Accept webmentions** (on/off) - When other blogs link to, like or reply to your posts, it shows under them.
-- **Approve replies and mentions first** (on/off) - They wait in the **Mentions** tab of **Comments** for you to approve. Likes and reposts show straight away.
-- **Tell sites when I link to them** (on/off) - When you link to a blog that accepts webmentions, it's told about your post.
+- **Accept webmentions** (on/off) - When other blogs link to, like or reply to your posts, the mention shows under the post.
+- **Approve replies and mentions first** (on/off) - Replies and mentions wait in the **Mentions** tab of **Comments** for you to approve. Likes and reposts show straight away.
+- **Tell sites when I link to them** (on/off) - When you link to a blog that accepts webmentions, that blog is told about your post.
 
 ## Editor
 
 ### Writing
 
 - **Keep unsaved writing** (on/off) - If the page closes before you save, you can get your writing back.
-- **Post settings beside the editor** (on/off) - On a wide screen, Post settings stays open beside your writing. Off, the Settings button opens it over the text.
+- **Post settings beside the editor** (on/off) - On a wide screen, Post settings stays open beside your writing. When off, the Settings button opens Post settings over the text.
 - **Slash menu** (on/off) - Type / at the start of a line to insert headings, images and more.
 - **Check spelling** (on/off) - Your browser underlines misspelled words.
 - **Writing width** - Comfortable (a column that's easy to read back), or Wide (the text fills the box).
@@ -523,7 +523,7 @@ Gives you an **Update now** button when a new version of Soloblog is out. A row 
 Under **Advanced**. For people who write code: your own code and styles, added to every public page of your site. It never applies to the admin, so a mistake can't lock you out.
 
 - **In <head>** - Code added to the top of every page, like a script a service asks you to paste. Only paste code you trust.
-- **This code sets cookies or tracks visitors** (on/off) - Then it waits until a visitor accepts the cookie banner, as Google Analytics does.
+- **This code sets cookies or tracks visitors** (on/off) - When on, the code waits until a visitor accepts the cookie banner, as Google Analytics does.
 - **Custom CSS** - Your own styles. Your palette's colours are `var(--color-primary)` and the like.
 
 ### Environment
@@ -607,10 +607,10 @@ own. Beside the editor, use the editor's own **Save**.
 
 ### Publishing
 
-- **Published** (on/off) - Off, it's a draft only you see.
-- **Publish at** - It goes live then, in your site's time zone. Clear it
+- **Published** (on/off) - When off, the post is a draft only you can see.
+- **Publish at** - The post goes live at this time, in your site's time zone. Clear it
   to publish straight away.
-- **Date** (once it's published) - The day it shows: the day you first
+- **Date** (once the post is published) - The date shown on the post: the day you first
   published it, unless you change it here.
 - **Where it appears** - In the blog roll (a normal post); in the
   **menu** or the **footer** (a page, like About or Privacy); or **pinned
@@ -621,15 +621,15 @@ own. Beside the editor, use the editor's own **Save**.
   Archive...). In the menu it's a dropdown; in a footer laid out in columns, the
   page and those under it are a column. A page under one of Soloblog's own pages
   that's taken out of the menu shows on its own meanwhile.
-- **Email it to subscribers** (on/off, with the newsletter sending new posts) - Switch off before it goes out to leave this post out of the newsletter.
-- **Unlisted** (on/off) - Published, but only people with the link find it: it's left out
+- **Email the post to subscribers** (on/off, with the newsletter sending new posts) - Switch off before the post goes out to leave it out of the newsletter.
+- **Unlisted** (on/off) - Published, but only people with the link can find the post: it's left out
   of the blog roll, tags, search, feeds and search engines, and isn't sent
   to subscribers or followers. A page in the menu or footer stays there for
   anyone to open - a line under the switch says so.
 - **Allow comments on this post** (on/off) - While comments are on for
   the site (**Settings > Comments and messages**).
 - **Who can read it** (with members on) - Everyone, members or paid
-  members. Others see the start, and are asked to join.
+  members. Everyone else sees the start of the post, and is asked to join.
 - **Password** - A password-protected post: readers see the title and
   summary, and a box for the password; the right one opens the post. Its text stays out of feeds,
   search and the newsletter. The password is kept as you typed it, so you
@@ -646,12 +646,12 @@ own. Beside the editor, use the editor's own **Save**.
 - **Cover image** - At the top of the post, on cards, and when the post is
   shared.
 - **Hide the cover in post lists** (on/off) - Keeps the cover off the
-  homepage, tag pages and search. It still shows on the post.
+  homepage, tag pages and search. The cover still shows on the post itself.
 - **Summary** - A line about the post, in lists, search results and
   shares. Without one, the start of the post is used.
 - **Tags** - Separated by commas. Select one of your tags above the field
   to add it.
-- **Word goal** - Only you see it: a ring beside the word count fills as
+- **Word goal** - Only you see the goal: a ring beside the word count fills as
   you write. Left empty, the post uses your default (**Settings > Editor >
   Default word goal**); type 0 for no goal on this one.
 
@@ -722,10 +722,10 @@ when Settings leaves pages out.
   page in the menu or footer starts with only its title and content.
   Comments have their own switch, **Allow comments**.
 - **More** - Collapsed, and open automatically while the page uses one of these.
-  They work on any post or page:
+  These settings work on any post or page:
   - **Show as slides** (on/off) - Each part between `---` lines is a slide.
   - **In the wiki** (on/off) - Listed on the wiki's front page, not in the blog.
-  - **Remind me to update** (on/off) - Shows when it was last updated, and
+  - **Remind me to update** (on/off) - Shows when the post was last updated, and
     reminds you after three months.
   - **Link to** - The page this post is about. For another website, the title links there, with a button under the text. For one of your own pages, visitors go straight to it.
 
@@ -734,7 +734,7 @@ when Settings leaves pages out.
 - **Apply a template** - Opens the list of templates. The one you choose
   is added to the end of the page and its settings replace the page's -
   see [Apply a template to a page](writing.md#apply-a-template-to-a-page).
-- **Save as a template** - Give it a name and select **Save**: the post's
+- **Save as a template** - Give the template a name and select **Save**: the post's
   words, its Post settings, tags, summary and cover are kept, to start new
   posts from and to apply to other pages - see
   [Save a page as a template](writing.md#save-a-page-as-a-template).
@@ -742,11 +742,11 @@ when Settings leaves pages out.
 
 ### Search engines
 
-- **Hide this post from search engines** (on/off) - It stays on your site.
+- **Hide this post from search engines** (on/off) - The post stays on your site.
 - **Title for search engines** - Shown in search results and shares
   instead of the title. About 60 characters shows in full.
 - **Share image** - Shown when the post is shared, instead of its cover.
-- **Original URL** - Only if it was published somewhere else first.
+- **Original URL** - Only if the post was published somewhere else first.
 
 ### Series
 

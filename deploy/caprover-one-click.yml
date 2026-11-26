@@ -24,7 +24,7 @@ caproverOneClickApp:
     start: Soloblog - a free, open source blog and website for one person, run on your own server or hosting account.
     end: >-
       Done. Turn on HTTPS for the app, then open https://$$cap_appname.$$cap_root_domain/setup.
-      It asks for a setup token: open the app's Deployment tab, then its logs, and copy it from
+      Setup asks for a setup token: open the app's Deployment tab, then its logs, and copy the token from
       the lines marked [setup].
   displayName: Soloblog
   isOfficial: true

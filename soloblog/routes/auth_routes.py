@@ -86,7 +86,7 @@ def RecoveryKeyCard(key, title, intro, next_href, next_label):
             A(DOWNLOAD_SVG, Span("Download", cls="ml-1"), cls="btn btn-sm join-item",
               href="data:text/plain;charset=utf-8," + quote(text), download="soloblog-recovery-key.txt"),
             cls="join self-center"),
-        P("A password manager, or printed and put away, are good places. It won't be shown again.",
+        P("Keep the key in a password manager, or print it and put it away. It won't be shown again.",
           cls="text-xs text-base-content/60 mt-3"),
         A(CHECK_SVG, Span(next_label, cls="ml-1"), href=next_href, cls="btn btn-primary btn-sm w-full mt-2"),
     )
@@ -179,7 +179,7 @@ def token_help() -> str:
     where = TOKEN_IN_LOG.get(health.host_kind())
     if where:
         return f"{where} and copy the token from the lines marked [setup]."
-    return "It's in the server's log, on the lines marked [setup], and in setup-token.txt in the data folder."
+    return "The token is in the server's log, on the lines marked [setup], and in setup-token.txt in the data folder."
 
 
 HELD_WHY = {
@@ -216,7 +216,7 @@ def BringBackCard(error="", token="", key=""):
                       cls=FIELD_GAP) if backups else None,
             FormField("Passphrase", Input(type="password", name="passphrase", autocomplete="off",
                                           maxlength=str(PASSPHRASE_MAX), cls="input input-sm w-full"),
-                      help="The one the backup was made with", cls=FIELD_GAP) if why == "locked" else None,
+                      help="The passphrase the backup was made with", cls=FIELD_GAP) if why == "locked" else None,
             Span(data_status_slot=True, role="status", cls="text-xs block mt-2"),
             _submit("Try again" if why == "unreachable" else "Restore", RESTORE_SVG),
             action="/setup/restore", method="post"
@@ -242,7 +242,7 @@ def RestoreFileCard(error="", token=""):
                                       cls="file-input file-input-sm w-full"), cls=FIELD_GAP),
             FormField("Passphrase", Input(type="password", name="passphrase", autocomplete="off",
                                           maxlength=str(PASSPHRASE_MAX), cls="input input-sm w-full"),
-                      help="Only for a backup locked with one", cls=FIELD_GAP),
+                      help="Only for a backup locked with a passphrase", cls=FIELD_GAP),
             Span(data_status_slot=True, role="status", cls="text-xs block mt-2"),
             _submit("Restore", RESTORE_SVG),
             action="/setup/upload", method="post", enctype="multipart/form-data"

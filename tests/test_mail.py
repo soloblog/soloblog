@@ -89,7 +89,7 @@ def test_what_went_wrong_in_plain_words(admin, smtp, monkeypatch):
         assert words in mail.explain(raw), raw
     # the test email says it, beside its button
     settings.set_many({"smtp_password": "wrong", "admin_email": "me@example.com"})
-    assert "Couldn't send it: The server didn't accept the username" in admin.post("/admin/email/test").text
+    assert "Couldn't send the test email: The server didn't accept the username" in admin.post("/admin/email/test").text
 
 
 def test_resends_reason_is_kept(keep, monkeypatch):

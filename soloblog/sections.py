@@ -91,7 +91,7 @@ OPTIONS = {
 }
 
 # Style: Cover, offered only by the kinds made with cover=True
-COVER = ("cover", "Cover", "Its text over its image, across the page", "image")
+COVER = ("cover", "Cover", "The section's text over its image, across the page", "image")
 
 
 def _kind(key, names, about, icon, words, heading, body="", options=None, width="", draw=None, styles=(),

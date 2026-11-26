@@ -140,7 +140,7 @@ post.
 1. On the other site, copy the link to the video, post, map or form.
 2. In your post, paste the link on a line of its own.
 
-It becomes a card in your post. The video, map or form loads when a
+The link becomes a card in your post. The video, map or form loads when a
 reader selects the card. Until then, nothing is loaded from the other
 site.
 
@@ -163,7 +163,7 @@ of a page - without hunting through the toolbar.
    finds Table.
 3. Pick one with the ↑ and ↓ keys and press **Enter**, or select it.
 
-It's added where your cursor is. The three you used most recently are at
+What you picked is added where your cursor is. The three you used most recently are at
 the top of the list.
 
 **Changing how a section, a gallery or a box looks?** Put your cursor

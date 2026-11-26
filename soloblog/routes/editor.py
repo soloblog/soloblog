@@ -132,7 +132,7 @@ _HELP = [
          ("gallery",), None),
         ("Video or post embed", "https://www.youtube.com/watch?v=...",
          "A link alone on a line: YouTube, Vimeo, Spotify, Mastodon, X, Facebook, Instagram, TikTok. "
-         "It loads only when the reader clicks.", ("embed",), None),
+         "The embed loads only when the reader selects it.", ("embed",), None),
         ("Map", "https://www.openstreetmap.org/#map=15/51.507/-0.128", "OpenStreetMap or Google Maps links.",
          (), "map"),
         ("Form", "https://tally.so/r/abc123", "Tally, Typeform, Google Forms, Jotform, Microsoft Forms, Airtable.",
@@ -148,10 +148,10 @@ _HELP = [
 # the editor's own buttons - they change how you write, not what
 # said once at the top of a section, not under every entry
 _HELP_INTRO = {
-    "sections": ("In any post or page: a ## heading, then a Section: line saying what kind it is. It runs to the "
-                 "next ##. The Go to button, beside Insert on the toolbar, jumps to one. ", "Every section", "/admin/help?tab=sections-templates#sections"),
+    "sections": ("In any post or page: a ## heading, then a Section: line saying what kind it is. A section runs to "
+                 "the next ##. The Go to button, beside Insert on the toolbar, jumps to a section. ", "Every section", "/admin/help?tab=sections-templates#sections"),
 }
-UNLISTED_NOTE = "It's in the {place}, so anyone can still open it there - it's left out of search and feeds"
+UNLISTED_NOTE = "This page is in the {place}, so anyone can still open it there - it's left out of search and feeds"
 _HELP_EDITOR = ("insert", "preview", "side-by-side", "fullscreen", "clean-block", "undo", "redo")
 _HELP_JUMPS = (("start", "Writing"), ("blocks", "Blocks"), ("media", "Media"), ("sections", "Sections"),
                ("templates", "Templates"), ("keys", "Key: values"), ("editor", "Editor"),
@@ -941,12 +941,12 @@ def PagePanel(row, start=None, page=False):
                 ToggleField("In the wiki", "in_wiki", checked=bool(own("in_wiki")),
                             help="Listed on the wiki's front page, not in the blog.", cls=FIELD_GAP),
                 ToggleField("Remind me to update", "remind_update", checked=bool(own("remind_update")),
-                            help="Shows when it was last updated, and reminds you after three months.", cls=FIELD_GAP),
+                            help="Shows when the post was last updated, and reminds you after three months.", cls=FIELD_GAP),
                 FormField("Link to", Div(Input(name="link_url", id="link_url", value=link_url, inputmode="url",
                                                autocomplete="off", placeholder="https://example.com/the-article",
                                                cls="input input-sm flex-1 min-w-0 join-item"),
                                          LinkPickerButton("link_url"), cls="join w-full"),
-                          help="The page this post is about. Its title links there."),
+                          help="The page this post is about. The post's title links there."),
                 cls="pt-2"),
             open=any(more), id="page-more"),
         open_=bool(title_style or page_width or any(more) or (row and (
@@ -1158,17 +1158,17 @@ def PublishingPanel(row, pinned, pin_location):
     return SettingsPanel(
         "Publishing",
         ToggleField("Published", "published", checked=bool(published),
-                    help="Off, it's a draft only you see.", cls=FIELD_GAP),
+                    help="When off, the post is a draft only you can see.", cls=FIELD_GAP),
         FormField(
             "Publish at",
             Input(name="scheduled_at", type="datetime-local", value=tz.utc_to_local_input(scheduled_at),
                   cls="input input-sm w-full", **on("change", "scheduleChanged", EL)),
-            help=f"It goes live then ({settings.get('timezone') or 'UTC'} time).", cls=FIELD_GAP
+            help=f"The post goes live at this time ({settings.get('timezone') or 'UTC'} time).", cls=FIELD_GAP
         ),
         # once it's out: the day it shows, the day it was first published unless changed
         FormField("Date", Input(name="post_date", type="date", value=tz.local_date(row["created_at"])[:10],
                                 cls="input input-sm w-full"),
-                  help="The day it shows. It's set when you first publish it.", cls=FIELD_GAP)
+                  help="The date shown on the post, set when you first publish it.", cls=FIELD_GAP)
         if row and row["first_published_at"] else None,
         # one control for one decision: "not pinned" is just another
         # option here instead of a separate checkbox that has to
@@ -1190,18 +1190,18 @@ def PublishingPanel(row, pinned, pin_location):
         Div(
             FormField(
                 "Parent page",
-                P("It has sub-pages of its own, so it can't go under another page.",
+                P("This page has sub-pages of its own, so it can't go under another page.",
                   cls="text-xs text-base-content/60") if has_own_children else
                 Div(*[Select(*parent_options(where), name="parent_slug", id=f"parent-slug-{where}",
                              disabled=not (pinned and pin_location == where),
                              cls=f"select select-sm w-full {'' if pin_location == where else 'hidden'}")
                       for where in posts.NESTING]),
-                help=None if has_own_children else "To show it under another page in the menu."
+                help=None if has_own_children else "To show this page under another one in the menu."
             ),
             id="parent-page-field", cls=FIELD_GAP + ("" if nestable else " hidden")
         ),
         ToggleField("Unlisted", "unlisted", checked=bool(row and row["unlisted"]),
-                    help="Only people with the link find it.",
+                    help="Only people with the link can find the post.",
                     cls=FIELD_GAP),
         # unlisted but in the menu or footer: everyone sees it
         # there, so say what Unlisted still does (syncUnlisted,
@@ -1222,12 +1222,12 @@ def PublishingPanel(row, pinned, pin_location):
               for key, label in (("public", "Everyone"), ("members", "Members"),
                                  ("paid", "Paid members"))],
             name="visibility", cls="select select-sm w-full"),
-            help="Others see the start, and are asked to join.", cls=FIELD_GAP)
+            help="Everyone else sees the start of the post, and is asked to join.", cls=FIELD_GAP)
         if settings.get("members_enabled") == "1" else None,
         FormField("Password", Input(name="post_password", value=row["password"] if row else "",
                                     autocomplete="off", placeholder="None - anyone can read it",
                                     cls="input input-sm w-full"),
-                  help="Readers need it to open the post. Don't use a password you use anywhere else."),
+                  help="Readers need this password to open the post. Don't use one you use anywhere else."),
         key="publishing",
         custom=int(site_comments and not comments_enabled) + int(held_from_subscribers(row))
     )
@@ -1279,7 +1279,7 @@ def DetailsPanel(row, start):
             cls=FIELD_GAP
         ),
         ToggleField("Hide the cover in post lists", "hide_list_cover", checked=hides_cover,
-                    help="It still shows on the post.", cls=FIELD_GAP if lists_covers else "",
+                    help="The cover still shows on the post itself.", cls=FIELD_GAP if lists_covers else "",
                     site="0" if lists_covers else None,
                     custom=hides_cover if lists_covers else None),
         None if lists_covers else Div(SiteTurnsOff("Post lists don't show covers.", "Each post in the list shows",
@@ -1306,7 +1306,7 @@ def DetailsPanel(row, start):
                                                "[@media(pointer:coarse)]:px-2.5",
                          **on("click", "addTag", t)) for t in all_tags],
                 cls="flex flex-wrap gap-1 mt-1.5") if (all_tags := posts.top_tags(30)) else None,
-            help="Separate them with commas, or click one to add it."
+            help="Separate tags with commas, or select one to add it."
         ),
         FormField(
             "Word goal",
@@ -1316,7 +1316,7 @@ def DetailsPanel(row, start):
                   placeholder=f"{usual:,}" if usual else "None", inputmode="numeric",
                   cls="input input-sm w-full"),
             help=f"Only you see it. Empty: your default, {usual:,} words. 0: no goal." if usual else
-                 "Only you see it.",
+                 "Only you see the goal.",
             cls="mt-3", custom=bool(own_goal)
         ) if progress else None,
         key="details",
@@ -1333,7 +1333,7 @@ def TemplatePanel(title):
         FormField("Save as a template",
                   # the post's title, as text you can change - and it follows
                   # the title until you do (data-follows, ACTIONS_JS)
-                  Div(Input(name="template_name", value=title, placeholder="Its name", autocomplete="off",
+                  Div(Input(name="template_name", value=title, placeholder="Template name", autocomplete="off",
                             aria_label="Template name", data_follows="title",
                             cls="input input-sm join-item flex-1 min-w-0"),
                       Button("Save", type="button", cls="btn btn-sm join-item", data_needs="template_name",
@@ -1354,7 +1354,7 @@ def SearchEnginesPanel(row):
     return SettingsPanel(
         "Search engines",
         ToggleField("Hide this post from search engines", "post_noindex", checked=hidden_post,
-                    help="It stays on your site.", cls=FIELD_GAP,
+                    help="The post stays on your site.", cls=FIELD_GAP,
                     site="0" if site_listed else None,
                     custom=hidden_post if site_listed else None),
         FormField("Title for search engines", Input(name="seo_title", maxlength="120",
@@ -1366,12 +1366,12 @@ def SearchEnginesPanel(row):
             Input(name="share_image", id="share_image", value=row["share_image"] if row else "",
                   placeholder="The cover image", cls="input input-sm flex-1 min-w-0 join-item"),
             MediaPickerButton("share_image"), cls="join w-full"),
-                  help="When it's shared, instead of the cover. About 1200 × 630.", cls=FIELD_GAP),
+                  help="Shown when the post is shared, instead of the cover. About 1200 × 630.", cls=FIELD_GAP),
         FormField("Original URL", Input(name="canonical_url", type="url",
                                         value=row["canonical_url"] if row else "",
                                         placeholder="https://medium.com/@you/the-first-copy",
                                         cls="input input-sm w-full"),
-                  help="Only if it was published somewhere else first."),
+                  help="Only if the post was published somewhere else first."),
         open_=bool(row and (row["noindex"] or row["canonical_url"] or row["seo_title"]
                             or row["share_image"])), key="seo",
         custom=int(hidden_post and site_listed)
@@ -2476,7 +2476,7 @@ def SoundField(row):
         Input(name="sound", id="sound", value=row["sound"] if row else "", data_picker_kind="audio",
               placeholder="/uploads/your-sound.mp3", cls="input input-sm flex-1 min-w-0 join-item"),
         MediaPickerButton("sound", icon=SPEAKER_SVG), cls="join w-full"),
-        help="Loops while a visitor has it on. It never plays automatically.", cls="mt-3")
+        help="The sound loops while a visitor has it on. It never plays automatically.", cls="mt-3")
 
 
 def NewsletterChoice(row):
@@ -2492,8 +2492,8 @@ def NewsletterChoice(row):
                  cls=f"text-xs text-base-content/60 {FIELD_GAP}")
     held_back = bool(row and newsletter.skipped(row["slug"]))
     return Div(Input(type="hidden", name="newsletter_choice", value="1"),
-               ToggleField("Email it to subscribers", "newsletter_email", checked=not held_back,
-                           help={"each": "When it's published.", "week": "In the next weekly email.",
+               ToggleField("Email the post to subscribers", "newsletter_email", checked=not held_back,
+                           help={"each": "When the post is published.", "week": "In the next weekly email.",
                                  "month": "In the next monthly email."}[how],
                            site="1", custom=held_back),
                cls=FIELD_GAP)

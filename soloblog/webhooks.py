@@ -90,7 +90,7 @@ def deliver(hook, event: str, data: dict, retries=RETRIES) -> int:
             with netguard.open_url(req, timeout=10) as resp:
                 status, error = resp.status, ""
         except urllib.error.HTTPError as e:
-            status, error = e.code, f"It answered {e.code}"
+            status, error = e.code, f"The URL answered {e.code}"
         except (urllib.error.URLError, OSError, netguard.Blocked) as e:
             status, error = 0, f"Couldn't reach it: {getattr(e, 'reason', e)}"
         if 200 <= status < 300:

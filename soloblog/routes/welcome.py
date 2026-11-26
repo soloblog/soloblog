@@ -295,7 +295,7 @@ def welcome(session, step: str = "site"):
                                           cls="input input-sm w-full"), cls=FIELD_GAP),
             FormField("Tagline", Input(name="tagline", value=s["tagline"], placeholder="e.g. Notes on small software",
                                        cls="input input-sm w-full"),
-                      help="Optional. A short line under your site title.", cls=FIELD_GAP),
+                      help="A short line under your site title.", cls=FIELD_GAP),
             FormField("Language",
                       Combobox("site_language", [(code, name, None) for code, name in
                                                  sorted(translate.LANGUAGES.items(), key=lambda x: x[1])],
@@ -317,10 +317,10 @@ def welcome(session, step: str = "site"):
                                          value=s["author_avatar_url"], placeholder="/uploads/avatar.webp",
                                          cls="input input-sm flex-1 min-w-0 join-item"),
                                    MediaPickerButton("author_avatar_url"), cls="join w-full"),
-                      help="Optional. Pick or upload one.", cls=FIELD_GAP),
+                      help="Pick an image or upload one.", cls=FIELD_GAP),
             FormField("Short bio", Textarea(s["author_bio"], name="author_bio", rows="3",
                                             cls="textarea textarea-sm w-full"),
-                      help="Optional. A sentence or two.", cls=FIELD_GAP),
+                      help="A sentence or two about you.", cls=FIELD_GAP),
         )
         extra.append(MediaPickerDialog(s))
     elif index == INDEX["look"]:

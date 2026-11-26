@@ -21,8 +21,8 @@ def ApiKeysBody(new_key="", error=""):
     from soloblog import apikeys
     swap = dict(hx_target="#api-keys-body", hx_swap="innerHTML")
     choice = settings.get("apps_publish")
-    held = {"publish": {"none": "Everything it posts arrives as a draft",
-                        "apps": "AI assistants using it write drafts"}.get(choice)}
+    held = {"publish": {"none": "Everything posted with this key arrives as a draft",
+                        "apps": "AI assistants using this key write drafts"}.get(choice)}
     rows = [
         Div(
             Div(P(k["name"], " ", Span(apikeys.SCOPE_LABELS[k["scope"]],
@@ -69,7 +69,7 @@ def ApiKeysBody(new_key="", error=""):
             RadioGroupField("For", "kind",
                             [("bearer", "Most apps, scripts and AI assistants"),
                              ("signed", "Apps that publish to Ghost - Ulysses, iA Writer")],
-                            "bearer", help="In Ulysses and iA Writer, paste it as the \"Admin API key\"."),
+                            "bearer", help="In Ulysses and iA Writer, paste the key as the \"Admin API key\"."),
             Div(Button(KEY_SVG, Span("Make a key", cls="ml-1"), type="submit", cls="btn btn-sm"),
                 cls="flex justify-end mt-3"),
             hx_post="/admin/apikeys/new", **swap
@@ -216,7 +216,7 @@ def YourEmailPanel(s):
             hidden=True, data_shown_while_changed="admin_email", cls=FIELD_GAP),
         ToggleField("Email me when a new device signs in", "signin_alerts",
                     checked=(s["signin_alerts"] != "0"),
-                    help="The first time a browser signs in."),
+                    help="An email the first time each browser signs in."),
         key="email-admin"
     )
 
@@ -250,7 +250,7 @@ async def send_test_email(request, session):
                            f"Email from {settings.get('site_title')} is working.\n\n"
                            "This test was sent from Settings > Email. Password resets and "
                            "sign-in alerts will reach you at this address.\n"):
-        return status("Couldn't send it: " + mail.explain(settings.get("mail_last_error")), "error")
+        return status("Couldn't send the test email: " + mail.explain(settings.get("mail_last_error")), "error")
     if mail.only_reaches_you():
         return status(f"Sent to {to} - but from resend.dev it reaches only you. Use an address at your own domain",
                       "error")

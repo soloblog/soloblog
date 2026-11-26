@@ -180,7 +180,7 @@ def LogTab():
 
     # the detailed log: everything, four weeks, for working out what happened
     # - its own button, apart from Copy for a bug report, saying what's in it
-    warning = ("It has the last four weeks in full - email addresses, the pages people visited and what was "
+    warning = ("The log has the last four weeks in full - email addresses, the pages people visited and what was "
                "written. Keep it to yourself or someone helping you; to share in public, use Copy for a bug report "
                "(Info).")
     download = Form(Button(DOWNLOAD_SVG, Span("Download detailed log", cls="ml-1"), type="button",

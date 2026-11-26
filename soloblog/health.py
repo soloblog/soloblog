@@ -74,7 +74,7 @@ def updates_check():
         version, url = newer
         if updates.is_security_release():
             return check("updates", "updates", CRITICAL, f"A security update is out: {version}",
-                         "It fixes a problem that could put your site at risk. Update as soon as you can - "
+                         "The update fixes a problem that could put your site at risk. Update as soon as you can - "
                          "your posts and settings carry over.",
                          "How to update", "/admin/help?tab=deployment#update-to-a-new-version")
         return check("updates", "updates", RECOMMENDED, f"A new version is out: {version}",
@@ -89,7 +89,7 @@ def backup_check():
     bucket = storage.enabled()
     if bucket and storage.last_status()["error"]:
         return check("backup", "backups", CRITICAL, "The last automatic backup failed",
-                     f"It said: {storage.last_status()['error']}. Until it works, a change could be lost.",
+                     f"The error was: {storage.last_status()['error']}. Until backups work again, a change could be lost.",
                      "Open Backup and import", "/admin/settings?tab=backup")
     times = [t for t in (settings.get("backup_last_at"), settings.get("last_backup_download")) if t]
     last = min((_ago(t) for t in times if _ago(t) is not None), default=None)
@@ -145,7 +145,7 @@ def verify_check():
     result = settings.get("backup_verified_result")
     if verified is not None and result and result != "ok":
         return check("verify", "backups", CRITICAL, "The last backup check found a problem",
-                     f"It said: {result}. A backup that can't be restored isn't a backup - check Cloud storage "
+                     f"The check found: {result}. A backup that can't be restored isn't a backup - check Cloud storage "
                      "and run a new one.", action=("Verify again", "/admin/health/verify"))
     if verified is None or verified > timedelta(days=90):
         return check("verify", "backups", RECOMMENDED,
@@ -154,7 +154,7 @@ def verify_check():
                      "Verify opens the newest backup in your bucket and makes sure it would restore - "
                      "without restoring anything.", action=("Verify a backup", "/admin/health/verify"))
     return check("verify", "backups", GOOD, f"The newest backup was checked {_days(verified)}",
-                 "It opened, and it would restore.", action=("Verify again", "/admin/health/verify"))
+                 "The backup opened, and it would restore.", action=("Verify again", "/admin/health/verify"))
 
 
 def https_check():
@@ -172,7 +172,7 @@ def https_check():
 def secret_check():
     if (os.getenv("SESSION_SECRET") or "").strip().lower() in config.PLACEHOLDER_SECRETS:
         return check("secret", "security", RECOMMENDED, "SESSION_SECRET is a placeholder, so it isn't used",
-                     "It's the example from a template, which anyone can read. Soloblog uses one of its own "
+                     "That value is the example from a template, which anyone can read. Soloblog uses one of its own "
                      "instead - remove SESSION_SECRET on your host, or set it to 64 random characters.",
                      "How to set it", "/admin/help?tab=deployment#settings-on-the-host")
     if config.SESSION_SECRET != DEFAULT_SECRET:
@@ -200,7 +200,7 @@ def recovery_check():
     from soloblog import auth
     if auth.has_recovery_key():
         return check("recovery", "security", GOOD, "You have a recovery key",
-                     "It resets your password if you forget it.")
+                     "The recovery key resets your password if you forget it.")
     return check("recovery", "security", RECOMMENDED, "There's no recovery key",
                  "Without one, a forgotten password means a server restart to get back in.",
                  "Make one", "/admin/settings?tab=security")
@@ -265,7 +265,7 @@ def address_check(request_host: str):
         return check("address", "domain", GOOD, f"{name} matches the URL you're using, {configured}",
                      "Links in emails, feeds and shares point to the right place.")
     return check("address", "domain", RECOMMENDED, f"{name} doesn't match the URL you're using",
-                 f"It's set to {configured}, but you're on {request_host}. Links in emails, feeds and shares "
+                 f"The URL is set to {configured}, but you're on {request_host}. Links in emails, feeds and shares "
                  "would point to the wrong place" + (" - set BASE_URL on your host to the URL readers use."
                                                       if config.BASE_URL_FIXED else "."), *where)
 
@@ -324,10 +324,10 @@ def storage_check():
     fix = keep_it()
     if storage.enabled() and config.S3_RESTORE_ON_BOOT:
         return check("kept", "storage", RECOMMENDED, "Your site is put back from your bucket on each start",
-                     "It isn't on lasting storage, so each update starts empty and restores the last backup - "
+                     "Your site isn't on lasting storage, so each update starts empty and restores the last backup - "
                      f"a change from the last minute could be lost. {fix}")
     return check("kept", "storage", CRITICAL, "Your posts will be lost on the next update",
-                 f"They're kept inside the app, not on lasting storage, so an update or restart starts empty. "
+                 f"Your posts are kept inside the app, not on lasting storage, so an update or restart starts empty. "
                  f"Download a backup now, then: {fix}", "Back up now", "/admin/settings?tab=backup")
 
 
@@ -361,9 +361,9 @@ def database_check():
     result = settings.get("db_check_result")
     if result == "ok":
         return check("database", "storage", GOOD, "The database checks out",
-                     "SQLite's own integrity check passed. It runs once a week.")
+                     "SQLite's own integrity check passed. The check runs once a week.")
     return check("database", "storage", CRITICAL, "The database reports a problem",
-                 f"Its integrity check said: {result[:200]}. Download a backup now, then restore it to a fresh "
+                 f"SQLite's integrity check said: {result[:200]}. Download a backup now, then restore it to a fresh "
                  "site if things go wrong.", "Open Backup and import", "/admin/settings?tab=backup")
 
 
@@ -371,14 +371,14 @@ def visibility_checks():
     out = []
     if settings.get("search_noindex") == "1":
         out.append(check("noindex", "visibility", RECOMMENDED, "Your site is hidden from search engines",
-                         "Fine while it's private or unfinished - easy to forget once it's ready.",
+                         "Fine while the site is private or unfinished - easy to forget once it's ready.",
                          "Open Search engines", "/admin/settings?tab=url"))
     else:
         out.append(check("noindex", "visibility", GOOD, "Search engines can find your site",
-                         "It has a sitemap and isn't asking to be hidden."))
+                         "Your site has a sitemap and isn't asking to be hidden."))
     if (settings.get("site_title") or "").strip() in ("", "My Blog"):
         out.append(check("title", "visibility", RECOMMENDED, "Your site still has the default title",
-                         "It's what shows in browser tabs, search results and shares.",
+                         "The title is what shows in browser tabs, search results and shares.",
                          "Change it", "/admin/settings?tab=name"))
     return out
 
@@ -483,7 +483,7 @@ def payments_check():
                      "Stripe can tell it about payments.", *where)
     if pay.test_mode():
         return check("payments", "payments", RECOMMENDED, "Payments are in test mode",
-                     "Nobody is really charged. When it works the way you want, use a live key.", *where)
+                     "Nobody is really charged. When payments work the way you want, use a live key.", *where)
     return check("payments", "payments", GOOD, "Readers can pay",
                  "Through Stripe, which tells the site about each payment.")
 
@@ -749,7 +749,7 @@ def detail_text(host: str = "") -> str:
         return ""
     head = [f"Soloblog {config.VERSION} - detailed log for {host or config.BASE_URL}",
             f"The last {DETAIL_DAYS} days as recorded, oldest first, times in UTC.",
-            "It holds personal details - email addresses, the pages people visited, what was written.",
+            "The log holds personal details - email addresses, the pages people visited, what was written.",
             "Keep it to yourself or someone helping you; to share in public, use Copy for a bug report.", ""]
     body = []
     for path in days:

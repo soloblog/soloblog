@@ -275,7 +275,7 @@ def test_remind_me_to_update_on_a_standard_post(admin, client):
     old = (utcnow() - timedelta(days=120)).isoformat()
     get_db().execute("UPDATE posts SET updated_at=? WHERE slug=?", (old, slug))
     get_db().commit()
-    assert "It's been 12" in admin.get(f"/post/{slug}").text
+    assert "Last updated 120 days ago" in admin.get(f"/post/{slug}").text
     assert "time for an update" not in client.get(f"/post/{slug}").text
 
 

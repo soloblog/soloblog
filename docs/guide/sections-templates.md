@@ -347,7 +347,7 @@ sit in a box in your site's colours, so they read on any image.
 
 `Style: Window` is the opening of a launch or product page: the image
 is framed like an app window, with a soft glow, under a very big heading.
-It also reads:
+A Window hero also reads:
 
 - `Label:` - a few words in a small tag above the heading, like
   `Label: Free and open source`. Write it on the first line of the
@@ -513,7 +513,7 @@ the section. `Small` and `Large` give it less or more room than
 - With `Default` or no line, a section follows its page's **Space between
   sections** in **Post settings > Page**, and if the page doesn't choose,
   the site's, in **Settings > Header and footer**.
-- It sets the room around that section, the room above its heading and
+- The `Space:` line sets the room around that section, the room above its heading and
   the gaps inside it.
 - On a page with writing of its own (a plain `##` heading anywhere), a
   section with no `Space:` line sits as close as a heading would, even

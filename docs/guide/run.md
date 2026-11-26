@@ -153,7 +153,7 @@ never shows under **Unused**.
 **Images with names like IMG_4032?** Select them and choose **Name from alt
 text** to give each one a name from its description.
 
-**Trashed a file that a post still uses?** It asks you first. In the
+**Trashed a file that a post still uses?** Soloblog asks you first. In the
 **Trash** tab, **Restore** brings files back, and **Delete forever**
 removes them for good.
 
@@ -180,7 +180,7 @@ services you've connected. Inside are the parts you selected:
 **To restore from a backup:** on the same page, under **Restore**, select
 **Upload** and choose the backup file. It shows what's inside, with a
 count for each part. Choose what to restore, then select **Restore**.
-It asks once more, then replaces what you selected - read what that means
+Soloblog asks once more, then replaces what you selected - read what that means
 below first.
 
 **What does a restore replace?** Only the parts you select, and nothing
@@ -197,7 +197,7 @@ is renamed or kept twice:
 - **Your password and passkeys** always stay as they are, so you can
   still log in.
 
-It doesn't ask about each post or image, and it doesn't show which ones
+A restore doesn't ask about each post or image, and it doesn't show which ones
 will change - the checkboxes and the counts are what you choose by.
 
 **Before you restore, keep a copy of today.** Select **Back up now**, or
@@ -264,7 +264,7 @@ again after three months.
 **Want fewer backups?** In **Settings > Backup and import**, under
 **Cloud storage**, set **How often**:
 
-- **A minute after changes** - the safest, and where it starts.
+- **A minute after changes** - the safest, and what a new site starts with.
 - **Once a day, if anything changed** - at most one backup a day. Publish
   a post at 3 pm when the last backup was at 9 am, and it's backed up at
   9 am the next day, with anything else you change before then. A day
@@ -337,7 +337,7 @@ your posts, images and settings as they are.
    button, or with the commands in
    [Update to a new version](../DEPLOYMENT.md#update-to-a-new-version).
 
-When it's done, the version number at the bottom of the admin is the
+When the update is done, the version number at the bottom of the admin is the
 new one.
 
 **Want to update with one click?** Set it up once in **Settings >
@@ -412,7 +412,7 @@ password for your site, not the one you log in with.
 **No domain of your own yet?** Resend needs one. Until you have it, use
 **An email account you have (SMTP)** instead.
 
-**The test didn't arrive?** It says why, and what to try. Some hosts
+**The test didn't arrive?** The message beside the button says why, and what to try. Some hosts
 block sending email from an email account; Resend works on all of them.
 
 **Emails reach you, but nobody else?** Your **From address** is probably
@@ -499,6 +499,6 @@ AI assistant's posts arrive as drafts for you to check and publish.
 **Who may publish with a Publish key**, on the same page, decides this.
 
 **Want to disconnect an app or assistant?** Select **Revoke** on its key.
-It stops working at once.
+The key stops working at once.
 
 See also: [The API](../API.md) · [Webhooks](../API.md#webhooks)

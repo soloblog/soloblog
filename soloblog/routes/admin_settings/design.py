@@ -264,8 +264,8 @@ def PresetsPanel(s):
             # what it would change on the site as it is now - not the ~30 it sets
             # everything it sets - in use too; what it would change in bold
             PresetChanges(lines := preset_changes(presets.find(key)[2], s, every=True), _sets_summary(lines)),
-            P("Its homepage is a page of yours:" if presets.uses_page(key) and pages else
-              "Makes a page for your homepage." if presets.uses_page(key) else
+            P("This style's homepage is a page of yours:" if presets.uses_page(key) and pages else
+              "This style makes a page for your homepage." if presets.uses_page(key) else
               "Your wiki's front page becomes the homepage - with a first note, if you have none.",
               cls="text-xs text-base-content/50 mt-1") if needs else None,
             Form(Input(type="hidden", name="key", value=key), page_choice,
@@ -279,7 +279,7 @@ def PresetsPanel(s):
                      Button(CHECK_SVG, Span("Use this", cls="ml-1"), type="submit", cls="btn btn-sm",
                             data_confirm="Use the Default style? Your colours go back to the default too; your "
                                          "writing stays." if key == presets.DEFAULT_KEY else
-                            "Use your Custom look? Its colours too; your writing stays." if key == presets.CUSTOM_KEY
+                            "Use your Custom look? Its colours come back too; your writing stays." if key == presets.CUSTOM_KEY
                             else f"Use the {name} style? Your colours and writing stay as they are."),
                      cls="flex items-center justify-end gap-3 mt-2"),
                  # at the card's foot, level with its neighbour's when a list opens
@@ -358,7 +358,7 @@ def OwnThemeDialog(t=None, error="", pasted=None, name=None):
             H3(f"Change {t['name']}" if t else i18n.spell("Add custom colours"), id=f"own-title-{key}", cls="font-semibold text-lg mb-1"),
             P("Make a theme in ", A("daisyUI's theme generator", href=GENERATOR_URL, target="_blank", rel="noopener",
                                     cls="link"),
-              ", copy its CSS and paste it here. Its corners, borders, sizes and shadows come with its colours.",
+              ", copy its CSS and paste it here. The theme's corners, borders, sizes and shadows come with its colours.",
               cls="text-sm text-base-content/70 mb-3"),
             Input(type="hidden", name="key", value=t["key"] if t else ""),
             FormField("The theme's CSS", Textarea(pasted if pasted is not None else (_theme_text(t) if t else ""),
@@ -430,7 +430,7 @@ def _look_panels(s) -> list:
             ToggleField(
                 "Let readers pick other colours", "visitor_theme_switching",
                 checked=(s["visitor_theme_switching"] == "1"),
-                help="A Colours menu in the header, for themselves only.",
+                help="A Colours menu in the header. What a reader picks changes the colours for them only.",
                 cls=FIELD_GAP
             ),
             ToggleField(
@@ -641,7 +641,7 @@ def _post_panels(s) -> list:
             ),
             ToggleField("Open any image bigger with a click", "lightbox_images",
                         checked=(s["lightbox_images"] == "1"),
-                        help="Gallery images always do."),
+                        help="Images in a gallery always open bigger."),
             key="posts-images"
         ),
         SettingsPanel(

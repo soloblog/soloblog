@@ -15,6 +15,6 @@
   <Icon>https://raw.githubusercontent.com/soloblog/soloblog/master/docs/brand/soloblog-icon-512.png</Icon>
   <Config Name="Web port" Target="8080" Default="8080" Mode="tcp" Description="The port the site opens on" Type="Port" Display="always" Required="true" Mask="false">8080</Config>
   <Config Name="Data" Target="/data" Default="/mnt/user/appdata/soloblog" Mode="rw" Description="Posts, images, the database and settings - everything the site keeps" Type="Path" Display="always" Required="true" Mask="false">/mnt/user/appdata/soloblog</Config>
-  <Config Name="Site address" Target="BASE_URL" Default="" Mode="" Description="Optional. Your site's public address, such as https://blog.example.com. Left empty, it's the address you open setup at, and Settings can change it." Type="Variable" Display="always" Required="false" Mask="false"></Config>
+  <Config Name="Site URL" Target="BASE_URL" Default="" Mode="" Description="Your site's public URL, such as https://blog.example.com. Left empty, the site uses the URL you open setup at, and Settings can change it." Type="Variable" Display="always" Required="false" Mask="false"></Config>
   <Config Name="Platform" Target="HOSTED_ON" Default="Unraid" Mode="" Description="Lets first-time setup say where Unraid shows the setup token" Type="Variable" Display="advanced-hide" Required="false" Mask="false">Unraid</Config>
 </Container>

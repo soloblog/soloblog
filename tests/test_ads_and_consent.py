@@ -90,7 +90,7 @@ def test_custom_code_that_tracks_waits_for_consent(admin, client):
         gate = page[page.index('id="consent-scripts"'):]
         assert "window.trackerRan" in gate.split("</template>")[0] and 'id="consent-banner"' in page
         assert page.count("window.trackerRan") == 1
-        assert "It asks about: your custom code." in admin.get("/admin/settings?tab=analytics").text
+        assert "The banner asks about: your custom code." in admin.get("/admin/settings?tab=analytics").text
         # the admin never answers the banner, so never runs it
         assert "window.trackerRan" not in admin.get("/").text
         # the banner off: nothing waits, it runs as the admin chose

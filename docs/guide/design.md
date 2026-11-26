@@ -92,7 +92,7 @@ See also: [Add custom colours](#add-custom-colours)
 Use any colours you like, beyond the 35 palettes that come with
 Soloblog. You make the palette on daisyUI's website, then paste it in.
 
-It's more than colours: a palette made there also sets how round the
+A palette made there is more than colours: it also sets how round the
 corners of buttons and boxes are, how thick their borders are, how big
 fields and buttons are, how deep the shadows look, and a light grain
 texture. All of these come with it.

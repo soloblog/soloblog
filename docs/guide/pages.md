@@ -335,7 +335,7 @@ still goes to the homepage.
 same way: **Add to footer**, **Move**, **Rename** and **Remove from
 footer**. Home and Blog can go in the footer too. A page can be in the
 menu, the footer, both or neither, with its own place and label in each.
-They show only while **Pinned pages** is on, under **Footer** in
+Footer pages show only while **Pinned pages** is on, under **Footer** in
 **Settings > Header and footer**. Archive, Tags and RSS in the footer's small print (the
 **Archive, Tags and RSS links** switch there) stay as they are, but a
 page you add to the footer isn't shown twice.

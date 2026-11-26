@@ -605,7 +605,7 @@ def _join(s, m):
         intro = s.get("newsletter_intro") or i18n.t("No spam - just the next post, when it's out. Unsubscribe any time.")
     else:
         title = i18n.t("Become a member")
-        intro = s.get("members_intro") or i18n.t("Members can read every members-only post. It's free.")
+        intro = s.get("members_intro") or i18n.t("Members can read every members-only post. Joining is free.")
     form = Form(
         Div(Input(name="email", type="email", required=True, placeholder="you@example.com", autocomplete="email",
                   aria_label=i18n.t("Email address"), cls="input input-sm join-item flex-1 min-w-0"),

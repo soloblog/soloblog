@@ -185,7 +185,7 @@ def test_one_choice_for_who_may_publish(app, admin, keys):
     try:
         page = admin.post("/admin/apikeys/publishing", data={"apps_publish": "none"},
                           headers={"HX-Request": "true"}).text
-        assert settings.get("apps_publish") == "none" and "Everything it posts arrives as a draft" in page
+        assert settings.get("apps_publish") == "none" and "Everything posted with this key arrives as a draft" in page
         admin.post("/admin/apikeys/publishing", data={"apps_publish": "everyone!"}, headers={"HX-Request": "true"})
         assert settings.get("apps_publish") == "none"
         # held back: a new post asked to go live arrives as a draft; the rest says why
@@ -199,7 +199,7 @@ def test_one_choice_for_who_may_publish(app, admin, keys):
         assert r.status_code == 403 and "needs a key with Publish" in r.json()["error"]
         settings.set_many({"apps_publish": "apps"})
         assert c.post("/api/v1/posts", json={"title": "Live now", "published": True}).json()["status"] == "published"
-        assert "AI assistants using it write drafts" in admin.get("/admin/settings?tab=integrations").text
+        assert "AI assistants using this key write drafts" in admin.get("/admin/settings?tab=integrations").text
         assert apikeys.may_publish("api") and apikeys.may_publish("ghost") and not apikeys.may_publish("mcp")
         settings.set_many({"apps_publish": "all"})
         assert apikeys.may_publish("mcp")
@@ -241,9 +241,9 @@ def test_a_ghost_apps_key_isnt_said_to_be_held_back_from_assistants(admin):
     apikeys.create_signed("Ulysses", "publish")
     try:
         page = admin.get("/admin/settings?tab=integrations").text
-        assert "AI assistants using it write drafts" not in page
+        assert "AI assistants using this key write drafts" not in page
         settings.set_many({"apps_publish": "none"})
-        assert "Everything it posts arrives as a draft" in admin.get("/admin/settings?tab=integrations").text
+        assert "Everything posted with this key arrives as a draft" in admin.get("/admin/settings?tab=integrations").text
     finally:
         settings.set_many({"apps_publish": "apps"})
         get_db().execute("DELETE FROM api_keys")

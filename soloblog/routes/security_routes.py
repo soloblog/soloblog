@@ -152,7 +152,7 @@ def RecoveryKeyBody(state=None, key="", error=""):
         text = (f"Recovery key for {s.get('site_title')} ({config.BASE_URL})\n\n{key}\n\n"
                 f"It resets the admin password at {config.BASE_URL}/forgot-password - keep it private.\n")
         return Div(
-            P("Save it somewhere safe, like a password manager. It won't be shown again, and your old key "
+            P("Save the key somewhere safe, like a password manager. It won't be shown again, and your old key "
               "stops working.", cls="text-sm text-base-content/70 mb-3"),
             Code(key, cls="block w-fit font-mono text-base tracking-wide bg-base-200 rounded-box px-3 py-2 "
                           "break-all select-all"),
@@ -167,7 +167,7 @@ def RecoveryKeyBody(state=None, key="", error=""):
     made = settings.get("recovery_key_made")
     return Form(
         P(Span("Saved", cls="badge badge-sm badge-success mr-2"),
-          f"Made {format_date(made)}. It resets your password if you forget it. Lost it? Make a new one.",
+          f"Made {format_date(made)}. The key resets your password if you forget it. Lost it? Make a new one.",
           cls="text-sm text-base-content/70 mb-3") if auth.has_recovery_key() else
         P(Span("Not made", cls="badge badge-sm badge-ghost mr-2"),
           "A recovery key resets your password if you forget it. Make one and keep it safe.",

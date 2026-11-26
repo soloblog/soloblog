@@ -157,11 +157,11 @@ def _ask_page(error: str = "", **ctx):
             Form(
                 *[Input(type="hidden", name=k, value=ctx[k]) for k in
                   ("client_id", "redirect_uri", "state", "code_challenge", "code_challenge_method", "requested")],
-                RadioGroupField("What it can do", "scope",
+                RadioGroupField("What the app can do", "scope",
                                 [(k, f"{apikeys.SCOPE_LABELS[k]} - {apikeys.SCOPE_HELP[k]}") for k in apikeys.SCOPES],
-                                chosen, help="It asked for: " + (ctx["requested"] or "signing in only") + ".",
+                                chosen, help="The app asked for: " + (ctx["requested"] or "signing in only") + ".",
                                 cls=FIELD_GAP),
-                P("Everything it posts arrives as a draft.",
+                P("Everything the app posts arrives as a draft.",
                   cls="text-xs text-base-content/60 mb-2") if s.get("apps_publish") == "none" else None,
                 P("You can disconnect it any time in ",
                   A("API keys", href="/admin/settings?tab=integrations&panel=integrations-apikeys", target="_blank",

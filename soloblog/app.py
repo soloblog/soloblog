@@ -944,7 +944,7 @@ elif not auth.admin_exists():
     if config.SETUP_TOKEN:
         print("\n[setup] SETUP_TOKEN is shorter than 16 characters, so it isn't used.")
     print(f"\n[setup] No admin account yet. Visit /setup and use this token:\n[setup] {auth.setup_token()}\n"
-          f"[setup] (It's also in setup-token.txt in the data folder.)\n")
+          f"[setup] (The token is also in setup-token.txt in the data folder.)\n")
     auth.write_setup_token()
 elif config.RESET_PASSWORD:
     print(f"\n[reset] RESET_PASSWORD is set. Choose a new password here (valid for 24 hours):\n"

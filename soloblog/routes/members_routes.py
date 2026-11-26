@@ -139,7 +139,7 @@ def join_page(session, hdrs, next: str = "", error: str = ""):
     hdrs.append(Meta(name="robots", content="noindex"))
     return _page(session,
                  H1(i18n.t("Become a member"), cls="text-xl font-bold"),
-                 P(s.get("members_intro") or i18n.t("Members can read every members-only post. It's free."),
+                 P(s.get("members_intro") or i18n.t("Members can read every members-only post. Joining is free."),
                    cls="text-sm text-base-content/70"),
                  JoinForm(s, next, {"email": i18n.t("That doesn't look like an email address"),
                                     "spam": i18n.t("Please complete the spam check"),
@@ -706,9 +706,9 @@ def members_page(session, q: str = "", status: str = "", page: int = 1, sort: st
                 FormField("Name", Input(name="name", maxlength="100", cls="input input-sm w-full")),
                 cls="grid grid-cols-1 sm:grid-cols-2 gap-3"),
             Label(Input(type="checkbox", name="comp", value="1", cls="checkbox checkbox-sm"),
-                  Span("Give them paid access - free, until you take it away", cls="text-sm"),
+                  Span("Give the member paid access - free, until you take it away", cls="text-sm"),
                   cls="flex items-center gap-2 cursor-pointer mt-3"),
-            P("They're not emailed: they sign in with this address whenever they like.",
+            P("New members aren't emailed: they sign in with this address whenever they like.",
               cls="text-xs text-base-content/50 mt-1"),
             P("Moving from Ghost or another site? Import its members export (CSV) above - anyone already here "
               "is skipped. They come in free, or with paid access if they had it for free there; a paid plan "
@@ -788,7 +788,7 @@ def comp_member(session, member_id: int, on: bool = False):
     if not m:
         return _back("That member is gone", "error")
     if m["status"] == "paid" and m["stripe_subscription_id"]:
-        return _back("They pay through Stripe - change their plan there", "error")
+        return _back("This member pays through Stripe - change their plan there", "error")
     members.update(member_id, status="comped" if on else "free")
     return _back(f"{m['email']} has paid access now" if on else f"{m['email']} is a free member now")
 
@@ -799,7 +799,7 @@ def remove_member(session, member_id: int):
     if not m:
         return _back("That member is gone", "error")
     if _live_plan(m):
-        return _back("They have a live plan - end it first, so they're not charged again", "error")
+        return _back("This member has a live plan - end it first, so they're not charged again", "error")
     members.delete(member_id)
     return _back(f"Removed {m['email']}")
 
@@ -811,7 +811,7 @@ def cancel_member_plan(session, member_id: int):
         return _back(BLOCKED_MESSAGE, "error")
     m = members.get(member_id)
     if not m or not m["stripe_subscription_id"]:
-        return _back("They have no plan to cancel", "error")
+        return _back("This member has no plan to cancel", "error")
     try:
         pay.cancel_at_period_end(m)
     except pay.StripeError as e:

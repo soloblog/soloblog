@@ -129,7 +129,7 @@ function _checkMatch(field) {
   if (!other) return;
   var a = other.value.trim(), b = field.value.trim();
   if (field.type === 'email') { a = a.toLowerCase(); b = b.toLowerCase(); }
-  field.setCustomValidity(a === b ? '' : (field.getAttribute('data-mismatch') || "They don't match"));
+  field.setCustomValidity(a === b ? '' : (field.getAttribute('data-mismatch') || "The two don't match"));
 }
 // a field only needed to change a saved value - the password, to change
 // the admin email - shows while that value differs from what's saved

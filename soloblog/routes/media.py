@@ -226,7 +226,7 @@ def MediaDetailsForm(item, used_in, status="", edit_status="", edit_failed=False
                       help="Who made the image. Shown with it as “Image by …”.", cls=FIELD_GAP),
             FormField("Credit link", Input(name="credit_url", type="url", value=meta["credit_url"],
                                            placeholder="https://", cls="input input-sm w-full"),
-                      help="Their website. The name in the credit links to it.", cls=FIELD_GAP),
+                      help="The website of whoever made the image. Their name in the credit links there.", cls=FIELD_GAP),
             FormField("Dark mode version",
                       Div(Input(name="dark_version", id="media-dark-version",
                                 value=f"/uploads/{meta['dark_version']}" if meta["dark_version"] else "",
@@ -264,7 +264,7 @@ def MediaDetailsForm(item, used_in, status="", edit_status="", edit_failed=False
                           cls="input input-sm join-item flex-1 min-w-0 font-mono"),
                     Button(EDIT_SVG, Span("Rename", cls="ml-1"), type="submit", cls="btn btn-sm join-item"),
                     cls="join w-full"),
-                    help="Posts that use it keep working."),
+                    help="Posts that use the image keep working."),
                 hx_post=f"/admin/media/rename/{item['filename']}", hx_target="#media-details-content",
                 hx_swap="innerHTML"
             ),

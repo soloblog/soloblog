@@ -214,7 +214,7 @@
  "Join": "登録する",
  "Join to read the rest - it's free.": "続きを読むには登録してください（無料です）。",
  "Member since {date}": "{date} からのメンバー",
- "Members can read every members-only post. It's free.": "メンバーはメンバー限定の記事をすべて読めます。無料です。",
+ "Members can read every members-only post. Joining is free.": "メンバーはメンバー限定の記事をすべて読めます。参加は無料です。",
  "Not a member yet?": "まだメンバーではありませんか？",
  "Or enter the code": "またはコードを入力",
  "Or enter this code: {code}": "またはこのコードを入力してください: {code}",

@@ -125,8 +125,8 @@ def cert_check(host: str):
         expires = cert_expiry(host)
     except ssl.SSLCertVerificationError as e:
         return check("cert", "domain", CRITICAL, "Your HTTPS certificate isn't valid",
-                     f"Browsers warn visitors away. It said: {getattr(e, 'verify_message', '') or e}. Most hosts renew it "
-                     "themselves - check your host's domain or certificate settings.")
+                     f"Browsers warn visitors away. The error was: {getattr(e, 'verify_message', '') or e}. Most hosts "
+                     "renew certificates themselves - check your host's domain or certificate settings.")
     except Exception as e:
         log.warning("certificate for %s: %s", host, e)
         return None
@@ -138,7 +138,7 @@ def cert_check(host: str):
                      "its certificate settings now, or visitors will be warned away.")
     if left < 14:
         return check("cert", "domain", RECOMMENDED, f"Your HTTPS certificate runs out in {left} days",
-                     f"On {when}. It should have renewed by now - check your host's certificate settings.")
+                     f"On {when}. The certificate should have renewed by now - check your host's certificate settings.")
     return check("cert", "domain", GOOD, "Your HTTPS certificate is valid",
                  f"Until {when}. Your host renews it on its own.")
 
@@ -153,11 +153,11 @@ def domain_check(host: str):
     when = _date(expires)
     if left < 7:
         return check("domain", "domain", CRITICAL, f"{name} runs out in {max(left, 0)} days",
-                     f"Its registration ends on {when}. Renew it at your registrar now - when it lapses, the "
+                     f"The domain's registration ends on {when}. Renew it at your registrar now - when it lapses, the "
                      "site and its email stop working, and someone else can buy the name.")
     if left < 30:
         return check("domain", "domain", RECOMMENDED, f"{name} runs out in {left} days",
-                     f"Its registration ends on {when}. Renew it at your registrar, or turn on auto-renew.")
+                     f"The domain's registration ends on {when}. Renew it at your registrar, or turn on auto-renew.")
     return check("domain", "domain", GOOD, f"{name} is registered until {when}",
                  "Turning on auto-renew at your registrar keeps it that way.")
 
@@ -188,10 +188,10 @@ def email_checks():
                              "How to set it up", "/admin/help?tab=how-it-works#why-email-lands-in-spam"))
         elif found:
             out.append(check("spf", "email", GOOD, f"{domain} has an SPF record",
-                             "It names the servers allowed to send its email."))
+                             "The SPF record names the servers allowed to send the domain's email."))
         else:
             out.append(check("spf", "email", RECOMMENDED, f"{domain} has no SPF record",
-                             "It tells receiving servers who may send email for your domain - without it, more "
+                             "An SPF record tells receiving servers who may send email for your domain - without one, more "
                              "of yours lands in spam. Your email provider's setup page gives the record to add.",
                              "How to set it up", "/admin/help?tab=how-it-works#why-email-lands-in-spam"))
     dmarc = txt_records(f"_dmarc.{domain}")
@@ -218,9 +218,9 @@ def email_checks():
     else:
         if asked:
             out.append(check("dkim", "email", RECOMMENDED, f"No DKIM key found for {domain}",
-                             "Your provider signs email with a key published in DNS - without it, more email "
-                             "lands in spam. Its setup page gives the record to add. (If it uses an unusual "
-                             "name for the key, it may be there and just not found here.)",
+                             "Your provider signs email with a key published in DNS - without the key, more email "
+                             "lands in spam. Your provider's setup page gives the record to add. (If your provider "
+                             "uses an unusual name for the key, it may be there and just not found here.)",
                              "How to set it up", "/admin/help?tab=how-it-works#why-email-lands-in-spam"))
     return out
 

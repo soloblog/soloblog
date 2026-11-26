@@ -150,7 +150,7 @@ top has the menu button on the left, which opens it. On the right are
 search, **Colours**, and a gear icon with a short list of admin pages.
 
 **On your site and want to get back to the admin?** Select the gear icon
-in your site's header and choose where to go. Only you see it, while
+in your site's header and choose where to go. Only you see the gear icon, while
 you're logged in.
 
 **What works the same everywhere:**

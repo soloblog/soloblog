@@ -45,7 +45,7 @@ SMTP_PRESETS = {
     "proton": ("Proton Mail", "smtp.protonmail.ch", 587,
                "Paid plans with your own domain: make an SMTP token in Proton's settings, under IMAP/SMTP"),
     "outlook": ("Outlook or Microsoft 365", "", 0,
-                "They no longer let a site send with a password - choose Resend above instead"),
+                "Outlook and Microsoft 365 no longer let a site send with a password - choose Resend above instead"),
 }
 
 

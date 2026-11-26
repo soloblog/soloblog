@@ -170,7 +170,7 @@ def CloudStoragePanel(now=False):
                     Span(id="save-status", role="status", cls="text-xs"),
                     cls="flex items-center gap-3"
                 ),
-                help="Older ones are deleted as new ones are made."
+                help="Older backups are deleted as new ones are made."
             ),
             # a choice saves as it changes, as every setting's does
             hx_post="/admin/backup/keep", hx_trigger="change", hx_target="#save-status", hx_swap="outerHTML",
@@ -377,7 +377,7 @@ def ImportPanel():
         Div(ImportStatus(), id="import-status"),
         Form(
             ToggleField("Copy images into the media library", "copy_images", checked=True,
-                        help="So they keep working when the old blog is gone.", cls=FIELD_GAP),
+                        help="So the images keep working when the old blog is gone.", cls=FIELD_GAP),
             ToggleField("Import as drafts", "as_drafts", checked=False,
                         help="Look each post over before it goes live.", cls=FIELD_GAP),
             FormField("Old blog's URL", Input(name="old_url", type="url", placeholder="https://blog.example.com",

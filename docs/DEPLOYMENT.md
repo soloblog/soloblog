@@ -66,7 +66,7 @@ A domain of your own is a yearly fee wherever you run it - see
 Some links to hosts and domain registrars in this guide are **referral
 links**. If you sign up through one, the
 Soloblog project may receive a credit or a commission from that company.
-It costs you nothing extra, and sometimes gets you a discount or credit
+Signing up this way costs you nothing extra, and sometimes gets you a discount or credit
 too. Soloblog works the same on every host listed, referral or not, and
 whether a company offers a referral programme doesn't decide what's
 listed or recommended here. You can always go to the company's site
@@ -112,7 +112,7 @@ before anything that costs money, and never asks for your passwords: you
 sign in on each company's own page. A chat-only assistant can't run
 commands, but it can walk you through the same steps.
 
-When it shows you hosts, servers or domain registrars to choose from,
+When the assistant shows you hosts, servers or domain registrars to choose from,
 it includes this guide's referral links - see
 [About the links in this guide](#about-the-links-in-this-guide).
 
@@ -202,8 +202,8 @@ a storage bucket as well; they're at the end, under
 [Hosts without a disk](#hosts-without-a-disk). When it's running,
 [open setup](#open-setup-the-first-time).
 
-They're all paid: **What it costs** under each says what for, and why its
-free plan, if it has one, won't do. Prices change - check the host's own
+These hosts are all paid: **What it costs** under each says what for, and
+why its free plan, if it has one, won't do. Prices change - check the host's own
 pricing page before you start.
 
 ### Render
@@ -305,7 +305,7 @@ server under it. Coolify's own hosted version is a monthly fee.
 
 1. Open **Apps > One-Click Apps > TEMPLATE**.
 2. Paste [`deploy/caprover-one-click.yml`](../deploy/caprover-one-click.yml).
-   It makes the volume and sets the container port.
+   The template makes the volume and sets the container port.
 3. Turn on HTTPS for the app.
 
 **Rather deploy the repository itself?** The included `captain-definition`
@@ -391,7 +391,7 @@ DigitalOcean.
 
 1. Make a bucket - see [Keep files in cloud storage](#keep-files-in-cloud-storage).
 2. Select the button above, and fill in the `S3_*` values it asks for.
-   It makes `SESSION_SECRET` for you.
+   The button makes `SESSION_SECRET` for you.
 
 ## Run it on a server
 
@@ -974,15 +974,15 @@ a copy that doesn't reset, with the password `demo`.
 
 Almost all of Soloblog's settings are in the admin. These few are set
 on your host instead, as environment variables - named settings you add
-in your host's dashboard, or in the `.env` file with Docker Compose. In
-the admin, **Settings > Integrations**, under **Advanced**, shows which
-are set.
+in your host's dashboard, or in the `.env` file with Docker Compose.
+None of these settings is required. In the admin, **Settings >
+Integrations**, under **Advanced**, shows which are set.
 
 | Variable | Default | What it's for |
 |---|---|---|
 | `SESSION_SECRET` | made on the first start, kept in `/data/.session_secret` | Signs logins. Set your own (`python3 -c "import secrets; print(secrets.token_hex(32))"`) if you like - it wins. |
-| `SETUP_TOKEN` | none | Optional. A first-login token you choose, 16 characters or more, instead of the one in the log. Only used until your account exists. |
-| `BASE_URL` | the URL first-time setup was opened at; before that, the host's own on Render, Railway and Fly | Optional. Your public URL, e.g. `https://blog.example.com`, used in feeds, the sitemap, links in emails and the fediverse. Without it, change the address in **Settings > Address and search**; set here, it wins and Settings can't change it. |
+| `SETUP_TOKEN` | none | A first-login token you choose, 16 characters or more, instead of the one in the log. Only used until your account exists. |
+| `BASE_URL` | the URL first-time setup was opened at; before that, the host's own on Render, Railway and Fly | Your public URL, e.g. `https://blog.example.com`, used in feeds, the sitemap, links in emails and the fediverse. Without it, change the address in **Settings > Address and search**; set here, it wins and Settings can't change it. |
 | `DATA_DIR` | `/data` in the image | Where data is stored. |
 | `PORT` | `8080` in the image | The port to listen on. Hosts that set `PORT` themselves are respected. |
 | `HOSTED_ON` | set by Soloblog's app-store packages (Umbrel, Unraid, Coolify...) | The platform's name, so first-time setup can say where it shows the setup token. Leave it out anywhere else. |
@@ -994,14 +994,14 @@ are set.
 | `MAX_MEDIA_MB` | `100` | The largest audio or video upload. |
 | `CLIENT_IP_HEADER` | none | A header your proxy sets to the visitor's IP address, e.g. `CF-Connecting-IP` behind [Cloudflare](#use-cloudflare). |
 | `TRUSTED_PROXY` | none | Whose word counts for a visitor's IP address (`X-Forwarded-For` and `CLIENT_IP_HEADER`). Unset, any caller on a private network is believed - right when a proxy on the same machine or network is in front. With no proxy in front (the container's port open to the internet), set `none`, or a visitor can dodge the login limit by sending the header themselves. Or list your proxy's addresses or networks, with commas: `10.0.0.2, 172.18.0.0/16`. |
-| `SMTP_HOST` | none | Optional. Your email provider's SMTP server, e.g. `smtp.fastmail.com`: your site sends its email through it until you set up email in **Settings > Email**, where what you save wins. |
-| `SMTP_PORT` | `587` | Optional. The server's port: `587`, or `465`. |
-| `SMTP_USER` | none | Optional. The username for the server - usually your email address. |
-| `SMTP_PASSWORD` | none | Optional. The password for the server. Most providers want an app password: a separate password for your site, made in your account's security settings. Never shown in the admin. |
-| `SMTP_FROM` | none | Optional. The address your email comes from, e.g. `hello@example.com`. |
-| `RESEND_API_KEY` | none | Optional. A [Resend](https://resend.com) API key, for a host that blocks SMTP. On its own, your site sends through Resend; with `SMTP_HOST` set too, Resend takes over whenever SMTP fails. Never shown in the admin. |
-| `RESEND_FROM` | none | Optional. The address Resend sends from, at a domain you verified there, e.g. `hello@example.com`. Needed with `RESEND_API_KEY`. |
-| `ADMIN_EMAIL` | none | Optional. Your email address, for password resets and sign-in alerts, until you set one in **Settings > Email**. |
+| `SMTP_HOST` | none | Your email provider's SMTP server, e.g. `smtp.fastmail.com`: your site sends its email through it until you set up email in **Settings > Email**, where what you save wins. |
+| `SMTP_PORT` | `587` | The server's port: `587`, or `465`. |
+| `SMTP_USER` | none | The username for the server - usually your email address. |
+| `SMTP_PASSWORD` | none | The password for the server. Most providers want an app password: a separate password for your site, made in your account's security settings. Never shown in the admin. |
+| `SMTP_FROM` | none | The address your email comes from, e.g. `hello@example.com`. |
+| `RESEND_API_KEY` | none | A [Resend](https://resend.com) API key, for a host that blocks SMTP. On its own, your site sends through Resend; with `SMTP_HOST` set too, Resend takes over whenever SMTP fails. Never shown in the admin. |
+| `RESEND_FROM` | none | The address Resend sends from, at a domain you verified there, e.g. `hello@example.com`. Needed with `RESEND_API_KEY`. |
+| `ADMIN_EMAIL` | none | Your email address, for password resets and sign-in alerts, until you set one in **Settings > Email**. |
 | `S3_*` | none | [Cloud storage](#keep-files-in-cloud-storage) for images and automatic backups. |
 | `ENV` | `production` in the image | `development` turns on auto-reload, for working on the code. A site whose `BASE_URL` starts with `https://` always runs as `production`. |
 

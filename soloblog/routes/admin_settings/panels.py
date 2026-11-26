@@ -77,7 +77,7 @@ def GeneralPanels(s):
                 Div(PageField("home_page", "" if home_kind(s["home_page"]) != "page" else s["home_page"], "home",
                               placeholder="Choose a page"),
                     data_shown_for="home_kind=page", hidden=home_kind(s["home_page"]) != "page", cls="mt-2"),
-                Div(FormField("It also shows", Div(
+                Div(FormField("The homepage also shows", Div(
                     *[Label(Input(type="checkbox", name="home_page_shows", value=key, cls="checkbox checkbox-xs",
                                   checked=key in s["home_page_shows"].split(",")),
                             Span(label, cls="text-sm"), cls="flex items-center gap-2 cursor-pointer")
@@ -107,7 +107,7 @@ def GeneralPanels(s):
                 "Comments",
                 ToggleField(
                     "Allow comments", "comments_enabled", checked=(s["comments_enabled"] == "1"),
-                    help="Each post can turn them off too."
+                    help="Each post can turn its comments off too."
                 ),
                 Div(
                 Div(RadioGroupField(
@@ -131,7 +131,7 @@ def GeneralPanels(s):
                     ToggleField(
                         "Load comments without a click", "comments_autoload",
                         checked=(s["comments_autoload"] == "1"),
-                        help="Off, readers click to show them."
+                        help="When off, comments load when a reader asks for them."
                     ),
                     data_shown_for="comments_system!=", hidden=not s["comments_system"], cls="mt-3"
                 ),
@@ -180,7 +180,7 @@ def NewsletterPanel(s):
             None if email_ready else SetUpFirst("email", EMAIL_SETUP),
             ToggleField("Email new posts to subscribers", "newsletter_auto",
                         checked=(s["newsletter_auto"] == "1"),
-                        help="Off, you send the ones you choose, from Newsletter.", cls=FIELD_GAP),
+                        help="When off, you choose which posts to send, from Newsletter.", cls=FIELD_GAP),
             RadioGroupField("How often", "newsletter_digest",
                             [("", "Each post, as it's published"),
                              ("week", "Once a week, on Monday morning - that week's posts in one email"),
@@ -188,7 +188,7 @@ def NewsletterPanel(s):
                             selected=s["newsletter_digest"] if s["newsletter_digest"] in ("week", "month") else "",
                             help="A week or month with no new posts sends nothing.", cls=FIELD_GAP),
             ToggleField("Send the whole post", "newsletter_full", checked=(s["newsletter_full"] == "1"),
-                        help="Off, the email has the summary and a link.", cls=FIELD_GAP),
+                        help="When off, the email has the post's summary and a link to it.", cls=FIELD_GAP),
             data_shown_for="newsletter_mode=builtin", hidden=m != "builtin"
         ),
         *[Div(FormField(label, Input(name=f"newsletter_{k}", value=s[f"newsletter_{k}"],
@@ -259,7 +259,7 @@ def ReaderPanels(s):
                     checked=(s["consent_banner"] == "1"),
                     help="A small Accept / Decline banner, shown only when something on your site tracks "
                          "visitors.", cls=FIELD_GAP),
-                P("It asks about: " + ", ".join(ads.consent_reasons(s)) + "." if ads.consent_reasons(s) else
+                P("The banner asks about: " + ", ".join(ads.consent_reasons(s)) + "." if ads.consent_reasons(s) else
                   "Nothing on your site tracks visitors right now, so no banner shows.",
                   cls=f"text-xs text-base-content/60 {FIELD_GAP}"),
                 FormField("Message", Input(name="consent_message", value=s["consent_message"],
@@ -370,7 +370,7 @@ def ReaderPanels(s):
                 "Notifications",
                 Div(Div(ToggleField("Email me about new comments", "notify_comments",
                                     checked=(s["notify_comments"] == "1"),
-                                    help="When one is waiting for your approval.", cls=FIELD_GAP),
+                                    help="An email when a comment is waiting for your approval.", cls=FIELD_GAP),
                         data_shown_for="comments_system=", hidden=bool(s["comments_system"])),
                     data_shown_for="comments_enabled=1", hidden=s["comments_enabled"] != "1"),
                 Div(Div(FormField("Also email messages to",
@@ -411,7 +411,7 @@ ENV_VARS = [
     ("DATA_DIR", "Where your posts, images and database are kept."),
     ("ENV", "\"production\" on a live site."),
     ("SMTP_HOST", "Your email provider's SMTP server - sends your email, until you set it up in Settings."),
-    ("SMTP_PORT", "Its port: 587, or 465. Empty: 587."),
+    ("SMTP_PORT", "The SMTP server's port: 587, or 465. Empty: 587."),
     ("SMTP_USER", "The username, usually your email address."),
     ("SMTP_PASSWORD", "The password - an app password for most providers."),
     ("SMTP_FROM", "The address your email comes from."),
@@ -432,8 +432,8 @@ S3_ENV_VARS = [
     ("S3_REGION", "The bucket's region - \"auto\" for Cloudflare R2."),
     ("S3_ACCESS_KEY_ID", "The access key's ID - Backblaze calls it keyID."),
     ("S3_SECRET_ACCESS_KEY", "The access key's secret - Backblaze calls it applicationKey."),
-    ("S3_PREFIX", "Optional: a folder in the bucket, if it holds anything else."),
-    ("BACKUP_PASSPHRASE", "Optional: locks the backups and images in the bucket. Without it they can't be restored - "
+    ("S3_PREFIX", "A folder in the bucket, for a bucket that holds other files too."),
+    ("BACKUP_PASSPHRASE", "Locks your backups and images in the bucket. Without this passphrase they can't be restored, so "
                           "keep it in a password manager."),
 ]
 SECRET_ENV = {"SESSION_SECRET", "SETUP_TOKEN", "RESEND_API_KEY", "SMTP_PASSWORD", "S3_ACCESS_KEY_ID", "S3_SECRET_ACCESS_KEY", "BACKUP_PASSPHRASE"}
@@ -507,7 +507,7 @@ def SmtpFields(s, hidden):
             FormField("Email address", Input(name="smtp_from", value=s["smtp_from"], type="email",
                                              placeholder="you@example.com", cls="input input-sm w-full"),
                       help=("Set on your host. " if settings.on_host("smtp_from") else "")
-                      + "Emails come from it, with your site's name as the sender.", cls=FIELD_GAP),
+                      + "Emails come from this address, with your site's name as the sender.", cls=FIELD_GAP),
             FormField("Password", SecretInput("smtp_password", settings.stored("smtp_password"),
                                               cls="input input-sm w-full"),
                       help=HOST_SET if settings.on_host("smtp_password") else None),
@@ -644,14 +644,14 @@ def LanguagesPanel(s):
                        "your server asks for one.", cls=FIELD_GAP),
         FormField("LibreTranslate server", Input(name="translate_url", value=s["translate_url"],
                                                  placeholder="https://libretranslate.com", cls="input input-sm w-full"),
-                  help="Only if you run your own.",
+                  help="Only needed for a LibreTranslate server you run yourself.",
                   cls=FIELD_GAP),
         FormField("Offer posts in", Div(
             *[Label(Input(type="checkbox", name="translate_languages", value=code, checked=code in chosen,
                           cls="checkbox checkbox-xs"), Span(name, cls="text-sm"),
                     cls="flex items-center gap-1.5 cursor-pointer") for code, name in by_name],
             cls="grid grid-cols-2 sm:grid-cols-3 gap-1.5"),
-            help="Each one is another translation of every post - check the service's prices.",
+            help="Each language adds a translation of every post - check the service's prices.",
             cls=FIELD_GAP),
         status,
         key="language-translation"
@@ -678,7 +678,7 @@ def FediversePanel(s):
             Span(f"@{fediverse.host() or 'your.site'}", cls="join-item flex items-center px-2 text-xs "
                  "text-base-content/60 bg-base-200 border border-base-300 rounded-r-field"),
             cls="join w-full"),
-            help="Letters, numbers and _. Changing it later loses your followers.", cls=FIELD_GAP),
+            help="Letters, numbers and _. Changing the username later loses your followers.", cls=FIELD_GAP),
         Div(
             P(Span("Your handle: ", cls="text-base-content/60"), Span(fediverse.handle(s), cls="font-mono"),
               Button(COPY_SVG, type="button", cls="btn btn-xs btn-ghost ml-1 tooltip", data_tip="Copy handle", aria_label="Copy handle",
@@ -718,7 +718,7 @@ def SharePanel(s):
             Div(Input(name="share_image_url", id="share_image_url", value=s["share_image_url"],
                       placeholder="/uploads/share.webp", cls="input input-sm flex-1 min-w-0 join-item"),
                 MediaPickerButton("share_image_url"), cls="join w-full"),
-            help="When a page without a cover is shared. About 1200 × 630 works best."),
+            help="Used when a page without a cover is shared. About 1200 × 630 works best."),
         key="sharing-main"
     )
 
@@ -777,8 +777,8 @@ def SitePanels(s):
                                            placeholder=config.PLATFORM_URL or "https://example.com",
                                            spellcheck="false",
                                            cls="input input-sm w-full font-mono"),
-                          help="Change it when you move to a new domain." +
-                               (" Empty: the URL your host gave it." if config.PLATFORM_URL else "")),
+                          help="Change the URL when you move to a new domain." +
+                               (" Empty: the URL your host gave the site." if config.PLATFORM_URL else "")),
                 key="url-site"
             ),
             SettingsPanel(
@@ -822,7 +822,7 @@ def SitePanels(s):
                           help="On every page of your site. Only paste code you trust.", cls=FIELD_GAP),
                 ToggleField("This code sets cookies or tracks visitors", "custom_head_consent",
                             checked=s.get("custom_head_consent") == "1",
-                            help="Then it waits until a visitor accepts cookies.", cls=FIELD_GAP),
+                            help="When on, the code waits until a visitor accepts cookies.", cls=FIELD_GAP),
                 FormField("Custom CSS", Textarea(s["custom_css"], name="custom_css", rows="6", spellcheck="false",
                                                  placeholder=".prose h2 { letter-spacing: -0.01em; }",
                                                  cls="textarea textarea-sm w-full font-mono text-xs"),
@@ -874,7 +874,7 @@ def MembersTab(s):
             SettingsPanel(
                 "Members",
                 ToggleField("Let readers become members", "members_enabled", checked=s.get("members_enabled") == "1",
-                            help="They join with their email and sign in with a link - no passwords. Each post "
+                            help="Readers join with their email and sign in with a link - no passwords. Each post "
                                  "can then be for everyone, members or paid members.", cls=FIELD_GAP),
                 Div(
                 None if mail.can_send() else SetUpFirst("email", EMAIL_SETUP),
@@ -889,7 +889,7 @@ def MembersTab(s):
                     cls=FIELD_GAP),
                 FormField("On the join page", Input(name="members_intro", value=s.get("members_intro"),
                                                     maxlength="300",
-                                                    placeholder="Members can read every members-only post. It's free.",
+                                                    placeholder="Members can read every members-only post. Joining is free.",
                                                     cls="input input-sm w-full"),
                           help="A line on the page where readers join. Empty: the placeholder text.", cls=FIELD_GAP),
                 FormField("Welcome email", Textarea(s.get("members_welcome"), name="members_welcome", rows="4",
@@ -1144,7 +1144,7 @@ def EditorForm(s, pinned, order):
                 ),
                 ToggleField("Post settings beside the editor", "editor_settings_beside",
                             checked=(s["editor_settings_beside"] == "1"),
-                            help="On a wide screen. Off, the Settings button opens it over the text.", cls=FIELD_GAP),
+                            help="On a wide screen. When off, the Settings button opens Post settings over the text.", cls=FIELD_GAP),
                 ToggleField("Slash menu", "editor_slash", checked=(s["editor_slash"] == "1"),
                             help="Type / at the start of a line to insert headings, images and more.",
                             cls=FIELD_GAP),
@@ -1160,7 +1160,7 @@ def EditorForm(s, pinned, order):
                           Input(name="editor_goal_default", type="number", min="0", step="50",
                                 value=s["editor_goal_default"], placeholder="None", inputmode="numeric",
                                 cls="input input-sm w-40"),
-                          help="Every post and page starts with it; each can have its own in Post settings. "
+                          help="Every new post and page starts with this goal; each can have its own in Post settings. "
                                "Empty: none.", cls=FIELD_GAP),
                 RadioGroupField("Markdown marks", "editor_marks",
                                 [("dimmed", "Dimmed - so your text stands out"),
@@ -1177,7 +1177,7 @@ def EditorForm(s, pinned, order):
                                 [("all", "Hide everything but your text"),
                                  ("none", "Keep the toolbar")],
                                 "none" if s["editor_focus_toolbar"] == "none" else "all",
-                                help="Moving the mouse brings it back.", cls=FIELD_GAP),
+                                help="Moving the mouse brings the toolbar back.", cls=FIELD_GAP),
                 RadioGroupField("Fade", "editor_fade",
                                 [("paragraph", "All but the paragraph you're in"),
                                  ("sentence", "All but the sentence you're in"),

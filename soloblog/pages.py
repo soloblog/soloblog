@@ -1034,7 +1034,7 @@ def _remind_update(out, row, logged_in):
         Span(i18n.t("Last updated {date}", date=format_date(updated)), cls="font-medium"),
         cls="alert alert-info alert-soft text-sm mb-4 block")
     if logged_in and age > 90:
-        out["before"] = Div(out["before"], Div(f"It's been {age} days - time for an update?",
+        out["before"] = Div(out["before"], Div(f"Last updated {age} days ago - time for an update?",
                                                cls="alert alert-warning alert-soft text-sm mb-4"))
 
 

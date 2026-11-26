@@ -2712,7 +2712,7 @@ def build(password: str = "demo", cache: str = None):  # noqa: S107 - the demo's
         "footer_layout": "split", "footer_order": "socials,note,|,links,small",
         # members, and paid plans that look set up - paying itself is off in the demo (BLOCKED)
         "members_enabled": "1",
-        "members_intro": "Members read the whole of Oma's interview, and every members post. It's free.",
+        "members_intro": "Members read the whole of Oma's interview, and every members post. Joining is free.",
         "stripe_key": "rk_test_demo", "members_currency": "usd", "members_price_month": "4",
         "members_price_year": "40", "members_trial_days": "7", "stripe_product_id": "prod_demo",
         "stripe_price_month": "price_demo_month", "stripe_price_year": "price_demo_year",

@@ -30,6 +30,9 @@ versions may include breaking changes; they'll always be listed here.
 
 ### Changed
 
+- Help lines in the admin, Site health and the guide say what they're
+  about - "the post", "the passphrase" - instead of an "it" that only
+  the label explains
 - The posts list's Who can read filter is called Readers
 - Words on an image - the banner, a Hero, a full-screen cover, a large
   post card, a project - sit in a frosted box in your site's colours,
