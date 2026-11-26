@@ -70,6 +70,8 @@ versions may include breaking changes; they'll always be listed here.
 
 ### Fixed
 
+- Going back to an admin page left on another tab no longer makes the
+  whole page, menu and all, flash
 - Preview mode stays on the page you went to in it when you change a
   setting, instead of going back to the one it opened on
 - A post is dated the day it's first published, not the day its draft was

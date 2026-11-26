@@ -38,6 +38,33 @@ def test_an_admin_page_opens_the_tab_you_were_on(owner):
     assert "tab-active" in w.page.locator("a.tab[href*='tab=all']").get_attribute("class")
 
 
+def test_the_menu_opens_the_tab_you_were_on_in_one_load(owner):
+    """Back to a page left on another tab, from the menu: one page load,
+    straight to that tab - loading the plain address first and then the
+    tab flashed the whole page, menu and all."""
+    w = owner
+    w.go("/admin/posts")
+    w.page.locator("[data-fit-tabs] a.tab[href*='status=draft']").click()
+    w.page.wait_for_url("**/admin/posts?status=draft*")
+    w.go("/admin/comments")
+    loads = []
+    # pages fetched, not the address bar's own updates
+    w.page.on("request", lambda r: r.resource_type == "document" and r.frame == w.page.main_frame and loads.append(r.url))
+    w.page.locator("aside a[href^='/admin/posts']:visible, nav a[href^='/admin/posts']:visible").first.click()
+    w.page.wait_for_load_state("networkidle")
+    assert w.page.url.endswith("/admin/posts?status=draft"), w.page.url
+    assert len(loads) == 1, loads
+    # the plain address is still how the menu names the page
+    assert w.page.locator("aside a[href^='/admin/posts']:visible, nav a[href^='/admin/posts']:visible").first.get_attribute("data-plain-href") == "/admin/posts"
+    # and All, chosen again, is what the menu opens next time
+    w.page.locator("[data-fit-tabs] a.tab[href*='status=all']").click()
+    w.page.wait_for_url("**/admin/posts?status=all*")
+    w.go("/admin/comments")
+    w.page.locator("aside a[href^='/admin/posts']:visible, nav a[href^='/admin/posts']:visible").first.click()
+    w.page.wait_for_load_state("networkidle")
+    assert w.page.url.endswith("/admin/posts"), w.page.url
+
+
 def test_back_after_the_contents_leaves_the_page(owner, site):
     w = owner
     text = "".join(f"\n\n## Part {n}\n\nSome words about part {n}." for n in range(1, 6))

@@ -11,14 +11,41 @@
     try { return JSON.parse(localStorage.getItem(key) || '{}') || {}; } catch (e) { return {}; }
   }
   var LAST = 'soloblog-tabs:' + path, FIRST = 'soloblog-tabs-default:' + path;
-  // before the page draws (this runs in <head>), so the other tab never shows
-  if (!location.search) {
-    var last = read(LAST), first = read(FIRST), query = [];
+  // what's kept for a page that differs from how it opens: "status=drafts"
+  function kept(page) {
+    var last = read('soloblog-tabs:' + page), first = read('soloblog-tabs-default:' + page), query = [];
     Object.keys(last).forEach(function (k) {
       if (last[k] !== first[k]) query.push(encodeURIComponent(k) + '=' + encodeURIComponent(last[k]));
     });
-    if (query.length) { location.replace(path + '?' + query.join('&') + location.hash); return; }
+    return query.join('&');
   }
+  // an address typed or pasted without them: before the page draws (this
+  // runs in <head>), so the other tab never shows
+  if (!location.search) {
+    var query = kept(path);
+    if (query) { location.replace(path + '?' + query + location.hash); return; }
+  }
+  // the menu's links, and any other plain link to an admin page, go
+  // straight to how it was left - loading the page once, where sending
+  // it on from its plain address loaded it twice and the whole page,
+  // menu and all, flashed in between. A tab or filter's own link names
+  // its choice, so it's never touched.
+  function aim(a) {
+    if (a.closest('[data-fit-tabs], [popover][id^="filter-"]')) return;
+    var url = new URL(a.getAttribute('data-plain-href') || a.getAttribute('href'), location.href);
+    if (url.origin !== location.origin || url.pathname.indexOf('/admin') !== 0 || url.search) return;
+    if (!a.hasAttribute('data-plain-href')) a.setAttribute('data-plain-href', a.getAttribute('href'));
+    var query = kept(url.pathname);
+    a.setAttribute('href', url.pathname + (query ? '?' + query : '') + url.hash);
+  }
+  function aimAll(root) { (root || document).querySelectorAll('a[href]').forEach(aim); }
+  // at the moment it's used too: a tab chosen since the page opened counts
+  ['pointerdown', 'focusin'].forEach(function (type) {
+    document.addEventListener(type, function (e) {
+      var a = e.target.closest && e.target.closest('a[href]');
+      if (a) aim(a);
+    }, true);
+  });
   // what a row of tabs or a filter's menu has chosen: the one setting its
   // links change, as its chosen link has it
   var CHOICES = [['[data-fit-tabs]', 'a.tab[href]', 'a.tab.tab-active, a.tab[aria-current="page"]'],
@@ -44,7 +71,8 @@
       localStorage.setItem(FIRST, JSON.stringify(first));
     } catch (e) {}
   }
-  document.addEventListener('DOMContentLoaded', remember);
+  document.addEventListener('DOMContentLoaded', function () { remember(); aimAll(); });
   // a list's tabs open in place, without loading the page (live.js)
-  document.addEventListener('live:swapped', remember);
+  document.addEventListener('live:swapped', function () { remember(); aimAll(); });
+  document.addEventListener('htmx:afterSettle', function (e) { aimAll(e.target); });
 })();
