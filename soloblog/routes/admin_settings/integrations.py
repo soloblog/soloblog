@@ -209,9 +209,11 @@ def YourEmailPanel(s):
                         help=("Set on your host. " if settings.on_host("admin_email") else "")
                         + "For password resets, sign-in alerts and comment emails. Never shown on your site."),
             cls=FIELD_GAP),
-        FormField("Password", Input(type="password", name="current_password", autocomplete="current-password",
-                                    cls="input input-sm w-full"),
-                  help="Only to change the email address", cls=FIELD_GAP),
+        # only once there's an address to change from (live.js, data-shown-while-changed)
+        Div(FormField("Password", Input(type="password", name="current_password", autocomplete="current-password",
+                                        cls="input input-sm w-full"),
+                      help="Your password, to change the admin email"),
+            hidden=True, data_shown_while_changed="admin_email", cls=FIELD_GAP),
         ToggleField("Email me when a new device signs in", "signin_alerts",
                     checked=(s["signin_alerts"] != "0"),
                     help="The first time a browser signs in."),

@@ -131,11 +131,36 @@ function _checkMatch(field) {
   if (field.type === 'email') { a = a.toLowerCase(); b = b.toLowerCase(); }
   field.setCustomValidity(a === b ? '' : (field.getAttribute('data-mismatch') || "They don't match"));
 }
+// a field only needed to change a saved value - the password, to change
+// the admin email - shows while that value differs from what's saved
+// (data-shown-while-changed), and empties itself when it hides again
+function _showWhileChanged(form) {
+  form.querySelectorAll('[data-shown-while-changed]').forEach(function (box) {
+    var f = form.elements[box.getAttribute('data-shown-while-changed')];
+    if (!f) return;
+    var was = f.defaultValue.trim().toLowerCase();
+    box.hidden = !was || f.value.trim().toLowerCase() === was;
+    if (box.hidden) box.querySelectorAll('input').forEach(function (i) { i.value = i.defaultValue = ''; });
+  });
+}
 document.addEventListener('input', function (e) {
   var f = e.target;
   if (!f.form || !f.name) return;
   if (f.matches('[data-must-match]')) _checkMatch(f);
   f.form.querySelectorAll('[data-must-match="' + f.name + '"]').forEach(_checkMatch);
+  if (f.form.querySelector('[data-shown-while-changed="' + f.name + '"]')) _showWhileChanged(f.form);
+});
+// Discard puts the address back; a save makes the new one the saved one
+document.addEventListener('reset', function (e) {
+  var form = e.target;
+  setTimeout(function () { _showWhileChanged(form); });
+});
+document.addEventListener('htmx:afterSettle', function () {
+  setTimeout(function () {
+    document.querySelectorAll('form').forEach(function (form) {
+      if (form.querySelector('[data-shown-while-changed]')) _showWhileChanged(form);
+    });
+  });
 });
 // SearchBox (ui): its clear button empties the box as if it had
 // been typed away - the live list, the search box's results and the

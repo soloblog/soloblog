@@ -173,3 +173,29 @@ def test_your_email_speaks_in_the_save_bar(owner, site):
     owner.page.wait_for_timeout(300)
     assert "don't match" in bar.inner_text()
     owner.page.get_by_role("button", name="Discard").last.click()
+
+
+def test_the_password_shows_only_to_change_your_email(owner, site):
+    """Your password is asked for only to change the admin email - the
+    address password resets go to. Switching an alert on doesn't ask."""
+    set_up_email(owner)
+    owner.go("/admin/settings?tab=email")
+    password = owner.page.locator("input[name=current_password]")
+    assert not password.is_visible()
+    owner.page.fill("input[name=admin_email]", "new@example.com")
+    assert password.is_visible()
+    # typed back as it was: nothing to change, nothing to ask
+    owner.page.fill("input[name=admin_email]", "OWNER@example.com")
+    assert not password.is_visible()
+    owner.page.fill("input[name=admin_email]", "new@example.com")
+    owner.page.fill("input[name=admin_email_confirm]", "new@example.com")
+    password.fill(PASSWORD)
+    owner.page.locator("form[hx-post='/admin/settings/email'] button[type=submit]:visible").last.click()
+    owner.page.wait_for_timeout(800)
+    assert "Saved" in owner.page.locator("#save-status").inner_text()
+    # the new address is the saved one now: the password goes away, emptied
+    assert not password.is_visible()
+    assert password.input_value() == ""
+    owner.go("/admin/settings?tab=email")
+    assert owner.page.input_value("input[name=admin_email]") == "new@example.com"
+    assert not password.is_visible()

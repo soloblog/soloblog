@@ -26,6 +26,8 @@ versions may include breaking changes; they'll always be listed here.
 
 ### Changed
 
+- Settings > Email asks for your password only once you change the
+  admin email
 - Settings > Address and search is now URL and SEO, and the admin and
   Help say URL wherever they said address
 - The admin and Help say image wherever they said picture

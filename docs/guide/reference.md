@@ -467,7 +467,7 @@ your site sends it. Site health checks both.
 ### Admin email
 
 - **Email address** and **Type it again** - Where your site sends you password resets, sign-in alerts and news about comments. Never shown on your site. Saved with the page's **Save**, once both match.
-- **Password** - Your admin password, needed only when you change the email address. The old address gets an email saying it was changed.
+- **Password** - Shows when you change the email address: type your admin password to save the new one. The old address gets an email saying it was changed.
 - **Email me when a new device signs in** (on/off, on to start with) - An email the first time someone logs in to your admin from a new browser. If it wasn't you, change your password and log out other devices. The same switch sends you an email when someone is trying many passwords on your site.
 
 ### Sending email
