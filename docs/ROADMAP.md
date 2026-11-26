@@ -27,6 +27,16 @@ out, are in [DECISIONS.md](DECISIONS.md). An idea of your own starts in
 - **An image's size, chosen in the editor.** Small, Medium or Large for
   an image in a post - three sizes only, no dragging and no numbers, so
   images line up from post to post and still fit a phone.
+- **A scratchpad beside the editor.** One pad for the whole site, as a
+  scratch buffer is in a text editor: somewhere to park words while
+  writing, there whichever post is open. Saved as you type, on the
+  server, so it's on a phone too, and in backups with the settings;
+  readers never see it. Opened from the editor's toolbar or a keyboard
+  shortcut - a panel beside the editor on a wide screen, rising from
+  the bottom on a phone - in the editor, focus mode and on a phone.
+  **Add selection** puts the post's selected words at its end, and
+  **Insert** puts the pad's words at the cursor. Plain text; one pad,
+  not one per post.
 - **A note for sample words left in.** Applying a template adds its
   sample words ("The first step."), which can reach a live page.
   Publishing a page that still has them says so, gently.
