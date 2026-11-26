@@ -27,6 +27,23 @@ out, are in [DECISIONS.md](DECISIONS.md). An idea of your own starts in
 - **An image's size, chosen in the editor.** Small, Medium or Large for
   an image in a post - three sizes only, no dragging and no numbers, so
   images line up from post to post and still fit a phone.
+- **Looks: a few curated design styles for the site.** A Look is the
+  site's shapes and type; a palette stays its colours, so every Look
+  works with every palette. To start: **Classic** (today's), **Editorial**
+  (big confident headings, hairline rules instead of shadows, flat
+  surfaces) and **Brutal** (neubrutalism: thick borders, hard offset
+  shadows, square corners, extra-bold headings); later Soft and Glass.
+  A Look is one small stylesheet and an entry in a registry: it sets
+  daisyUI's own shape values (corners, borders, depth) and a short,
+  fixed list of Soloblog's (heading scale, card border and shadow,
+  section bands, image shapes, footer tone) that every section already
+  reads through the shared names in `pages.py` - so a new section gets
+  every Look with no extra work, and adding a Look later is one folder.
+  Chosen in **Settings > Style** beside the palette, with the live
+  preview; a starting style names one. The admin keeps its own neutral
+  light and dark look, apart from the site's palette and Look, as a
+  publishing app's own screens are - the site's look shows only where the
+  admin previews the site. An update keeps Classic, so nothing changes until it's chosen.
 - **A scratchpad beside the editor.** One pad for the whole site, as a
   scratch buffer is in a text editor: somewhere to park words while
   writing, there whichever post is open. Saved as you type, on the
@@ -143,7 +160,6 @@ Ideas, with no date.
 - **An editor that shows the page as it looks**, beside today's markdown
   one - for writers who've never used markdown. The post stays a markdown
   file underneath.
-- **Neubrutalism** (2.0): a second look to choose beside daisyUI's.
 - **Plugins for other apps** (an Obsidian or VS Code "publish" button)
   are for anyone to build on the API - Soloblog itself doesn't sync.
 
