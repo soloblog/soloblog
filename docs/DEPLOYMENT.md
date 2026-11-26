@@ -854,15 +854,51 @@ new deploy.
 
 ## Move to a new server or domain
 
-Move your site to another host, a new server, or your own domain.
+Move your site to another host, a new server, or your own domain. How
+you do it depends on whether your site keeps its files in
+[cloud storage](#keep-files-in-cloud-storage).
+
+**With cloud storage**, the new site restores itself:
+
+1. On the old site, open **Settings > Backup and import > Cloud
+   storage** and select **Back up now**, so the newest backup has
+   everything.
+2. Start Soloblog on the new host with the same `S3_` settings, and the
+   same `BACKUP_PASSPHRASE` if you lock your backups with one.
+3. Open the new site. When it starts on an empty disk, it restores
+   itself from the newest backup in your bucket - posts, settings,
+   comments, members and your login - and brings your images back from
+   the bucket. Log in with your usual password.
+4. Stop the old site, so the two don't both make backups in the same
+   bucket.
+
+If it can't restore itself, opening the new site shows **Restore your
+site** instead of setting up a new one. Each asks for the setup token,
+which is in your host's log on the lines marked `[setup]`, or the
+`SETUP_TOKEN` you chose:
+
+- **Locked with another passphrase** - the backup was made with a
+  different `BACKUP_PASSPHRASE`. Type the one it was made with.
+- **The bucket didn't answer** - check the `S3_` settings on your host,
+  then select **Try again**.
+- **The newest backup couldn't be opened** - choose an earlier one from
+  the list.
+
+**Start a new site instead** sets up an empty site. Your bucket's backups
+stay there, but each new backup replaces the oldest, as usual. To always
+start empty, set `S3_RESTORE_ON_BOOT` to `0` on the new host.
+
+**With a downloaded backup:**
 
 1. In **Settings > Backup and import**, select **Download** with
    everything selected - or copy the whole `/data` folder.
 2. Start Soloblog on the new server and create an account, then
-   **Restore** the zip there. Or start it with the old `/data` folder,
-   and skip setup.
-3. If the domain changes, change the URL in **Settings > URL and
-   SEO** (or `BASE_URL`, if you set it on your host).
+   **Restore** the zip in **Settings > Backup and import**. You keep the
+   password you just made. Or start it with the old `/data` folder, and
+   skip setup.
+
+**Domain changing too?** Change the URL in **Settings > URL and SEO**
+(or `BASE_URL`, if you set it on your host).
 
 **Using passkeys?** They belong to the domain they were added on. Log in
 with your password and add them again on the new one.

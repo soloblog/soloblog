@@ -252,6 +252,10 @@ than the one on your host now - it was made before you changed
 with and select **Open**. It's used for this restore only, and your
 host's setting stays as it is.
 
+**Moving to a new host?** With cloud storage, the new site restores
+itself from your bucket when it first starts - see
+[Move to a new server or domain](../DEPLOYMENT.md#move-to-a-new-server-or-domain).
+
 **Want to know a backup would work?** In **Site health**, select
 **Verify a backup**. It opens the newest backup in your bucket and checks
 it would restore, without restoring anything. Site health suggests it

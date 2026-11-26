@@ -136,6 +136,14 @@ As ordinary text files, in markdown - one per post, readable in any text
 editor - with a database file beside them for everything else, like
 comments and settings. See [Where posts are kept](guide/how-it-works.md#where-posts-are-kept).
 
+### How do I move my site to a new host?
+
+With cloud storage connected, start Soloblog on the new host with the
+same `S3_` settings: it restores itself from the newest backup in your
+bucket, images and login included. Without it, download a backup with
+everything selected and restore it on the new site. Both are in
+[Move to a new server or domain](DEPLOYMENT.md#move-to-a-new-server-or-domain).
+
 ### Can I move my blog from WordPress, Ghost, Medium or Substack?
 
 Yes: **Settings > Backup and import > Import from another blog** brings in
