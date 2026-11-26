@@ -495,6 +495,9 @@ def test_posts_bulk_fits_its_selection(admin):
     loc = r.headers["location"].replace("%20", " ").replace("+", " ")
     assert "2 posts" in loc and "1 already were" in loc
     assert posts.bulk_state(posts.get_post(c)) == "published" and posts.get_post(b)["published"]
+    # dated the day they went out, not the day they were started or were going to go out
+    assert not posts.get_post(c)["created_at"].startswith("2099")
+    assert posts.get_post(b)["first_published_at"] == posts.get_post(b)["created_at"]
     r = admin.post("/admin/posts/bulk", data={"action": "export", "slugs": [a]})
     assert r.headers["content-type"].startswith("text/csv") and "Bulk live one" in r.text \
         and "Bulk draft one" not in r.text

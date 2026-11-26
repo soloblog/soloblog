@@ -9,6 +9,8 @@ versions may include breaking changes; they'll always be listed here.
 
 ### Added
 
+- Post settings > Publishing has a Date, to change a published post's
+  date
 - Moving host with a downloaded backup: setup can restore it, and you
   log in with your old password
 - Sync images asks which way: this site to your bucket, or your bucket to
@@ -65,6 +67,8 @@ versions may include breaking changes; they'll always be listed here.
 
 ### Fixed
 
+- A post is dated the day it's first published, not the day its draft was
+  started
 - A large post card, and Magazine's smaller ones, open from anywhere on
   them, not only the title, and a middle click opens any post card in
   a new tab

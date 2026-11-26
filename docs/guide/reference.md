@@ -610,6 +610,8 @@ own. Beside the editor, use the editor's own **Save**.
 - **Published** (on/off) - Off, it's a draft only you see.
 - **Publish at** - It goes live then, in your site's time zone. Clear it
   to publish straight away.
+- **Date** (once it's published) - The day it shows: the day you first
+  published it, unless you change it here.
 - **Where it appears** - In the blog roll (a normal post); in the
   **menu** or the **footer** (a page, like About or Privacy); or **pinned
   to the top of the blog roll**. See

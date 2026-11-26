@@ -1165,6 +1165,11 @@ def PublishingPanel(row, pinned, pin_location):
                   cls="input input-sm w-full", **on("change", "scheduleChanged", EL)),
             help=f"It goes live then ({settings.get('timezone') or 'UTC'} time).", cls=FIELD_GAP
         ),
+        # once it's out: the day it shows, the day it was first published unless changed
+        FormField("Date", Input(name="post_date", type="date", value=tz.local_date(row["created_at"])[:10],
+                                cls="input input-sm w-full"),
+                  help="The day it shows. It's set when you first publish it.", cls=FIELD_GAP)
+        if row and row["first_published_at"] else None,
         # one control for one decision: "not pinned" is just another
         # option here instead of a separate checkbox that has to
         # agree with this select - no more two clicks (check the
@@ -1535,6 +1540,8 @@ class SentPost(posts.PostFields):
     sides_tags: str = None
     sides_archive: str = None
     sides_author: str = None
+    # Post settings > Date: the day a published post shows (posts._dates)
+    post_date: str = None
 
     def __post_init__(self):
         for f in fields(self):
@@ -1554,6 +1561,7 @@ class SentPost(posts.PostFields):
                 # one place each: a comma inside one would name another panel's
                 f"{n}={v}" for n, v in sides if v in dict(OWN_SIDE_PLACES)),
             "extras": extras_choice(self.extras, self.extras_before, self.extras_before_page, self.pin_location),
+            "post_date": self.post_date,
         }
 
 

@@ -57,6 +57,11 @@ a draft, which only you can see. To show a draft to someone before it's
 published, open **Settings**: at the top is a link anyone can open
 without logging in. Select **Copy** and send it to them.
 
+**When is it dated?** The day you first publish it, not the day you
+started writing it. Publishing it again later keeps that date. To
+change it, open **Settings > Publishing** and set **Date** - for a post
+brought over from another blog, say.
+
 **The page closed before you saved?** Open the post again, and the
 writing you hadn't saved is offered back to you.
 
@@ -244,7 +249,7 @@ Write a post now, and have it published automatically at a time you choose.
 
 The post shows as **Scheduled** in **Posts and pages**, and on the
 **Calendar** there. It's published at the time you set, in your site's
-time zone.
+time zone, and dated then.
 
 **Change your mind?** To publish it now, clear **Publish at** and save.
 To keep it as a draft, switch **Published** off and save.

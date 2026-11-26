@@ -1791,3 +1791,81 @@ def test_words_on_a_picture_sit_in_the_themes_frosted_box(admin, client):
         assert "[--glass-opacity:85%]" in page and "from-black/85" not in page
     finally:
         settings.set_many(keep)
+        posts.delete_post(slug)
+        posts.delete_forever(slug)
+
+
+def _started_days_ago(slug, days=5):
+    """As if its draft had been started days ago - the database and its file."""
+    from datetime import datetime, timedelta, UTC
+    from soloblog.db import get_db
+    then = (datetime.now(UTC) - timedelta(days=days)).replace(tzinfo=None).isoformat(timespec="seconds")
+    get_db().execute("UPDATE posts SET created_at=? WHERE slug=?", (then, slug))
+    get_db().commit()
+    return then
+
+
+def test_a_post_is_dated_the_day_its_first_published(admin, client):
+    """As on Ghost and WordPress: the day a post goes out, not the day
+    its draft was started - and publishing it again keeps that day."""
+    from soloblog import tz
+    from soloblog.db import get_db
+    slug = save_post(admin, title="Started long ago", published="")
+    started = _started_days_ago(slug)
+    page = admin.get(f"/admin/edit/{slug}").text
+    assert 'name="post_date"' not in page  # a draft has no date to show yet
+    save_post(admin, slug=slug, title="Started long ago", published="1")
+    row = posts.get_post(slug)
+    today = tz.local_date(row["created_at"])
+    assert row["created_at"] > started and row["first_published_at"] == row["created_at"]
+    with open(os.path.join(config.posts_dir(), f"{slug}.md")) as f:
+        assert f"date: '{today}'" in f.read() or f"date: {today}" in f.read()
+    # out of the drafts and back: still the day it first went out
+    first = row["created_at"]
+    get_db().execute("UPDATE posts SET created_at=?, first_published_at=? WHERE slug=?",
+                     (started, started, slug))
+    get_db().commit()
+    save_post(admin, slug=slug, title="Started long ago", published="")
+    save_post(admin, slug=slug, title="Started long ago", published="1")
+    assert posts.get_post(slug)["created_at"] == started != first
+    posts.delete_post(slug)
+    posts.delete_forever(slug)
+
+
+def test_a_scheduled_post_is_dated_when_it_goes_out(admin):
+    slug = save_post(admin, title="Going out later", published="")
+    _started_days_ago(slug)
+    save_post(admin, slug=slug, title="Going out later", published="1", scheduled_at="2031-06-01T09:30")
+    row = posts.get_post(slug)
+    assert row["created_at"] == row["scheduled_at"] and row["created_at"].startswith("2031-06-01")
+    # put out now instead: dated now, not when it was going to go out
+    save_post(admin, slug=slug, title="Going out later", published="1", scheduled_at="")
+    row = posts.get_post(slug)
+    assert not row["created_at"].startswith("2031") and row["first_published_at"] == row["created_at"]
+    posts.delete_post(slug)
+    posts.delete_forever(slug)
+
+
+def test_a_published_posts_date_can_be_changed_in_post_settings(admin, client):
+    slug = save_post(admin, title="From another blog", published="1")
+    assert 'name="post_date"' in admin.get(f"/admin/edit/{slug}").text
+    # what's not a real date changes nothing
+    before = posts.get_post(slug)["created_at"]
+    for junk in ("2025-02-30", "next tuesday", "<script>", "2025-1-5", "9" * 400):
+        save_post(admin, slug=slug, title="From another blog", published="1", post_date=junk)
+        assert posts.get_post(slug)["created_at"] == before, junk
+    save_post(admin, slug=slug, title="From another blog", published="1", post_date="2019-03-04")
+    assert posts.get_post(slug)["created_at"] == "2019-03-04"
+    assert "2019" in client.get(f"/post/{slug}").text
+    # saved again as it is, it keeps that date
+    save_post(admin, slug=slug, title="From another blog", published="1", post_date="2019-03-04")
+    assert posts.get_post(slug)["created_at"] == "2019-03-04"
+    posts.delete_post(slug)
+    posts.delete_forever(slug)
+
+
+def test_an_imported_post_keeps_its_own_date():
+    posts.save_post("written-in-2014", "Written in 2014", "me", "Hi.", "", "", True, False, created_at="2014-05-06")
+    assert posts.get_post("written-in-2014")["created_at"] == "2014-05-06"
+    posts.delete_post("written-in-2014")
+    posts.delete_forever("written-in-2014")

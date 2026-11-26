@@ -66,7 +66,8 @@ def _seed_mentions(admin):
 
 # name, address, seed, rows shown with no choice made (the list's own size)
 LISTS = [
-    ("posts", "/admin/posts", _seed_posts, 10),
+    # a post scheduled by another test is dated when it goes out, later than these
+    ("posts", "/admin/posts?q=rpp-", _seed_posts, 10),
     ("comments", "/admin/comments", _seed_comments, 20),
     ("comments", "/admin/comments?tab=mentions", _seed_mentions, 20),
     ("messages", "/admin/messages", _seed_messages, 20),
@@ -168,10 +169,10 @@ def test_the_choice_shows_only_when_there_is_more_than_ten(admin, seeded):
 
 
 def test_a_choice_is_kept_for_its_own_list(admin, seeded):
-    _shown(admin, "/admin/posts", "per=10")
+    _shown(admin, "/admin/posts?q=rpp-", "per=10")
     assert _shown(admin, "/admin/messages")[1] == 20
     _shown(admin, "/admin/messages", "per=50")
-    assert _shown(admin, "/admin/posts")[1] == 10
+    assert _shown(admin, "/admin/posts?q=rpp-")[1] == 10
 
 
 def test_only_a_get_of_an_admin_list_sets_the_cookie(admin, client, seeded):

@@ -593,7 +593,38 @@ def save_post(slug, title, author, body_md, tags, summary, published, pinned, co
           preview_token=preview_token, pin_order=pin_order, created_at=created_at)
 
 
-def _save(slug, author, f: PostFields, *, preview_token=None, pin_order=None, created_at=None):
+def post_date(value) -> str:
+    """A date typed for a post (Post settings > Date): YYYY-MM-DD if it's
+    a real one, else ""."""
+    from datetime import date
+    value = str(value or "").strip()
+    try:
+        return date.fromisoformat(value).isoformat() if re.fullmatch(r"\d{4}-\d{2}-\d{2}", value) else ""
+    except ValueError:
+        return ""
+
+
+def _dates(existing, f, created_at, chosen, now):
+    """(its date, when it first went out). A post's date is the day it's
+    first published, as on most blogs - not the day its draft was started:
+    a scheduled one takes its time while it waits to go out. Once out, it
+    keeps that date, published again or not, unless a date is chosen."""
+    first = (existing["first_published_at"] if existing and "first_published_at" in existing.keys() else "") or ""
+    if f.published:
+        if f.scheduled_at and f.scheduled_at > now:
+            created_at = first = f.scheduled_at
+        elif first > now:
+            # it was waiting to go out, and goes out now instead
+            created_at = first = now
+        elif not first:
+            # a new post with its own history (an import) keeps its date
+            first = created_at = created_at if not existing and created_at != now else now
+    if chosen and first and chosen != tz.local_date(created_at):
+        created_at = chosen
+    return created_at, first
+
+
+def _save(slug, author, f: PostFields, *, preview_token=None, pin_order=None, created_at=None, chosen_date=""):
     f = f.cleaned()
     # the row keeps a place even for a post that isn't pinned
     pin_location = f.pin_location or "header"
@@ -601,6 +632,7 @@ def _save(slug, author, f: PostFields, *, preview_token=None, pin_order=None, cr
     now = utcnow().isoformat()
     existing = get_post(slug)
     created_at = existing["created_at"] if existing else (created_at or now)
+    created_at, first_published = _dates(existing, f, created_at, post_date(chosen_date), now)
     if preview_token is None:
         preview_token = existing["preview_token"] if existing else ""
     if pin_order is None:
@@ -632,6 +664,8 @@ def _save(slug, author, f: PostFields, *, preview_token=None, pin_order=None, cr
                 f.visibility, f.sound, f.sides, f.section_space, f.title_style, f.page_width, f.slides,
                 f.in_wiki, f.remind_update, f.section_motion, slug))
     # search finds only what anyone may read
+    # the upsert keeps a row's date: it changes only here, when it's first published or chosen
+    db.execute("UPDATE posts SET created_at=?, first_published_at=? WHERE slug=?", (created_at, first_published, slug))
     _sync_fts(slug, f.title, "" if f.password else public_part(f.body, f.visibility), f.tags)
     _index_wiki_links(slug, f.body)
     db.commit()
@@ -665,7 +699,7 @@ def write(slug: str = None, author: str = "", **changes) -> str:
     if not str(values["title"]).strip():
         raise ValueError("A post needs a title")
     new_slug = unique_slug(values["title"], existing_slug=slug)
-    _save(new_slug, author, PostFields(**values))
+    _save(new_slug, author, PostFields(**values), chosen_date=changes.get("post_date") or "")
     after_save(new_slug)
     return new_slug
 
@@ -965,13 +999,18 @@ def update_post(slug: str, published=None, add_tag: str = "") -> bool:
     if add_tag and add_tag not in tags:
         tags.append(add_tag)
     db = get_db()
+    now = utcnow().isoformat()
     # Publish means live now: a date still to come would keep it waiting
     scheduled = row["scheduled_at"]
-    if published and scheduled and scheduled > utcnow().isoformat():
+    if published and scheduled and scheduled > now:
         scheduled = ""
-    db.execute("UPDATE posts SET published=?, scheduled_at=?, tags=?, updated_at=? WHERE slug=?",
-               (row["published"] if published is None else int(bool(published)), scheduled, ", ".join(tags),
-                utcnow().isoformat(), slug))
+    out = row["published"] if published is None else int(bool(published))
+    # dated as the editor's save dates it: the day it first goes out
+    from types import SimpleNamespace
+    created_at, first = _dates(row, SimpleNamespace(published=out, scheduled_at=scheduled), row["created_at"], "", now)
+    db.execute("UPDATE posts SET published=?, scheduled_at=?, tags=?, updated_at=?, created_at=?, "
+               "first_published_at=? WHERE slug=?",
+               (out, scheduled, ", ".join(tags), now, created_at, first, slug))
     db.commit()
     row = get_post(slug)
     _rewrite_file_from_row(row)
@@ -1738,6 +1777,12 @@ def replace_upload_url(old: str, new: str) -> int:
     return changed
 
 
+def _first_out_on_its_date():
+    """A post read in from its file that's out already: first out on its
+    own date, so publishing it again later doesn't move it."""
+    get_db().execute("UPDATE posts SET first_published_at=created_at WHERE published=1 AND first_published_at=''")
+
+
 def resync_from_file(slug: str):
     """Like reindex_from_disk's per-file logic, but overwrites an
     existing db row instead of skipping it - what a backup import
@@ -1770,6 +1815,7 @@ def resync_from_file(slug: str):
     _sync_fts(slug, title, "" if meta.get("password") else public_part(body, meta.get("visibility")), tags)
     _index_redirects(slug, meta)
     _index_wiki_links(slug, body)
+    _first_out_on_its_date()
     db.commit()
 
 
@@ -1814,6 +1860,7 @@ def reindex_from_disk():
         _sync_fts(slug, title, "" if meta.get("password") else public_part(body, meta.get("visibility")), tags)
         _index_redirects(slug, meta)
         count += 1
+    _first_out_on_its_date()
     db.commit()
     if count:
         log.info("reindexed %s post(s) from disk", count)

@@ -79,3 +79,27 @@ def test_a_changed_setting_is_still_marked_once_saved(owner):
     _open_settings(w)
     assert _heading(w, "page") == "Page"
     assert w.page.locator("#post-settings-panel select[name=page_width]").input_value() == ""
+
+
+def test_a_posts_date_is_the_day_it_went_out_and_can_be_changed(owner, browser, site):
+    """A draft has no date to choose; once published, Post settings >
+    Publishing has its Date - the day it went out - and a reader sees a
+    date changed there."""
+    w = owner
+    w.go("/admin/new")
+    _write(w, "Dated by hand", "A post brought over from an older blog.")
+    _open_settings(w)
+    assert w.page.locator("#post-settings-panel input[name=post_date]").count() == 0
+    w.page.locator("#post-settings-panel input[name=published]").check()
+    _save(w)
+    slug = w.page.url.rstrip("/").rsplit("/", 1)[-1]
+    w.go(f"/admin/edit/{slug}")
+    _open_settings(w)
+    date = w.page.locator("#post-settings-panel input[name=post_date]")
+    assert date.input_value()  # today, the day it went out
+    date.fill("2020-02-03")
+    _save(w)
+    reader = Window(browser, site["base"])
+    reader.go(f"/post/{slug}")
+    assert "2020" in reader.page.locator("main").inner_text()
+    reader.close()
