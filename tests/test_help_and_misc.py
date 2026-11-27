@@ -134,16 +134,19 @@ def test_header_menu_folds_instead_of_wrapping(client):
 
 def test_environment_warns_only_about_real_problems(admin):
     import re
+    settings.set_many({"site_title": settings.get("site_title")})
     html = admin.get("/admin/settings?tab=integrations").text
 
     def badge(name):
         row = html.split(f">{name}</span>")[1][:200]
         return re.search(r'class="badge ([\w-]+) badge-sm">([^<]+)<', row).groups()
     # defaults that are right for a real site aren't a warning
-    assert badge("SITE_TITLE") == ("badge-ghost", "Default")
-    assert f"Your title: {settings.get('site_title')}" in html
+    assert badge("ENV")[0] in ("badge-ghost", "badge-success")
+    # the title is the one saved in Settings, and the row links to it
+    assert badge("SITE_TITLE") == ("badge-success", "Set")
+    assert 'href="/admin/settings?tab=name#site_title"' in html
     # a site at localhost has no public address for its feeds and links
-    assert badge("BASE_URL")[1] in ("Set", "Detected", "Not set", "From Settings")
+    assert badge("BASE_URL")[1] in ("Set", "Detected", "Not set")
     assert "Using default" not in html
 
 

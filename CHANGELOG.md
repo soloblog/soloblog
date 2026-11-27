@@ -70,6 +70,8 @@ versions may include breaking changes; they'll always be listed here.
 
 ### Fixed
 
+- Settings > Integrations > Environment shows a setting saved in
+  Soloblog, like a Resend key, as Set, with a link to it
 - Going back to an admin page left on another tab no longer makes the
   whole page, menu and all, flash
 - Preview mode stays on the page you went to in it when you change a

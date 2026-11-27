@@ -20,6 +20,7 @@ from soloblog.render import FORM_PROVIDERS
 from soloblog.ui import EnglishSelect, SetUpFirst, EMAIL_SETUP, PageField, SecretInput
 from soloblog.ui import TimezoneCombobox, Combobox, SEND_SVG
 from soloblog.ui import SortMoves
+from soloblog.ui.admin import SETTINGS_SECTIONS
 from soloblog.ui import (
     Alert, FIELD_GAP, SECTION_GAP, FormField, ToggleField, RadioGroupField, SettingsPanel, MediaPickerButton,
     LinkPickerButton, SaveBar, ordered_social_platforms, RESTORE_SVG, EXTRA_LINK_ICONS, SUPPORT_PLATFORMS, COPY_SVG,
@@ -59,7 +60,7 @@ def GeneralPanels(s):
         Div(
             SettingsPanel(
                 "Identity",
-                FormField("Site title", Input(name="site_title", value=s["site_title"], required=True,
+                FormField("Site title", Input(name="site_title", id="site_title", value=s["site_title"], required=True,
                                                cls="input input-sm w-full"),
                            cls=FIELD_GAP),
                 FormField("Tagline", Input(name="tagline", value=s["tagline"], cls="input input-sm w-full"),
@@ -403,8 +404,7 @@ def ReaderPanels(s):
 # secret, and their current effective value is safe to print.
 ENV_VARS = [
     ("SESSION_SECRET", "Keeps logins safe. Made for you if you don't set one."),
-    ("BASE_URL", Span("The site URL. Without it, ", A("the one you set", href="/admin/settings?tab=url",
-                                                            cls="link"), " is used.")),
+    ("BASE_URL", "The site URL. Without it, the one in Settings is used."),
     ("SITE_TITLE", "Only a new site's first name."),
     ("SETUP_TOKEN", "A code you choose, 16 characters or more, to start setting up without reading the "
                     "server's log."),
@@ -441,10 +441,43 @@ OPTIONAL_ENV = {name for name, _ in S3_ENV_VARS} | {"SETUP_TOKEN", "RESEND_API_K
                                                    "SMTP_HOST", "SMTP_PORT", "SMTP_USER", "SMTP_PASSWORD", "SMTP_FROM"}
 
 
+# the setting each variable stands in for, and the Settings page it's on:
+# the site's own value there is the one used, so the row says so and links
+# to it. (BASE_URL is the other way round - set on the host, it wins.)
+ENV_IN_SETTINGS = {
+    "BASE_URL": ("site_url", "url"), "SITE_TITLE": ("site_title", "name"),
+    "SMTP_HOST": ("smtp_host", "email"), "SMTP_PORT": ("smtp_port", "email"), "SMTP_USER": ("smtp_user", "email"),
+    "SMTP_PASSWORD": ("smtp_password", "email"), "SMTP_FROM": ("smtp_from", "email"),
+    "RESEND_API_KEY": ("email_api_key", "email"), "RESEND_FROM": ("email_api_from", "email"),
+    "ADMIN_EMAIL": ("admin_email", "email"),
+}
+
+
+def _in_settings(name):
+    """The setting that gives this variable's value now, as (key, page),
+    or None when the host's value - or nothing - is used."""
+    key, page = ENV_IN_SETTINGS.get(name, (None, None))
+    if not key or name == "BASE_URL" and config.BASE_URL_FIXED:
+        return None
+    # what's saved for the way of sending that isn't chosen isn't used
+    provider = settings.get("email_provider")
+    if name.startswith("SMTP_") and provider != "smtp" or name.startswith("RESEND_") and provider != "api":
+        return None
+    # a provider picked from the list fills in the server
+    if name == "SMTP_HOST" and not settings.saved(key) and settings.saved("smtp_provider"):
+        return "smtp_provider", page
+    return (key, page) if settings.saved(key) else None
+
+
 def EnvStatusRow(name, help_text):
     raw = os.environ.get(name)
     effective = getattr(config, name, "")
     is_secret = name in SECRET_ENV
+    in_settings = _in_settings(name)
+    if in_settings:
+        key, page = in_settings
+        preset = mail.SMTP_PRESETS.get(settings.get(key)) if key == "smtp_provider" else None
+        effective = preset[0] if preset else settings.get(key)
     # a warning only where the default is wrong for a real site - a
     # default title, data folder or mode is just right, and "Using
     # default" in warning yellow read as a problem to fix
@@ -452,9 +485,7 @@ def EnvStatusRow(name, help_text):
         badge = Span("Insecure default", cls="badge badge-error badge-sm")
     elif name == "SESSION_SECRET" and config.SESSION_SECRET_FROM == "file":  # noqa: S105 - a source name, not a secret
         badge = Span("Made for you", cls="badge badge-success badge-sm")
-    elif name == "BASE_URL" and not config.BASE_URL_FIXED and settings.get("site_url"):
-        badge = Span("From Settings", cls="badge badge-success badge-sm")
-    elif raw:  # a blank value in an env file counts as unset, same as config.py
+    elif in_settings or raw:  # a blank value in an env file counts as unset, same as config.py
         badge = Span("Set", cls="badge badge-success badge-sm")
     elif name == "BASE_URL" and effective.startswith("http://localhost"):
         badge = Span("Not set", cls="badge badge-warning badge-sm")
@@ -464,7 +495,7 @@ def EnvStatusRow(name, help_text):
         badge = Span("Not set", cls="badge badge-ghost badge-sm")
     else:
         badge = Span("Default", cls="badge badge-ghost badge-sm")
-    if name == "SITE_TITLE":
+    if name == "SITE_TITLE" and not in_settings:
         # what the site is actually called - not the variable's own value,
         # which only a brand-new site ever uses
         effective = f"Your title: {settings.get('site_title')}"
@@ -472,6 +503,8 @@ def EnvStatusRow(name, help_text):
         Div(Span(name, cls="font-mono text-sm font-medium"), badge, cls="flex items-center justify-between gap-2"),
         P(help_text, cls="text-xs text-base-content/60 mt-0.5"),
         None if is_secret else P(effective or "(empty)", cls="text-xs font-mono text-base-content/50 mt-1"),
+        P("Saved in ", A(f"Settings > {dict(SETTINGS_SECTIONS)[page]}", href=f"/admin/settings?tab={page}#{key}",
+                         cls="link"), cls="text-xs text-base-content/60 mt-1") if in_settings else None,
         cls="py-2 border-b-[length:var(--border)] border-base-300 last:border-0"
     )
 
@@ -485,30 +518,30 @@ def SmtpFields(s, hidden):
         FormField("Your email provider", Select(
             *[Option(name, value=key, selected=key == chosen) for key, (name, *_) in mail.SMTP_PRESETS.items()],
             Option("Another provider", value="", selected=not chosen),
-            name="smtp_provider", cls="select select-sm w-full"), cls=FIELD_GAP),
+            name="smtp_provider", id="smtp_provider", cls="select select-sm w-full"), cls=FIELD_GAP),
         *[P(tip, data_shown_for=f"smtp_provider={key}", hidden=key != chosen,
             cls=f"text-sm {'text-warning' if key == 'outlook' else 'text-base-content/70'} {FIELD_GAP}")
           for key, (*_, tip) in mail.SMTP_PRESETS.items()],
         Div(
             Div(
-                FormField("Server", Input(name="smtp_host", value=s["smtp_host"], placeholder="smtp.example.com",
+                FormField("Server", Input(name="smtp_host", id="smtp_host", value=s["smtp_host"], placeholder="smtp.example.com",
                                           cls="input input-sm w-full"),
                           help=("Set on your host. " if settings.on_host("smtp_host") else "")
                           + "Your email provider's SMTP server."),
-                FormField("Port", Input(name="smtp_port", value=s["smtp_port"], placeholder="587",
+                FormField("Port", Input(name="smtp_port", id="smtp_port", value=s["smtp_port"], placeholder="587",
                                         cls="input input-sm w-full")),
                 cls=f"grid grid-cols-1 sm:grid-cols-[1fr_8rem] gap-3 {FIELD_GAP}"
             ),
-            FormField("Username", Input(name="smtp_user", value=s["smtp_user"], cls="input input-sm w-full"),
+            FormField("Username", Input(name="smtp_user", id="smtp_user", value=s["smtp_user"], cls="input input-sm w-full"),
                       cls=FIELD_GAP),
             data_shown_for="smtp_provider=", hidden=bool(chosen)
         ),
         Div(
-            FormField("Email address", Input(name="smtp_from", value=s["smtp_from"], type="email",
+            FormField("Email address", Input(name="smtp_from", id="smtp_from", value=s["smtp_from"], type="email",
                                              placeholder="you@example.com", cls="input input-sm w-full"),
                       help=("Set on your host. " if settings.on_host("smtp_from") else "")
                       + "Emails come from this address, with your site's name as the sender.", cls=FIELD_GAP),
-            FormField("Password", SecretInput("smtp_password", settings.stored("smtp_password"),
+            FormField("Password", SecretInput("smtp_password", settings.stored("smtp_password"), id="smtp_password",
                                               cls="input input-sm w-full"),
                       help=HOST_SET if settings.on_host("smtp_password") else None),
             data_shown_for="smtp_provider!=outlook", hidden=chosen == "outlook"
@@ -562,10 +595,10 @@ def SecretPanels(s):
                     P("Make a free account at resend.com, add your own domain there, then paste its API key. "
                       "No domain yet? Use an email account you have.",
                       cls="text-sm text-base-content/60 mb-3"),
-                    FormField("API key", SecretInput("email_api_key", settings.stored("email_api_key"),
+                    FormField("API key", SecretInput("email_api_key", settings.stored("email_api_key"), id="email_api_key",
                                                 cls="input input-sm w-full"),
                               help=HOST_SET if settings.on_host("email_api_key") else None, cls=FIELD_GAP),
-                    FormField("From address", Input(name="email_api_from", value=s["email_api_from"],
+                    FormField("From address", Input(name="email_api_from", id="email_api_from", value=s["email_api_from"],
                                                      placeholder="hello@yourdomain.com", cls="input input-sm w-full"),
                               help=("Set on your host. " if settings.on_host("email_api_from") else "")
                               + "An address at the domain you verified in Resend - not resend.dev, which only "

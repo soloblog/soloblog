@@ -135,3 +135,45 @@ def test_the_host_smtp_password_is_in_no_page(smtp_host, admin):
     for tab in ("email", "integrations"):
         assert SMTP_SECRET not in admin.get(f"/admin/settings?tab={tab}").text, tab
     assert "SMTP_HOST" in admin.get("/admin/settings?tab=integrations").text
+
+
+def _env_row(page, name):
+    """The Environment list's row for one variable: its badge and the rest."""
+    import re
+    row = page.split(f">{name}</span>")[1].split("font-mono text-sm font-medium")[0]
+    return re.search(r'class="badge [\w-]+ badge-sm">([^<]+)<', row).group(1), row
+
+
+def test_the_environment_list_says_what_settings_sets(host, admin, monkeypatch):
+    monkeypatch.setenv("RESEND_API_KEY", SECRET)
+    page = admin.get("/admin/settings?tab=integrations").text
+    badge, row = _env_row(page, "RESEND_API_KEY")
+    assert badge == "Set" and "Saved in" not in row
+    assert _env_row(page, "RESEND_FROM")[0] == "Not set"
+    # saved on the Email page, Settings' value is the one used: the row
+    # says so and links to the field, never showing a key
+    settings.set_many({"email_provider": "api", "email_api_key": "re_saved_98765", "email_api_from": "hi@site.example"})
+    page = admin.get("/admin/settings?tab=integrations").text
+    badge, row = _env_row(page, "RESEND_API_KEY")
+    assert badge == "Set"
+    assert 'href="/admin/settings?tab=email#email_api_key"' in row and "Settings &gt; Email" in row
+    badge, row = _env_row(page, "RESEND_FROM")
+    assert badge == "Set" and "hi@site.example" in row and "Saved in" in row
+    assert "re_saved_98765" not in page and SECRET not in page
+    # SMTP isn't the way the site sends, so nothing of it is in use
+    assert _env_row(page, "SMTP_HOST")[0] == "Not set"
+    # the link lands on the field
+    email = admin.get("/admin/settings?tab=email").text
+    assert 'id="email_api_key"' in email and 'id="email_api_from"' in email
+
+
+def test_the_environment_list_names_an_email_provider_from_the_list(host, admin):
+    settings.set_many({"email_provider": "smtp", "smtp_provider": "gmail", "smtp_user": "me@gmail.example",
+                       "email_api_key": "re_saved_98765"})
+    page = admin.get("/admin/settings?tab=integrations").text
+    badge, row = _env_row(page, "SMTP_HOST")
+    assert badge == "Set" and "Gmail" in row and 'href="/admin/settings?tab=email#smtp_provider"' in row
+    assert _env_row(page, "SMTP_USER")[0] == "Set" and "Saved in" in _env_row(page, "SMTP_USER")[1]
+    # a Resend key saved earlier isn't used while SMTP is chosen
+    assert _env_row(page, "RESEND_API_KEY")[0] == "Not set"
+    assert 'id="smtp_provider"' in admin.get("/admin/settings?tab=email").text

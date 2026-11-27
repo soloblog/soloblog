@@ -425,6 +425,13 @@ def stored(key: str) -> str:
     return _cached[2].get(key, DEFAULTS.get(key, ""))
 
 
+def saved(key: str) -> bool:
+    """Whether the site has a value of its own saved for a setting - not
+    a default, not the host's, not saved empty."""
+    _values()
+    return bool(_cached[2].get(key))
+
+
 def on_host(key: str) -> bool:
     """Whether a setting's value is the host's, not one saved in Settings."""
     _values()

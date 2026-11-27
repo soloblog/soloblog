@@ -528,7 +528,7 @@ Under **Advanced**. For people who write code: your own code and styles, added t
 
 ### Environment
 
-Under **Advanced**. Some settings are set on your host, not in Soloblog - `SESSION_SECRET`, `BASE_URL`, `SITE_TITLE`, `DATA_DIR`, `ENV` and others. This shows which of them your host sets. [Settings on the host](../DEPLOYMENT.md#settings-on-the-host) lists them all.
+Under **Advanced**. Some settings are set on your host, not in Soloblog - `SESSION_SECRET`, `BASE_URL`, `SITE_TITLE`, `DATA_DIR`, `ENV` and others. This shows which of them your host sets. Where a setting in Soloblog is used instead - the site's URL, its title, the email settings, the admin email - its row shows **Set** and a link to that setting. [Settings on the host](../DEPLOYMENT.md#settings-on-the-host) lists them all.
 
 ## Security
 

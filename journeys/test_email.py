@@ -199,3 +199,25 @@ def test_the_password_shows_only_to_change_your_email(owner, site):
     owner.go("/admin/settings?tab=email")
     assert owner.page.input_value("input[name=admin_email]") == "new@example.com"
     assert not password.is_visible()
+
+
+def test_the_environment_list_leads_to_a_setting_saved_here(owner):
+    set_up_email(owner)
+    owner.go("/admin/settings?tab=email")
+    # the owner folds Sending email away once it's done
+    owner.page.locator("details[data-panel=email-sending] summary").click()
+    owner.page.wait_for_timeout(400)
+    owner.go("/admin/settings?tab=integrations")
+    env = owner.page.locator("details[data-panel=integrations-env]")
+    env.locator("summary").click()
+    row = env.locator("div.py-2", has=owner.page.get_by_text("SMTP_HOST", exact=True))
+    # set in Settings, not on the host: it's set, and says where
+    assert row.locator(".badge").inner_text() == "Set"
+    row.get_by_role("link", name="Settings > Email").click()
+    owner.page.wait_for_load_state("load")
+    owner.page.wait_for_timeout(500)
+    # the link opens the folded section and lands on the server
+    field = owner.page.locator("input[name=smtp_host]")
+    assert field.is_visible() and field.input_value() == "smtp.example.com"
+    box, height = field.bounding_box(), owner.page.viewport_size["height"]
+    assert 0 <= box["y"] and box["y"] + box["height"] <= height
