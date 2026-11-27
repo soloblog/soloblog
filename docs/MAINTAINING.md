@@ -72,9 +72,11 @@ decision.
 - **Security:** private vulnerability reporting, Dependabot alerts and
   security updates are on.
 - **A branch ruleset** for `master` and the version branches (the
-  pattern `[0-9]*.[0-9]*`): no deletions, no force pushes, and the checks
-  `tests (3.12)`, `tests (3.14)`, `smoke-test` and `dependencies` must
-  pass.
+  pattern `[0-9]*.[0-9]*`): no deletions and no force pushes, for
+  anyone, admins included. It requires no checks, since CI runs only on
+  pull requests, tags and by hand: CI is the gate on a pull request, and
+  the local checks (CLAUDE.md > Every change) are the gate before a
+  maintainer's push.
 - **Pull requests from first-time contributors** wait for approval before
   CI runs. The workflows use `pull_request`, never
   `pull_request_target`, so a fork's run never sees the repository's
@@ -148,8 +150,8 @@ the Render, DigitalOcean, Heroku and Railway buttons build its source,
 and `:latest` is the image their servers pull. So `master` only ever
 holds released code.
 
-- **`master` = the latest release.** Protected (see Repository settings): no
-  direct pushes, no force pushes, CI must pass. It only changes when a
+- **`master` = the latest release.** Protected (see Repository settings): never
+  deleted or force pushed. It only changes when a
   version is released or a patch is made.
 - **The next version's branch** - `1.1`, then `1.2` - is where features
   go. It's made from `master` the day the previous version comes out.
